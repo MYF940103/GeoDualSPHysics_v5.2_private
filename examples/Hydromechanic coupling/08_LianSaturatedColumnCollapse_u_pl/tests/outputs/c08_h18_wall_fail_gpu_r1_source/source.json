@@ -1,0 +1,1447 @@
+{
+  "stage": "c08_h18_wall_fail_gpu_r1.source",
+  "intervention": "terminal_rejection_printf_only",
+  "baseline_source_capture": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_source_r1\\full_source.json",
+    "bytes": 48353,
+    "mtime_ns": 1794222843364623500
+  },
+  "baseline_source_archive": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_source_r1\\full_source.zip",
+    "bytes": 1082321,
+    "mtime_ns": 1794222843308768900
+  },
+  "archive": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_source\\source.zip",
+    "bytes": 1083141,
+    "mtime_ns": 1794601685453828000
+  },
+  "diff": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_source\\diagnostic.diff",
+    "bytes": 9680,
+    "mtime_ns": 1794601683868350000
+  },
+  "modified_members": [
+    "src/source/JSphGpu_ker.cu",
+    "src/source/JSphGpu_mdbc_ker.cuh"
+  ],
+  "exact_inverse_original_bytes": true,
+  "derivation": [
+    {
+      "member": "src/source/JSphGpu_ker.cu",
+      "original_text": "#include <cfloat>",
+      "replacement_text": "#include <stdio.h>\r\n#include <cfloat>",
+      "forward_matches": 1
+    },
+    {
+      "member": "src/source/JSphGpu_mdbc_ker.cuh",
+      "original_text": "if(!CODE_IsFixed(code[p1]) || !isfinite(r2) || !(r2>0)){atomicMin(invalid,p1);return;}",
+      "replacement_text": "if(!CODE_IsFixed(code[p1]) || !isfinite(r2) || !(r2>0)){printf(\"C08_WALL_FAIL reason=invalid_receiver incomplete=1 detail=0 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) code=%u fixed=%u normal_r2=%.17g solid0=%.17g\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,unsigned(code[p1]),unsigned(CODE_IsFixed(code[p1])),r2,solid0);\r\natomicMin(invalid,p1);return;}",
+      "forward_matches": 1
+    },
+    {
+      "member": "src/source/JSphGpu_mdbc_ker.cuh",
+      "original_text": "if(!isfinite(j[p2]) || j[p2]<=solid0){atomicMin(invalid,p1);return;}",
+      "replacement_text": "if(!isfinite(j[p2]) || j[p2]<=solid0){printf(\"C08_WALL_FAIL reason=raw_donor_J incomplete=1 detail=0 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) donor_slot=%u donor_B=(%.17g,%.17g,%.17g) donor_J=%.17g solid0=%.17g\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,p2,posxy[p2].x,posxy[p2].y,posz[p2],j[p2],solid0);\r\nprintf(\"C08_WALL_FAIL reason=raw_donor_J incomplete=1 detail=1 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) retried=%u gp=(%.17g,%.17g,%.17g) fitshift=(%.17g,%.17g) sumwab=%.17g submerged=%.17g threshold=%.9g\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,unsigned(retried),gp.x,gp.y,gp.z,fitshiftx,fitshiftz,sumwab,submerged,double(threshold));\r\nprintf(\"C08_WALL_FAIL reason=raw_donor_J incomplete=1 detail=2 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) nearest2=%.17g near=(%.17g,%.17g) nearest0=%.17g receiver_J_before=%.17g solid0=%.17g\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,nearest2,nearx,nearz,nearest[0],j[p1],solid0);\r\nprintf(\"C08_WALL_FAIL reason=raw_donor_J incomplete=1 detail=3 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) moment=(%.17g,%.17g,%.17g;%.17g,%.17g,%.17g;%.17g,%.17g,%.17g) partial_det=%.17g partial_active=%u\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,moment.a11,moment.a12,moment.a13,moment.a21,moment.a22,moment.a23,moment.a31,moment.a32,moment.a33,cumath::Determinant3x3(moment),unsigned(submerged>0 || sumwab>=double(threshold) || (threshold>=2 && sumwab+2>=double(threshold))));\r\natomicMin(invalid,p1);return;}",
+      "forward_matches": 1
+    },
+    {
+      "member": "src/source/JSphGpu_mdbc_ker.cuh",
+      "original_text": "    atomicMin(invalid,p1);return;\r\n  }\r\n  const tmatrix3d inv=cumath::InverseMatrix3x3(moment,det);",
+      "replacement_text": "    printf(\"C08_WALL_FAIL reason=geometry_exhausted_or_ineligible incomplete=0 detail=0 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) retried=%u gp=(%.17g,%.17g,%.17g) fitshift=(%.17g,%.17g) sumwab=%.17g submerged=%.17g threshold=%.9g\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,unsigned(retried),gp.x,gp.y,gp.z,fitshiftx,fitshiftz,sumwab,submerged,double(threshold));\r\nprintf(\"C08_WALL_FAIL reason=geometry_exhausted_or_ineligible incomplete=0 detail=1 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) nearest2=%.17g near=(%.17g,%.17g) nearest0=%.17g receiver_J_before=%.17g solid0=%.17g\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,nearest2,nearx,nearz,nearest[0],j[p1],solid0);\r\nprintf(\"C08_WALL_FAIL reason=geometry_exhausted_or_ineligible incomplete=0 detail=2 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) moment=(%.17g,%.17g,%.17g;%.17g,%.17g,%.17g;%.17g,%.17g,%.17g) det=%.17g active=%u\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,moment.a11,moment.a12,moment.a13,moment.a21,moment.a22,moment.a23,moment.a31,moment.a32,moment.a33,det,unsigned(active));\r\nprintf(\"C08_WALL_FAIL reason=geometry_exhausted_or_ineligible incomplete=0 detail=3 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) nearestfinite=%u simulate2d=%u periactive=%u positive_sum=%u finite_det=%u abs_det_ge_1e_3=%u\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,unsigned(nearestfinite),unsigned(CTE.simulate2d),unsigned(CTE.periactive),unsigned(sumwab>0),unsigned(isfinite(det)),unsigned(fabs(det)>=1e-3));\r\natomicMin(invalid,p1);return;\r\n  }\r\n  const tmatrix3d inv=cumath::InverseMatrix3x3(moment,det);",
+      "forward_matches": 1
+    },
+    {
+      "member": "src/source/JSphGpu_mdbc_ker.cuh",
+      "original_text": "if(!isfinite(v[c])){atomicMin(invalid,p1);return;}",
+      "replacement_text": "if(!isfinite(v[c])){printf(\"C08_WALL_FAIL reason=nonfinite_fitted_component incomplete=1 detail=0 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) retried=%u gp=(%.17g,%.17g,%.17g) fitshift=(%.17g,%.17g) sumwab=%.17g submerged=%.17g threshold=%.9g\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,unsigned(retried),gp.x,gp.y,gp.z,fitshiftx,fitshiftz,sumwab,submerged,double(threshold));\r\nprintf(\"C08_WALL_FAIL reason=nonfinite_fitted_component incomplete=1 detail=1 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) nearest2=%.17g near=(%.17g,%.17g) nearest0=%.17g receiver_J_before=%.17g solid0=%.17g\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,nearest2,nearx,nearz,nearest[0],j[p1],solid0);\r\nprintf(\"C08_WALL_FAIL reason=nonfinite_fitted_component incomplete=1 detail=2 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) moment=(%.17g,%.17g,%.17g;%.17g,%.17g,%.17g;%.17g,%.17g,%.17g) det=%.17g active=%u\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,moment.a11,moment.a12,moment.a13,moment.a21,moment.a22,moment.a23,moment.a31,moment.a32,moment.a33,det,unsigned(active));\r\nprintf(\"C08_WALL_FAIL reason=nonfinite_fitted_component incomplete=1 detail=3 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) field_c=%u value=%.17g nearest_field=%.17g field_sum=%.17g grad=(%.17g,%.17g) Jextrap_if_stage0=%.17g\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,c,v[c],nearest[c],sum[c],gradx,gradz,(stage==0? v[0]: 0.));\r\natomicMin(invalid,p1);return;}",
+      "forward_matches": 1
+    },
+    {
+      "member": "src/source/JSphGpu_mdbc_ker.cuh",
+      "original_text": "|| !isfinite(tv.x) || !isfinite(tv.y) || !isfinite(tv.z)){atomicMin(invalid,p1);return;}",
+      "replacement_text": "|| !isfinite(tv.x) || !isfinite(tv.y) || !isfinite(tv.z)){printf(\"C08_WALL_FAIL reason=stage0_domain incomplete=0 detail=0 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) retried=%u gp=(%.17g,%.17g,%.17g) fitshift=(%.17g,%.17g) sumwab=%.17g submerged=%.17g threshold=%.9g\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,unsigned(retried),gp.x,gp.y,gp.z,fitshiftx,fitshiftz,sumwab,submerged,double(threshold));\r\nprintf(\"C08_WALL_FAIL reason=stage0_domain incomplete=0 detail=1 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) nearest2=%.17g near=(%.17g,%.17g) nearest0=%.17g receiver_J_before=%.17g solid0=%.17g\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,nearest2,nearx,nearz,nearest[0],j[p1],solid0);\r\nprintf(\"C08_WALL_FAIL reason=stage0_domain incomplete=0 detail=2 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) moment=(%.17g,%.17g,%.17g;%.17g,%.17g,%.17g;%.17g,%.17g,%.17g) det=%.17g active=%u\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,moment.a11,moment.a12,moment.a13,moment.a21,moment.a22,moment.a23,moment.a31,moment.a32,moment.a33,det,unsigned(active));\r\nprintf(\"C08_WALL_FAIL reason=stage0_domain incomplete=0 detail=3 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) Jextrap=%.17g Jgrad=(%.17g,%.17g) pressure=%.17g dv=(%.9g,%.9g,%.9g) tv=(%.9g,%.9g,%.9g) noslip=%u normalg=(%.9g,%.9g,%.9g) bad_J=%u bad_pressure=%u bad_dv=%u bad_tv=%u\\n\",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,v[0],gx[0],gz[0],pressure,dv.x,dv.y,dv.z,tv.x,tv.y,tv.z,unsigned(noslip),normalg.x,normalg.y,normalg.z,unsigned(v[0]<=solid0),unsigned(!isfinite(pressure) || fabs(pressure)>FLT_MAX),unsigned(!isfinite(dv.x) || !isfinite(dv.y) || !isfinite(dv.z)),unsigned(!isfinite(tv.x) || !isfinite(tv.y) || !isfinite(tv.z)));\r\natomicMin(invalid,p1);return;}",
+      "forward_matches": 1
+    }
+  ],
+  "private_gpu_source": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphGpu_ker.cu",
+    "bytes": 232324,
+    "mtime_ns": 1794601684173429700
+  },
+  "private_wall_include": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphGpu_mdbc_ker.cuh",
+    "bytes": 97233,
+    "mtime_ns": 1794601684152401100
+  },
+  "terminal_rejection_printf_only": true,
+  "primary_snapshot_added": false,
+  "CXX_locals_added": false,
+  "public_interfaces_changed": false,
+  "physical_arithmetic_changed": false,
+  "source_files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\TypesDef.h",
+      "bytes": 37988,
+      "mtime_ns": 1794601683877359300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\tinyxmlparser.cpp",
+      "bytes": 48731,
+      "mtime_ns": 1794601683883363100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\tinyxmlerror.cpp",
+      "bytes": 1916,
+      "mtime_ns": 1794601683888451200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\tinyxml.h",
+      "bytes": 73692,
+      "mtime_ns": 1794601683894789000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\tinyxml.cpp",
+      "bytes": 44367,
+      "mtime_ns": 1794601683900792400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\tinystr.h",
+      "bytes": 9885,
+      "mtime_ns": 1794601683908793200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\tinystr.cpp",
+      "bytes": 2892,
+      "mtime_ns": 1794601683913890000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\RunExceptionGpuDef.h",
+      "bytes": 1715,
+      "mtime_ns": 1794601683916889400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\RunExceptionDef.h",
+      "bytes": 2026,
+      "mtime_ns": 1794601683920886800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\randomc.h",
+      "bytes": 7616,
+      "mtime_ns": 1794601683924890600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\randomc.cpp",
+      "bytes": 6243,
+      "mtime_ns": 1794601683928995800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\OmpDefs.h",
+      "bytes": 1858,
+      "mtime_ns": 1794601683933503000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\main.cpp",
+      "bytes": 9998,
+      "mtime_ns": 1794601683937502100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JXml.h",
+      "bytes": 60397,
+      "mtime_ns": 1794601683942628100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JXml.cpp",
+      "bytes": 43553,
+      "mtime_ns": 1794601683951134400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JWaveSpectrumGpu.h",
+      "bytes": 2771,
+      "mtime_ns": 1794601683956134900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JWaveSpectrumGpu.cpp",
+      "bytes": 4714,
+      "mtime_ns": 1794601683960659200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JWaveOrder2_ker.h",
+      "bytes": 2156,
+      "mtime_ns": 1794601683965079000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JWaveOrder2_ker.cu",
+      "bytes": 8474,
+      "mtime_ns": 1794601683971083000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JWaveGenUndef.h",
+      "bytes": 3213,
+      "mtime_ns": 1794601683975590100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JWaveGen.h",
+      "bytes": 10048,
+      "mtime_ns": 1794601683979590400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JVtkLibUndef.h",
+      "bytes": 7388,
+      "mtime_ns": 1794601683983590300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JVtkLibDef.h",
+      "bytes": 1988,
+      "mtime_ns": 1794601683987891900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JVtkLib.h",
+      "bytes": 10548,
+      "mtime_ns": 1794601683991392100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JTimerCuda.h",
+      "bytes": 2733,
+      "mtime_ns": 1794601683995391600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JTimerClock.h",
+      "bytes": 2396,
+      "mtime_ns": 1794601683999391900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JTimer.h",
+      "bytes": 4388,
+      "mtime_ns": 1794601684002406900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JTimeControl.h",
+      "bytes": 4073,
+      "mtime_ns": 1794601684007411100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JTimeControl.cpp",
+      "bytes": 7648,
+      "mtime_ns": 1794601684010411600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphShifting_ker.h",
+      "bytes": 2473,
+      "mtime_ns": 1794601684015429800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphShifting_ker.cu",
+      "bytes": 8977,
+      "mtime_ns": 1794601684020934700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphShifting.h",
+      "bytes": 6686,
+      "mtime_ns": 1794601684025934400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphShifting.cpp",
+      "bytes": 21845,
+      "mtime_ns": 1794601684033748200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphMk.h",
+      "bytes": 5982,
+      "mtime_ns": 1794601684038872100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphMk.cpp",
+      "bytes": 14010,
+      "mtime_ns": 1794601684042891200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphInOutZsurf.h",
+      "bytes": 6100,
+      "mtime_ns": 1794601684047467900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphInOutZsurf.cpp",
+      "bytes": 18939,
+      "mtime_ns": 1794601684055016700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphInOutZone.h",
+      "bytes": 7708,
+      "mtime_ns": 1794601684060030700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphInOutZone.cpp",
+      "bytes": 19980,
+      "mtime_ns": 1794601684064768000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphInOutVelAwas.h",
+      "bytes": 4169,
+      "mtime_ns": 1794601684069580700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphInOutVelAwas.cpp",
+      "bytes": 8908,
+      "mtime_ns": 1794601684073701900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphInOutVel.h",
+      "bytes": 6057,
+      "mtime_ns": 1794601684078651800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphInOutVel.cpp",
+      "bytes": 24940,
+      "mtime_ns": 1794601684083439900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphInOutPoints.h",
+      "bytes": 5302,
+      "mtime_ns": 1794601684088077000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphInOutPoints.cpp",
+      "bytes": 28614,
+      "mtime_ns": 1794601684092683900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphInOutGridData.h",
+      "bytes": 5779,
+      "mtime_ns": 1794601684097288600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphInOutGridData.cpp",
+      "bytes": 24667,
+      "mtime_ns": 1794601684103296600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphInOutDef.h",
+      "bytes": 4669,
+      "mtime_ns": 1794601684107982000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphInOut.h",
+      "bytes": 14733,
+      "mtime_ns": 1794601684112986000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphInOut.cpp",
+      "bytes": 61797,
+      "mtime_ns": 1794601684118264300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphHourglassGpu_ker.h",
+      "bytes": 2406,
+      "mtime_ns": 1794601684122264900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphHourglassGpu_ker.cu",
+      "bytes": 12945,
+      "mtime_ns": 1794601684127288400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphHourglassGpu.h",
+      "bytes": 3698,
+      "mtime_ns": 1794601684132346300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphHourglassGpu.cpp",
+      "bytes": 11612,
+      "mtime_ns": 1794601684136200700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphHourglassCpu.h",
+      "bytes": 4911,
+      "mtime_ns": 1794601684141660200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphHourglassCpu.cpp",
+      "bytes": 15465,
+      "mtime_ns": 1794601684146182000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphGpu_mdbc_ker.cuh",
+      "bytes": 97233,
+      "mtime_ns": 1794601684152401100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphGpu_mdbc.cpp",
+      "bytes": 16432,
+      "mtime_ns": 1794601684158413700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphGpu_ker.h",
+      "bytes": 25579,
+      "mtime_ns": 1794601684164923900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphGpu_ker.cu",
+      "bytes": 232324,
+      "mtime_ns": 1794601684173429700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphGpu_InOut_iker.h",
+      "bytes": 5790,
+      "mtime_ns": 1794601684180934400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphGpu_InOut_iker.cu",
+      "bytes": 79757,
+      "mtime_ns": 1794601684186441300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphGpuSingle_InOut.cpp",
+      "bytes": 13579,
+      "mtime_ns": 1794601684192792300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphGpuSingle.h",
+      "bytes": 3424,
+      "mtime_ns": 1794601684197813600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphGpuSingle.cpp",
+      "bytes": 72884,
+      "mtime_ns": 1794601684202818600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphGpuSimple_ker.h",
+      "bytes": 4629,
+      "mtime_ns": 1794601684208816900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphGpuSimple_ker.cu",
+      "bytes": 56086,
+      "mtime_ns": 1794601684214322200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphGpu.h",
+      "bytes": 23348,
+      "mtime_ns": 1794601684219507000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphGpu.cpp",
+      "bytes": 140520,
+      "mtime_ns": 1794601684227014400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphCpu_mdbc.cpp",
+      "bytes": 72717,
+      "mtime_ns": 1794601684235381900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphCpu_InOut.cpp",
+      "bytes": 29177,
+      "mtime_ns": 1794601684244383000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphCpuSingle_InOut.cpp",
+      "bytes": 12133,
+      "mtime_ns": 1794601684249418800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphCpuSingle.h",
+      "bytes": 5160,
+      "mtime_ns": 1794601684253419000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphCpuSingle.cpp",
+      "bytes": 79654,
+      "mtime_ns": 1794601684259665200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphCpu.h",
+      "bytes": 30357,
+      "mtime_ns": 1794601684265695200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphCpu.cpp",
+      "bytes": 204742,
+      "mtime_ns": 1794601684274939300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphCfgRun.h",
+      "bytes": 4592,
+      "mtime_ns": 1794601684281577700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSphCfgRun.cpp",
+      "bytes": 21081,
+      "mtime_ns": 1794601684286581700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSph.h",
+      "bytes": 42394,
+      "mtime_ns": 1794601684292199800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSph.cpp",
+      "bytes": 224180,
+      "mtime_ns": 1794601684301872100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSimpleNeigs.h",
+      "bytes": 3302,
+      "mtime_ns": 1794601684308376500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSimpleNeigs.cpp",
+      "bytes": 9598,
+      "mtime_ns": 1794601684313379800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSaveCsv2.h",
+      "bytes": 11650,
+      "mtime_ns": 1794601684317888000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JSaveCsv2.cpp",
+      "bytes": 11033,
+      "mtime_ns": 1794601684321390600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JRelaxZone_ker.h",
+      "bytes": 4360,
+      "mtime_ns": 1794601684325416200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JRelaxZone_ker.cu",
+      "bytes": 27451,
+      "mtime_ns": 1794601684330921900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JRelaxZonesGpu.h",
+      "bytes": 7608,
+      "mtime_ns": 1794601684335431300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JRelaxZonesGpu.cpp",
+      "bytes": 14592,
+      "mtime_ns": 1794601684339941600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JRelaxZones.h",
+      "bytes": 6591,
+      "mtime_ns": 1794601684343941300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JReduSum_ker.h",
+      "bytes": 4058,
+      "mtime_ns": 1794601684348029000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JReduSum_ker.cu",
+      "bytes": 35138,
+      "mtime_ns": 1794601684352029300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JReadDatafile.h",
+      "bytes": 5017,
+      "mtime_ns": 1794601684358875100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JReadDatafile.cpp",
+      "bytes": 13604,
+      "mtime_ns": 1794601684362877300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JRangeFilter.h",
+      "bytes": 3398,
+      "mtime_ns": 1794601684366992900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JRangeFilter.cpp",
+      "bytes": 10371,
+      "mtime_ns": 1794601684370992500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JRadixSort.h",
+      "bytes": 5704,
+      "mtime_ns": 1794601684376139900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JRadixSort.cpp",
+      "bytes": 23925,
+      "mtime_ns": 1794601684381143300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JPeriodicDef.h",
+      "bytes": 4155,
+      "mtime_ns": 1794601684385149800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JPartsLoad4.h",
+      "bytes": 6252,
+      "mtime_ns": 1794601684390662300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JPartsLoad4.cpp",
+      "bytes": 21193,
+      "mtime_ns": 1794601684394661000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JPartOutBi4Save.h",
+      "bytes": 8161,
+      "mtime_ns": 1794601684399360600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JPartOutBi4Save.cpp",
+      "bytes": 10593,
+      "mtime_ns": 1794601684403363800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JPartNormalData.h",
+      "bytes": 5970,
+      "mtime_ns": 1794601684407871000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JPartNormalData.cpp",
+      "bytes": 11621,
+      "mtime_ns": 1794601684412868200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JPartMotionDef.h",
+      "bytes": 1959,
+      "mtime_ns": 1794601684417373300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JParticlesDef.h",
+      "bytes": 3439,
+      "mtime_ns": 1794601684419878100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JPartFloatBi4.h",
+      "bytes": 12625,
+      "mtime_ns": 1794601684424383500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JPartFloatBi4.cpp",
+      "bytes": 29818,
+      "mtime_ns": 1794601684429888100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JPartDataHead.h",
+      "bytes": 9973,
+      "mtime_ns": 1794601684434177000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JPartDataHead.cpp",
+      "bytes": 18180,
+      "mtime_ns": 1794601684439684900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JPartDataBi4.h",
+      "bytes": 17352,
+      "mtime_ns": 1794601684445684100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JPartDataBi4.cpp",
+      "bytes": 28560,
+      "mtime_ns": 1794601684451191100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JOutputCsv.h",
+      "bytes": 2958,
+      "mtime_ns": 1794601684455701900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JOutputCsv.cpp",
+      "bytes": 12894,
+      "mtime_ns": 1794601684459207800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JObjectGpu.h",
+      "bytes": 2533,
+      "mtime_ns": 1794601684464819100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JObjectGpu.cpp",
+      "bytes": 3591,
+      "mtime_ns": 1794601684468326500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JObject.h",
+      "bytes": 2562,
+      "mtime_ns": 1794601684471327200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JObject.cpp",
+      "bytes": 4502,
+      "mtime_ns": 1794601684475326200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JNumexLibUndef.h",
+      "bytes": 3994,
+      "mtime_ns": 1794601684478830400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JNumexLibDef.h",
+      "bytes": 1101,
+      "mtime_ns": 1794601684482833600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JNumexLib.h",
+      "bytes": 4448,
+      "mtime_ns": 1794601684485835000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JMotionPos.h",
+      "bytes": 2101,
+      "mtime_ns": 1794601684489343800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JMotionPos.cpp",
+      "bytes": 4457,
+      "mtime_ns": 1794601684492847200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JMotionObj.h",
+      "bytes": 5094,
+      "mtime_ns": 1794601684497378100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JMotionObj.cpp",
+      "bytes": 35196,
+      "mtime_ns": 1794601684501881700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JMotionMov.h",
+      "bytes": 15905,
+      "mtime_ns": 1794601684508879700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JMotionMov.cpp",
+      "bytes": 16960,
+      "mtime_ns": 1794601684514386600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JMotionList.h",
+      "bytes": 4307,
+      "mtime_ns": 1794601684518386500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JMotionList.cpp",
+      "bytes": 7622,
+      "mtime_ns": 1794601684521898300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JMotionEvent.h",
+      "bytes": 1747,
+      "mtime_ns": 1794601684524896900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JMotion.h",
+      "bytes": 9209,
+      "mtime_ns": 1794601684529545600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JMotion.cpp",
+      "bytes": 37615,
+      "mtime_ns": 1794601684534250900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JMLPistonsGpu.h",
+      "bytes": 3067,
+      "mtime_ns": 1794601684538251500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JMLPistonsGpu.cpp",
+      "bytes": 5280,
+      "mtime_ns": 1794601684541755100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JMLPistons.h",
+      "bytes": 8100,
+      "mtime_ns": 1794601684545755800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JMeanValues.h",
+      "bytes": 2393,
+      "mtime_ns": 1794601684550096700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JMatrix4.h",
+      "bytes": 20209,
+      "mtime_ns": 1794601684554095600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JLog2.h",
+      "bytes": 5995,
+      "mtime_ns": 1794601684558108000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JLog2.cpp",
+      "bytes": 14029,
+      "mtime_ns": 1794601684563132600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JLinearValueDef.h",
+      "bytes": 1102,
+      "mtime_ns": 1794601684567639200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JLinearValue.h",
+      "bytes": 8453,
+      "mtime_ns": 1794601684571147900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JLinearValue.cpp",
+      "bytes": 24490,
+      "mtime_ns": 1794601684575279900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JGravityPreloadState.h",
+      "bytes": 15790,
+      "mtime_ns": 1794601684582283200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JFtMotionSave.h",
+      "bytes": 3883,
+      "mtime_ns": 1794601684586208500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JFtMotionSave.cpp",
+      "bytes": 8089,
+      "mtime_ns": 1794601684590231300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JException.h",
+      "bytes": 2912,
+      "mtime_ns": 1794601684594851000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JException.cpp",
+      "bytes": 3836,
+      "mtime_ns": 1794601684598353100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsViscoInput.h",
+      "bytes": 2960,
+      "mtime_ns": 1794601684601860700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsViscoInput.cpp",
+      "bytes": 4930,
+      "mtime_ns": 1794601684605879500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsTimersGpu.h",
+      "bytes": 5034,
+      "mtime_ns": 1794601684609887300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsTimersCpu.h",
+      "bytes": 4373,
+      "mtime_ns": 1794601684613886500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsTimers.h",
+      "bytes": 2570,
+      "mtime_ns": 1794601684618885900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsTimers.cpp",
+      "bytes": 5222,
+      "mtime_ns": 1794601684622389000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsSaveDt.h",
+      "bytes": 5124,
+      "mtime_ns": 1794601684626402900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsSaveDt.cpp",
+      "bytes": 10338,
+      "mtime_ns": 1794601684630402800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsPips_ker.h",
+      "bytes": 1883,
+      "mtime_ns": 1794601684635019000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsPips_ker.cu",
+      "bytes": 13574,
+      "mtime_ns": 1794601684637531300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsPips.h",
+      "bytes": 4043,
+      "mtime_ns": 1794601684642038600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsPips.cpp",
+      "bytes": 13069,
+      "mtime_ns": 1794601684646040000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsphConfig.h",
+      "bytes": 2369,
+      "mtime_ns": 1794601684649039000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsphConfig.cpp",
+      "bytes": 3173,
+      "mtime_ns": 1794601684653547700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsPartsOut.h",
+      "bytes": 3690,
+      "mtime_ns": 1794601684657057400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsPartsOut.cpp",
+      "bytes": 4989,
+      "mtime_ns": 1794601684660562200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsPartsInit.h",
+      "bytes": 2774,
+      "mtime_ns": 1794601684665070300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsPartsInit.cpp",
+      "bytes": 3445,
+      "mtime_ns": 1794601684668576800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsOutputTime.h",
+      "bytes": 3779,
+      "mtime_ns": 1794601684672601000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsOutputTime.cpp",
+      "bytes": 7458,
+      "mtime_ns": 1794601684676108100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsMotionDef.h",
+      "bytes": 2289,
+      "mtime_ns": 1794601684680108500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsMotion.h",
+      "bytes": 4491,
+      "mtime_ns": 1794601684683107500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsMotion.cpp",
+      "bytes": 8688,
+      "mtime_ns": 1794601684690614900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsMooredFloatings.h",
+      "bytes": 7370,
+      "mtime_ns": 1794601684695216300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsMooredFloatings.cpp",
+      "bytes": 20249,
+      "mtime_ns": 1794601684699725800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsInitialize.h",
+      "bytes": 14357,
+      "mtime_ns": 1794601684704671100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsInitialize.cpp",
+      "bytes": 40240,
+      "mtime_ns": 1794601684709138800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsGpuInfo.h",
+      "bytes": 2358,
+      "mtime_ns": 1794601684714137100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsGpuInfo.cpp",
+      "bytes": 4554,
+      "mtime_ns": 1794601684719137300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsGauge_ker.h",
+      "bytes": 2445,
+      "mtime_ns": 1794601684723206400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsGauge_ker.cu",
+      "bytes": 19055,
+      "mtime_ns": 1794601684727206900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsGaugeSystem.h",
+      "bytes": 8888,
+      "mtime_ns": 1794601684732220500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsGaugeSystem.cpp",
+      "bytes": 24912,
+      "mtime_ns": 1794601684737728100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsGaugeItem.h",
+      "bytes": 17067,
+      "mtime_ns": 1794601684742230400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsGaugeItem.cpp",
+      "bytes": 45837,
+      "mtime_ns": 1794601684748233200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsFtForcePoints.h",
+      "bytes": 7026,
+      "mtime_ns": 1794601684753792400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsFtForcePoints.cpp",
+      "bytes": 19213,
+      "mtime_ns": 1794601684760297600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsFixedDt.h",
+      "bytes": 3210,
+      "mtime_ns": 1794601684764316200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsFixedDt.cpp",
+      "bytes": 5357,
+      "mtime_ns": 1794601684768319200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsExtraData.h",
+      "bytes": 3809,
+      "mtime_ns": 1794601684772827100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsExtraData.cpp",
+      "bytes": 9513,
+      "mtime_ns": 1794601684775826100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsDcellDef.h",
+      "bytes": 3824,
+      "mtime_ns": 1794601684781336100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsDcell.h",
+      "bytes": 2153,
+      "mtime_ns": 1794601684785437400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsDcell.cpp",
+      "bytes": 4576,
+      "mtime_ns": 1794601684791435400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsDamping.h",
+      "bytes": 11259,
+      "mtime_ns": 1794601684797451000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsDamping.cpp",
+      "bytes": 34781,
+      "mtime_ns": 1794601684802450300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsAccInput_ker.h",
+      "bytes": 2082,
+      "mtime_ns": 1794601684807955000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsAccInput_ker.cu",
+      "bytes": 6356,
+      "mtime_ns": 1794601684810955900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsAccInput.h",
+      "bytes": 5986,
+      "mtime_ns": 1794601684816042400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDsAccInput.cpp",
+      "bytes": 20813,
+      "mtime_ns": 1794601684820040300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDebugSphGpu.h",
+      "bytes": 3876,
+      "mtime_ns": 1794601684824039600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDebugSphGpu.cpp",
+      "bytes": 13204,
+      "mtime_ns": 1794601684828458900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDataArrays.h",
+      "bytes": 17710,
+      "mtime_ns": 1794601684832651800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JDataArrays.cpp",
+      "bytes": 38425,
+      "mtime_ns": 1794601684838221600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JComputeMotionRef.h",
+      "bytes": 3471,
+      "mtime_ns": 1794601684843731300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JComputeMotionRef.cpp",
+      "bytes": 11117,
+      "mtime_ns": 1794601684848710100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JChronoObjectsUndef.h",
+      "bytes": 3168,
+      "mtime_ns": 1794601684853215600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JChronoObjects.h",
+      "bytes": 7736,
+      "mtime_ns": 1794601684857218400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JChronoObjects.cpp",
+      "bytes": 55134,
+      "mtime_ns": 1794601684862918800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JChronoData.h",
+      "bytes": 28142,
+      "mtime_ns": 1794601684869425200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCfgRunBaseDef.h",
+      "bytes": 1103,
+      "mtime_ns": 1794601684873929600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCfgRunBase.h",
+      "bytes": 5363,
+      "mtime_ns": 1794601684879442500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCfgRunBase.cpp",
+      "bytes": 14326,
+      "mtime_ns": 1794601684883952300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCellSearch_inline.h",
+      "bytes": 5246,
+      "mtime_ns": 1794601684893950400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCellSearch_iker.h",
+      "bytes": 7819,
+      "mtime_ns": 1794601684897752800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCellDivGpu_ker.h",
+      "bytes": 4335,
+      "mtime_ns": 1794601684903104100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCellDivGpu_ker.cu",
+      "bytes": 48158,
+      "mtime_ns": 1794601684907268400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCellDivGpuSingle_ker.h",
+      "bytes": 1621,
+      "mtime_ns": 1794601684912800000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCellDivGpuSingle_ker.cu",
+      "bytes": 8664,
+      "mtime_ns": 1794601684917304900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCellDivGpuSingle.h",
+      "bytes": 2847,
+      "mtime_ns": 1794601684921308300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCellDivGpuSingle.cpp",
+      "bytes": 12897,
+      "mtime_ns": 1794601684925811300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCellDivGpu.h",
+      "bytes": 10592,
+      "mtime_ns": 1794601684930815300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCellDivGpu.cpp",
+      "bytes": 23063,
+      "mtime_ns": 1794601684936818500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCellDivDataGpu.h",
+      "bytes": 3250,
+      "mtime_ns": 1794601684941818700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCellDivDataCpu.h",
+      "bytes": 2787,
+      "mtime_ns": 1794601684945819800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCellDivCpuSingle.h",
+      "bytes": 3133,
+      "mtime_ns": 1794601684964624400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCellDivCpuSingle.cpp",
+      "bytes": 18500,
+      "mtime_ns": 1794601684968623900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCellDivCpu.h",
+      "bytes": 10855,
+      "mtime_ns": 1794601684973627300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCellDivCpu.cpp",
+      "bytes": 24435,
+      "mtime_ns": 1794601684983627100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCaseVtkOut.h",
+      "bytes": 3741,
+      "mtime_ns": 1794601684991071000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCaseVtkOut.cpp",
+      "bytes": 10187,
+      "mtime_ns": 1794601685003803500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCaseUserVars.h",
+      "bytes": 2732,
+      "mtime_ns": 1794601685009294800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCaseUserVars.cpp",
+      "bytes": 6603,
+      "mtime_ns": 1794601685025513500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCaseProperties.h",
+      "bytes": 10605,
+      "mtime_ns": 1794601685030022800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCaseProperties.cpp",
+      "bytes": 42244,
+      "mtime_ns": 1794601685036042200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCasePartsDef.h",
+      "bytes": 1188,
+      "mtime_ns": 1794601685041045500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCaseParts.h",
+      "bytes": 18305,
+      "mtime_ns": 1794601685045543400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCaseParts.cpp",
+      "bytes": 38473,
+      "mtime_ns": 1794601685051527200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCaseEParms.h",
+      "bytes": 6539,
+      "mtime_ns": 1794601685056526400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCaseEParms.cpp",
+      "bytes": 19162,
+      "mtime_ns": 1794601685062035700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCaseCtes.h",
+      "bytes": 11496,
+      "mtime_ns": 1794601685184655000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JCaseCtes.cpp",
+      "bytes": 16567,
+      "mtime_ns": 1794601685272158300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JBinaryData.h",
+      "bytes": 27223,
+      "mtime_ns": 1794601685280173700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JBinaryData.cpp",
+      "bytes": 110441,
+      "mtime_ns": 1794601685286683400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JArraysGpu.h",
+      "bytes": 7069,
+      "mtime_ns": 1794601685293577800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JArraysGpu.cpp",
+      "bytes": 9700,
+      "mtime_ns": 1794601685300101100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JArraysCpu.h",
+      "bytes": 7131,
+      "mtime_ns": 1794601685304784800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JArraysCpu.cpp",
+      "bytes": 11855,
+      "mtime_ns": 1794601685309296900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JAppInfoDef.h",
+      "bytes": 1092,
+      "mtime_ns": 1794601685315303100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JAppInfo.h",
+      "bytes": 4501,
+      "mtime_ns": 1794601685318597700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\JAppInfo.cpp",
+      "bytes": 6752,
+      "mtime_ns": 1794601685322123700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunSphKernel_iker.h",
+      "bytes": 8479,
+      "mtime_ns": 1794601685334126900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunSphKernelsCfg.h",
+      "bytes": 1658,
+      "mtime_ns": 1794601685338636700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunSphKernelsCfg.cpp",
+      "bytes": 3900,
+      "mtime_ns": 1794601685344635800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunSphKernelDef.h",
+      "bytes": 2304,
+      "mtime_ns": 1794601685348638500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunSphKernel.h",
+      "bytes": 13412,
+      "mtime_ns": 1794601685353179000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunSphEos_iker.h",
+      "bytes": 3293,
+      "mtime_ns": 1794601685358845200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunSphEos.h",
+      "bytes": 3269,
+      "mtime_ns": 1794601685364845800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunSoilMaterial.h",
+      "bytes": 16720,
+      "mtime_ns": 1794601685371366400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunGeo3d.h",
+      "bytes": 36738,
+      "mtime_ns": 1794601685375871900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunGeo3d.cpp",
+      "bytes": 12709,
+      "mtime_ns": 1794601685380468900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunFixedPlaneContact.h",
+      "bytes": 557,
+      "mtime_ns": 1794601685385505300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunctionsMath_iker.h",
+      "bytes": 26866,
+      "mtime_ns": 1794601685389016100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunctionsMath.h",
+      "bytes": 19629,
+      "mtime_ns": 1794601685395039400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunctionsGeo3d_iker.h",
+      "bytes": 9658,
+      "mtime_ns": 1794601685399038200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunctionsCuda.h",
+      "bytes": 9025,
+      "mtime_ns": 1794601685404037200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunctionsCuda.cpp",
+      "bytes": 33278,
+      "mtime_ns": 1794601685408544600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\FunctionsBasic_iker.h",
+      "bytes": 3459,
+      "mtime_ns": 1794601685413544200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\Functions.h",
+      "bytes": 23600,
+      "mtime_ns": 1794601685417544200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\Functions.cpp",
+      "bytes": 83948,
+      "mtime_ns": 1794601685425132400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\DualSphDef.h",
+      "bytes": 32698,
+      "mtime_ns": 1794601685431211800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\DSphMoorDynUndef.h",
+      "bytes": 2457,
+      "mtime_ns": 1794601685436211700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\DSphMoorDyn.h",
+      "bytes": 6031,
+      "mtime_ns": 1794601685439717800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\DSPHChronoLib.h",
+      "bytes": 11598,
+      "mtime_ns": 1794601685444717900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_fail_gpu_r1_build\\frozen\\src\\source\\C08StageTrace.h",
+      "bytes": 2484,
+      "mtime_ns": 1794601685449718900
+    }
+  ],
+  "solver_invocations": 0,
+  "native_decodes": 0,
+  "SHA_scans": 0
+}

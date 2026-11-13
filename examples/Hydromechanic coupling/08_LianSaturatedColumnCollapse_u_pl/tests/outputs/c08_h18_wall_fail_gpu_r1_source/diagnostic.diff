@@ -1,0 +1,74 @@
+--- schema2/src/source/JSphGpu_ker.cu
++++ private_fail_printf/src/source/JSphGpu_ker.cu
+@@ -25,6 +25,7 @@
+ #ifdef C08_STAGE_TRACE
+ #include "C08StageTrace.h"
+ #endif
++#include <stdio.h>
+ #include <cfloat>
+ #include <math_constants.h>
+ //:#include "JDgKerPrint.h"
+--- schema2/src/source/JSphGpu_mdbc_ker.cuh
++++ private_fail_printf/src/source/JSphGpu_mdbc_ker.cuh
+@@ -63,7 +63,8 @@
+   const float3 bn=boundnormal[p1];
+   const bool noslip=(stage==0 && (boundslipmode? unsigned(boundslipmode[p1]): CTE.slipmode)==unsigned(SLIP_NoSlip));
+   const double r2=double(bn.x)*bn.x+double(bn.y)*bn.y+double(bn.z)*bn.z;
+-  if(!CODE_IsFixed(code[p1]) || !isfinite(r2) || !(r2>0)){atomicMin(invalid,p1);return;}
++  if(!CODE_IsFixed(code[p1]) || !isfinite(r2) || !(r2>0)){printf("C08_WALL_FAIL reason=invalid_receiver incomplete=1 detail=0 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) code=%u fixed=%u normal_r2=%.17g solid0=%.17g\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,unsigned(code[p1]),unsigned(CODE_IsFixed(code[p1])),r2,solid0);
++atomicMin(invalid,p1);return;}
+   const bool currentb=(poscell && CTE.simulate2d && !CTE.periactive);
+   if(currentb){
+     if(stage==0){
+@@ -109,7 +110,11 @@
+       const double dx=gp.x-posxy[p2].x,dz=gp.z-posz[p2];
+       const float rr2=float(dx*dx+dz*dz);
+       if(rr2<=CTE.kernelsize2){
+-        if(!isfinite(j[p2]) || j[p2]<=solid0){atomicMin(invalid,p1);return;}
++        if(!isfinite(j[p2]) || j[p2]<=solid0){printf("C08_WALL_FAIL reason=raw_donor_J incomplete=1 detail=0 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) donor_slot=%u donor_B=(%.17g,%.17g,%.17g) donor_J=%.17g solid0=%.17g\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,p2,posxy[p2].x,posxy[p2].y,posz[p2],j[p2],solid0);
++printf("C08_WALL_FAIL reason=raw_donor_J incomplete=1 detail=1 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) retried=%u gp=(%.17g,%.17g,%.17g) fitshift=(%.17g,%.17g) sumwab=%.17g submerged=%.17g threshold=%.9g\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,unsigned(retried),gp.x,gp.y,gp.z,fitshiftx,fitshiftz,sumwab,submerged,double(threshold));
++printf("C08_WALL_FAIL reason=raw_donor_J incomplete=1 detail=2 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) nearest2=%.17g near=(%.17g,%.17g) nearest0=%.17g receiver_J_before=%.17g solid0=%.17g\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,nearest2,nearx,nearz,nearest[0],j[p1],solid0);
++printf("C08_WALL_FAIL reason=raw_donor_J incomplete=1 detail=3 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) moment=(%.17g,%.17g,%.17g;%.17g,%.17g,%.17g;%.17g,%.17g,%.17g) partial_det=%.17g partial_active=%u\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,moment.a11,moment.a12,moment.a13,moment.a21,moment.a22,moment.a23,moment.a31,moment.a32,moment.a33,cumath::Determinant3x3(moment),unsigned(submerged>0 || sumwab>=double(threshold) || (threshold>=2 && sumwab+2>=double(threshold))));
++atomicMin(invalid,p1);return;}
+         float fac;
+         const double wab=(rr2==0? (fac=0.f,double(cufsph::GetKernel_Wab<tker>(rr2))): double(cufsph::GetKernel_WabFac<tker>(rr2,fac)));
+         const double fx=double(fac)*dx,fz=double(fac)*dz;
+@@ -137,7 +142,11 @@
+       gp.x-=nearx;gp.z-=nearz;fitshiftx-=nearx;fitshiftz-=nearz;
+       retried=true;continue;
+     }
+-    atomicMin(invalid,p1);return;
++    printf("C08_WALL_FAIL reason=geometry_exhausted_or_ineligible incomplete=0 detail=0 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) retried=%u gp=(%.17g,%.17g,%.17g) fitshift=(%.17g,%.17g) sumwab=%.17g submerged=%.17g threshold=%.9g\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,unsigned(retried),gp.x,gp.y,gp.z,fitshiftx,fitshiftz,sumwab,submerged,double(threshold));
++printf("C08_WALL_FAIL reason=geometry_exhausted_or_ineligible incomplete=0 detail=1 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) nearest2=%.17g near=(%.17g,%.17g) nearest0=%.17g receiver_J_before=%.17g solid0=%.17g\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,nearest2,nearx,nearz,nearest[0],j[p1],solid0);
++printf("C08_WALL_FAIL reason=geometry_exhausted_or_ineligible incomplete=0 detail=2 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) moment=(%.17g,%.17g,%.17g;%.17g,%.17g,%.17g;%.17g,%.17g,%.17g) det=%.17g active=%u\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,moment.a11,moment.a12,moment.a13,moment.a21,moment.a22,moment.a23,moment.a31,moment.a32,moment.a33,det,unsigned(active));
++printf("C08_WALL_FAIL reason=geometry_exhausted_or_ineligible incomplete=0 detail=3 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) nearestfinite=%u simulate2d=%u periactive=%u positive_sum=%u finite_det=%u abs_det_ge_1e_3=%u\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,unsigned(nearestfinite),unsigned(CTE.simulate2d),unsigned(CTE.periactive),unsigned(sumwab>0),unsigned(isfinite(det)),unsigned(fabs(det)>=1e-3));
++atomicMin(invalid,p1);return;
+   }
+   const tmatrix3d inv=cumath::InverseMatrix3x3(moment,det);
+   double v[ncomp];
+@@ -147,7 +156,11 @@
+     v[c]=nearest[c]-gradx*nearx-gradz*nearz;
+     if(retried)v[c]+=gradx*fitshiftx+gradz*fitshiftz;
+     gx[c]=gradx;gz[c]=gradz; //-Keep the existing d=target-source coefficients for the state writer.
+-    if(!isfinite(v[c])){atomicMin(invalid,p1);return;}
++    if(!isfinite(v[c])){printf("C08_WALL_FAIL reason=nonfinite_fitted_component incomplete=1 detail=0 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) retried=%u gp=(%.17g,%.17g,%.17g) fitshift=(%.17g,%.17g) sumwab=%.17g submerged=%.17g threshold=%.9g\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,unsigned(retried),gp.x,gp.y,gp.z,fitshiftx,fitshiftz,sumwab,submerged,double(threshold));
++printf("C08_WALL_FAIL reason=nonfinite_fitted_component incomplete=1 detail=1 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) nearest2=%.17g near=(%.17g,%.17g) nearest0=%.17g receiver_J_before=%.17g solid0=%.17g\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,nearest2,nearx,nearz,nearest[0],j[p1],solid0);
++printf("C08_WALL_FAIL reason=nonfinite_fitted_component incomplete=1 detail=2 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) moment=(%.17g,%.17g,%.17g;%.17g,%.17g,%.17g;%.17g,%.17g,%.17g) det=%.17g active=%u\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,moment.a11,moment.a12,moment.a13,moment.a21,moment.a22,moment.a23,moment.a31,moment.a32,moment.a33,det,unsigned(active));
++printf("C08_WALL_FAIL reason=nonfinite_fitted_component incomplete=1 detail=3 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) field_c=%u value=%.17g nearest_field=%.17g field_sum=%.17g grad=(%.17g,%.17g) Jextrap_if_stage0=%.17g\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,c,v[c],nearest[c],sum[c],gradx,gradz,(stage==0? v[0]: 0.));
++atomicMin(invalid,p1);return;}
+   }
+   if(stage==0){
+     const bool hydrostatichead=(normalg.x!=0.f || normalg.y!=0.f || normalg.z!=0.f);
+@@ -168,7 +181,11 @@
+       s.xx=v[5];s.yy=v[6];s.zz=v[7];s.xy=qx*qy*v[8];s.xz=qx*qz*v[9];s.yz=qy*qz*v[10];
+     }
+     if(v[0]<=solid0 || !isfinite(pressure) || fabs(pressure)>FLT_MAX || !isfinite(dv.x) || !isfinite(dv.y) || !isfinite(dv.z)
+-      || !isfinite(tv.x) || !isfinite(tv.y) || !isfinite(tv.z)){atomicMin(invalid,p1);return;}
++      || !isfinite(tv.x) || !isfinite(tv.y) || !isfinite(tv.z)){printf("C08_WALL_FAIL reason=stage0_domain incomplete=0 detail=0 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) retried=%u gp=(%.17g,%.17g,%.17g) fitshift=(%.17g,%.17g) sumwab=%.17g submerged=%.17g threshold=%.9g\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,unsigned(retried),gp.x,gp.y,gp.z,fitshiftx,fitshiftz,sumwab,submerged,double(threshold));
++printf("C08_WALL_FAIL reason=stage0_domain incomplete=0 detail=1 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) nearest2=%.17g near=(%.17g,%.17g) nearest0=%.17g receiver_J_before=%.17g solid0=%.17g\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,nearest2,nearx,nearz,nearest[0],j[p1],solid0);
++printf("C08_WALL_FAIL reason=stage0_domain incomplete=0 detail=2 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) moment=(%.17g,%.17g,%.17g;%.17g,%.17g,%.17g;%.17g,%.17g,%.17g) det=%.17g active=%u\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,moment.a11,moment.a12,moment.a13,moment.a21,moment.a22,moment.a23,moment.a31,moment.a32,moment.a33,det,unsigned(active));
++printf("C08_WALL_FAIL reason=stage0_domain incomplete=0 detail=3 stage=%u sorted_slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) Jextrap=%.17g Jgrad=(%.17g,%.17g) pressure=%.17g dv=(%.9g,%.9g,%.9g) tv=(%.9g,%.9g,%.9g) noslip=%u normalg=(%.9g,%.9g,%.9g) bad_J=%u bad_pressure=%u bad_dv=%u bad_tv=%u\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,v[0],gx[0],gz[0],pressure,dv.x,dv.y,dv.z,tv.x,tv.y,tv.z,unsigned(noslip),normalg.x,normalg.y,normalg.z,unsigned(v[0]<=solid0),unsigned(!isfinite(pressure) || fabs(pressure)>FLT_MAX),unsigned(!isfinite(dv.x) || !isfinite(dv.y) || !isfinite(dv.z)),unsigned(!isfinite(tv.x) || !isfinite(tv.y) || !isfinite(tv.z)));
++atomicMin(invalid,p1);return;}
+     j[p1]=v[0];theta[p1]=0.;porepress[p1]=float(pressure);sigma[p1]=s;
+     if(derivativevel)derivativevel[p1]=dv;
+     if(tangenvel)tangenvel[p1]=tv;

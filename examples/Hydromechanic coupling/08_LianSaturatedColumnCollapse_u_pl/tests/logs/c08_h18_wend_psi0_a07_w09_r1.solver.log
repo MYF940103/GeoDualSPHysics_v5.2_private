@@ -1,0 +1,306 @@
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+LoadDsphConfig> .../outputs/c08_preload_schema2_Release_r1/DsphConfig.xml
+[CUDA Capable device(s)]
+  Detected 1 CUDA Capable device(s)
+  CUDA Driver Version / Runtime Version: 13.3 / 11.7
+ 
+Device 0: "NVIDIA GeForce RTX 3050"
+  CUDA Capability Major....: 8.6
+  Global memory............: 8192 MBytes
+  CUDA Cores...............: 2560 (20 Multiprocessors, 128 CUDA Cores/MP)
+  GPU Max Clock rate.......: 1777 MHz (1.78 GHz)
+  Memory Clock rate........: 7001 Mhz
+  Memory Bus Width.........: 128-bit
+  L2 Cache Size............: 1536 KBytes
+  Constant memory..........: 64 KBytes
+  Shared memory per block..: 48 KBytes
+  Registers per block......: 65536
+  Maximum threads per MP...: 1536
+  Maximum threads per block: 1024
+  Concurrent copy and kernel execution....: Yes with 1 copy engine(s)
+  Run time limit on kernels...............: Yes
+  Integrated GPU sharing Host Memory......: No
+  Support host page-locked memory mapping.: Yes
+  Device has ECC support..................: Disabled
+  CUDA Device Driver Mode (TCC or WDDM)...: WDDM (Windows Display Driver Model)
+  Device supports Unified Addressing (UVA): Yes
+  Device PCI (Domain / Bus / location)....: 0 / 1 / 0
+  Device supports P2P and RDMA............: No
+ 
+[GPU Hardware]
+Device selected: 0 "NVIDIA GeForce RTX 3050"
+Compute capability: 8.6
+Memory global: 8191 MB
+Memory shared: 49152 Bytes
+ 
+
+[Initialising JSphGpuSingle  14-11-2026 04:55:44]
+ProgramFile=".../outputs/c08_preload_schema2_Release_r1/DualSPHysics5.2_GEO_win64.exe"
+ExecutionDir=".../examples/Hydromechanic coupling/08_LianSaturatedColumnCollapse_u_pl"
+XmlFile=".../outputs/c08_h18_wend_psi0_a07_w09_r1/c08_h18_wend_psi0_a07_w09_r1.xml"
+OutputDir=".../tests/outputs/c08_h18_wend_psi0_a07_w09_r1"
+OutputDataDir=".../outputs/c08_h18_wend_psi0_a07_w09_r1/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): BedLength=[12]  ColumnHeight=[2]  ColumnLength=[4]  MResId=[0]  WallLayers=[4]  CaseName=["c08_h18_wend_psi0_a07_w09_r1"]  Data2D=[1]  Data2DPosy=[0]  H=[0.072]  KernelSize=[0.144]  B=[2.2771e+06]  Gamma=[7]  Rhop0=[2072.5]  Dp=[0.04]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[-9.81]  MassFluid=[3.316]  MassBound=[3.316]
+
+*** WARNING: The execution will be cancelled after 2180000 simulation steps.
+
+XML-Vars (parameters): TimeMax=[10.9]  TimeOut=[0.01]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Enabled"
+  Material law: unified DP v2 (smooth/apex and explicit existing tension-face policy)
+  DilationDecay: 0
+  Cohesion: 5000.000000
+  Residual Cohesion: 1000.000000
+  Cohesion Softening Coefficient: 5.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.436332
+  Bulk Modulus: 19607844.000000
+  Shear Modulus: 7518796.500000
+  Hydromechanics="Enabled"
+  HydroMechDynamicSeepage=True
+  DynamicSeepageScope: experimental fresh fixed gravity container with free-seepage surface; selected combinations require verification
+  HydroMechConductivityModel="VoidRatioExponential"
+  HydroMechConductivityCk: 2
+  HydroMechInitMode="ConstantZ"
+  HydroMechInitZ: 2.000000
+  HydroMechDrainage="Disabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageFixedGrid=False
+  HydroMechFreeSeepage=True
+  FreeSeepagePolicy: candidate raw hydraulic surface rate; completed steps clamp p>0 only, predictor remains unprojected; no physical acceptance
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="None"
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 1e+09
+  Porosity: 0.350000
+  HydraulicConductivity: 0.0002
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Enabled"
+  PoreShepardInterval: 40
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+  PoreDarcySymmetricCorr="Receiver"
+
+**Basic case configuration is loaded
+GravityPreload: requested=10 event_completed_step=2000000 release_mkbound=2; damping/Shepard are preload-only.
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 7060
+MapRealPos(border)=(-0.1836,-0.0036,-0.1836)-(12.1836,0.0036,2.0236)
+MapRealPos(final)=(-0.1836,-0.0036,-0.1836)-(12.1836,0.0036,4.0236)
+**Initial state of particles is loaded
+PosCellCode="13_10_9 (8192,1024,512)"
+PosCellSize=0.144000  (1 x KernelSize)
+**2D-Simulation parameters:
+CaseName="c08_h18_wend_psi0_a07_w09_r1"
+RunName="c08_h18_wend_psi0_a07_w09_r1"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=True
+SvExtraParts=""
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="Free slip"
+  SlipModeByMkBound="Enabled"
+    mkbound:0 -> Free slip
+    mkbound:1 -> No-slip
+    mkbound:2 -> Free slip
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=True
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=107.446
+  Wendland.bwen=-7462.064
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="Bui2008"
+  ArtificialStressCoef=0.7
+  ArtificialStressExp=3.825
+  ArtificialStressExpMode="XML"
+  ArtificialStressBoundary="StressExtrapolated"
+  Dynamic artificial stress: total stress, current-J quadrature; disabled during certified preload, enabled after wall release.
+SoilStressRateGradCorr="KernelGradient"
+SoilBoundaryDerivativeSPR="None"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.03
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=7060
+CaseNbound=2060
+CaseNfixed=2060
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=5000
+PeriodicActive="None"
+Dp=0.04
+KernelH=0.072000  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.144
+CteB=4233272
+Gamma=7
+RhopZero=2072.5
+Cs0=119.5748520184038
+CFLnumber=0.2
+DtIni=0.000005
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.000005
+MassFluid=3.316
+MassBound=3.316
+TimeMax=10.9
+TimePart=0.01
+Gravity=(0,0,-9.81)
+NpMinimum=7060
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(86,1,30)
+CellDomFixed=False
+**Requested GPU memory for 7188 particles: 4.3 MB (0 times).
+NormalDataFile="D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\outputs\c08_h18_wend_psi0_a07_w09_r1/c08_h18_wend_psi0_a07_w09_r1_Normals.nbi4"
+GravityPreload: validated native right-wall range=[1805,2060), count=255.
+DomCells=(86,1,30)
+DomCellCode="1+13_8_10"
+Dynamic soil damping rate: 36.1976891 s^-1 (reference intrinsic solid density)
+ 
+BlockSize calculation mode: Fixed.
+  BsForcesBound=128 (48 regs)
+  BsForcesFluid=128 (78 regs)
+ 
+**CellDiv: Requested gpu memory for 7541 particles: 0.1 MB.
+**CellDiv: Requested gpu memory for 1054 cells (CellMode=Full): 0.0 MB.
+Hydromechanics: initial pore pressure assigned to 7060 particles (ConstantZ, min=-196.2, max=21385.8).
+ 
+RunMode="Stable - Pos-Cell - Single-GPU"
+ 
+Particle summary:
+  Fixed....: 2060  id:(0-2059)   MKs:3 (10-12)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 5000  id:(2060-7059)   MKs:1 (1)
+
+Total particles: 7060 (bound=2060 (fx=2060 mv=0 ft=0) fluid=5000)
+Total MK blocks: 4 (bound=3 (fx=3 mv=0 ft=0) fluid=1)
+ 
+Initialization configuration:
+Initialize_0
+  Operation: BoundNormalPlane
+  MkBound..: 0 (255 particles)
+  Point....: (0,0,0)
+  Normal...: (1,0,0)
+  MaxDistH.: 0
+Initialize_1
+  Operation: BoundNormalPlane
+  MkBound..: 1 (1550 particles)
+  Point....: (0,0,0)
+  Normal...: (0,0,1)
+  MaxDistH.: 0
+Initialize_2
+  Operation: BoundNormalPlane
+  MkBound..: 2 (255 particles)
+  Point....: (4,0,0)
+  Normal...: (-1,0,0)
+  MaxDistH.: 0
+ 
+GravityPreload: source material law=unified2; certified same-material plastic schema/contract2; native stress/kappa/J/p history retained.
+Dynamic NoPen: FixedPlaneStageProjectionReleaseOnly; certified PRE uses NoPen off, collapse projects predictor/corrector trial positions and incoming normal velocities at the fixed left/bed planes; same-stage Darcy reaction is not included.
+GravityPreload: state imported file=D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\outputs\c08_h18_wend_psi0_pre_r2\data\Part_1000.bi4 actual=9.9999999997060076 completed_step=2000000; next loop releases the right wall once.
+Allocated memory in CPU: 1785576 (1.70 MB)
+Allocated memory in GPU: 4614632 (4.40 MB)
+
+[WARNINGS]
+1. The execution will be cancelled after 2180000 simulation steps.
+
+[Initialising simulation (gf7kasus)  14-11-2026 04:55:45]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+GravityPreload: release attempt requested=10 actual=9.9999999997060076 completed_step=2000000 native_range=[1805,2060).
+GravityPreload: phase=released actual=9.9999999997060076 completed_step=2000000 retired=255; damping=OFF Shepard=OFF FreeSeepage=ON.
+Part_0000     10.000005       2000001        1    4434.28  14-11-2026 06:02:15
+Part_0001     10.010005       2002001     2000    1963.21  14-11-2026 05:25:12
+Part_0002     10.020005       2004001     2000    1972.73  14-11-2026 05:25:16
+Part_0003     10.030005       2006001     2000    1996.22  14-11-2026 05:25:24
+Part_0004     10.040005       2008001     2000    2100.68  14-11-2026 05:25:53
+Part_0005     10.050005       2010001     2000    2064.95  14-11-2026 05:26:03
+Part_0006     10.060005       2012001     2000    2071.75  14-11-2026 05:26:10
+Part_0007     10.070005       2014001     2000    2032.24  14-11-2026 05:26:12
+Part_0008     10.080005       2016001     2000    2012.07  14-11-2026 05:26:10
+Part_0009     10.090005       2018001     2000    2029.56  14-11-2026 05:26:10
+Part_0010     10.100005       2020001     2000    2002.16  14-11-2026 05:26:07
+Part_0011     10.110005       2022001     2000    2005.15  14-11-2026 05:26:06
+Part_0012     10.120005       2024001     2000    2063.34  14-11-2026 05:26:09
+Part_0013     10.130005       2026001     2000    2045.43  14-11-2026 05:26:10
+Part_0014     10.140005       2028001     2000    2048.79  14-11-2026 05:26:12
+Part_0015     10.150005       2030001     2000    2059.37  14-11-2026 05:26:13
+Part_0016     10.160005       2032001     2000    2094.38  14-11-2026 05:26:17
+Part_0017     10.170005       2034001     2000    2081.58  14-11-2026 05:26:19
+Part_0018     10.180005       2036001     2000    2136.47  14-11-2026 05:26:25
+Part_0019     10.190005       2038001     2000    2139.13  14-11-2026 05:26:29
+Part_0020     10.200005       2040001     2000    2106.71  14-11-2026 05:26:31
+Part_0021     10.210005       2042001     2000    2099.63  14-11-2026 05:26:34
+Part_0022     10.220005       2044001     2000    2096.16  14-11-2026 05:26:35
+Part_0023     10.230005       2046001     2000    2138.55  14-11-2026 05:26:38
+Part_0024     10.240005       2048001     2000    2096.22  14-11-2026 05:26:40
+Part_0025     10.250005       2050001     2000    2100.33  14-11-2026 05:26:41
+Part_0026     10.260005       2052001     2000    2111.44  14-11-2026 05:26:43
+Part_0027     10.270005       2054001     2000    2097.61  14-11-2026 05:26:44
+Part_0028     10.280005       2056001     2000    2129.87  14-11-2026 05:26:47
+Part_0029     10.290005       2058001     2000    2136.90  14-11-2026 05:26:48
+Part_0030     10.300005       2060001     2000    2169.33  14-11-2026 05:26:52
+Part_0031     10.310005       2062001     2000    2104.36  14-11-2026 05:26:52
+Part_0032     10.320005       2064001     2000    2135.87  14-11-2026 05:26:54
+Part_0033     10.330005       2066001     2000    2190.31  14-11-2026 05:26:57
+DynamicPoreWall rejected: stage=0 sorted_slot=439 native_id=803 step_start=10.332704999693412 step=2066541 B=(4.1799999999999997,0,-0.059999999999999942) normal=(0,0,0.119999997).
+
+*** Exception (JSphGpuSingle::ComputeDynamicPoreWallGpu) at DualSPHysics/source/JSphGpu_mdbc.cpp:237
+Text: GPU dynamic wall requires a finite saturated first-order mirror fit at every active sample.
+
+
+Finished execution (code=1).
+

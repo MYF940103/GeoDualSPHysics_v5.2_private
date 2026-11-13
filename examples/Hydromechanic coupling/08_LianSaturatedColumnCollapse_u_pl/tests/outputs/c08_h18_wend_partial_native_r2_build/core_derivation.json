@@ -1,0 +1,168 @@
+{
+  "stage": "c08_h18_wend_partial_native_r2.derive",
+  "baseline_build": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_wend_native_r1.build.json",
+    "bytes": 17041,
+    "mtime_ns": 1794573490628632400
+  },
+  "failed90_build": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_wend_partial_native_r1.build.json",
+    "bytes": 14343,
+    "mtime_ns": 1794596469389410000
+  },
+  "baseline_generated": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wend_native_r1_build\\h18_wend_entry_r1.cpp",
+      "bytes": 10739,
+      "mtime_ns": 1794573479161763400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wend_native_r1_build\\h18_headers_r1.h",
+      "bytes": 455,
+      "mtime_ns": 1794573479165296200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wend_native_r1_build\\h18_receiver_core_r1.cpp",
+      "bytes": 25303,
+      "mtime_ns": 1794573479174087100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wend_native_r1_build\\h18_profiles_r1.h",
+      "bytes": 188,
+      "mtime_ns": 1794573479178086800
+    }
+  ],
+  "failed90_witness": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wend_partial_native_r1_build\\h18_wend_partial_entry_r1.cpp",
+      "bytes": 10984,
+      "mtime_ns": 1794596450600577900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wend_partial_native_r1_build\\h18_receiver_core_r1.cpp",
+      "bytes": 25485,
+      "mtime_ns": 1794596450604586400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wend_partial_native_r1_build\\h18_headers_r1.h",
+      "bytes": 455,
+      "mtime_ns": 1794596450615581200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wend_partial_native_r1_build\\h18_profiles_r1.h",
+      "bytes": 188,
+      "mtime_ns": 1794596450618088600
+    }
+  ],
+  "replayed_failed90_matches_sealed_generated_exact": true,
+  "full_to_failed90_entry_replacements": [
+    [
+      "namespace h18source{\n#include \"h18_source_core_r1.cpp\"\n}\n",
+      "// Source trajectory decoder is deliberately unavailable in this failed-receiver adapter.\n"
+    ],
+    [
+      " if(argc==7&&std::wstring(argv[1])==L\"--source\"){\n  const std::wstring mode=argv[2];H18Need(mode==L\"partial\"||mode==L\"full\",\"Source mode must be partial or full\");H18ReadPlan(argv[5],true,H18Event,H18SourceSamples);return h18source::wmain(argc,argv);\n }\n",
+      " // No source/full/formal interface in the failed90 adapter.\n"
+    ],
+    [
+      " H18Need(argc==9&&std::wstring(argv[1])==L\"--receiver\",\"Use --source partial|full DATA MATERIAL_CSV PLAN FRESHOUT; or --receiver window|formal GROUP DATA PRE PLAN PROFILE_CSV FRESHOUT\");const std::string profile=std::filesystem::path(argv[2]).string(),group=std::filesystem::path(argv[3]).string();const bool window=profile==\"window\";H18Need(window||profile==\"formal\",\"Only .90-window or full3 receiver profiles\");const unsigned end=window?H18WindowEnd:H18FormalEnd,samples=window?H18WindowSamples:H18FormalSamples;H18ReadPlan(argv[6],false,end,samples);H18ReadReceiverProfile(argv[7],group);const std::filesystem::path data=argv[4],out=argv[8];H18Need(std::filesystem::is_directory(data)&&!std::filesystem::exists(out),\"Missing DATA or protected output\");",
+      " H18Need(argc==9&&std::wstring(argv[1])==L\"--receiver\",\"Use --receiver failed90 psi0 DATA PRE COMPLETE91PLAN PROFILE17_CSV FRESHOUT\");const std::string profile=std::filesystem::path(argv[2]).string(),group=std::filesystem::path(argv[3]).string();H18Need(profile==\"failed90\"&&group==\"psi0\",\"Only the actual failed AS.3 psi0 saved prefix is supported\");H18ReadPlan(argv[6],false,H18WindowEnd,H18WindowSamples);H18ReadReceiverProfile(argv[7],group);H18Need(H18Rows.size()==91&&H18Rows.back().completed==2180000&&H18Bits(H18AS,.3f)&&H18Bits(H18Exp,3.825f),\"Original91 plan/AS.3/n3.825 scope differs\");const unsigned samples=90,end=H18Rows[89].completed;H18Need(end==2178001,\"Actual last saved-prefix step differs\");const std::filesystem::path data=argv[4],out=argv[8];H18Need(std::filesystem::is_directory(data)&&!std::filesystem::exists(out),\"Missing DATA or protected output\");"
+    ],
+    [
+      "\\\"stage\\\":\\\"c08_h18_wend_native_r1.metadata\\\",\\\"passed\\\":true",
+      "\\\"stage\\\":\\\"c08_h18_wend_partial_native_r1.metadata\\\",\\\"passed\\\":false,\\\"saved_metadata_passed\\\":true,\\\"partial\\\":true,\\\"whole_run_native_passed\\\":false,\\\"full_run_completed\\\":false,\\\"original_target_samples\\\":91,\\\"original_target_completed_step\\\":2180000,\\\"actual_terminal_solver_step_proven\\\":false,\\\"unsaved_state_reconstructed\\\":false"
+    ],
+    [
+      "<<profile<<",
+      "<<\"window_partial\"<<"
+    ]
+  ],
+  "full_to_failed90_receiver_replacements": [
+    [
+      "static unsigned RunSamples(const fs::path& path,unsigned expected){\n  std::ifstream f(path);std::string h,d,extra;Need(bool(std::getline(f,h))&&bool(std::getline(f,d))&&!std::getline(f,extra),\"Closed completed two-line Run.csv required\");const char sep=h.find(';')==std::string::npos?',':';';const auto keys=Split(h,sep);auto values=Split(d,sep);const auto ci=std::find(keys.begin(),keys.end(),\"Configuration\");Need(ci!=keys.end(),\"Run.csv Configuration missing\");const unsigned at=unsigned(ci-keys.begin());\n  if(values.size()==keys.size()+1){Need(sep==';'&&at+1<values.size(),\"Only one embedded AS separator is recognized\");values[at]+=';'+values[at+1];values.erase(values.begin()+at+1);}Need(values.size()==keys.size(),\"Run.csv width differs\");const std::string marker=\"AS_Bui2008(\";const auto start=values[at].find(marker),split=values[at].find(';',start),close=values[at].find(')',split);Need(start!=std::string::npos&&values[at].find(marker,start+1)==std::string::npos&&split!=std::string::npos&&close!=std::string::npos,\"Actual AS Configuration token missing\");Need(H18Bits(float(H18Double(values[at].substr(start+marker.size(),split-start-marker.size()))),H18AS)&&H18Bits(float(H18Double(values[at].substr(split+1,close-split-1))),H18Exp),\"Actual AS Run.csv coefficient/exponent differs\");\n  std::map<std::string,std::string> r;for(unsigned q=0;q<keys.size();q++)Need(r.emplace(keys[q],values[q]).second,\"Duplicate Run.csv key\");\n  Need(std::stoul(r.at(\"Steps\"))==expected&&r.at(\"Np\")==\"7060\"&&r.at(\"Nbound\")==\"2060\"&&r.at(\"Nfixed\")==\"2060\"&&r.at(\"PartsOut\")==\"0\"&&r.at(\"PartsOutRhop\")==\"0\"&&r.at(\"PartsOutVel\")==\"0\",\"Actual global steps/original registry/no-exclusion summary differs\");const auto n=std::stoul(r.at(\"PartFiles\"));Need(n>0&&n<=expected-EventStep,\"Invalid actual PartFiles count\");return unsigned(n);\n}",
+      "static unsigned ObservedPartialSamples(const fs::path& runCsv,unsigned expected){\n  Need(H18Rows.size()==91&&H18Rows.back().completed==2180000&&expected==2178001&&H18Rows[89].completed==expected,\"Only the observed90-of91 receiver prefix is supported\");\n  Need(!fs::exists(runCsv),\"A normal-completion Run.csv is not part of this failed-source evidence\");\n  const fs::path data=runCsv.parent_path()/\"data\";unsigned count=0;\n  for(const auto& p:fs::directory_iterator(data))if(p.is_regular_file()&&p.path().extension()==\".bi4\"&&p.path().filename().string().rfind(\"Part_\",0)==0)count++;\n  Need(count==90,\"Actual failed receiver saved-file count differs\");\n  std::ifstream f(runCsv.parent_path()/\"Run.out\");Need(bool(f),\"Actual failed Run.out is missing\");std::ostringstream text;text<<f.rdbuf();\n  Need(text.str().find(\"GPU dynamic wall requires a finite saturated first-order mirror fit at every active sample.\")!=std::string::npos&&text.str().find(\"Finished execution (code=1).\")!=std::string::npos,\"Actual recorded dynamic-wall failure/exit text differs\");\n  // A log is not independent proof of Win32 status; caller still binds real owner/call/run receipts.\n  return count;\n}"
+    ],
+    [
+      "static std::vector<unsigned> Planned(const fs::path& path,unsigned samples,unsigned expected){\n  Need(fs::equivalent(path,H18PlanPath)&&H18Rows.size()==samples&&H18Rows.back().completed==expected,\"Original supplied complete plan identity differs\");std::vector<unsigned> steps;for(const auto& q:H18Rows)steps.push_back(q.completed);return steps;\n}",
+      "static std::vector<unsigned> Planned(const fs::path& path,unsigned samples,unsigned expected){\n  Need(fs::equivalent(path,H18PlanPath)&&H18Rows.size()==91&&H18Rows.back().completed==2180000&&samples==90&&expected==H18Rows[89].completed&&expected==2178001,\"Untouched complete91 plan and explicit90 saved-prefix scope required\");\n  std::vector<unsigned> steps;for(unsigned part=0;part<samples;part++)steps.push_back(H18Rows[part].completed);return steps;\n}"
+    ],
+    [
+      "Need(RunSamples(data.parent_path()/\"Run.csv\",expected)==samples,\"Normal Run.csv end/count differs from the explicit owner plan\");",
+      "Need(ObservedPartialSamples(data.parent_path()/\"Run.csv\",expected)==samples,\"Actual failed saved-prefix file count differs\");"
+    ],
+    [
+      "Actual final global step/full native coverage incomplete",
+      "Actual saved-prefix last step/all90 native coverage incomplete"
+    ],
+    [
+      "\\\"stage\\\":\\\"c08_h18_wend_native_r1.receiver\\\",\\\"passed\\\":true",
+      "\\\"stage\\\":\\\"c08_h18_wend_partial_native_r1.receiver\\\",\\\"passed\\\":false,\\\"diagnostic_complete\\\":true,\\\"saved_prefix_native_passed\\\":true,\\\"profile\\\":\\\"window_partial\\\",\\\"partial\\\":true,\\\"whole_run_native_passed\\\":false,\\\"full_run_completed\\\":false,\\\"source_PRE_is_complete\\\":true,\\\"certified_receiver\\\":false,\\\"original_target_completed_step\\\":2180000,\\\"original_target_samples\\\":91,\\\"observed_saved_samples\\\":90,\\\"last_saved_part\\\":89,\\\"last_saved_completed_step\\\":2178001,\\\"actual_terminal_solver_step_proven\\\":false,\\\"unsaved_state_reconstructed\\\":false,\\\"original_plan_records\\\":91,\\\"observed_plan_prefix_records\\\":90,\\\"plan_modified\\\":false,\\\"new_updates_is_last_saved_scope\\\":true"
+    ],
+    [
+      "\\\"completed_runtime_Run_csv_checked\\\":true",
+      "\\\"completed_runtime_Run_csv_checked\\\":false,\\\"actual_failed_Runout_text_checked\\\":true,\\\"actual_owner_Win32_failure_binding_required\\\":true"
+    ]
+  ],
+  "failed90_to_failed34_entry_replacements": [
+    [
+      " H18Need(argc==9&&std::wstring(argv[1])==L\"--receiver\",\"Use --receiver failed90 psi0 DATA PRE COMPLETE91PLAN PROFILE17_CSV FRESHOUT\");const std::string profile=std::filesystem::path(argv[2]).string(),group=std::filesystem::path(argv[3]).string();H18Need(profile==\"failed90\"&&group==\"psi0\",\"Only the actual failed AS.3 psi0 saved prefix is supported\");H18ReadPlan(argv[6],false,H18WindowEnd,H18WindowSamples);H18ReadReceiverProfile(argv[7],group);H18Need(H18Rows.size()==91&&H18Rows.back().completed==2180000&&H18Bits(H18AS,.3f)&&H18Bits(H18Exp,3.825f),\"Original91 plan/AS.3/n3.825 scope differs\");const unsigned samples=90,end=H18Rows[89].completed;H18Need(end==2178001,\"Actual last saved-prefix step differs\");const std::filesystem::path data=argv[4],out=argv[8];H18Need(std::filesystem::is_directory(data)&&!std::filesystem::exists(out),\"Missing DATA or protected output\");",
+      " H18Need(argc==9&&std::wstring(argv[1])==L\"--receiver\",\"Use --receiver failed34_as07 psi0 DATA PRE COMPLETE91PLAN PROFILE17_CSV FRESHOUT\");const std::string profile=std::filesystem::path(argv[2]).string(),group=std::filesystem::path(argv[3]).string();H18Need(profile==\"failed34_as07\"&&group==\"psi0\",\"Only the actual failed AS.7 psi0 saved prefix is supported\");H18ReadPlan(argv[6],false,H18WindowEnd,H18WindowSamples);H18ReadReceiverProfile(argv[7],group);H18Need(H18Rows.size()==91&&H18Rows.back().completed==2180000&&H18Bits(H18AS,.7f)&&H18Bits(H18Exp,3.825f),\"Original91 plan/AS.7/n3.825 scope differs\");const unsigned samples=34,end=H18Rows[33].completed;H18Need(end==2066001,\"Actual last saved-prefix step differs\");const std::filesystem::path data=argv[4],out=argv[8];H18Need(std::filesystem::is_directory(data)&&!std::filesystem::exists(out),\"Missing DATA or protected output\");"
+    ],
+    [
+      "// No source/full/formal interface in the failed90 adapter.",
+      "// No source/full/formal interface in the failed34_as07 adapter."
+    ],
+    [
+      "c08_h18_wend_partial_native_r1.metadata",
+      "c08_h18_wend_partial_native_r2.metadata"
+    ]
+  ],
+  "failed90_to_failed34_receiver_replacements": [
+    [
+      "static unsigned ObservedPartialSamples(const fs::path& runCsv,unsigned expected){\n  Need(H18Rows.size()==91&&H18Rows.back().completed==2180000&&expected==2178001&&H18Rows[89].completed==expected,\"Only the observed90-of91 receiver prefix is supported\");\n  Need(!fs::exists(runCsv),\"A normal-completion Run.csv is not part of this failed-source evidence\");\n  const fs::path data=runCsv.parent_path()/\"data\";unsigned count=0;\n  for(const auto& p:fs::directory_iterator(data))if(p.is_regular_file()&&p.path().extension()==\".bi4\"&&p.path().filename().string().rfind(\"Part_\",0)==0)count++;\n  Need(count==90,\"Actual failed receiver saved-file count differs\");\n  std::ifstream f(runCsv.parent_path()/\"Run.out\");Need(bool(f),\"Actual failed Run.out is missing\");std::ostringstream text;text<<f.rdbuf();\n  Need(text.str().find(\"GPU dynamic wall requires a finite saturated first-order mirror fit at every active sample.\")!=std::string::npos&&text.str().find(\"Finished execution (code=1).\")!=std::string::npos,\"Actual recorded dynamic-wall failure/exit text differs\");\n  // A log is not independent proof of Win32 status; caller still binds real owner/call/run receipts.\n  return count;\n}",
+      "static unsigned ObservedPartialSamples(const fs::path& runCsv,unsigned expected){\n  Need(H18Rows.size()==91&&H18Rows.back().completed==2180000&&expected==2066001&&H18Rows[33].completed==expected,\"Only the observed34-of91 AS.7 receiver prefix is supported\");\n  Need(!fs::exists(runCsv),\"A normal-completion Run.csv is not part of this failed-source evidence\");\n  const fs::path data=runCsv.parent_path()/\"data\";unsigned count=0;\n  for(const auto& p:fs::directory_iterator(data))if(p.is_regular_file()&&p.path().extension()==\".bi4\"&&p.path().filename().string().rfind(\"Part_\",0)==0)count++;\n  Need(count==34,\"Actual failed AS.7 receiver saved-file count differs\");\n  std::ifstream f(runCsv.parent_path()/\"Run.out\");Need(bool(f),\"Actual failed Run.out is missing\");std::ostringstream text;text<<f.rdbuf();\n  Need(text.str().find(\"GPU dynamic wall requires a finite saturated first-order mirror fit at every active sample.\")!=std::string::npos&&text.str().find(\"Finished execution (code=1).\")!=std::string::npos&&text.str().find(\"DynamicPoreWall rejected: stage=0 sorted_slot=439 native_id=803 step_start=10.332704999693412 step=2066541 \")!=std::string::npos,\"Actual recorded AS.7 wall803 failure/exit text differs\");\n  // Reported rejection text is not an independently reconstructed unsaved state or Win32 audit.\n  return count;\n}"
+    ],
+    [
+      "static std::vector<unsigned> Planned(const fs::path& path,unsigned samples,unsigned expected){\n  Need(fs::equivalent(path,H18PlanPath)&&H18Rows.size()==91&&H18Rows.back().completed==2180000&&samples==90&&expected==H18Rows[89].completed&&expected==2178001,\"Untouched complete91 plan and explicit90 saved-prefix scope required\");\n  std::vector<unsigned> steps;for(unsigned part=0;part<samples;part++)steps.push_back(H18Rows[part].completed);return steps;\n}",
+      "static std::vector<unsigned> Planned(const fs::path& path,unsigned samples,unsigned expected){\n  Need(fs::equivalent(path,H18PlanPath)&&H18Rows.size()==91&&H18Rows.back().completed==2180000&&samples==34&&expected==H18Rows[33].completed&&expected==2066001,\"Untouched complete91 plan and explicit34 saved-prefix scope required\");\n  std::vector<unsigned> steps;for(unsigned part=0;part<samples;part++)steps.push_back(H18Rows[part].completed);return steps;\n}"
+    ],
+    [
+      "Actual saved-prefix last step/all90 native coverage incomplete",
+      "Actual saved-prefix last step/all34 native coverage incomplete"
+    ],
+    [
+      "c08_h18_wend_partial_native_r1.receiver",
+      "c08_h18_wend_partial_native_r2.receiver"
+    ],
+    [
+      "\\\"observed_saved_samples\\\":90",
+      "\\\"observed_saved_samples\\\":34"
+    ],
+    [
+      "\\\"last_saved_part\\\":89",
+      "\\\"last_saved_part\\\":33"
+    ],
+    [
+      "\\\"last_saved_completed_step\\\":2178001",
+      "\\\"last_saved_completed_step\\\":2066001"
+    ],
+    [
+      "\\\"observed_plan_prefix_records\\\":90",
+      "\\\"observed_plan_prefix_records\\\":34"
+    ]
+  ],
+  "reverse_declared_replacements_exact_at_both_levels": true,
+  "original_field_and_numerical_guards_changed": false,
+  "original_plan_retained_in_memory_and_on_disk": true,
+  "original_plan_records": 91,
+  "observed_prefix_records": 34,
+  "last_saved_part": 33,
+  "last_saved_completed_step": 2066001,
+  "original_target_completed_step": 2180000,
+  "actual_terminal_solver_step_proven": false,
+  "unsaved_state_reconstructed": false,
+  "whole_run_native_passed": false,
+  "full_run_completed": false,
+  "source_PRE_array_reads_per_future_decode": 1,
+  "old_files_changed": false
+}
