@@ -1,0 +1,45 @@
+{
+  "stage": "c08_h18_loss_native_r1.derive",
+  "original_core": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_plastic_native_r1_build\\h18_source_core_r1.cpp",
+    "bytes": 21071,
+    "mtime_ns": 1794224240049644300
+  },
+  "original_entry": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_plastic_native_r1_build\\h18_plastic_entry_r1.cpp",
+    "bytes": 9240,
+    "mtime_ns": 1794224240031711100
+  },
+  "declared_replacements": [
+    [
+      "int wmain(int argc,wchar_t** argv){unsigned activePart=~0u,activeId=~0u;try{",
+      "static std::vector<tdouble3> LossX0;\nstatic std::vector<float> LossP0,LossPreviousK;\nstatic double LossScalar=0.;\nstatic unsigned LossCompleted=0;\nint wmain(int argc,wchar_t** argv){unsigned activePart=~0u,activeId=~0u;try{"
+    ],
+    [
+      "Need(full?samples==H18Rows.size():(samples>=1&&samples<=H18Rows.size()),\"Actual source count differs from its original complete plan\");",
+      "Need(!full&&samples==534&&H18Rows.size()==1001,\"Only the observed failed534-frame source is admitted\");samples=533; // Explicit strict prefix; Part533 is independently read by the forensic branch.\n"
+    ],
+    [
+      "Need(!full||(samples==1001&&previous==Event),\"Full source event/count incomplete\");",
+      "Need(!full&&samples==533&&previous==1064001,\"Strict complete prefix range differs\");LossX0=x0;LossP0=p0;LossPreviousK=previousK;LossScalar=scalar;LossCompleted=previous;"
+    ],
+    [
+      "\\\"stage\\\":\\\"c08_h18_plastic_native_r1.source\\\"",
+      "\\\"stage\\\":\\\"c08_h18_loss_native_r1.strict_prefix\\\",\\\"actual_run_saved_frames\\\":534,\\\"strict_prefix_final_part\\\":532,\\\"forced_final_part_separately_exported\\\":533,\\\"whole_run_native_passed\\\":false"
+    ]
+  ],
+  "reverse_declared_replacements_exact": true,
+  "physical_numeric_guards_changed": false,
+  "source_plan_rows": 1001,
+  "strict_complete_prefix_parts": [
+    0,
+    532
+  ],
+  "observed_saved_parts": [
+    0,
+    533
+  ],
+  "forced_final_separate": true,
+  "source_not_qualified": true,
+  "old_files_changed": false
+}
