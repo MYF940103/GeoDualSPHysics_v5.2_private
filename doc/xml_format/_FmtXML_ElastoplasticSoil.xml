@@ -67,9 +67,12 @@
 			<!-- time is in seconds; both attributes are required. The entire right FreeSlip MK is retired before the next predictor. -->
 			<!-- <gravitypreload time="10" release_mkbound="2" /> -->
 			<!-- Configured soil damping/Shepard apply before release and are disabled afterward; material histories are retained. -->
-			<!-- Shared elastic PRE handoff has bounded CPU/GPU continuity checks only: elastic_source=false, statefile="" by default. -->
-			<!-- Use either elastic_source="true" to qualify every preload material trial, or statefile="relative/Part_####.bi4" to import its certified PRE state. -->
-			<!-- Requires Model1, damping/Shepard and full double-position binary output; plastic trials reject the shared source. Ordinary PART restart remains unsupported. -->
+			<!-- Shared PRE defaults: elastic_source=false and statefile="". Schema2 same-material plastic support is an unvalidated candidate pending CPU/GPU continuity checks. -->
+			<!-- elastic_source="true" retains schema1: every preload material trial must stay elastic; its original shared-source contract is unchanged. -->
+			<!-- A fresh elastic_source="false" source can retain actual plastic history; it does not assign stress or reset kappa/J/p. -->
+			<!-- statefile="relative/Part_####.bi4" selects the typed schema: schema2 requires unified law2 and exactly the same full material/DP/trigger/tension policies, including cohesion and dilation/decay. -->
+			<!-- Schema2 is written only for fresh Model1 with damping/Shepard, stable double-position binary/info output and complete PRE. Otherwise ordinary continuous warmup is unchanged and emits no certificate. -->
+			<!-- Schema1 requirements remain unchanged. Plastic PRE cannot be shared across different materials; ordinary PART restart remains unsupported. -->
 			<!-- keep_bed_overlap="false" by default. Only certified statefile + fixed-plane dynamic NoPen may preserve the half-dp shallow bed row as NoSlip at release; bounded validation pending. -->
 
 			<!-- Optional mechanical wall-slip overrides; requires Boundary=2 and existing, unique mkbound values. -->
@@ -103,7 +106,7 @@
 			<parameter key="MDBCCorrector" value="1" comment="mDBC in Symplectic corrector 0=off, 1=on; default=1" />
 			<parameter key="MDBCFastSingle" value="1" comment="Fast single-precision mDBC; default=1; CPU and hydromechanics force the double path" />
 			<!-- <parameter key="NoPenetration" value="1" comment="mDBC NoSlip/FreeSlip penetration correction; default=0" /> -->
-			<!-- u-pl: qualified elastic PRE receivers only, fixed axis-aligned gravity container. -->
+			<!-- u-pl: qualified PRE receivers only, fixed axis-aligned gravity container; schema2 continuity validation is pending. -->
 			<!-- Candidate: predictor/corrector unilateral position/normal-velocity projection at validated fixed X/Z planes. -->
 			<!-- PRE uses NoPen=0; same-stage Darcy reaction is not included. Full collapse validation pending. -->
 			<!-- Optional existing ReleaseOnly artificial stress may be combined after PRE; combination validation pending. -->

@@ -3014,6 +3014,16 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays
         bdpart->SetvText("GravityPreloadHandoffContract",GetGravityPreloadContract());
         bdpart->SetvFloat("GravityPreloadSourceCohesion",SoilCte.coh);
       }
+      if(!GravityPreloadElasticSource && !IsGravityPreloadHandoff() && !GravityPreloadReleased
+        && Part>PartIni && unsigned(Nstep+1)==GravityPreloadStep
+        && !PartBegin && HydroMechConductivityModel==1 && Stable && SvPosDouble
+        && SoilDamping && PoreShepardRegularization && (SvData&SDAT_Binx) && (SvData&SDAT_Info)
+        && SoilCte.ModulusE>0.f && npok==CaseNp && !nout){
+        bdpart->SetvUint("GravityPreloadHandoffSchema",2);
+        bdpart->SetvBool("GravityPreloadElasticSource",false);
+        bdpart->SetvText("GravityPreloadHandoffContract",GetGravityPreloadContract2());
+        bdpart->SetvFloat("GravityPreloadSourceCohesion",SoilCte.coh);
+      }
       if(GravityPreloadKeepBedOverlap && GravityPreloadReleased){
         std::ostringstream ids;
         for(unsigned c=0;c<unsigned(GravityPreloadBedIds.size());c++){
@@ -3753,7 +3763,20 @@ std::string JSph::GetGravityPreloadContract()const{
 }
 
 //==============================================================================
-/// Imports only a newly qualified elastic PRE file; the legacy PART loader is not used.
+/// Contract2 adds exact material/history policies; contract1 remains unchanged.
+//==============================================================================
+std::string JSph::GetGravityPreloadContract2()const{
+  std::ostringstream out;out<<std::setprecision(17)<<"gravity-preload-2 "<<GetGravityPreloadContract()
+    <<" material "<<unsigned(DPCtes)<<' '<<SoilCte.ModulusK<<' '<<SoilCte.ModulusG<<' '
+    <<SoilCte.coh<<' '<<SoilCte.coh_r<<' '<<SoilCte.n_coh<<' '<<SoilCte.dlt<<' '
+    <<SoilCte.psiDecay<<' '<<StrainSoftening
+    <<" law 2 trigger PartBeginSoftening "<<(PartBegin && StrainSoftening)
+    <<" tension JointExistingApexCap history KappaDeviatoric";
+  return(out.str());
+}
+
+//==============================================================================
+/// Imports a qualified elastic or same-material plastic PRE; not a PART restart.
 //==============================================================================
 void JSph::LoadGravityPreloadState(JGravityPreloadState &state)const{
   const bool absolute=(!GravityPreloadStateFile.empty() &&
@@ -3763,16 +3786,19 @@ void JSph::LoadGravityPreloadState(JGravityPreloadState &state)const{
   try{
     state.Load(file,GetGravityPreloadContract(),CaseNp,CaseNpb,GravityPreloadStep,GravityPreloadTime,
       FixedDt->GetFixedValue(),SoilCte.coh,SoilCte.Porosity,RhopZero,SoilCte.PoreWaterRho,
-      MassFluid,SoilCte.HydraulicConductivity,HydroMechConductivityCk);
+      MassFluid,SoilCte.HydraulicConductivity,HydroMechConductivityCk,GetGravityPreloadContract2());
   }
   catch(const std::exception &e){Run_Exceptioon(e.what());}
   if(state.RetireBegin!=GravityPreloadIdBegin || state.RetireCount!=GravityPreloadIdCount
     || state.MkBound!=GravityPreloadMkBound)
     Run_Exceptioon("Shared preload target MK/ID range differs from the validated fixed geometry.");
   if(TimeMax<=state.Time)Run_Exceptioon("Shared preload target TimeMax must exceed the actual PRE time.");
+  if(state.Schema==1){
   Log->Printf("GravityPreload: source material law=%s; certified elastic schema/contract1.",
     (state.MaterialLawVersion==2? "unified2": "legacy MR1 ElasticV1"));
-  if(NoPenetration)Log->Print("Dynamic NoPen: FixedPlaneStageProjectionReleaseOnly; elastic PRE uses NoPen off, collapse projects predictor/corrector trial positions and incoming normal velocities at the fixed left/bed planes; same-stage Darcy reaction is not included.");
+  }
+  else Log->Print("GravityPreload: source material law=unified2; certified same-material plastic schema/contract2; native stress/kappa/J/p history retained.");
+  if(NoPenetration)Log->Print("Dynamic NoPen: FixedPlaneStageProjectionReleaseOnly; certified PRE uses NoPen off, collapse projects predictor/corrector trial positions and incoming normal velocities at the fixed left/bed planes; same-stage Darcy reaction is not included.");
 }
 
 //==============================================================================
@@ -3937,7 +3963,7 @@ void JSph::CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *po
       Run_Exceptioon("keep_bed_overlap must fill one shallow-row gap between the existing bed samples.");
     Log->Printf("GravityPreload: planned KeepBedOverlap original_target=%u kept_bed=%u; initial normals and PRE contract are unchanged.",release->Count,unsigned(GravityPreloadBedIds.size()));
   }
-  if(GravityPreloadElasticSource || IsGravityPreloadHandoff()){
+  if(GravityPreload){
     std::vector<tfloat3> normals(npb);std::vector<bool> found(npb,false);
     for(unsigned p=0;p<npb;p++){
       if(!idp || idp[p]>=npb || found[idp[p]])Run_Exceptioon("Invalid original wall ID in shared preload.");

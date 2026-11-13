@@ -1,4 +1,4 @@
-// Narrow, certified elastic gravity-preload PRE state. This is not a PART restart.
+// Certified elastic or same-material plastic gravity-preload PRE. This is not a PART restart.
 #ifndef _JGravityPreloadState_
 #define _JGravityPreloadState_
 
@@ -19,7 +19,7 @@
 // interval to that fresh seed before importing by original ID.
 class JGravityPreloadState{
 public:
-  unsigned Count=0,Fixed=0,CompletedStep=0,MaterialLawVersion=0;
+  unsigned Schema=0,Count=0,Fixed=0,CompletedStep=0,MaterialLawVersion=0;
   unsigned RetireBegin=0,RetireCount=0,MkBound=0;
   double Time=0.,Dt=0.;
   std::vector<unsigned> Idp,ById,FSType;
@@ -65,7 +65,8 @@ private:
 public:
   void Load(const std::string& file,const std::string& contract,unsigned count
     ,unsigned fixed,unsigned eventstep,double eventtime,double dt,float targetcoh
-    ,double n0,double rho0,double water,double mass,double k0,double ck)
+    ,double n0,double rho0,double water,double mass,double k0,double ck
+    ,const std::string& contract2=std::string())
   {
     try{
       static_assert(sizeof(unsigned)==4&&sizeof(float)==4&&sizeof(double)==8
@@ -104,6 +105,9 @@ public:
         && f.Get_Rhop0()==rho0&&f.Get_MassFluid()==mass&&f.Get_MassBound()==mass
         ,"Native geometry/reference density/mass differs.");
       const JBinaryData* p=f.GetPart();
+      Need(p->ExistsValue("GravityPreloadHandoffSchema",DatUint),"Typed handoff schema is missing.");
+      const unsigned schema=p->GetvUint("GravityPreloadHandoffSchema");
+      if(schema==1){
       Need(p->ExistsValue("GravityPreloadHandoffSchema",DatUint)
         && p->GetvUint("GravityPreloadHandoffSchema")==1
         && p->ExistsValue("GravityPreloadElasticSource",DatBool)
@@ -111,14 +115,26 @@ public:
         && p->ExistsValue("GravityPreloadHandoffContract",DatText)
         && p->GetvText("GravityPreloadHandoffContract")==contract
         ,"Missing/incompatible certified elastic handoff schema/contract.");
+      }
+      else Need(schema==2&&!contract2.empty()
+        && p->ExistsValue("GravityPreloadElasticSource",DatBool)
+        && !p->GetvBool("GravityPreloadElasticSource")
+        && p->ExistsValue("GravityPreloadHandoffContract",DatText)
+        && p->GetvText("GravityPreloadHandoffContract")==contract2
+        ,"Missing/incompatible same-material plastic handoff schema/contract.");
       Need(!p->ExistsValue("DynamicArtificialStressActive")
         || (p->ExistsValue("DynamicArtificialStressActive",DatBool)&&!p->GetvBool("DynamicArtificialStressActive"))
         ,"Certified PRE must precede dynamic artificial-stress activation.");
+      if(schema==1){
       Need(p->ExistsValue("GravityPreloadSourceCohesion",DatFloat)
         && Finite(p->GetvFloat("GravityPreloadSourceCohesion"))
         && p->GetvFloat("GravityPreloadSourceCohesion")>=0.f
         && p->GetvFloat("GravityPreloadSourceCohesion")<=targetcoh
         ,"Source cohesion exceeds the target or is invalid.");
+      }
+      else Need(p->ExistsValue("GravityPreloadSourceCohesion",DatFloat)
+        && Bits(p->GetvFloat("GravityPreloadSourceCohesion"),targetcoh)
+        ,"Same-material plastic source cohesion differs from the target.");
       Need(p->ExistsValue("GravityPreloadPhase",DatUint)&&p->GetvUint("GravityPreloadPhase")==0
         && p->ExistsValue("GravityPreloadRequestedTime",DatDouble)
         && Bits(p->GetvDouble("GravityPreloadRequestedTime"),eventtime)
@@ -132,6 +148,7 @@ public:
         && p->ExistsValue("HydroMechFreeSeepage",DatBool)&&p->GetvBool("HydroMechFreeSeepage")
         ,"Required preload/free-seepage flags differ.");
       const bool unified=p->ExistsValue("MaterialLawVersion");
+      Need(schema==1||unified,"Same-material plastic PRE requires unified material law2.");
       if(unified)Need(p->ExistsValue("MaterialLawVersion",DatUint)&&p->GetvUint("MaterialLawVersion")==2
         ,"Unknown/untyped material-law version in certified PRE.");
       else Need(p->ExistsValue("MaterialReturn",DatUint)&&p->GetvUint("MaterialReturn")==1
@@ -161,7 +178,7 @@ public:
         ,"Native clock differs from actual scalar+=dt replay.");
 
       JGravityPreloadState state;
-      state.Count=count;state.Fixed=fixed;state.CompletedStep=f.Get_Step()+1;
+      state.Schema=schema;state.Count=count;state.Fixed=fixed;state.CompletedStep=f.Get_Step()+1;
       state.MaterialLawVersion=(unified? 2u: 1u);
       state.Time=f.Get_TimeStep();state.Dt=p->GetvDouble("SymplecticDtPre");
       state.MkBound=p->GetvUint("GravityPreloadReleaseMkBound");
@@ -204,17 +221,17 @@ public:
         const auto v=velocity[q];
         state.VelRhop[q]=TFloat4(v.x,v.y,v.z,rhop[q]);
         Need(x.y==0&&rhop[q]>=700.f&&rhop[q]<=3000.f
-          && state.Kplastic[q]==0.f&&state.FSType[q]<=4
+          && (schema==1? state.Kplastic[q]==0.f: state.Kplastic[q]>=0.f)&&state.FSType[q]<=4
           && load[q].x==0.f&&load[q].y==0.f&&load[q].z==0.f
           && excess[q]==float(state.PorePress[q]-state.PorePress0[q])
-          ,"Native plane/density/elastic history/FS/no-load/excess guard failed.");
+          ,"Native plane/density/history/FS/no-load/excess guard failed.");
         Need(legacykk[q].x==float(s.x)&&legacykk[q].y==float(s.y)&&legacykk[q].z==float(s.z)
           && legacyij[q].x==float(t.x)&&legacyij[q].y==float(t.y)&&legacyij[q].z==float(t.z)
           ,"Legacy stress display does not round the full double state.");
         const double j=state.J[q];
         Need(j>solid,"Native J is outside the saturated domain.");
         if(id<fixed){
-          Need(v.x==0.f&&v.y==0.f&&v.z==0.f&&state.Theta[q]==0.
+          Need(v.x==0.f&&v.y==0.f&&v.z==0.f&&state.Kplastic[q]==0.f&&state.Theta[q]==0.
             && porosity[q]==0.&&volume[q]==0.&&density[q]==0.&&conductivity[q]==0.
             ,"Native fixed velocity/theta/derived zero marker differs.");
         }

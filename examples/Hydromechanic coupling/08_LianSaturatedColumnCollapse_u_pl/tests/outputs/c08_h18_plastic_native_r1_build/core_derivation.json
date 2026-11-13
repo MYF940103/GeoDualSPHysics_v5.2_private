@@ -1,0 +1,374 @@
+{
+  "source_baseline": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_hdp15_preload_partial_r3.cpp",
+    "bytes": 18377,
+    "mtime_ns": 1794151740617473700
+  },
+  "receiver_baseline": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_plane_native_r1.cpp",
+    "bytes": 23417,
+    "mtime_ns": 1794074714485948300
+  },
+  "generated": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_plastic_native_r1_build\\h18_plastic_entry_r1.cpp",
+      "bytes": 9240,
+      "mtime_ns": 1794224240031711100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_plastic_native_r1_build\\h18_headers_r1.h",
+      "bytes": 436,
+      "mtime_ns": 1794224240035221900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_plastic_native_r1_build\\public22_core_r1.h",
+      "bytes": 4781,
+      "mtime_ns": 1794224240041676900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_plastic_native_r1_build\\h18_source_core_r1.cpp",
+      "bytes": 21071,
+      "mtime_ns": 1794224240049644300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_plastic_native_r1_build\\h18_receiver_core_r1.cpp",
+      "bytes": 25051,
+      "mtime_ns": 1794224240054928800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_plastic_native_r1_build\\h18_profiles_r1.h",
+      "bytes": 188,
+      "mtime_ns": 1794224240059443600
+    }
+  ],
+  "diffs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_plastic_native_r1_build\\source_core.diff",
+      "bytes": 28552,
+      "mtime_ns": 1794224240063123400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_plastic_native_r1_build\\receiver_core.diff",
+      "bytes": 23182,
+      "mtime_ns": 1794224240069648100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_plastic_native_r1_build\\entry_core.diff",
+      "bytes": 10106,
+      "mtime_ns": 1794224240074967500
+    }
+  ],
+  "source_declared_replacements": [
+    [
+      "Soil=5000,Event=4000000",
+      "Soil=5000,Event=2000000"
+    ],
+    [
+      "constexpr double Dt=.0000025",
+      "constexpr double Dt=.000005"
+    ],
+    [
+      "Outside the two fixed actual source-material profiles",
+      "Outside the fixed actual H1.8 elastic-source material profile"
+    ],
+    [
+      "static void Metadata(JPartDataBi4& f){",
+      "static void Metadata(JPartDataBi4& f,bool event){"
+    ],
+    [
+      "  for(const char* key:{\"GravityPreloadHandoffSchema\",\"GravityPreloadElasticSource\",\"GravityPreloadHandoffContract\",\"GravityPreloadSourceCohesion\",\"GravityPreloadActualTime\",\"GravityPreloadActualCompletedStep\",\"GravityPreloadStateFile\",\"GravityPreloadKeepBedOverlap\",\"DynamicArtificialStressPolicy\",\"DynamicArtificialStressActive\",\"DynamicNoPenetrationPolicy\",\"DynamicNoPenetrationActive\",\"FreeSeepagePondingPolicy\",\"FreeSeepagePondingActive\"})Need(!p->ExistsValue(key),\"Short PRE unexpectedly has certification/release/import/AS/NoPen metadata\");",
+      "  for(const char* key:{\"GravityPreloadActualTime\",\"GravityPreloadActualCompletedStep\",\"GravityPreloadStateFile\",\"GravityPreloadKeepBedOverlap\",\"DynamicArtificialStressPolicy\",\"DynamicArtificialStressActive\",\"DynamicNoPenetrationPolicy\",\"DynamicNoPenetrationActive\",\"FreeSeepagePondingPolicy\",\"FreeSeepagePondingActive\"})Need(!p->ExistsValue(key),\"Source PRE unexpectedly released/imported or enabled AS/NoPen\");\n  if(event)Need(p->ExistsValue(\"GravityPreloadHandoffSchema\",DatUint)&&p->GetvUint(\"GravityPreloadHandoffSchema\")==1&&p->ExistsValue(\"GravityPreloadElasticSource\",DatBool)&&p->GetvBool(\"GravityPreloadElasticSource\")&&p->ExistsValue(\"GravityPreloadHandoffContract\",JBinaryDataDef::DatText)&&!p->GetvText(\"GravityPreloadHandoffContract\").empty()&&p->ExistsValue(\"GravityPreloadSourceCohesion\",DatFloat)&&Bits(p->GetvFloat(\"GravityPreloadSourceCohesion\"),5000.f),\"Final source certificate/header/cohesion differs\");\n  else for(const char* key:{\"GravityPreloadHandoffSchema\",\"GravityPreloadElasticSource\",\"GravityPreloadHandoffContract\",\"GravityPreloadSourceCohesion\"})Need(!p->ExistsValue(key),\"Non-event frame unexpectedly certified\");"
+    ],
+    [
+      "using namespace prediag;Need(argc==6&&std::wstring(argv[1])==L\"--read\",\"Use --read h15_failed|h12_control DATA MATERIAL_CSV FRESHOUT\");const std::string profile=fs::path(argv[2]).string();const bool h15=profile==\"h15_failed\";Need(h15||profile==\"h12_control\",\"Only two explicit PRE diagnostic profiles\");const double H=double(float(h15?.06:.048));const fs::path data=argv[3],params=argv[4],out=argv[5];",
+      "using namespace prediag;Need(argc==7&&std::wstring(argv[1])==L\"--source\",\"Use --source partial|full DATA MATERIAL_CSV PLAN FRESHOUT\");const std::string profile=fs::path(argv[2]).string();const bool full=profile==\"full\";Need(full||profile==\"partial\",\"Explicit source partial/full mode required\");const double H=double(.072f);const fs::path data=argv[3],params=argv[4],out=argv[6];"
+    ],
+    [
+      "Need(h15?samples==52:(samples>=1&&samples<=53),\"Actual partial source frame count differs\")",
+      "Need(full?samples==H18Rows.size():(samples>=1&&samples<=H18Rows.size()),\"Actual source count differs from its original complete plan\")"
+    ],
+    [
+      "Need((!part?step==0&&time==0.:completed>previous)&&completed< Event&&completed<=(h15?204000u:208000u),\"Actual initial/noninitial saved Step differs\")",
+      "Need(part<H18Rows.size()&&step==H18Rows[part].saved&&completed==H18Rows[part].completed&&std::abs(time-H18Rows[part].time)<=1e-14&&completed<=Event,\"Actual initial/noninitial Step/time differs from the original complete plan\")"
+    ],
+    [
+      "Metadata(f);",
+      "Metadata(f,completed==Event);"
+    ],
+    [
+      "const bool snapshot=part==0||part==25||part==50||part==51;",
+      "const bool snapshot=part==0||part==100||part==500||part+1==samples;"
+    ],
+    [
+      "Original P0/excess/kappa0/2D/finite physical domain differs\");p0Checks++;",
+      "Original P0/excess/kappa0/2D/finite physical domain differs\");if(full&&part+1==samples)Need(a.rhop[q]>=700.f&&a.rhop[q]<=3000.f,\"Final certified PRE density admission differs\");p0Checks++;"
+    ],
+    [
+      "raw.write(reinterpret_cast<const char*>(&time),8);Typed22(raw,a);",
+      "if(full&&part+1==samples)Need(band[6].count>0&&band[6].positive==0,\"Final certificate must satisfy the existing handoff free-seepage mask/pressure guard\");raw.write(reinterpret_cast<const char*>(&time),8);Typed22(raw,a);"
+    ],
+    [
+      "Need(!h15||previous==204000,\"h15 last saved global completed Step differs\")",
+      "Need(!full||(samples==1001&&previous==Event),\"Full source event/count incomplete\")"
+    ],
+    [
+      "upl_c08_hdp15_preload_partial_r3",
+      "c08_h18_native_r1.source"
+    ],
+    [
+      "\\\"partial\\\":true,\\\"uncertified\\\":true,\\\"certified_PRE\\\":false",
+      "\\\"partial\\\":\"<<(full?\"false\":\"true\")<<\",\\\"uncertified\\\":\"<<(full?\"false\":\"true\")<<\",\\\"certified_PRE\\\":\"<<(full?\"true\":\"false\")<<\""
+    ],
+    [
+      "\\\"physical_acceptance\\\":false,\\\"native_rewritten\\\":false",
+      "\\\"source_program_and_XML_binding_required\\\":true,\\\"certificate_is_native_header_and_arrays_not_equilibrium\\\":true,\\\"source_equilibrium_claimed\\\":false,\\\"source_plan_not_truncated\\\":true,\\\"physical_acceptance\\\":false,\\\"native_rewritten\\\":false"
+    ],
+    [
+      "p->GetvUint(\"GravityPreloadTargetIdBegin\")==1800",
+      "p->GetvUint(\"GravityPreloadTargetIdBegin\")==1805"
+    ],
+    [
+      "p->GetvUint(\"GravityPreloadTargetIdCount\")==260",
+      "p->GetvUint(\"GravityPreloadTargetIdCount\")==255"
+    ],
+    [
+      "c08_h18_native_r1.source",
+      "c08_h18_bedroles_native_r1.source"
+    ],
+    [
+      "\\\"native_IDs\\\":7060",
+      "\\\"geometry_profile\\\":\\\"bedroles\\\",\\\"release_target_ID_begin\\\":1805,\\\"release_target_ID_count\\\":255,\\\"keep_bed_overlap\\\":false,\\\"native_IDs\\\":7060"
+    ],
+    [
+      "const std::set<std::string> keys={\"DPCtes\",",
+      "const std::set<std::string> keys={\"group\",\"ModulusE\",\"PRvs\",\"DPCtes\","
+    ],
+    [
+      "degrees=v(\"phi\");fos=v(\"SoilTriggerFos\");",
+      "degrees=v(\"phi\");fos=v(\"SoilTriggerFos\");H18Group=p.at(\"group\");Need(H18Group==\"psi0\"||H18Group==\"psi2p5\"||H18Group==\"psim5\",\"Closed source material group required\");H18TargetCoh=H18Group==\"psim5\"?7500.f:5000.f;H18Decay=H18Group==\"psi0\"?0.f:.2f;H18E=v(\"ModulusE\");H18Nu=v(\"PRvs\");Need(H18E==20e6f&&H18Nu==.33f,\"Actual source E/nu differs from the closed scope\");"
+    ],
+    [
+      "fsoil::Material m={0.f,0.f,float(TORAD*degrees),",
+      "fsoil::Material m={H18E/(3.f*(1.f-2.f*H18Nu)),H18E/(2.f*(1.f+H18Nu)),float(TORAD*degrees),"
+    ],
+    [
+      "m.coh_p==5000.f&&m.coh_r==1000.f&&m.n_c==5.f&&m.psi0==0.f&&m.sf==0.f",
+      "m.coh_p==H18TargetCoh&&m.coh_r==1000.f&&m.n_c==5.f&&m.psi0==float(TORAD*(H18Group==\"psi0\"?0.f:(H18Group==\"psi2p5\"?2.5f:-5.f)))&&m.sf==H18Decay"
+    ],
+    [
+      "Outside the fixed actual H1.8 elastic-source material profile",
+      "Outside the fixed actual H1.8 same-material plastic source group"
+    ],
+    [
+      "Bits(p->GetvFloat(\"DilationDecay\"),0.f),\"Actual source material law2/sf0 differs\"",
+      "Bits(p->GetvFloat(\"DilationDecay\"),H18Decay),\"Actual source material law2/group sf differs\""
+    ],
+    [
+      "p->GetvUint(\"GravityPreloadHandoffSchema\")==1",
+      "p->GetvUint(\"GravityPreloadHandoffSchema\")==2"
+    ],
+    [
+      "&&p->GetvBool(\"GravityPreloadElasticSource\")&&p->ExistsValue(\"GravityPreloadHandoffContract\"",
+      "&&!p->GetvBool(\"GravityPreloadElasticSource\")&&p->ExistsValue(\"GravityPreloadHandoffContract\""
+    ],
+    [
+      "&&!p->GetvText(\"GravityPreloadHandoffContract\").empty()",
+      "&&p->GetvText(\"GravityPreloadHandoffContract\").rfind(\"gravity-preload-2 \",0)==0"
+    ],
+    [
+      "Bits(p->GetvFloat(\"GravityPreloadSourceCohesion\"),5000.f)",
+      "Bits(p->GetvFloat(\"GravityPreloadSourceCohesion\"),H18TargetCoh)"
+    ],
+    [
+      "std::vector<float> p0(Total);",
+      "std::vector<float> p0(Total),previousK(Total,0.f);"
+    ],
+    [
+      "a.plastic[q]==0.f&&Norm2(a.load[q])==0",
+      "a.plastic[q]>=0.f&&a.plastic[q]>=previousK[id]&&Norm2(a.load[q])==0"
+    ],
+    [
+      "p0Checks++;",
+      "p0Checks++;previousK[id]=a.plastic[q];if(!part)Need(a.plastic[q]==0.f,\"Initial source kappa must be zero\");"
+    ],
+    [
+      "a.j[q]>1-Por&&a.theta[q]==0",
+      "a.j[q]>1-Por&&a.plastic[q]==0.f&&a.theta[q]==0"
+    ],
+    [
+      "const double yield=inv.q+dp.DP_phi*inv.I-dp.DP_kc;",
+      "const auto currentDP=fsoil::UpdateDPvars(material,double(a.plastic[q]),fit);const double yield=inv.q+currentDP.DP_phi*inv.I-currentDP.DP_kc;"
+    ],
+    [
+      "Original P0/excess/kappa0/2D/finite physical domain differs",
+      "Original P0/excess/nonnegative monotone kappa/2D/finite physical domain differs"
+    ],
+    [
+      "c08_h18_bedroles_native_r1.source",
+      "c08_h18_plastic_native_r1.source"
+    ],
+    [
+      "\\\"geometry_profile\\\":\\\"bedroles\\\"",
+      "\\\"group\\\":\\\"\"<<H18Group<<\"\\\",\\\"ModulusE_float_reference\\\":\"<<double(H18E)<<\",\\\"PRvs_float_reference\\\":\"<<double(H18Nu)<<\",\\\"expected_handoff_schema\\\":2,\\\"source_material_CSV_keys\\\":14,\\\"source_group_XML_binding_required\\\":true,\\\"source_group_certificate_checked\\\":\"<<(full?\"true\":\"false\")<<\",\\\"same_material_plastic_PRE\\\":true,\\\"source_yield_uses_actual_kappa\\\":true,\\\"DP_coefficients_are_initial_kappa0_reference_only\\\":true,\\\"full_material_contract_independently_reconstructed\\\":false,\\\"geometry_profile\\\":\\\"bedroles\\\""
+    ],
+    [
+      "\\\"kappa_zero_checks\\\":\"<<p0Checks",
+      "\\\"kappa_nondecreasing_checks\\\":\"<<ledger<<\",\\\"fixed_kappa_zero_checks\\\":\"<<fixedChecks<<\",\\\"initial_kappa_zero_checks\\\":\"<<Total"
+    ]
+  ],
+  "receiver_declared_replacements": [
+    [
+      "static unsigned RunSamples(const fs::path& path,unsigned expected){\n  std::ifstream f(path);std::string h,d,extra;Need(bool(std::getline(f,h))&&bool(std::getline(f,d))&&!std::getline(f,extra),\"Closed completed two-line Run.csv required\");const char sep=h.find(';')==std::string::npos?',':';';const auto keys=Split(h,sep);auto values=Split(d,sep);\n  if(values.size()!=keys.size()){\n    Need(sep==';'&&values.size()==keys.size()+1,\"Only one recognized AS Configuration separator can be repaired\");\n    const auto at=std::find(keys.begin(),keys.end(),\"Configuration\");Need(at!=keys.end()&&std::count(keys.begin(),keys.end(),\"Configuration\")==1,\"Unique Configuration header required for recognized separator repair\");\n    const std::size_t c=std::size_t(at-keys.begin()),right=keys.size()-c-1,after=values.size()-right;\n    Need(right>=2&&keys[c+1]==\"Nbound\"&&keys[c+2]==\"Nfixed\"&&after==c+2,\"Configuration span/right numeric header anchor differs\");\n    const std::string left=\"AS_Bui2008(0.2\",rightpart=\"2.55)\";\n    Need(values[c].size()>=left.size()&&values[c].compare(values[c].size()-left.size(),left.size(),left)==0&&values[c+1].rfind(rightpart,0)==0,\"Unrecognized embedded Run.csv separator; raw file is not changed\");\n    const std::string joined=values[c]+\";\"+values[c+1],marker=\"AS_Bui2008(0.2;2.55)\";const auto p=joined.find(marker);\n    Need(p!=std::string::npos&&joined.find(marker,p+marker.size())==std::string::npos,\"Exactly one known AS_Bui2008 coefficient fragment required\");\n    values[c]=joined;values.erase(values.begin()+c+1);\n  }\n  Need(keys.size()==values.size(),\"Run.csv width differs\");std::map<std::string,std::string> r;for(unsigned q=0;q<keys.size();q++)Need(r.emplace(keys[q],values[q]).second,\"Duplicate Run.csv key\");\n  Need(std::stoul(r.at(\"Steps\"))==expected&&r.at(\"Np\")==\"7060\"&&r.at(\"Nbound\")==\"2060\"&&r.at(\"Nfixed\")==\"2060\"&&r.at(\"PartsOut\")==\"0\"&&r.at(\"PartsOutRhop\")==\"0\"&&r.at(\"PartsOutVel\")==\"0\",\"Actual global steps/original registry/no-exclusion summary differs\");const auto n=std::stoul(r.at(\"PartFiles\"));Need(n>0&&n<=expected-EventStep,\"Invalid actual PartFiles count\");return unsigned(n);\n}",
+      "static unsigned RunSamples(const fs::path& path,unsigned expected){\n  std::ifstream f(path);std::string h,d,extra;Need(bool(std::getline(f,h))&&bool(std::getline(f,d))&&!std::getline(f,extra),\"Closed completed two-line Run.csv required\");const char sep=h.find(';')==std::string::npos?',':';';const auto keys=Split(h,sep);auto values=Split(d,sep);const auto ci=std::find(keys.begin(),keys.end(),\"Configuration\");Need(ci!=keys.end(),\"Run.csv Configuration missing\");const unsigned at=unsigned(ci-keys.begin());\n  if(values.size()==keys.size()+1){Need(sep==';'&&at+1<values.size(),\"Only one embedded AS separator is recognized\");values[at]+=';'+values[at+1];values.erase(values.begin()+at+1);}Need(values.size()==keys.size(),\"Run.csv width differs\");const std::string marker=\"AS_Bui2008(\";const auto start=values[at].find(marker),split=values[at].find(';',start),close=values[at].find(')',split);Need(start!=std::string::npos&&values[at].find(marker,start+1)==std::string::npos&&split!=std::string::npos&&close!=std::string::npos,\"Actual AS Configuration token missing\");Need(H18Bits(float(H18Double(values[at].substr(start+marker.size(),split-start-marker.size()))),H18AS)&&H18Bits(float(H18Double(values[at].substr(split+1,close-split-1))),H18Exp),\"Actual AS Run.csv coefficient/exponent differs\");\n  std::map<std::string,std::string> r;for(unsigned q=0;q<keys.size();q++)Need(r.emplace(keys[q],values[q]).second,\"Duplicate Run.csv key\");\n  Need(std::stoul(r.at(\"Steps\"))==expected&&r.at(\"Np\")==\"7060\"&&r.at(\"Nbound\")==\"2060\"&&r.at(\"Nfixed\")==\"2060\"&&r.at(\"PartsOut\")==\"0\"&&r.at(\"PartsOutRhop\")==\"0\"&&r.at(\"PartsOutVel\")==\"0\",\"Actual global steps/original registry/no-exclusion summary differs\");const auto n=std::stoul(r.at(\"PartFiles\"));Need(n>0&&n<=expected-EventStep,\"Invalid actual PartFiles count\");return unsigned(n);\n}"
+    ],
+    [
+      "static std::vector<unsigned> Planned(const fs::path& path,unsigned samples,unsigned expected){\n  std::ifstream f(path);std::string line;Need(bool(std::getline(f,line)),\"Planned steps CSV missing\");Need(Split(line,',')==std::vector<std::string>({\"part\",\"completed_step\"}),\"Use planned CSV header part,completed_step\");std::vector<unsigned> steps;unsigned previous=EventStep;\n  for(unsigned part=0;part<samples;part++){Need(bool(std::getline(f,line)),\"Missing planned saved step\");const auto row=Split(line,',');Need(row.size()==2,\"Planned saved step width differs\");const unsigned p=Number(fs::path(row[0]).wstring()),n=Number(fs::path(row[1]).wstring());Need(p==part&&n>previous&&n<=expected,\"Planned saved steps must be contiguous parts and strictly increasing global counts\");steps.push_back(n);previous=n;}\n  Need(!std::getline(f,line)&&previous==expected,\"Extra planned row or final completed step differs\");return steps;\n}",
+      "static std::vector<unsigned> Planned(const fs::path& path,unsigned samples,unsigned expected){\n  Need(fs::equivalent(path,H18PlanPath)&&H18Rows.size()==samples&&H18Rows.back().completed==expected,\"Original supplied complete plan identity differs\");std::vector<unsigned> steps;for(const auto& q:H18Rows)steps.push_back(q.completed);return steps;\n}"
+    ],
+    [
+      "EventStep=4000000",
+      "EventStep=2000000"
+    ],
+    [
+      "Dt=.0000025",
+      "Dt=.000005"
+    ],
+    [
+      "H=double(float(.048))",
+      "H=double(float(.072))"
+    ],
+    [
+      "Need(group==\"psi0\",\"Only the bounded psi0 material is admitted\");const float targetCoh=5000.f,sf=0.f;",
+      "Need(group==\"psi0\"||group==\"psi2p5\"||group==\"psim5\",\"Only the three closed C08 groups are admitted\");const float targetCoh=H18TargetCoh,sf=H18Decay;"
+    ],
+    [
+      "const unsigned saved=f.Get_Step(),completed=saved+1,n=f.Get_Npok();const double time=f.Get_TimeStep();",
+      "const unsigned saved=f.Get_Step(),completed=saved+1,n=f.Get_Npok();const double time=f.Get_TimeStep();Need(part<H18Rows.size()&&saved==H18Rows[part].saved&&std::abs(time-H18Rows[part].time)<=1e-14,\"Actual record differs from complete scalar-time plan\");"
+    ],
+    [
+      "const auto* meta=pf.GetPart();",
+      "Need(pf.Get_H()==H&&pf.Get_Dp()==Dp,\"Source H/dp must match the H1.8 receiver\");const auto* meta=pf.GetPart();"
+    ],
+    [
+      "(certified.MaterialLawVersion==1||certified.MaterialLawVersion==2)",
+      "(certified.MaterialLawVersion==2)"
+    ],
+    [
+      "upl_c08_bedkeep_native_r1",
+      "c08_h18_native_r1.receiver"
+    ],
+    [
+      "\\\"source_completed_step\\\":4000000",
+      "\\\"source_completed_step\\\":2000000"
+    ],
+    [
+      "\\\"typed_arrays\\\":22",
+      "\\\"H\\\":\"<<H<<\",\\\"fixed_dt_s\\\":\"<<Dt<<\",\\\"actual_plan_columns\\\":5,\\\"first_saved_step_from_actual_plan\\\":\"<<H18Rows.front().saved<<\",\\\"typed_arrays\\\":22"
+    ],
+    [
+      "RetireBegin=1800,RetireCount=260",
+      "RetireBegin=1805,RetireCount=255"
+    ],
+    [
+      "static constexpr unsigned KeptBed[]={1800,1852,1904,1956,2008};\nstatic bool Kept(unsigned id){return std::binary_search(KeptBed,KeptBed+5,id);}\nstatic bool Retired(unsigned id){return id>=RetireBegin&&id<RetireBegin+RetireCount&&!Kept(id);}",
+      "static bool Retired(unsigned id){return id>=RetireBegin&&id<RetireBegin+RetireCount;}"
+    ],
+    [
+      "  for(unsigned id:KeptBed){Need(id>=RetireBegin&&id<RetireBegin+RetireCount&&id<Fixed,\"Kept ID must belong to the original certified right-wall target\");const auto x=certified.Pos[certified.ById[id]];Need(std::abs(x.z+.5*Dp)<=1e-6*Dp&&std::abs(x.z+.5*double(float(Dp)))<=1e-6*Dp,\"Kept source position is not the original half-dp shallow bed row on plane zero\");}",
+      "  Need(RetireBegin==1805&&RetireCount==255&&Active==6805&&Fixed==2060,\"Explicit contiguous bed-role split profile differs\"); // All retained fixed positions are checked below against source by ID."
+    ],
+    [
+      "c08_h18_native_r1.receiver",
+      "c08_h18_bedroles_native_r1.receiver"
+    ],
+    [
+      "\\\"release_target_ID_begin\\\":1800,\\\"release_target_ID_count\\\":260,\\\"actual_retired_count\\\":255,\\\"actual_retired_IDs_contiguous\\\":false,\\\"kept_bed_IDs\\\":[1800,1852,1904,1956,2008],\\\"kept_bed_count\\\":5,\\\"actual_fixed_IDs\\\":1805,\\\"kept_bed_source_geometry_checks\\\":5,\\\"GravityPreloadReleasePolicy\\\":\\\"KeepBedOverlap\\\"",
+      "\\\"geometry_profile\\\":\\\"bedroles\\\",\\\"release_target_ID_begin\\\":1805,\\\"release_target_ID_count\\\":255,\\\"actual_retired_count\\\":255,\\\"actual_retired_IDs_contiguous\\\":true,\\\"retained_fixed_ID_begin\\\":0,\\\"retained_fixed_ID_count\\\":1805,\\\"actual_fixed_IDs\\\":1805,\\\"keep_bed_overlap\\\":false"
+    ],
+    [
+      "const std::string contract=meta->GetvText(\"GravityPreloadHandoffContract\");JGravityPreloadState certified;",
+      "const std::string contract=meta->GetvText(\"GravityPreloadHandoffContract\");Need(contract.rfind(\"gravity-preload-2 \",0)==0&&meta->ExistsValue(\"GravityPreloadHandoffSchema\",DatUint)&&meta->GetvUint(\"GravityPreloadHandoffSchema\")==2&&meta->ExistsValue(\"GravityPreloadElasticSource\",DatBool)&&!meta->GetvBool(\"GravityPreloadElasticSource\")&&meta->ExistsValue(\"GravityPreloadSourceCohesion\",DatFloat)&&Bits(meta->GetvFloat(\"GravityPreloadSourceCohesion\"),targetCoh)&&meta->ExistsValue(\"DilationDecay\",DatFloat)&&Bits(meta->GetvFloat(\"DilationDecay\"),sf),\"Actual source schema2/cp/sf does not match the declared receiver group\");JGravityPreloadState certified;"
+    ],
+    [
+      "targetCoh,N0,Rho,Water,Mass,K0,Ck);Need((certified.MaterialLawVersion==2)",
+      "targetCoh,N0,Rho,Water,Mass,K0,Ck,contract);Need(certified.Schema==2&&(certified.MaterialLawVersion==2)"
+    ],
+    [
+      "Only a legacyMR1/unifiedv2 certified elastic 10s PRE/event is admitted",
+      "Only the same-material unifiedv2 schema2 full10s PRE/event is admitted"
+    ],
+    [
+      "c08_h18_bedroles_native_r1.receiver",
+      "c08_h18_plastic_native_r1.receiver"
+    ],
+    [
+      "\\\"source_completed_step\\\":2000000",
+      "\\\"source_handoff_schema\\\":2,\\\"source_elastic\\\":false,\\\"same_material_plastic_PRE\\\":true,\\\"source_contract_from_actual_native_header\\\":true,\\\"full_material_contract_independently_reconstructed\\\":false,\\\"target_full_material_contract_enforced_by_solver\\\":true,\\\"source_completed_step\\\":2000000"
+    ]
+  ],
+  "entry_declared_replacements": [
+    [
+      "// Shared H=.072f / 5us C08 native inspector. No solver or physical update is linked.",
+      "// Shared H=.072f / 5us C08 bed-role split inspector: no KeepBedOverlap and no physical update."
+    ],
+    [
+      "  H18Need(p->ExistsValue(\"GravityPreloadKeepBedOverlap\",JBinaryDataDef::DatBool)&&p->GetvBool(\"GravityPreloadKeepBedOverlap\")&&p->ExistsValue(\"GravityPreloadReleasePolicy\",JBinaryDataDef::DatText)&&p->GetvText(\"GravityPreloadReleasePolicy\")==\"KeepBedOverlap\"&&p->ExistsValue(\"GravityPreloadKeptBedIds\",JBinaryDataDef::DatText)&&p->GetvText(\"GravityPreloadKeptBedIds\")==\"1800,1852,1904,1956,2008\"&&p->ExistsValue(\"GravityPreloadKeptBedCount\",JBinaryDataDef::DatUint)&&p->GetvUint(\"GravityPreloadKeptBedCount\")==5&&p->ExistsValue(\"GravityPreloadActualRetiredCount\",JBinaryDataDef::DatUint)&&p->GetvUint(\"GravityPreloadActualRetiredCount\")==255,\"Typed keep5/actual255 release metadata differs\");",
+      "  for(const char* key:{\"GravityPreloadKeepBedOverlap\",\"GravityPreloadReleasePolicy\",\"GravityPreloadKeptBedIds\",\"GravityPreloadKeptBedCount\",\"GravityPreloadActualRetiredCount\"})H18Need(!p->ExistsValue(key),\"Bed-role split must not carry old KeepBedOverlap metadata\");"
+    ],
+    [
+      "c08_h18_native_r1.metadata",
+      "c08_h18_bedroles_native_r1.metadata"
+    ],
+    [
+      "\\\"keep_bed_overlap\\\":true,\\\"original_target_count\\\":260,\\\"actual_retired_count\\\":255,\\\"kept_bed_IDs\\\":[1800,1852,1904,1956,2008]",
+      "\\\"geometry_profile\\\":\\\"bedroles\\\",\\\"keep_bed_overlap\\\":false,\\\"original_target_begin\\\":1805,\\\"original_target_count\\\":255,\\\"actual_retired_count\\\":255,\\\"retained_fixed_ID_begin\\\":0,\\\"retained_fixed_ID_count\\\":1805"
+    ],
+    [
+      "static float H18AS=0.f,H18Exp=0.f,H18TargetCoh=5000.f,H18Decay=0.f;",
+      "static float H18AS=0.f,H18Exp=0.f,H18TargetCoh=5000.f,H18Decay=0.f,H18E=0.f,H18Nu=0.f;\nstatic std::string H18Group;"
+    ],
+    [
+      "const std::set<std::string> keys={\"group\",\"ArtificialStressCoef\"",
+      "const std::set<std::string> keys={\"group\",\"ModulusE\",\"PRvs\",\"ArtificialStressCoef\""
+    ],
+    [
+      "H18AS=v(\"ArtificialStressCoef\");",
+      "H18Group=group;H18E=v(\"ModulusE\");H18Nu=v(\"PRvs\");H18Need(H18E==20e6f&&H18Nu==.33f,\"Actual receiver E/nu differs from the closed scope\");H18AS=v(\"ArtificialStressCoef\");"
+    ],
+    [
+      "c08_h18_bedroles_native_r1.metadata",
+      "c08_h18_plastic_native_r1.metadata"
+    ],
+    [
+      "\\\"geometry_profile\\\":\\\"bedroles\\\"",
+      "\\\"expected_source_handoff_schema\\\":2,\\\"same_material_plastic_PRE\\\":true,\\\"expected_source_material_CSV_keys\\\":14,\\\"receiver_material_CSV_keys\\\":16,\\\"ModulusE_float_reference\\\":\"<<double(H18E)<<\",\\\"PRvs_float_reference\\\":\"<<double(H18Nu)<<\",\\\"full_material_contract_independently_reconstructed\\\":false,\\\"target_full_material_contract_enforced_by_solver\\\":true,\\\"geometry_profile\\\":\\\"bedroles\\\""
+    ]
+  ],
+  "geometry_profile": "bedroles",
+  "PRE_schema": 2,
+  "same_material_plastic_PRE": true,
+  "source_material_CSV_keys": 14,
+  "receiver_material_CSV_keys": 16,
+  "source_yield_uses_actual_kappa": true,
+  "old_elastic_tool_changed": false,
+  "release_target_ID_begin": 1805,
+  "release_target_ID_count": 255,
+  "retained_fixed_ID_begin": 0,
+  "retained_fixed_ID_count": 1805,
+  "KeepBedOverlap_metadata_required_absent": true,
+  "profile_source_job_used_as_runtime_identity": false,
+  "reverse_declared_replacements_exact": true,
+  "headers_lifted_before_separate_namespaces": true,
+  "pure22_loader_body_unchanged": true,
+  "original_numerical_tolerances_changed": false,
+  "source_event": 2000000,
+  "source_count": 1001,
+  "receiver_counts": [
+    91,
+    301
+  ],
+  "actual_five_column_plans": true,
+  "first_post_saved_step": 2000000,
+  "first_post_completed_step": 2000001,
+  "old_files_changed": false
+}

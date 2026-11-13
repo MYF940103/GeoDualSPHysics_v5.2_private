@@ -226,7 +226,7 @@ protected:
   bool HydroMechFreeSeepage;  ///<Candidate constant-k container free surface; completed-step positive-only p projection (default=false).
   bool GravityPreload;        ///<Optional single right-wall release; absent XML keeps the original path.
   bool GravityPreloadReleased;
-  bool GravityPreloadElasticSource; ///<Explicit shared-source qualification; both material stages must stay elastic.
+  bool GravityPreloadElasticSource; ///<True: elastic shared schema1; false: same-material plastic schema2 at full PRE.
   bool GravityPreloadKeepBedOverlap; ///<Release-only shallow-bed preservation; certified NoPen handoff only.
   std::vector<unsigned> GravityPreloadBedIds; ///<Sorted original fixed IDs retained as the shallow NoSlip bed at release.
   std::string GravityPreloadStateFile; ///<Optional qualified full-step PRE import; ordinary PART restart is unchanged.
@@ -611,6 +611,7 @@ protected:
   bool RequireElasticGravityPreload()const{ return(GravityPreloadElasticSource && !GravityPreloadReleased); }
   bool UseDynamicPorePlaneContact()const{ return(HydroMechDynamicSeepage && GravityPreload && GravityPreloadReleased && NoPenetration && IsGravityPreloadHandoff()); }
   std::string GetGravityPreloadContract()const;
+  std::string GetGravityPreloadContract2()const;
   void LoadGravityPreloadState(JGravityPreloadState &state)const;
   void RestoreGravityPreloadClock(const JGravityPreloadState &state);
   bool IsDynamicPorePlasticMaterialConfig()const;
