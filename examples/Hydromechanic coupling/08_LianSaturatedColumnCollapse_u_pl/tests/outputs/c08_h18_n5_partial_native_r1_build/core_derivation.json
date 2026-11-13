@@ -1,0 +1,94 @@
+{
+  "stage": "c08_h18_n5_partial_native_r1.derive",
+  "baseline_build": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_centroid_partial_native_r1.build.json",
+    "bytes": 23953,
+    "mtime_ns": 1794606659674986800
+  },
+  "baseline_generated": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_centroid_partial_native_r1_build\\h18_centroid_partial_entry_r1.cpp",
+      "bytes": 11039,
+      "mtime_ns": 1794606652082253000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_centroid_partial_native_r1_build\\h18_centroid_receiver_core_r1.cpp",
+      "bytes": 25650,
+      "mtime_ns": 1794606652085579100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_centroid_partial_native_r1_build\\h18_headers_r1.h",
+      "bytes": 455,
+      "mtime_ns": 1794606652089667900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_centroid_partial_native_r1_build\\h18_profiles_r1.h",
+      "bytes": 188,
+      "mtime_ns": 1794606652091172000
+    }
+  ],
+  "entry_declared_replacements": [
+    [
+      "#include \"h18_centroid_receiver_core_r1.cpp\"",
+      "#include \"h18_n5_receiver_core_r1.cpp\""
+    ],
+    [
+      " H18Need(argc==9&&std::wstring(argv[1])==L\"--receiver\",\"Use --receiver failed35_centroid_as07 psi0 DATA PRE COMPLETE91PLAN PROFILE17_CSV FRESHOUT\");const std::string profile=std::filesystem::path(argv[2]).string(),group=std::filesystem::path(argv[3]).string();H18Need(profile==\"failed35_centroid_as07\"&&group==\"psi0\",\"Only the actual failed AS.7 psi0 saved prefix is supported\");H18ReadPlan(argv[6],false,H18WindowEnd,H18WindowSamples);H18ReadReceiverProfile(argv[7],group);H18Need(H18Rows.size()==91&&H18Rows.back().completed==2180000&&H18Bits(H18AS,.7f)&&H18Bits(H18Exp,3.825f),\"Original91 plan/AS.7/n3.825 scope differs\");const unsigned samples=35,end=H18Rows[34].completed;H18Need(end==2068001,\"Actual last saved-prefix step differs\");const std::filesystem::path data=argv[4],out=argv[8];H18Need(std::filesystem::is_directory(data)&&!std::filesystem::exists(out),\"Missing DATA or protected output\");",
+      " H18Need(argc==9&&std::wstring(argv[1])==L\"--receiver\",\"Use --receiver failed47_as05_n5 psi0 DATA PRE COMPLETE91PLAN PROFILE17_CSV FRESHOUT\");const std::string profile=std::filesystem::path(argv[2]).string(),group=std::filesystem::path(argv[3]).string();H18Need(profile==\"failed47_as05_n5\"&&group==\"psi0\",\"Only the actual failed AS.5/n5 psi0 saved prefix is supported\");H18ReadPlan(argv[6],false,H18WindowEnd,H18WindowSamples);H18ReadReceiverProfile(argv[7],group);H18Need(H18Rows.size()==91&&H18Rows.back().completed==2180000&&H18Bits(H18AS,.5f)&&H18Bits(H18Exp,5.f),\"Original91 plan/AS.5/n5 scope differs\");const unsigned samples=47,end=H18Rows[46].completed;H18Need(end==2092001,\"Actual last saved-prefix step differs\");const std::filesystem::path data=argv[4],out=argv[8];H18Need(std::filesystem::is_directory(data)&&!std::filesystem::exists(out),\"Missing DATA or protected output\");"
+    ],
+    [
+      "// No source/full/formal interface in the failed35_centroid_as07 adapter.",
+      "// No source/full/formal interface in the failed47_as05_n5 adapter."
+    ],
+    [
+      "c08_h18_centroid_partial_native_r1.metadata",
+      "c08_h18_n5_partial_native_r1.metadata"
+    ]
+  ],
+  "receiver_declared_replacements": [
+    [
+      "static unsigned ObservedPartialSamples(const fs::path& runCsv,unsigned expected){\n  Need(H18Rows.size()==91&&H18Rows.back().completed==2180000&&expected==2068001&&H18Rows[34].completed==expected,\"Only the observed35-of91 centroid AS.7 receiver prefix is supported\");\n  Need(!fs::exists(runCsv),\"A normal-completion Run.csv is not part of this failed-source evidence\");\n  const fs::path data=runCsv.parent_path()/\"data\";unsigned count=0;\n  for(const auto& p:fs::directory_iterator(data))if(p.is_regular_file()&&p.path().extension()==\".bi4\"&&p.path().filename().string().rfind(\"Part_\",0)==0)count++;\n  Need(count==35,\"Actual failed AS.7 receiver saved-file count differs\");\n  std::ifstream f(runCsv.parent_path()/\"Run.out\");Need(bool(f),\"Actual failed Run.out is missing\");std::ostringstream text;text<<f.rdbuf();\n  Need(text.str().find(\"GPU dynamic wall requires a finite saturated first-order mirror fit at every active sample.\")!=std::string::npos&&text.str().find(\"Finished execution (code=1).\")!=std::string::npos&&text.str().find(\"DynamicPoreWall rejected: stage=0 sorted_slot=443 native_id=808 step_start=10.347964999692834 step=2069593 \")!=std::string::npos,\"Actual recorded AS.7 wall803 failure/exit text differs\");\n  // Reported rejection text is not an independently reconstructed unsaved state or Win32 audit.\n  return count;\n}",
+      "static unsigned ObservedPartialSamples(const fs::path& runCsv,unsigned expected){\n  Need(H18Rows.size()==91&&H18Rows.back().completed==2180000&&expected==2092001&&H18Rows[46].completed==expected,\"Only the observed47-of91 AS.5/n5 receiver prefix is supported\");\n  Need(!fs::exists(runCsv),\"A normal-completion Run.csv is not part of this failed-source evidence\");\n  const fs::path data=runCsv.parent_path()/\"data\";unsigned count=0;\n  for(const auto& p:fs::directory_iterator(data))if(p.is_regular_file()&&p.path().extension()==\".bi4\"&&p.path().filename().string().rfind(\"Part_\",0)==0)count++;\n  Need(count==47,\"Actual failed AS.5/n5 receiver saved-file count differs\");\n  std::ifstream f(runCsv.parent_path()/\"Run.out\");Need(bool(f),\"Actual failed Run.out is missing\");std::ostringstream text;text<<f.rdbuf();\n  Need(text.str().find(\"GPU dynamic wall requires a finite saturated first-order mirror fit at every active sample.\")!=std::string::npos&&text.str().find(\"Finished execution (code=1).\")!=std::string::npos&&text.str().find(\"DynamicPoreWall rejected: stage=0 sorted_slot=451 native_id=818 step_start=10.461069999688553 step=2092214 \")!=std::string::npos,\"Actual recorded AS.5/n5 wall818 failure/exit text differs\");\n  // Reported rejection text is not an independently reconstructed unsaved state or Win32 audit.\n  return count;\n}"
+    ],
+    [
+      "static std::vector<unsigned> Planned(const fs::path& path,unsigned samples,unsigned expected){\n  Need(fs::equivalent(path,H18PlanPath)&&H18Rows.size()==91&&H18Rows.back().completed==2180000&&samples==35&&expected==H18Rows[34].completed&&expected==2068001,\"Untouched complete91 plan and explicit35 saved-prefix scope required\");\n  std::vector<unsigned> steps;for(unsigned part=0;part<samples;part++)steps.push_back(H18Rows[part].completed);return steps;\n}",
+      "static std::vector<unsigned> Planned(const fs::path& path,unsigned samples,unsigned expected){\n  Need(fs::equivalent(path,H18PlanPath)&&H18Rows.size()==91&&H18Rows.back().completed==2180000&&samples==47&&expected==H18Rows[46].completed&&expected==2092001,\"Untouched complete91 plan and explicit47 saved-prefix scope required\");\n  std::vector<unsigned> steps;for(unsigned part=0;part<samples;part++)steps.push_back(H18Rows[part].completed);return steps;\n}"
+    ],
+    [
+      "Actual saved-prefix last step/all35 native coverage incomplete",
+      "Actual saved-prefix last step/all47 native coverage incomplete"
+    ],
+    [
+      "c08_h18_centroid_partial_native_r1.receiver",
+      "c08_h18_n5_partial_native_r1.receiver"
+    ],
+    [
+      "\\\"observed_saved_samples\\\":35",
+      "\\\"observed_saved_samples\\\":47"
+    ],
+    [
+      "\\\"last_saved_part\\\":34",
+      "\\\"last_saved_part\\\":46"
+    ],
+    [
+      "\\\"last_saved_completed_step\\\":2068001",
+      "\\\"last_saved_completed_step\\\":2092001"
+    ],
+    [
+      "\\\"observed_plan_prefix_records\\\":35",
+      "\\\"observed_plan_prefix_records\\\":47"
+    ]
+  ],
+  "reverse_declared_replacements_exact": true,
+  "original_field_and_numerical_guards_changed": false,
+  "original_plan_records": 91,
+  "observed_prefix_records": 47,
+  "last_saved_part": 46,
+  "last_saved_completed_step": 2092001,
+  "original_target_completed_step": 2180000,
+  "AS_coefficient": 0.5,
+  "AS_exponent": 5.0,
+  "actual_terminal_solver_step_proven": false,
+  "unsaved_state_reconstructed": false,
+  "old_files_changed": false
+}

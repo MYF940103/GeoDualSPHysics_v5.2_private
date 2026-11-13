@@ -1,0 +1,48 @@
+--- schema2/src/source/JSphGpu_ker.cu
++++ private_normal_taylor/src/source/JSphGpu_ker.cu
+@@ -1572,7 +1572,7 @@
+       }
+     }
+     double3 gpcorr=gp;
+-    if(khyd>0 && closedfs && KerHydroMechIsFreeSurface(p1,code,fstype)){
++    if(khyd>0 && (closedfs || freeseepage) && KerHydroMechIsFreeSurface(p1,code,fstype)){
+       const float3 normal=fsnormal[p1];
+       const double norm2=double(normal.x)*normal.x+double(normal.y)*normal.y+double(normal.z)*normal.z;
+       if(!isfinite(norm2) || norm2<=0){atomicMin(invalid,p1);return;}
+@@ -1581,10 +1581,8 @@
+         +double(normal.y)*(gp.y+rhow*ace[p1].y)+double(normal.z)*(gp.z+rhow*ace[p1].z))/norm2;
+       gpcorr=make_double3(gp.x-double(normal.x)*flux,gp.y-double(normal.y)*flux,gp.z-double(normal.z)*flux);
+     }
+-    //-Candidate raw hydraulic term omits the complete (grad p+rho_w*Ace) defect, not just grad p.
+-    const double lap=(freeseepage && KerHydroMechIsFreeSurface(p1,code,fstype)?
+-      lp+rhow*(double(ace[p1].x)*lx.x+double(ace[p1].y)*lx.y+double(ace[p1].z)*lx.z+da):
+-      lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da);
++    //-Private candidate: retain tangent hydraulic Taylor defect; normal target only.
++    const double lap=lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da;
+     double value=kw/n*(-theta[p1]+khyd/gamma*lap);
+     double speed=0.;
+ #ifdef C08_STAGE_TRACE
+--- schema2/src/source/JSphCpu.cpp
++++ private_normal_taylor/src/source/JSphCpu.cpp
+@@ -3237,7 +3237,7 @@
+       }
+     }
+     tdouble3 gpcorr=gp;
+-    if(khyd>0 && closedfs && IsFreeSurfaceParticle(unsigned(p1),Codec,FSTypec)){
++    if(khyd>0 && (closedfs || HydroMechFreeSeepage) && IsFreeSurfaceParticle(unsigned(p1),Codec,FSTypec)){
+       const tdouble3 normal=ToTDouble3(FSNormalc[p1]);
+       const double norm2=normal.x*normal.x+normal.y*normal.y+normal.z*normal.z;
+       if(!std::isfinite(norm2) || norm2<=0){invalid++;continue;}
+@@ -3247,10 +3247,8 @@
+         +normal.y*(gp.y+rhow*Acec[p1].y)+normal.z*(gp.z+rhow*Acec[p1].z))/norm2;
+       gpcorr=gp-normal*flux;
+     }
+-    //-Candidate raw hydraulic term omits the complete (grad p+rho_w*Ace) defect, not just grad p.
+-    const double lap=(HydroMechFreeSeepage && IsFreeSurfaceParticle(unsigned(p1),Codec,FSTypec)?
+-      lp+rhow*(double(Acec[p1].x)*lx.x+double(Acec[p1].y)*lx.y+double(Acec[p1].z)*lx.z+da):
+-      lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da);
++    //-Private candidate: retain tangent hydraulic Taylor defect; normal target only.
++    const double lap=lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da;
+     double rate=kw/porosity*(-PoroThetac[p1]+khyd/gamma*lap);
+     if(DynamicPoreConductivity && khyd>0){
+       //-Smooth scalar k: div(k*(grad p+rho_w*Ace)); not a conservative interface flux.

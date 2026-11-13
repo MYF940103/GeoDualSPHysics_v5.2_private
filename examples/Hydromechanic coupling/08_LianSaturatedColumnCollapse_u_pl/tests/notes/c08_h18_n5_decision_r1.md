@@ -1,0 +1,15 @@
+# C08 exponent5 and free-surface operator review
+
+The original-program AS coefficient0.5/exponent5 window failed at the reported wall818 stage0 rejection, global step2092214 and step_start10.461069999688553. The actual saved scope is47 frames, ending10.460004999688593 (tau0.46000499998258526), not the requested0.9s. True Popen/Win32/solver exits are1. The exact rejecting mirror-fit subbranch is not recorded in this baseline program. No unsaved state is reconstructed.
+
+All47 saved frames passed the original native field/identity/ledger/P0/kappa/FS/geometry/signed-clock checks. This qualifies the saved prefix only. No solver or reader was repeated. The original91-row target and actual47-frame header remain unchanged.
+
+At the same47 actual saved times, changing only exponent3.825 to5 worsens the minimum absolute pressure from -83.9312kPa to -170.2605kPa. At the final common save, pRMS grows20.4830 to22.7150kPa; total-stress Frobenius RMS44.8723 to47.6532kPa. Descriptive close pairs are77 versus68 and front advance0.268815 versus0.263189m. Fewer close pairs do not establish a tensile-instability repair. Exponent5 is not selected for formal use; retain the completed exponent3.825 dataset as a control, not an accepted winner.
+
+The comparison PNG and both47-row CSVs are in tests/figures/c08_h18_n5_review_r1*. During root execution, the author finished source-only additional Def/preparation checks. Original analysis/receipt/figures remain unchanged; logs/c08_h18_n5_review_r1.supplement.json transparently records the two changed helper/note stats and independently checks those additional inputs offline. No figure, native read or physical computation was rerun.
+
+The next causal test concerns the existing free-seepage hydraulic Taylor term, rather than another AS sweep. The original actual CPU fixture demonstrates a local affine tangential-drive counterexample for both kernels. A private CPU/CUDA candidate reuses the existing normal Taylor target and retains the tangential correction. Only two archived source files differ; public source, formal inputs, PRE and canonical executables remain unchanged. The private CPU's486-row formula check passed. At flat-top ID76,b=4Pa/m, Wendland actual rate changes -0.00423789630 to+0.00004091984Pa/s (magnitude reduction99.03%); Cubic changes+0.03736884 to+0.00878336Pa/s. Remaining normal-estimation error is explicit and Cubic still differs from the true flat continuum beyond roundoff.
+
+This is neither a C08 repair nor physical acceptance. Hydrostatic/nonconstant-acceleration/OFF and nonzero variable-k controls plus a frozen-pressure stability screen remain before GPU physical use. Existing h-squared/D time-step bounds are necessary continuum scales, not a proof for the changed discrete surface operator. Other psi groups and formal3s remain held until justified by actual results. No new half-step chain or PRE solve is part of this stage.
+
+Raw BI4, native typed exports, executables and full source ZIPs remain local protected artifacts. Selective Git backs up the code, inputs, receipts, conclusions and comparison PNG/CSV, not those large raw archives.
