@@ -1,0 +1,141 @@
+--- original/src/source/JSphGpu.cpp
++++ observer/src/source/JSphGpu.cpp
+@@ -50,6 +50,13 @@
+ #include <climits>
+ #include <cmath>
+ #include <limits>
++#ifdef C08_STORAGE_TRACE
++#include "C08StorageTrace.h"
++#include <fstream>
++#include <iomanip>
++#include <vector>
++#include <stdexcept>
++#endif
+ #ifdef C08_STAGE_TRACE
+ #include "C08StageTrace.h"
+ #include <fstream>
+@@ -58,6 +65,39 @@
+ #endif
+ 
+ using namespace std;
++#ifdef C08_STORAGE_TRACE
++namespace{
++  bool C08StorageStarted=false;
++  unsigned C08StorageWritten=UINT_MAX;
++  std::string C08StorageOutput;
++  void C08StorageRequire(bool ok,const char* message){if(!ok)throw std::runtime_error(message);}
++  void C08StorageWriteRows(const std::string& dir,unsigned hoststep,double time){
++    if(!C08StorageStarted)return;
++    std::vector<C08StorageRow> rows(5000);unsigned errors=0;
++    C08StorageRequire(cusph::C08StorageRead(rows.data(),&errors)&&!errors,"Storage observer read/identity failed.");
++    const unsigned count=rows[0].updates;
++    for(unsigned s=0;s<5000;s++)C08StorageRequire(rows[s].native_id==2060+s&&rows[s].inits==1&&!rows[s].errors&&rows[s].rhs_h==count&&rows[s].updates==count&&rows[s].last_step==2000000+count,"Storage observer unique per-ID stage coverage failed.");
++    if(!count||count==C08StorageWritten)return;
++    C08StorageRequire(C08StorageWritten==UINT_MAX||count>C08StorageWritten,"Storage observer completed count regressed.");
++    C08StorageRequire(rows[0].last_step==hoststep+1,"Storage observer saved completed-step identity failed.");
++    const std::string path=fun::GetDirWithSlash(dir)+"C08StorageTrace.csv";
++    if(C08StorageWritten==UINT_MAX){std::string normalized=path;for(char& c:normalized)if(c=='\\')c='/';C08StorageRequire(normalized.find("/tests/outputs/")!=std::string::npos&&!fun::FileExists(path),"Storage observer requires a fresh tests/outputs sidecar.");C08StorageOutput=path;}
++    C08StorageRequire(C08StorageOutput==path,"Storage observer output owner changed.");
++    std::ofstream file(path,std::ios::out|std::ios::app);file<<std::setprecision(17);
++    if(C08StorageWritten==UINT_MAX)file<<"native_id,inits,rhs_h,updates,cap_calls,cap_changes,release_cap_calls,release_cap_changes,errors,last_completed_step,actual_saved_time_s,initial_S,last_S,sum_dt_s,weighted_pressure_delta,compression,Darcy_remainder_including_rate_quantization,source_split_roundoff,pressure_commit_roundoff,weight_change,cap_change,sum_abs_increments,local_budget_sum,rate_quantization_bound_only,endpoint_residual,endpoint_arithmetic_budget\n";
++    for(const auto& r:rows){
++      C08StorageRequire(r.last_time==time,"Storage observer actual scalar clock differs from save.");
++      const double u=.5*DBL_EPSILON,operations=16.*double(r.updates)+8.*double(r.cap_calls)+128.,g=operations*u/(1.-operations*u);
++      const double ledger=((((r.compression+r.Darcy_remainder)+r.source_split_roundoff)+r.pressure_commit_roundoff)+r.weight_change)+r.cap_change;
++      const double residual=(r.last_S-r.initial_S)-ledger,budget=r.local_budget_sum+g*(r.abs_increments+fabs(r.initial_S)+fabs(r.last_S));
++      for(double v:{r.initial_S,r.last_S,r.sum_dt,r.weighted_pressure_delta,r.compression,r.Darcy_remainder,r.source_split_roundoff,r.pressure_commit_roundoff,r.weight_change,r.cap_change,r.abs_increments,r.local_budget_sum,r.rate_quantization_bound,residual,budget})C08StorageRequire(std::isfinite(v),"Storage observer nonfinite cumulative field.");
++      C08StorageRequire(operations*u<1.&&budget>=0&&fabs(residual)<=budget,"Storage observer endpoint arithmetic identity failed.");
++      file<<r.native_id<<','<<r.inits<<','<<r.rhs_h<<','<<r.updates<<','<<r.cap_calls<<','<<r.cap_changes<<','<<r.release_cap_calls<<','<<r.release_cap_changes<<','<<r.errors<<','<<r.last_step<<','<<time<<','<<r.initial_S<<','<<r.last_S<<','<<r.sum_dt<<','<<r.weighted_pressure_delta<<','<<r.compression<<','<<r.Darcy_remainder<<','<<r.source_split_roundoff<<','<<r.pressure_commit_roundoff<<','<<r.weight_change<<','<<r.cap_change<<','<<r.abs_increments<<','<<r.local_budget_sum<<','<<r.rate_quantization_bound<<','<<residual<<','<<budget<<'\n';
++    }
++    file.flush();C08StorageRequire(bool(file),"Storage observer CSV write failed.");C08StorageWritten=count;
++  }
++}
++#endif
+ 
+ namespace{
+   inline bool IsHydroMechTrackedFreeSurface(unsigned fstype){
+@@ -1040,6 +1080,9 @@
+ /// - onlynormal: Solo se queda con las normales, elimina las particulas periodicas.
+ //==============================================================================
+ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool onlynormal){
++#ifdef C08_STORAGE_TRACE
++  C08StorageWriteRows(DirOut,unsigned(Nstep),TimeStep);
++#endif
+ #if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+   if(Nstep>=4000000 && Nstep<=4360000)C08CausalSaveTotals(DirOut);
+ #endif
+@@ -1423,6 +1466,22 @@
+ //==============================================================================
+ void JSphGpu::ApplyPorePressureBoundaries(){
+   if(!HydroMech || !PorePressg || !DivData.beginendcell)return;
++#ifdef C08_STORAGE_TRACE
++  // Release RunCellDivide has sorted/retired255, but GravityPreloadReleased is set only after this call returns.
++  if(!C08StorageStarted && IsGravityPreloadHandoff() && unsigned(Nstep)==2000000 && Np==6805 && Npb==1805){
++    if(GravityPreloadElasticSource || GravityPreloadKeepBedOverlap || !GravityPreloadBedIds.empty()
++      || GravityPreloadIdBegin!=1805 || GravityPreloadIdCount!=255 || PorePressPreg || PoroJPreg
++      || !IsDynamicPorePlasticConfig() || !PorosityFeedback || !DynamicPoreWall || !DynamicPoreConductivity
++      || DynamicPoreConductivityCk!=2. || !HydroMechFreeSeepage || HydroMechDrainage
++      || TKernel!=KERNEL_Wendland || Dp!=.04 || KernelH!=.072f || !FixedDt || FixedDt->GetFixedValue()!=.000005 || SymplecticDtPre!=.000005
++      || !ArtificialStress || ArtificialStressCoef!=.3f || ArtificialStressExp!=2.55f || Visco!=.1f || ViscoTime
++      || SoilDamping || PoreShepardRegularization || !NoPenetration || !HydroMechDynamicSeepage || !GravityPreload || PeriActive || !Simulate2D
++      || !PoroJg || !PorePressg || !FSTypeg || !Idpg || !Codeg)
++      Run_Exceptioon("Storage observer requires the exact original AS03 H1.8/5us released bed-role candidate.");
++    C08StorageRequire(cusph::C08StorageInit(Np,Npb,Idpg,Codeg,PoroJg,PorePressg,double(MassFluid)/double(RhopZero),1.-double(SoilCte.Porosity),double(SoilCte.PoreWaterBulkModulus),unsigned(Nstep),TimeStep),"Storage observer initialization launch failed.");
++    C08StorageStarted=true;
++  }
++#endif
+   ComputeFreeSurfaceTracking();
+   ApplyFreeSurfacePorePressure();
+   if(HydroMechFreeSeepage && !PorePressPreg){
+@@ -1430,7 +1489,13 @@
+     const bool c08traceponding=C08TraceBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,0.,C08_TRACE_PONDING,Idpg,FSTypeg,PorePressRateg);
+ #endif
+     //-Completed geometry only; predictor pressure/rate are not constrained by this policy.
++#ifdef C08_STORAGE_TRACE
++    if(C08StorageStarted)C08StorageRequire(cusph::C08StorageCapBefore(Np,Npb,Idpg,Codeg,PoroJg,PorePressg,unsigned(Nstep),TimeStep,!GravityPreloadReleased),"Storage observer pre-cap launch failed.");
++#endif
+     cusph::ApplyFreeSurfacePorePressure(Np,Npb,false,HydroMechTopLoadMode,Posxyg,Codeg,FSTypeg,PorePressg,NULL,true);
++#ifdef C08_STORAGE_TRACE
++    if(C08StorageStarted)C08StorageRequire(cusph::C08StorageCapAfter(Np,Npb,Idpg,Codeg,PoroJg,PorePressg,FSTypeg,double(MassFluid)/double(RhopZero),1.-double(SoilCte.Porosity),double(SoilCte.PoreWaterBulkModulus)),"Storage observer post-cap launch failed.");
++#endif
+     Check_CudaErroor("Failed applying completed-step free-seepage ponding.");
+ #ifdef C08_STAGE_TRACE
+     C08TraceEnd(c08traceponding,DirOut);
+@@ -1452,7 +1517,13 @@
+   ArraysGpu->Free(porepressnew); porepressnew=NULL;
+   ApplyFreeSurfacePorePressure();
+   if(HydroMechFreeSeepage && !PorePressPreg){
++#ifdef C08_STORAGE_TRACE
++    if(C08StorageStarted)C08StorageRequire(cusph::C08StorageCapBefore(Np,Npb,Idpg,Codeg,PoroJg,PorePressg,unsigned(Nstep),TimeStep,!GravityPreloadReleased),"Storage observer pre-cap launch failed.");
++#endif
+     cusph::ApplyFreeSurfacePorePressure(Np,Npb,false,HydroMechTopLoadMode,Posxyg,Codeg,FSTypeg,PorePressg,NULL,true);
++#ifdef C08_STORAGE_TRACE
++    if(C08StorageStarted)C08StorageRequire(cusph::C08StorageCapAfter(Np,Npb,Idpg,Codeg,PoroJg,PorePressg,FSTypeg,double(MassFluid)/double(RhopZero),1.-double(SoilCte.Porosity),double(SoilCte.PoreWaterBulkModulus)),"Storage observer post-cap launch failed.");
++#endif
+     Check_CudaErroor("Failed applying completed-step free-seepage ponding.");
+   }
+   Check_CudaErroor("Failed applying pore-pressure Shepard regularization.");
+@@ -1893,6 +1964,9 @@
+   if(HydroMech && DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg)
+     cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg
+       ,IsHydroMechDrainageActive(),HydroMechTopLoadMode,Posxyg,FSTypeg);
++#ifdef C08_STORAGE_TRACE
++  if(C08StorageStarted)C08StorageRequire(cusph::C08StorageUpdate(Np,Npb,Idpg,Codeg,PorePressPreg,PoroJg,PorePressg,double(MassFluid)/double(RhopZero),1.-double(SoilCte.Porosity),double(SoilCte.PoreWaterBulkModulus),unsigned(Nstep),TimeStep,dt),"Storage observer accepted-pressure launch failed.");
++#endif
+ #ifdef C08_STAGE_TRACE
+   C08TraceEnd(c08traceupdate,DirOut);
+ #endif
+@@ -2100,6 +2174,13 @@
+     "GPU dynamic pore pressure requires valid periodic owners and finite saturated pressure rates.");
+   if(!std::isfinite(maxspeed) || maxspeed<0)Run_Exceptioon("GPU dynamic conductivity-gradient speed must remain finite and nonnegative.");
+   DynamicConductivitySpeedMax=maxspeed;
++#ifdef C08_STORAGE_TRACE
++  if(IsGravityPreloadHandoff() && GravityPreloadReleased && (!C08StorageStarted || !UseDynamicPorePlaneContact()))Run_Exceptioon("Storage observer missed pre-cap initialization or the configured released contact is inactive.");
++  if(C08StorageStarted && InterStep==INTERSTEP_SymCorrector){
++    if(!PoroJPreg || !PorePressPreg)Run_Exceptioon("Storage observer lost the real corrector Jn/pn before their original release.");
++    C08StorageRequire(cusph::C08StorageRhs(Np,Npb,Idpg,Codeg,PoroJPreg,PoroJg,PorePressPreg,PoroThetag,PorePressRateg,double(MassFluid)/double(RhopZero),1.-double(SoilCte.Porosity),double(SoilCte.PoreWaterBulkModulus),unsigned(Nstep),TimeStep,SymplecticDtPre),"Storage observer force_h launch failed.");
++  }
++#endif
+ #ifdef C08_STAGE_TRACE
+   C08TraceEnd(c08tracerhs,DirOut); //-Existing CUDA/physical-rate guards have already passed.
+ #endif

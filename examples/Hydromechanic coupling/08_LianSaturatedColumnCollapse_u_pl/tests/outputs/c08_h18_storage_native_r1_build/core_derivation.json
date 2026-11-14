@@ -1,0 +1,130 @@
+{
+  "stage": "c08_h18_storage_native_r1.derive",
+  "baseline_build": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_as255_native_r1.build.json",
+    "bytes": 61268,
+    "mtime_ns": 1794617960067125000
+  },
+  "baseline_generated": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\h18_as255_entry_r1.cpp",
+      "bytes": 10696,
+      "mtime_ns": 1794617918065237000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\h18_headers_r1.h",
+      "bytes": 455,
+      "mtime_ns": 1794617918071236800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\public22_core_r1.h",
+      "bytes": 4781,
+      "mtime_ns": 1794617918169383100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\h18_source_core_r1.cpp",
+      "bytes": 21487,
+      "mtime_ns": 1794617918194195700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\h18_receiver_core_r1.cpp",
+      "bytes": 25303,
+      "mtime_ns": 1794617918207430900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\h18_profiles_r1.h",
+      "bytes": 188,
+      "mtime_ns": 1794617918218451100
+    }
+  ],
+  "replacements": [
+    {
+      "label": "close source CLI",
+      "before": " if(argc==7&&std::wstring(argv[1])==L\"--source\"){\n  const std::wstring mode=argv[2];H18Need(mode==L\"partial\"||mode==L\"full\",\"Source mode must be partial or full\");H18ReadPlan(argv[5],true,H18Event,H18SourceSamples);return h18source::wmain(argc,argv);\n }\n",
+      "after": " // Source decoding is not exposed by the three-profile storage utility.\n",
+      "count": 1
+    },
+    {
+      "label": "receiver help",
+      "before": "Use --source partial|full DATA MATERIAL_CSV PLAN FRESHOUT; or --receiver window|formal GROUP DATA PRE PLAN PROFILE_CSV FRESHOUT",
+      "after": "Use --receiver debug2|short3|window psi0 DATA PRE PLAN PROFILE_CSV FRESHOUT",
+      "count": 1
+    },
+    {
+      "label": "three closed profiles",
+      "before": "const bool window=profile==\"window\";H18Need(window||profile==\"formal\",\"Only .90-window or full3 receiver profiles\");const unsigned end=window?H18WindowEnd:H18FormalEnd,samples=window?H18WindowSamples:H18FormalSamples;",
+      "after": "const bool debug2=profile==\"debug2\",short3=profile==\"short3\",window=profile==\"window\";H18Need(debug2||short3||window,\"Only Debug2, Release-short3 or window91 receiver profiles\");H18Need(group==\"psi0\",\"Only original psi0 storage observer material is admitted\");const unsigned end=debug2?2000002u:(short3?2004001u:H18WindowEnd),samples=debug2?2u:(short3?3u:H18WindowSamples);",
+      "count": 1
+    },
+    {
+      "label": "exact Debug2/short3/window planned completed steps",
+      "before": "H18ReadPlan(argv[6],false,end,samples);",
+      "after": "H18ReadPlan(argv[6],false,end,samples);H18Need(H18Rows.front().completed==2000001u,\"The first receiver save must be actual PRE+one update\");if(debug2){H18Need(H18Rows.size()==2&&H18Rows[1].completed==2000002u,\"Only two true Debug updates2000001/2000002\");}else if(short3){for(unsigned part=0;part<samples;part++)H18Need(H18Rows[part].completed==2000001u+2000u*part,\"Only original first3 Release saved steps2000001/2002001/2004001\");}else for(unsigned part=0;part<samples;part++)H18Need(H18Rows[part].completed==(part==90?2180000u:2000001u+2000u*part),\"Only original91-frame GPU .90s completed-step plan\");",
+      "count": 1
+    },
+    {
+      "label": "closed AS03 psi0",
+      "before": "H18ReadReceiverProfile(argv[7],group);",
+      "after": "H18ReadReceiverProfile(argv[7],group);H18Need(H18Bits(H18AS,.3f)&&H18Bits(H18Exp,2.55f),\"Only original AS.3/exponent2.55 is admitted\");",
+      "count": 1
+    },
+    {
+      "label": "metadata stage",
+      "before": "c08_h18_wend_native_r1.metadata",
+      "after": "c08_h18_storage_native_r1.metadata",
+      "count": 1
+    },
+    {
+      "label": "GPU/original AV/observer limitation annotations",
+      "before": "\\\"backend_proven_by_reader\\\":false,\\\"physical_acceptance\\\":false}",
+      "after": "\\\"backend_argument\\\":\\\"GPU\\\",\\\"original_AV_private_keys_absent_headers\\\":\"<<samples<<\",\\\"observer_pressure_budget_proven_by_reader\\\":false,\\\"debug_profile_is_Release_bit_truth\\\":false,\\\"backend_proven_by_reader\\\":false,\\\"physical_acceptance\\\":false}",
+      "count": 1
+    }
+  ],
+  "exact_inverse_original_entry_bytes": true,
+  "all_other_entry_bytes_unchanged": true,
+  "source_and_receiver_numeric_cores_byte_identical": true,
+  "original_numeric_guards_changed": false,
+  "source_CLI_exposed": false,
+  "formal_CLI_exposed": false,
+  "allowed_group": "psi0",
+  "AS_coefficient": 0.3,
+  "AS_exponent": 2.55,
+  "original_AV_private_keys_rejected": true,
+  "backend_argument": "GPU",
+  "profiles": [
+    {
+      "name": "debug2",
+      "samples": 2,
+      "completed_steps": [
+        2000001,
+        2000002
+      ],
+      "end": 2000002
+    },
+    {
+      "name": "short3",
+      "samples": 3,
+      "completed_steps": [
+        2000001,
+        2002001,
+        2004001
+      ],
+      "end": 2004001
+    },
+    {
+      "name": "window",
+      "samples": 91,
+      "end": 2180000,
+      "first_completed_step": 2000001,
+      "original_w09_plan_required": true
+    }
+  ],
+  "observer_pressure_budget_proven_by_reader": false,
+  "debug_is_Release_bit_truth": false,
+  "receiver_material_CSV_keys": 17,
+  "typed_arrays": 22,
+  "active_IDs": 6805,
+  "no_native_decode_or_solver_authorized_by_build": true,
+  "old_files_changed": false
+}
