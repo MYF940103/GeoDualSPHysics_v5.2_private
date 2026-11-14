@@ -1,0 +1,25 @@
+{
+  "stage": "c08_h18_rv_onset_force_r1.AS_units_resolution_r2",
+  "passed": true,
+  "supersedes_without_overwriting": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_rv_onset_force_r1.AS_units_erratum_r1.json",
+    "bytes": 820,
+    "mtime_ns": 1794678539808074100
+  },
+  "earlier_root_unit_inference_was_wrong": true,
+  "reason": "The generic helper divides by its rhop argument, but the actual dynamic/current-J CPU and GPU callers pass exactly 1.f, keeping raw stress in Pa. The earlier audit inspected the helper without its active caller.",
+  "actual_active_CPU_source": "src/source/JSphCpu.cpp lines2114-2141 in bound archive",
+  "actual_active_GPU_source": "src/source/JSphGpu_ker.cu lines711-714 in bound archive",
+  "source_archive": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_source_r1\\full_source.zip",
+    "bytes": 1082321,
+    "mtime_ns": 1794222843308768900
+  },
+  "actual_AS_tensor_nn_Pa_header_is_correct": true,
+  "actual_AS_tensor_in_active_branch_units": "Pa",
+  "no_CSV_rename_or_rescale_required": true,
+  "legacy_non_currentJ_branch_has_different_density_scaling": true,
+  "raw_output_source_build_and_numeric_gates_unchanged": true,
+  "component_results_not_invalidated_by_root_label_error": true,
+  "SHA_scans": 0
+}
