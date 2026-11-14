@@ -1,0 +1,15 @@
+# C08 late RHS offline review: author-only
+
+New files: this note and `tests/support/c08_h18_late_rhs_review_r1.py`. This is a fresh offline review of the one three-state zero-advance `c08_h18_late_rhs_r1` component, not a solver, native decoder or new model. It consumes the passed component/build/actual-call/completion bindings and full301 descriptive review. Old figures, raw data, original equations and numerical budgets remain unchanged. No execution is admitted by authoring.
+
+The seven normalized rate terms, donor partition arithmetic and field-plot quantities reuse the existing `c08_h18_storage_rhs_review_r1.py` definitions. Selected genuine full3 Parts200/250/300 correspond to completed2400001/2500001/2600000, using actual clock equality. All15000 soil rows/45000 term rows/5415 wall rows and original component literal-float checks must have passed. Each5000-ID state retains the real pressure, primary state, saved and freshly computed theta. No state is advanced and fresh CPU forces are not reconstructed GPU substages.
+
+Outputs are fresh `tests/figures/c08_h18_late_rhs_review_r1_{terms,fields}.png` plus summary/cohorts/theta/per_ID/mean_secants CSVs and a terminal check in logs. All/interior/FS receiver and fluid/fixed donor partitions are normalized by each state's full global storage weight, keeping them additive. Compression, LP, Taylor, Da, FS-Ace and variable-k chain contributions are preserved separately. The changing-storage-coefficient contribution is distinct from the pressure derivative. Conditional storage `sum(nV/Kw*p)` is not water mass or an energy/conservation claim. Far wall slots can hold stale scratch; this analysis does not reclassify them as physical donors or establish wall-removal causality.
+
+The saved-theta compression shadow `-Kw/n*theta_saved` uses the actual bound input Kw, while the original current term uses actual fresh CPU theta. Their comparison diagnoses stage/state sensitivity; neither reconstructs omitted GPU rates. Original per-ID rates and all full signed extrema are retained in CSV/fields. Endpoint mean-pressure secants for actual2→2.5→3 s are ordinary arithmetic mean changes; they are explicitly not the instantaneous storage-weighted RHS and must not be used as an exact closure or error budget.
+
+Only after root full-file review and the original actual component pass, run once:
+
+`D:/anaconda3/python.exe -X utf8 -B tests/support/c08_h18_late_rhs_review_r1.py --execution-authorized`
+
+Existing result/partial names refuse overwrite. Analysis errors preserve the helper terminal check and partials; earlier preflight failures remain in the root invocation log/call and do not fabricate a completed helper check. Before/after stat entries bind consumed files without hashes. Inspect both PNGs and tables before choosing further diagnosis; normal component completion or a negative instantaneous rate alone does not prove a root cause, physical failure or repair. No pressure mean subtraction, negative clipping, extra AS sweep, other-psi admission, PRE rerun, half-chain, VTK or new physical solve follows automatically.
