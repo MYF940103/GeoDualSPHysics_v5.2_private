@@ -1,0 +1,33 @@
+--- c08_h18_rv_gpu_build_r1.py
++++ c08_h18_rv_gpu_build_r2.py
+@@ -4,7 +4,7 @@
+ import upl_c08_shepard_release_r1_build as recipe
+ T,L,S=recipe.T,recipe.L,recipe.S
+ need,read,stat,bind,save,invoke=recipe.need,recipe.read,recipe.stat,recipe.bind,recipe.save,recipe.invoke
+-TAG='c08_h18_rv_gpu_r1';CAP=T/'outputs'/(TAG+'_source');NOTE=T/'notes'/(TAG+'.md')
++BUILD_TAG='c08_h18_rv_gpu_r2';TAG='c08_h18_rv_gpu_r1';CAP=T/'outputs'/(TAG+'_source');NOTE=T/'notes'/(TAG+'.md')
+ 
+ def baseline(conf):
+     p=L/('c08_preload_schema2_'+conf+'_r1.build.json');b=read(p)
+@@ -15,7 +15,7 @@
+     return p,b,a
+ 
+ def build(conf):
+-    label='c08_h18_rv_gpu_'+conf+'_r1';out=T/'outputs'/label;intdir=Path(os.environ['TEMP'])/TAG/conf
++    label='c08_h18_rv_gpu_'+conf+'_r2';out=T/'outputs'/label;intdir=Path(os.environ['TEMP'])/BUILD_TAG/conf
+     check=L/(label+'.build.json');calls=[];before=[]
+     need(' ' not in str(intdir.resolve()) and not out.exists() and not intdir.exists() and all(not(L/(label+s)).exists() for s in ('.build.json','.host_compile.call.json','.host_compile.log','.cuda_compile.call.json','.cuda_compile.log','.link.call.json','.link.log')),'Fresh isolated outputs/receipts/no-space IntDir required')
+     try:
+@@ -89,7 +89,11 @@
+             if arg.lower().endswith('.lib')and not arg.startswith('/'):
+                 candidates=[Path(arg)]if Path(arg).is_absolute()else[p/arg for p in libdirs];lib=next((q for q in candidates if q.is_file()),None);need(lib is not None,'Actual original library missing: '+arg);before.append(stat(lib))
+         need(all(stat(v['path'])==v for v in before),'Frozen inputs changed before compilation')
+-        calls.append(invoke(label+'.host_compile',[str(cl),*clargs],intdir,env));calls.append(invoke(label+'.cuda_compile',[str(nvcc),*cuargs],intdir,env));calls.append(invoke(label+'.link',[str(link),*linked],S/'VS',env))
++        cudaenv=dict(env);cuda_path=env.get('Path',env.get('PATH',''))
++        for key in list(cudaenv):
++            if key.upper()=='PATH':cudaenv.pop(key)
++        cudaenv['PATH']=str(Path(cuargs[cuargs.index('-ccbin')+1]))+os.pathsep+cuda_path
++        calls.append(invoke(label+'.host_compile',[str(cl),*clargs],intdir,env));calls.append(invoke(label+'.cuda_compile',[str(nvcc),*cuargs],intdir,cudaenv));calls.append(invoke(label+'.link',[str(link),*linked],S/'VS',env))
+         deps=read(intdir/'host.dependencies.json');includes={Path(x).resolve()for x in deps['Data']['Includes']};need(all((frozen/n).resolve()in includes for n in ('JSphGpuSingle.h','JSphGpu.h','JSph.h','JSphGpu_ker.h',sources['header'].name)),'Host used another class/header ABI')
+         copied=[]
+         for entry in runtime:

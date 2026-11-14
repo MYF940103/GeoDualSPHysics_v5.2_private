@@ -1,0 +1,15 @@
+c08_h18_rv_gpu_Release_r1.host_compile PID 32000
+c08_h18_rv_gpu_Release_r1.cuda_compile PID 40560
+Traceback (most recent call last):
+  File "D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\support\c08_h18_rv_gpu_build_r1.py", line 106, in <module>
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--configuration',choices=('Debug','Release'),required=True);p.add_argument('--execution-authorized',action='store_true');a=p.parse_args();need(a.execution_authorized,'Independent root full-read/build admission required');build(a.configuration)
+                                                                                                                                                                                                                                                                                                ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\support\c08_h18_rv_gpu_build_r1.py", line 92, in build
+    calls.append(invoke(label+'.host_compile',[str(cl),*clargs],intdir,env));calls.append(invoke(label+'.cuda_compile',[str(nvcc),*cuargs],intdir,env));calls.append(invoke(label+'.link',[str(link),*linked],S/'VS',env))
+                                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\support\mdbc_partition_components_r3.py", line 48, in invoke
+    need(got and rc==code.value==0 and failure is None and (not target or tg and tc.value==0),'Invocation failed or owner proof incomplete; preserve first result, no retry')
+  File "D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\support\mdbc_partition_components_r3.py", line 15, in need
+    if not b:raise RuntimeError(s)
+             ^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Invocation failed or owner proof incomplete; preserve first result, no retry
