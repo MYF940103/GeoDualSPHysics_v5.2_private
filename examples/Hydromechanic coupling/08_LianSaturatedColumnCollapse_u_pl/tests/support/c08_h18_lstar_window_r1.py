@@ -1,0 +1,97 @@
+"""One independently admitted .90s receiver-C/bare GPU trajectory; no reader or chaining."""
+import argparse,os,shutil,subprocess
+from pathlib import Path
+import psutil
+import c08_h18_wend_matrix_r1 as m
+import c08_h18_lstar_gpu_smoke_r1 as smoke
+T,C,L=m.T,m.C,m.L;TAG='c08_h18_lstar_window_GPU_r1';SCRIPT=Path(__file__).resolve();NOTE=T/'notes/c08_h18_lstar_window_r1.md'
+DECISION=T/'notes/c08_h18_lstar_window_decision_r1.md'
+OUT=T/'outputs'/TAG;BUILD=L/'c08_h18_lstar_gpu_Release_on_r1.build.json';CONTROL=L/'c08_h18_as03_n255_r1.run.json';THREAD=smoke.THREAD
+CODEX=Path('C:/Users/syosh/.vscode/extensions/openai.chatgpt-26.1106.51428-win32-x64/bin/windows-x86_64/codex.exe')
+CODEX_EXPECTED=dict(path=str(CODEX.resolve()),bytes=373698352,mtime_ns=1794391544005116300)
+P={k:L/(TAG+s)for k,s in dict(prep='.prepare.json',prepare_admission='.root_prepare_admission.json',run_admission='.root_run_admission.json',start='.start.json',call='.call.json',log='.log',run='.run.json',status='.status.json',queue='.queue_attempt.json',reply='.queue_result.json').items()}
+def admission(phase):
+    q=m.read(P[phase+'_admission']);m.need(q['authorized']and q['phase']==phase and q['allowed_job']==TAG and q['execution_script']==m.stat(SCRIPT)and q['note']==m.stat(NOTE)and q['source_build']==m.stat(BUILD)and q['physical_decision']==m.stat(DECISION)and q['root_thread_id']==os.environ.get('CODEX_THREAD_ID')==THREAD and not q['automatic_native']and not q['automatic_next_job']and q['terminal_queue']is True and q['codex']==m.stat(CODEX)==CODEX_EXPECTED and not q.get('watcher',False),'Independent exact current-root window admission required');return q
+
+def prerequisites(consumed):
+    result=[]
+    for profile,label in(('off1','c08_h18_lstar_gpu_off1_r1'),('debug2','c08_h18_lstar_gpu_debug2_r1')):
+        rp=L/(label+'.run.json');np=L/(label+'.native_r1.check.json');r,n=m.read(rp),m.read(np)
+        m.need(r['passed']and r['solver_completed']and r['consumed_stats_unchanged']and r['stage']==label and r['profile']==profile and r['actual_steps']==(2000001 if profile=='off1'else 2000002)and r['saved_frames']==(1 if profile=='off1'else 2)and r['actual_exit']==r['actual_Win32_exit']==r['actual_tool_exit']==r['actual_tool_Win32_exit']==0 and n['passed']and n['native_completed']and n['reader_program_completed']and n['reader_invocations']==1 and n['consumed_stats_unchanged']and n['source_run']==m.stat(rp),'Both actual smoke/native qualifications required')
+        if profile=='off1':m.need(n['proof']['compared_records']==1 and n['proof']['all22_and_actual_time_bytes_equal']and n['proof']['literal_layout_bytes_equal']and n['proof']['literal_signed_clock_bytes_equal']and not n['proof']['headers_rewritten'],'Genuine original OFF1 all22/time/layout/signed proof required')
+        else:m.need(r['memcheck_zero_errors_and_leaks']and r['memcheck_actual_call']==r['actual_call'],'Actual Debug2 memcheck required; not a physical stability test')
+        refs=[m.stat(rp),m.stat(np)]+[m.bind(n[k])for k in('actual_call','native_completion','metadata','reader_build')]+[m.bind(r[k])for k in('actual_call','source_build','program','source_capture')]+[m.bind(q)for q in n['files']]
+        consumed.extend(refs);result.append(dict(profile=profile,run=m.stat(rp),native=m.stat(np)))
+    return result
+
+def prepare():
+    m.need(not OUT.exists()and not P['prep'].exists()and all(not P[k].exists()for k in('start','call','log','run','status','queue','reply')),'Protect existing/partial window');before=[]
+    try:
+        admission('prepare');qual=prerequisites(before);r=m.read(CONTROL);b=m.read(BUILD)
+        m.need(r['passed']and r['solver_completed']and r['consumed_stats_unchanged']and r['actual_steps']==2180000 and r['saved_frames']==91 and r['AS_coefficient']==.3 and r['AS_exponent']==2.55 and r['fixed_dt_s']==5e-6 and r['hdp']==1.8 and not r['keep_bed_overlap'],'Retained original AS03 seed/plan/source contract required')
+        m.need(b['passed']and b['consumed_stats_unchanged']and b['configuration']=='Release'and b['mode']=='on'and b['receiver_C_bare_enabled']and b['original_objects']==113 and b['retained_original_objects']==112 and b['private_objects']==1 and b['actual_link_objects']==113 and b['host_compiles']==0 and b['CUDA_compiles']==1 and b['exact_reversible_private_weight_block']and b['compile_macro']=='C08_H18_LSTAR_ON=1'and b['original_sm86_fast_math_retained']and not b['CUDA_arithmetic_flags_changed']and b['source_archive']==r['source_archive']and b['baseline_source_capture']==r['source_capture'],'Passed private Release ON one-kernel/113-object build required')
+        cap=m.read(m.bind(b['source_capture'])['path']);m.need(cap['passed']and cap['prepared_only']and cap['configuration']=='Release'and cap['mode']=='on'and cap['compile_macro']=='C08_H18_LSTAR_ON=1'and cap['changed_source_blocks']==1 and cap['exact_reverse_original_kernel_bytes']and cap['all_other_members_byte_equal']and not cap['class_or_CTE_layout_changed'],'Actual private ON source proof required')
+        before.extend(m.stat(q)for q in(SCRIPT,NOTE,Path(smoke.__file__),Path(m.__file__),P['prepare_admission'],CONTROL,BUILD,CODEX,DECISION));before.extend(m.bind(r[k])for k in('source_pre_file','source_run','source_native','source_archive','input_xml','planned_steps','native_profile'));before.extend(m.bind(b[k])for k in('program','source_capture','source_archive','baseline_source_capture','private_physical_source'));before.extend(m.bind(q)for q in b['runtime'])
+        source=m.read(r['source_native']['path']);m.need(source['passed']and source['certified_PRE']and source['expected_handoff_schema']==2 and source['same_material_plastic_PRE']and source['completed_steps']==2000000 and source['samples']==1001,'Original full same-material PRE qualification required, not equilibrium')
+        rows=m.table(r['planned_steps']['path']);clock=float(source['actual_end_s']);previous=2000000
+        m.need(len(rows)==91 and list(rows[0])==['part','completed_step','saved_step','time_s','dt_s'],'Original91 plan layout required')
+        for i,q in enumerate(rows):
+            step=int(q['completed_step']);m.need(int(q['part'])==i and step>previous and int(q['saved_step'])==step-1 and float(q['dt_s'])==5e-6,'Original saved step/dt differs')
+            for _ in range(previous,step):clock+=5e-6
+            m.need(clock==float(q['time_s']),'Original actual scalar clock differs; no n*dt');previous=step
+        m.need(int(rows[0]['completed_step'])==2000001 and previous==2180000,'Original first-post/end must remain unchanged');m.verify(before)
+        OUT.mkdir();seeds=[]
+        for e in r['seed']:
+            m.bind(e);before.append(e);dest=OUT/Path(e['path']).name;shutil.copy2(e['path'],dest);m.need(dest.read_bytes()==Path(e['path']).read_bytes(),'Original small seed byte-copy differs');seeds.append(m.stat(dest))
+        m.need(len(seeds)==3,'Original XML/BI4/Normals triple required');material=OUT/'native_profile.csv';shutil.copy2(r['native_profile']['path'],material);m.need(material.read_bytes()==Path(r['native_profile']['path']).read_bytes(),'Original17-key profile byte-copy differs');base=Path(r['input_xml']['path']).stem;m.need(any(Path(q['path']).name==base+'.xml'for q in seeds),'Generated basename preserved')
+        argv=[str(b['program']['path']),'-gpu:0','-stable','-mdbc_freeslip:1',str(OUT/base),str(OUT),'-dirdataout','data','-svres','-nsteps:2180000'];m.verify(before)
+        m.save(P['prep'],dict(stage=TAG+'.prepare',passed=True,prepared_only=True,profile='window',program=b['program'],source_build=m.stat(BUILD),source_capture=b['source_capture'],source_archive=b['source_archive'],baseline_source_capture=b['baseline_source_capture'],private_physical_source=b['private_physical_source'],runtime=b['runtime'],source_pre_file=r['source_pre_file'],source_run=r['source_run'],source_native=r['source_native'],control_run=m.stat(CONTROL),input_xml=next(q for q in seeds if Path(q['path']).suffix=='.xml'),seed=seeds,native_profile=m.stat(material),planned_steps=r['planned_steps'],actual_source_time_s=source['actual_end_s'],planned_actual_end_s=clock,new_updates=180000,expected_saved_frames=91,global_nsteps_limit=2180000,fixed_dt_s=5e-6,configuration='Release',mode='on',prerequisites=qual,argv=argv,cwd=str(C),output=str(OUT),execution_script=m.stat(SCRIPT),note=m.stat(NOTE),root_prepare_admission=m.stat(P['prepare_admission']),physical_decision=m.stat(DECISION),codex=m.stat(CODEX),terminal_queue=True,consumed=before,consumed_stats_unchanged=True,GenCase_invocations=0,solver_invocations=0,reader_invocations=0,VTK_invocations=0,SHA_scans=0,automatic_next_job=False,physical_acceptance=False))
+    except Exception as e:
+        if not P['prep'].exists():m.save(P['prep'],dict(stage=TAG+'.prepare',passed=False,first_failure=str(e),consumed=before,partial_outputs_preserved=True,solver_invocations=0,automatic_retry=False))
+        raise
+
+def terminal_once(prep):
+    m.need(not P['queue'].exists()and not P['reply'].exists(),'One terminal attempt only; never resend/rearm')
+    message=('The one admitted receiver-C/bare Lstar GPU window is terminal: '+str(P['run'])+'. Read original start/call/run/status/root admissions, actual ownership/exits and private ReleaseON source/program/macro, original schema2 PRE/input/17-key profile and unchanged91 scalar plan. AS.3/n2.55/AV.1/Wendland H1.8/5us;180000new updates/global2180000/91saves. Exit0 is pending native/physical review, not paper accuracy or clump repair. First check existing/active readers before any separately admitted window native22/6805/P0/J/kappa/FS/ledger/clock/signed review. Generic old native labels do not prove the new pressure LP/Lx weight. Preserve genuine first errors/partials and last actual console PART line; never invent unsaved state/time or rerun a completed solver. No automatic native/VTK/PRE/otherpsi/half/next solver. This direct owner attempts this current-root queue once45s only; timeout may have delivered, never resend/rearm/watch/self-test.')
+    argv=[str(CODEX),'queue','--thread',THREAD,'--message',message];m.save(P['queue'],dict(stage=TAG,run=m.stat(P['run']),status=m.stat(P['status']),thread=THREAD,program=prep['codex'],arguments=argv,attempts=1,timeout_s=45,do_not_resend=True));q=dict(stage=TAG,attempts=1,timeout_s=45,do_not_resend=True,subprocess_invocations=0)
+    try:
+        m.need(os.environ.get('CODEX_THREAD_ID')==THREAD,'Current root thread changed; do not send elsewhere');m.bind(prep['codex']);m.need(prep['codex']==CODEX_EXPECTED,'Verified CLI binding differs');q['subprocess_invocations']=1;r=subprocess.run(argv,cwd=C,capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=45,creationflags=subprocess.CREATE_NO_WINDOW);q.update(status='queued'if r.returncode==0 else'queue_failed',actual_exit=r.returncode,stdout=r.stdout,stderr=r.stderr)
+    except subprocess.TimeoutExpired as e:q.update(status='delivery_uncertain',error=str(e))
+    except Exception as e:q.update(status='queue_failed',error=str(e))
+    m.save(P['reply'],q)
+
+def run():
+    m.need(all(not P[k].exists()for k in('start','call','log','run','status','queue','reply')),'Protect any actual/partial window attempt');before=[];prep=None;call=None
+    result=dict(stage=TAG,passed=False,solver_completed=False,profile='window',configuration='Release',mode='on',solver_invocations=0,solver_launch_attempts=0,GenCase_invocations=0,reader_invocations=0,VTK_invocations=0,SHA_scans=0,automatic_next_job=False,native_review_pending=True,physical_acceptance=False,terminal_queue=True,watcher=False,unsaved_state_reconstructed=False)
+    try:
+        prep=m.read(P['prep']);a=admission('run');m.need(prep['passed']and prep['prepared_only']and prep['consumed_stats_unchanged']and prep['execution_script']==m.stat(SCRIPT)and prep['note']==m.stat(NOTE)and a['preparation']==m.stat(P['prep']),'Exact current prepared window required');prerequisites(before)
+        before.extend(m.stat(q)for q in(SCRIPT,NOTE,Path(smoke.__file__),Path(m.__file__),P['prep'],P['run_admission'],CODEX,DECISION));before.extend(m.bind(prep[k])for k in('program','source_build','source_capture','source_archive','baseline_source_capture','private_physical_source','source_pre_file','source_run','source_native','control_run','input_xml','native_profile','planned_steps'));before.extend(m.bind(q)for q in prep['seed']+prep['runtime']);program=Path(prep['program']['path']);argv=prep['argv'];m.need(OUT.is_dir()and not(OUT/'data').exists()and not(OUT/'Run.out').exists()and argv[0]==str(program)and argv[-1]=='-nsteps:2180000','Fresh exact bounded window output required')
+        for q in psutil.process_iter(['pid','exe']):
+            try:m.need(not q.info['exe']or Path(q.info['exe']).resolve()!=program.resolve(),'Exact private program active; no duplicate')
+            except(psutil.NoSuchProcess,psutil.AccessDenied):pass
+        q=psutil.Process();owner=dict(pid=q.pid,created_epoch=q.create_time(),exe=q.exe(),argv=q.cmdline(),parent_pid=q.ppid());m.verify(before);m.save(P['start'],dict(stage=TAG+'.start',owner=owner,preparation=m.stat(P['prep']),root_admission=m.stat(P['run_admission']),program=prep['program'],source_build=prep['source_build'],source_capture=prep['source_capture'],source_archive=prep['source_archive'],source_pre_file=prep['source_pre_file'],input_xml=prep['input_xml'],planned_steps=prep['planned_steps'],physical_decision=prep['physical_decision'],codex=prep['codex'],terminal_queue=True,argv=argv,solver_argv=argv,cwd=prep['cwd'],consumed=before,automatic_next_job=False,physical_acceptance=False))
+        result.update({k:prep[k]for k in('program','source_build','source_capture','source_archive','baseline_source_capture','private_physical_source','runtime','source_pre_file','source_run','source_native','control_run','input_xml','seed','native_profile','planned_steps','actual_source_time_s','planned_actual_end_s','new_updates','expected_saved_frames','global_nsteps_limit','fixed_dt_s','prerequisites')});result.update(owner=owner,preparation=m.stat(P['prep']),root_admission=m.stat(P['run_admission']),physical_decision=prep['physical_decision'],codex=prep['codex'],argv=argv,solver_argv=argv,output=str(OUT),solver_launch_attempts=1);result['actual_call']=m.invoke(TAG,[str(v)for v in argv],Path(prep['cwd']))
+    except Exception as e:result['first_failure']=str(e)
+    if P['call'].exists():
+        result['actual_call']=m.stat(P['call']);call=m.read(P['call']);child=call.get('child');result.update(actual_tool_exit=call.get('actual_Popen_wait_exit'),actual_tool_Win32_exit=call.get('actual_Win32_exit'),actual_exit=call.get('actual_Win32_exit'),actual_Win32_exit=call.get('actual_Win32_exit'),ownership_failure=call.get('ownership_failure'),solver_invocations=1 if child else None,solver_identity=child)
+    try:
+        m.need(call and child and Path(child['exe']).resolve()==Path(prep['program']['path']).resolve()and result['actual_exit']==0,'Real native child handle/program normal exit required');text=(OUT/'Run.out').read_text(encoding='utf-8-sig');m.need('Finished execution (code=0).'in text and '[Simulation INTERRUPTED'not in text and 'certified same-material plastic schema/contract2'in text,'Actual normal schema2 completion required');result.update(solver_completed=True,Run_out=m.stat(OUT/'Run.out'))
+        q=smoke.summary(OUT/'Run.csv');parts=sorted((OUT/'data').glob('Part_*.bi4'));m.need(int(q['Steps'])==2180000 and int(q['PartFiles'])==91 and int(q['PartsOut'])==0 and[p.name for p in parts]==['Part_%04d.bi4'%i for i in range(91)],'Actual steps/91saves/no-loss differs');result.update(summary=q,actual_steps=2180000,saved_frames=91,Run_csv=m.stat(OUT/'Run.csv'),PARTs=[m.stat(p)for p in parts],particle_data_files=[m.stat(p)for p in sorted((OUT/'data').iterdir())if p.is_file()])
+        m.need(result['actual_tool_exit']==result['actual_tool_Win32_exit']==0 and result['ownership_failure']is None and'first_failure'not in result and child['creation_filetime_100ns']>0 and child['parent_pid']==result['owner']['pid']and child['argv']==prep['argv']and call['owner']['pid']==result['owner']['pid']and call['owner']['created_epoch']==result['owner']['created_epoch'],'Actual owner/creation/argv/tool exit differs');m.verify(before);result.update(passed=True,solver_program_identity_matches=True,actual_solver_argv_observed=True)
+    except Exception as e:result.setdefault('first_failure',str(e))
+    if(OUT/'Run.out').exists():result['Run_out']=m.stat(OUT/'Run.out')
+    if call and Path(call['log']['path']).is_file():
+        text=Path(call['log']['path']).read_text(encoding='mbcs',errors='replace');lines=[q for q in text.splitlines()if smoke.re.match(r'^Part_\d+\s',q)];hit=smoke.re.search(r'^Text: (.*)$',text,smoke.re.M);result.update(console_log=m.bind(call['log']),last_original_console_PART_line=lines[-1]if lines else None,first_engine_exception_text=hit[1]if hit else None)
+    try:unchanged=all(m.stat(q['path'])==q for q in before)
+    except Exception as e:unchanged=False;result['terminal_stat_error']=str(e)
+    if not unchanged:result['passed']=False
+    result.update(consumed=before,consumed_stats_unchanged=unchanged)
+    if result['solver_launch_attempts']and call is None:result.update(solver_invocations=None,solver_launch_outcome_not_handle_proven=True)
+    if not result['passed']:result['surviving_process_observations']=smoke.survivors(call,None)
+    m.save(P['run'],result);m.save(P['status'],dict(stage=TAG,status='completed_pending_unique_native_review'if result['passed']else'completed_solver_review_failed'if result['solver_completed']else'failed_preserved_no_retry',run=m.stat(P['run']),native_review_pending=True,automatic_native=False,automatic_next_job=False,terminal_queue=True,physical_acceptance=False))
+    if call is not None:terminal_once(prep)
+    return 0 if result['passed']else 1
+if __name__=='__main__':
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('phase',choices=('prepare','run'));p.add_argument('--execution-authorized',action='store_true');a=p.parse_args();m.need(a.execution_authorized,'Separate current-root prepare/run authorization required')
+    if a.phase=='prepare':prepare()
+    else:raise SystemExit(run())

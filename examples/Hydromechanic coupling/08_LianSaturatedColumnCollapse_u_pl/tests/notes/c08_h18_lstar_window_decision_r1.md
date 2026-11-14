@@ -1,0 +1,11 @@
+# Lstar single-window decision before execution
+
+The passed actual CPU manufactured-rate checks and GPU OFF/native equivalence plus ON Debug/memcheck/native qualification support one bounded 0.9-s psi0 trajectory, not source adoption. Use the original certified same-material Wendland H/dp1.8 PRE, dt5us, AS.3/n2.55, AV.1, fixed-plane release, bedroles and all original safety gates. No new PRE, half-step, other psi or formal run is admitted by this note. The separate exact root prepare/run records bind the final script/program/plan.
+
+The intervention changes the LP and Lx weights together from pair-C with Eta to receiver-C with bare r2, preserving Gp/Da/gradJ/chain and all force/boundary/material expressions. Removing Eta supplied most of the prior four-weight manufactured benefit. Receiver-C also changes LP pair reciprocity; the complete current product-rule/variable-k/ghost/FS scheme was not a proven conservative fluid-mass flux scheme either. A manufactured residual improvement alone is insufficient to select it.
+
+After actual completion, independently read once and compare every original 91 state at its real common steps/times with retained AS03. Retain all 5000 material IDs, pressure extrema/distribution and signed mean/RMS, J/n/rho/k and kappa histories, front/motion and near-neighbour min/quantiles/counts in fixed material and boundary cohorts. Report S=sum(nV*p/Kw) and Ep=0.5*sum(nV*p*p/Kw) only as conditional storage/quadratic proxies, never fluid mass or closed mechanical energy. Saved states do not provide a full stage-wise Darcy/source/projection budget.
+
+Scientific selection must consider clumping and excessive suction together with pressure and motion: lower pressure RMS cannot compensate for more severe very-close pairs or early arrest. Do not remove the startup or worst frames, fit the time/radius/load, apply a half-step threshold to this option comparison, or claim other-psi/full3s acceptance. If the candidate degrades physical behaviour, preserve and reject it; consider the pair-C bare alternative or other causal evidence under the continuing user authorization rather than tuning solely to paper colours.
+
+No public source/formal XML change, solver/native invocation, SHA scan, queue or automatic next stage is performed by this document.
