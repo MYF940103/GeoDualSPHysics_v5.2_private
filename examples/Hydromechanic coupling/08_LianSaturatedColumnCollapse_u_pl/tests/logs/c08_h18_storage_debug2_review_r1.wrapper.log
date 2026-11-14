@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\support\c08_h18_storage_review_r1.py", line 139, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\support\c08_h18_storage_review_r1.py", line 132, in main
+    consumed=[stat(Path(__file__)),stat(NOTE),stat(Path(core.__file__))];bundle,initial,sidecar,run,kw=inputs(a.profile,a.run_receipt,a.native_receipt,consumed);proof=byteproof(bundle,a.profile,consumed);observations,summaries=stream(bundle,initial,sidecar)
+                                                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\support\c08_h18_storage_review_r1.py", line 68, in inputs
+    pre=typed(Path(source_done_entry['path']).parent,7060,1001,consumed);pref=core.read22(pre,1000);need(bits(pref['time'])==bits(source_done['actual_end_s']),'Actual PRE endpoint clock differs')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\support\c08_h18_storage_review_r1.py", line 38, in typed
+    clocks=table(root/'clocks.csv');need(len(clocks)==count and list(clocks[0])==CLOCK_HEADER,'Original signed-clock layout/count differs')
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\support\c08_h18_compare_r2.py", line 16, in need
+    if not ok:raise RuntimeError(text)
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Original signed-clock layout/count differs
