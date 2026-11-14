@@ -1,0 +1,76 @@
+--- original/src/source/JSph.cpp
++++ private/src/source/JSph.cpp
+@@ -2993,6 +2993,11 @@
+         bdpart->SetvFloat("DynamicArtificialStressExp",ArtificialStressExp);
+       }
+     }
++    if(IsGravityPreloadHandoff() && GravityPreloadReleased){
++      bdpart->SetvText("DynamicArtificialViscosityPolicy","ReleaseOnly");
++      bdpart->SetvBool("DynamicArtificialViscosityOverrideActive",Visco==.2f);
++      bdpart->SetvFloat("DynamicArtificialViscosityCoef",Visco);
++    }
+     if(GravityPreload){
+       bdpart->SetvUint("GravityPreloadPhase",(GravityPreloadReleased? 1u: 0u));
+       bdpart->SetvDouble("GravityPreloadRequestedTime",GravityPreloadTime);
+--- original/src/source/JSphCpuSingle.cpp
++++ private/src/source/JSphCpuSingle.cpp
+@@ -19,6 +19,7 @@
+ /// \file JSphCpuSingle.cpp \brief Implements the class \ref JSphCpuSingle.
+ 
+ #include "JSphCpuSingle.h"
++#include "JDsFixedDt.h"
+ #include "JGravityPreloadState.h"
+ #include "JSphHourglassCpu.h"
+ #include "JCellDivCpuSingle.h"
+@@ -1285,6 +1286,20 @@
+     }
+     Log->Printf("GravityPreload: release policy=KeepBedOverlap original_target=%u retired=%u kept_bed=%u kept_ids=%s; coordinates/IDs/fixed MK codes retained, bed normal=+DpZ NoSlip.",GravityPreloadIdCount,retired,kept,ids.str().c_str());
+   }
++  //-Private, bounded H1.8/psi0 release-only AV test; original PRE/XML contract keeps AV=.1.
++  if(!IsGravityPreloadHandoff() || !GravityPreloadReleased || GravityPreloadElasticSource
++    || GravityPreloadKeepBedOverlap || !GravityPreloadBedIds.empty()
++    || GravityPreloadActualStep!=2000000 || unsigned(Nstep)!=2000000
++    || GravityPreloadIdBegin!=1805 || GravityPreloadIdCount!=255 || retired!=255 || Np!=6805 || Npb!=1805
++    || !IsDynamicPorePlasticConfig() || !StrainSoftening || !UseDynamicPorePlaneContact()
++    || TKernel!=KERNEL_Wendland || Dp!=.04 || KernelH!=.072f
++    || !FixedDt || FixedDt->GetFixedValue()!=.000005 || SymplecticDtPre!=.000005
++    || !ArtificialStress || ArtificialStressCoef!=.3f || ArtificialStressExp!=2.55f
++    || ViscoTime || TVisco!=VISCO_Artificial || Visco!=.1f || ViscoBoundFactor!=1.f
++    || SoilCte.coh!=5000.f || SoilCte.dlt!=0.f || SoilCte.psiDecay!=0.f)
++    Run_Exceptioon("Private AV.2 requires the original AV.1 schema2 psi0 H1.8/5us AS.3n2.55 bed-role handoff.");
++  Visco=.2f;
++  Log->Printf("Private AV: policy=ReleaseOnly input_coefficient=%.9g actual_coefficient=%.9g completed_step=%u actual=%.17g; startup Configuration records certified input, native metadata records released AV.",double(.1f),double(Visco),unsigned(Nstep),TimeStep);
+   Log->Printf("GravityPreload: phase=released actual=%.17g completed_step=%u retired=%u; damping=OFF Shepard=OFF FreeSeepage=ON.",TimeStep,unsigned(Nstep),retired);
+ }
+ 
+--- original/src/source/JSphGpuSingle.cpp
++++ private/src/source/JSphGpuSingle.cpp
+@@ -19,6 +19,7 @@
+ /// \file JSphGpuSingle.cpp \brief Implements the class \ref JSphGpuSingle.
+ 
+ #include "JSphGpuSingle.h"
++#include "JDsFixedDt.h"
+ #include "JGravityPreloadState.h"
+ #include "JSphHourglassGpu.h"
+ #include "JCellDivGpuSingle.h"
+@@ -1089,6 +1090,20 @@
+     Log->Printf("GravityPreload: release policy=KeepBedOverlap original_target=%u retired=%u kept_bed=%u kept_ids=%s; coordinates/IDs/fixed MK codes retained, bed normal=+DpZ NoSlip."
+       ,GravityPreloadIdCount,retired,kept,keptids.c_str());
+   }
++  //-Private, bounded H1.8/psi0 release-only AV test; original PRE/XML contract keeps AV=.1.
++  if(!IsGravityPreloadHandoff() || !GravityPreloadReleased || GravityPreloadElasticSource
++    || GravityPreloadKeepBedOverlap || !GravityPreloadBedIds.empty()
++    || GravityPreloadActualStep!=2000000 || unsigned(Nstep)!=2000000
++    || GravityPreloadIdBegin!=1805 || GravityPreloadIdCount!=255 || retired!=255 || Np!=6805 || Npb!=1805
++    || !IsDynamicPorePlasticConfig() || !StrainSoftening || !UseDynamicPorePlaneContact()
++    || TKernel!=KERNEL_Wendland || Dp!=.04 || KernelH!=.072f
++    || !FixedDt || FixedDt->GetFixedValue()!=.000005 || SymplecticDtPre!=.000005
++    || !ArtificialStress || ArtificialStressCoef!=.3f || ArtificialStressExp!=2.55f
++    || ViscoTime || TVisco!=VISCO_Artificial || Visco!=.1f || ViscoBoundFactor!=1.f
++    || SoilCte.coh!=5000.f || SoilCte.dlt!=0.f || SoilCte.psiDecay!=0.f)
++    Run_Exceptioon("Private AV.2 requires the original AV.1 schema2 psi0 H1.8/5us AS.3n2.55 bed-role handoff.");
++  Visco=.2f;
++  Log->Printf("Private AV: policy=ReleaseOnly input_coefficient=%.9g actual_coefficient=%.9g completed_step=%u actual=%.17g; startup Configuration records certified input, native metadata records released AV.",double(.1f),double(Visco),unsigned(Nstep),TimeStep);
+   Log->Printf("GravityPreload: phase=released actual=%.17g completed_step=%u retired=%u; damping=OFF Shepard=OFF FreeSeepage=ON.",TimeStep,unsigned(Nstep),retired);
+ }
+ 

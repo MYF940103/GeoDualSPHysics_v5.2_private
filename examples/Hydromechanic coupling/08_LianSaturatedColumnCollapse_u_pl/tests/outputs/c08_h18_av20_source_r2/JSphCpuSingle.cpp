@@ -1,0 +1,1631 @@
+//HEAD_DSPH
+/*
+ <DUALSPHYSICS>  Copyright (c) 2020 by Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
+
+ This file is part of DualSPHysics. 
+
+ DualSPHysics is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License 
+ as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
+ 
+ DualSPHysics is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details. 
+
+ You should have received a copy of the GNU Lesser General Public License along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
+*/
+
+/// \file JSphCpuSingle.cpp \brief Implements the class \ref JSphCpuSingle.
+
+#include "JSphCpuSingle.h"
+#include "JDsFixedDt.h"
+#include "JGravityPreloadState.h"
+#include "JSphHourglassCpu.h"
+#include "JCellDivCpuSingle.h"
+#include "JArraysCpu.h"
+#include "JSphMk.h"
+#include "JPartsLoad4.h"
+#include "Functions.h"
+#include "FunctionsMath.h"
+#include "JXml.h"
+#include "JDsMotion.h"
+#include "JDsViscoInput.h"
+#include "JWaveGen.h"
+#include "JMLPistons.h"
+#include "JRelaxZones.h"
+#include "JChronoObjects.h"
+#include "JDsMooredFloatings.h"
+#include "JDsFtForcePoints.h"
+#include "JDsOutputTime.h"
+#include "JTimeControl.h"
+#include "JDsGaugeSystem.h"
+#include "JSphInOut.h"
+#include "JFtMotionSave.h" //<vs_ftmottionsv>  
+#include "JLinearValue.h"
+#include "JDataArrays.h"
+#include "JSphShifting.h"
+#include "JDsPips.h"
+#include "JDsExtraData.h"
+
+#include <climits>
+#include <map>
+
+using namespace std;
+//==============================================================================
+/// Constructor.
+//==============================================================================
+JSphCpuSingle::JSphCpuSingle():JSphCpu(false){
+  ClassName="JSphCpuSingle";
+  CellDivSingle=NULL;
+  HourglassCpu=NULL;
+}
+
+//==============================================================================
+/// Destructor.
+//==============================================================================
+JSphCpuSingle::~JSphCpuSingle(){
+  DestructorActive=true;
+  delete CellDivSingle; CellDivSingle=NULL;
+  delete HourglassCpu; HourglassCpu=NULL;
+}
+
+//==============================================================================
+/// Return memory reserved in CPU.
+/// Devuelve la memoria reservada en cpu.
+//==============================================================================
+llong JSphCpuSingle::GetAllocMemoryCpu()const{  
+  llong s=JSphCpu::GetAllocMemoryCpu();
+  //-Allocated in other objects.
+  if(CellDivSingle)s+=CellDivSingle->GetAllocMemory();
+  if(HourglassCpu)s+=HourglassCpu->GetAllocMemory();
+  return(s);
+}
+
+//==============================================================================
+/// Update maximum values of memory, particles & cells.
+/// Actualiza los valores maximos de memory, particles y cells.
+//==============================================================================
+void JSphCpuSingle::UpdateMaxValues(){
+  const llong mcpu=GetAllocMemoryCpu();
+  MaxNumbers.memcpu=max(MaxNumbers.memcpu,mcpu);
+  MaxNumbers.memgpu=0;
+  MaxNumbers.particles=max(MaxNumbers.particles,Np);
+  if(CellDivSingle)MaxNumbers.cells=max(MaxNumbers.cells,CellDivSingle->GetNct());
+}
+
+//==============================================================================
+/// Load the execution configuration.
+/// Carga la configuracion de ejecucion.
+//==============================================================================
+void JSphCpuSingle::LoadConfig(const JSphCfgRun *cfg){
+  //-Load OpenMP configuraction. | Carga configuracion de OpenMP.
+  ConfigOmp(cfg);
+  //-Load basic general configuraction. | Carga configuracion basica general.
+  JSph::LoadConfig(cfg);
+  if(HydroMechDynamicSeepage){
+    PorosityObserver=PorosityFeedback=DynamicPorePressure=true;
+    DynamicPoreWall=(CaseNpb>0 && !DynamicPoreFreeBody);
+    DynamicPoreConductivity=(HydroMechConductivityModel==1);
+    DynamicPoreConductivityCk=HydroMechConductivityCk;
+  }
+  //-Checks compatibility of selected options.
+  Log->Print("**Special case configuration is loaded");
+}
+
+//==============================================================================
+/// Configuration of current domain.
+/// Configuracion del dominio actual.
+//==============================================================================
+void JSphCpuSingle::ConfigDomain(){
+  if(SoilBoundaryDerivativeSPR){
+    if(!HydroMech || TKernel!=KERNEL_Wendland || TStep!=STEP_Symplectic || Symmetry)
+      Run_Exceptioon("SoilBoundaryDerivativeSPR requires CPU hydromechanics, Wendland and Symplectic without symmetry.");
+    if(PartBegin || CaseNmoving || CaseNfloat || InOut || Shifting || Damping || RelaxZones || StrainSoftening || UseDEM)
+      Run_Exceptioon("SoilBoundaryDerivativeSPR supports fresh fixed-wall elastic cases only: no moving/floating bodies, in/out, shifting, relaxation or softening.");
+    bool slipok=(SlipMode==SLIP_Vel0 && TMdbc2==MDBC2_None && !NoPenetration)
+      || ((SlipMode==SLIP_NoSlip || SlipMode==SLIP_FreeSlip) && (TMdbc2==MDBC2_Std || TMdbc2==MDBC2_NoPen));
+    if(MdbcSlipModeByMk){
+      //-The derivative closure already uses BoundSlipModec; admit NoSlip/FreeSlip faces only.
+      slipok=(SlipMode==SLIP_NoSlip || SlipMode==SLIP_FreeSlip) && (TMdbc2==MDBC2_Std || TMdbc2==MDBC2_NoPen);
+      for(const auto &wall:MdbcSlipModeMk)slipok=slipok && (wall.SlipMode==SLIP_NoSlip || wall.SlipMode==SLIP_FreeSlip);
+    }
+    if(TBoundary!=BC_MDBC || !slipok || !UseNormals
+      || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress)
+      Run_Exceptioon("SoilBoundaryDerivativeSPR requires uniform mDBC SlipMode 1/2/3 or per-mk NoSlip/FreeSlip faces, normals, artificial viscosity, DensityDT=0 and no artificial stress; NoPen requires NoSlip or FreeSlip.");
+    if(!SoilStressRateGradCorr || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0 || (Simulate2D && PeriY))
+      Run_Exceptioon("SoilBoundaryDerivativeSPR requires corrected stress/pore gradients, PairDivergence and no y periodicity in 2-D.");
+  }
+  if(SoilHourglassXi>0){
+    if(!Simulate2D || TKernel!=KERNEL_Wendland || TStep!=STEP_Symplectic || Symmetry)
+      Run_Exceptioon("SoilHourglassXi currently requires 2-D Wendland with Symplectic integration and no symmetry plane.");
+    if(PartBegin || CaseNmoving || CaseNfloat || InOut || Shifting || Damping || RelaxZones || StrainSoftening || UseDEM)
+      Run_Exceptioon("SoilHourglassXi supports a fixed native elastic soil set only: no restart, moving/floating bodies, in/out, shifting, relaxation or softening.");
+    if(PeriY || PeriZ || (PeriX && (PeriXinc.y!=0 || PeriXinc.z!=0 || KernelSize>=fabs(PeriXinc.x)*.5)))
+      Run_Exceptioon("SoilHourglassXi requires a bounded domain or axis-aligned x periodicity with kernel support smaller than half the period.");
+    HourglassCpu=new JSphHourglassCpu();
+    HourglassCpu->Config(CaseNpb,CaseNfluid,SoilHourglassXi,MassFluid,(PeriX? fabs(PeriXinc.x): 0),
+      CSP.kernelh,KernelSize,CSP.kwend.bwen,SoilCte.ModulusG,
+      (PorosityFeedback? RhopZero: 0),(PorosityFeedback? SoilCte.PoreWaterRho: 0));
+  }
+  //-Configure cell map division (defines ScellDiv, Scell, Map_Cells). 
+  ConfigCellDivision();
+  //-Calculate number of particles. | Calcula numero de particulas.
+  Np=PartsLoaded->GetCount(); Npb=CaseNpb; NpbOk=Npb;
+  //-Allocates fixed memory for moving & floating particles. | Reserva memoria fija para moving y floating.
+  AllocCpuMemoryFixed();
+  //-Allocates memory in CPU for particles. | Reserva memoria en Cpu para particulas.
+  AllocCpuMemoryParticles(Np,0);
+
+  //-Copies particle data.
+  ReserveBasicArraysCpu();
+  memcpy(Posc,PartsLoaded->GetPos(),sizeof(tdouble3)*Np);
+  memcpy(Idpc,PartsLoaded->GetIdp(),sizeof(unsigned)*Np);
+  memcpy(Velrhopc,PartsLoaded->GetVelRhop(),sizeof(tfloat4)*Np);
+  //========= mdbr
+  if(PartBegin && PartsLoaded->GetSoilDataLoaded()){
+    memcpy(Sigmac,PartsLoaded->GetSigma(),sizeof(tsymatrix3d)*Np);
+    memset(Kplasticc,0,sizeof(float)*Np);
+    Log->Print("Restart soil data: Sigma inherited, Kplastic reset for restart stage.");
+  }
+  else{
+    memset(Sigmac, 0, sizeof(tsymatrix3d)*Np);
+    memset(Kplasticc, 0, sizeof(float)*Np);
+  }
+  if(TStep==STEP_Verlet){
+    //-The first divide/periodic copy precedes InitRunCpu().
+    memcpy(SigmaM1c,Sigmac,sizeof(tsymatrix3d)*Np);
+    memcpy(KplasticM1c,Kplasticc,sizeof(float)*Np);
+  }
+  if(HydroMech){
+    const bool initpore=(HydroMechInitMode!=HMINIT_None);
+    if(PartBegin && !initpore){
+      if(!PartsLoaded->GetPorePressureDataLoaded())
+        Run_Exceptioon("Hydromechanical restart requires PorePress and PorePress0 arrays in the PART file.");
+      memcpy(PorePressc,PartsLoaded->GetPorePress(),sizeof(float)*Np);
+      memcpy(PorePress0c,PartsLoaded->GetPorePress0(),sizeof(float)*Np);
+      Log->Print("Restart hydromechanical data: PorePress and PorePress0 inherited.");
+    }
+    else{
+      memset(PorePressc,0,sizeof(float)*Np);
+      memset(PorePress0c,0,sizeof(float)*Np);
+      if(PartBegin && initpore)
+        Log->Print("Restart hydromechanical data: PorePress and PorePress0 will be initialized from HydroMechInitMode.");
+    }
+    if(PorePressRatec)memset(PorePressRatec,0,sizeof(float)*Np);
+    if(PorePressM1c)memset(PorePressM1c,0,sizeof(float)*Np);
+    if(HydroMechLoadAcec)memset(HydroMechLoadAcec,0,sizeof(tfloat3)*Np);
+  }
+  InitPorosityObserverCpu();
+  //=========
+  //-Computes radius of floating bodies.
+  if(CaseNfloat && PeriActive!=0 && !PartBegin)CalcFloatingRadius(Np,Posc,Idpc);
+  //-Configures floating motion data storage with high frequency. //<vs_ftmottionsv>  
+  if(FtMotSave)ConfigFtMotionSave(Np,Posc,Idpc);                  //<vs_ftmottionsv>  
+
+  //-Configures Multi-Layer Pistons according particles. | Configura pistones Multi-Layer segun particulas.
+  if(MLPistons)MLPistons->PreparePiston(Dp,Np,Idpc,Posc);
+
+  //-Load particle code. | Carga code de particulas.
+  LoadCodeParticles(Np,Idpc,Codec);
+  InitMdbcSlipModeParticles(Np,Codec,BoundSlipModec);
+
+  //-Load normals for boundary particles (fixed and moving).
+  if(UseNormals)LoadBoundNormals(Np,Npb,Idpc,Codec,BoundNormalc);
+
+  //-Runs initialization operations from XML.
+  RunInitialize(Np,Npb,Posc,Idpc,Codec,Velrhopc,BoundNormalc);
+  ConfigHydroMechNoWall(Np,Npb,Posc,Idpc,Codec,Velrhopc);
+  if(UseNormals)ConfigBoundNormals(Np,Npb,Posc,Idpc,BoundNormalc);
+  if(DynamicPoreWall)InitDynamicPoreWallCpu();
+  InitBoundaryDerivativeCpu();
+  //-Configure initial profile----mdbr
+  for (unsigned p = 0; p < Npb; p++) {
+	  Velrhopc[p].w=RhopZero; 	  
+  }
+  for (unsigned p = Npb; p < Np; p++)
+  {
+	  Velrhopc[p].w = RhopZero;
+	//  if (SolidH != 0) {
+	//	  Sigmac[p].zz=float(RhopZero*CSP.gravity.z*(SolidH - Posc[p].z));
+	//  }
+	//  else { Sigmac[p].zz = 0; }
+	//  Sigmac[p].xx = float((1. - sin(Phi))*Sigmac[p].zz);
+	//  Sigmac[p].yy = float((1. - sin(Phi))*Sigmac[p].zz);
+  }
+  //-Creates PartsInit object with initial particle data for automatic configurations.
+  CreatePartsInit(Np,Posc,Codec);
+
+  //-Computes MK domain for boundary and fluid particles.
+  MkInfo->ComputeMkDomains(Np,Posc,Codec);
+
+  //-Sets local domain of the simulation within Map_Cells and computes DomCellCode.
+  //-Establece dominio de simulacion local dentro de Map_Cells y calcula DomCellCode.
+  SelecDomain(TUint3(0,0,0),Map_Cells);
+  //-Computes inital cell of the particles and checks if there are unexpected excluded particles.
+  //-Calcula celda inicial de particulas y comprueba si hay excluidas inesperadas.
+  LoadDcellParticles(Np,Codec,Posc,Dcellc);
+
+  //-Creates object for Celldiv on the CPU and selects a valid cellmode.
+  //-Crea objeto para divide en CPU y selecciona un cellmode valido.
+  CellDivSingle=new JCellDivCpuSingle(Stable,FtCount!=0,PeriActive,CellDomFixed,CellMode
+    ,Scell,Map_PosMin,Map_PosMax,Map_Cells,CaseNbound,CaseNfixed,CaseNpb,DirOut);
+  CellDivSingle->DefineDomain(DomCellCode,DomCelIni,DomCelFin,DomPosMin,DomPosMax);
+  ConfigCellDiv((JCellDivCpu*)CellDivSingle);
+
+  ConfigSaveData(0,1,"");
+
+  //-Reorders particles according to cells.
+  //-Reordena particulas por celda.
+  BoundChanged=true;
+  RunCellDivide(true);
+  if(HydroMech && HydroMechInitMode!=HMINIT_None){
+    ComputeFreeSurfaceTracking();
+    InitHydroMechState();
+    if(HydroMechDynamicSeepage && HydroMechInitMode==HMINIT_ConstantZ)ApplyPorePressureBoundaries();
+  }
+}
+
+//==============================================================================
+/// Redimension space reserved for particles in CPU, measure 
+/// time consumed using TMC_SuResizeNp. On finishing, update divide.
+///
+/// Redimensiona el espacio reservado para particulas en CPU midiendo el
+/// tiempo consumido con TMC_SuResizeNp. Al terminar actualiza el divide.
+//==============================================================================
+void JSphCpuSingle::ResizeParticlesSize(unsigned newsize,float oversize,bool updatedivide){
+  Timersc->TmStart(TMC_SuResizeNp);
+  newsize+=(oversize>0? unsigned(oversize*newsize): 0);
+  ResizeCpuMemoryParticles(newsize);
+  Timersc->TmStop(TMC_SuResizeNp);
+  if(updatedivide)RunCellDivide(true);
+}
+
+//==============================================================================
+/// Create list of new periodic particles to duplicate.
+/// With stable activated reordered list of periodic particles.
+///
+/// Crea lista de nuevas particulas periodicas a duplicar.
+/// Con stable activado reordena lista de periodicas.
+//==============================================================================
+unsigned JSphCpuSingle::PeriodicMakeList(unsigned n,unsigned pini,bool stable
+  ,unsigned nmax,tdouble3 perinc,const tdouble3 *pos,const typecode *code
+  ,unsigned *listp)const
+{
+  unsigned count=0;
+  if(n){
+    //-Initialize size of list lsph to zero. | Inicializa tamanho de lista lspg a cero.
+    listp[nmax]=0;
+    for(unsigned p=0;p<n;p++){
+      const unsigned p2=p+pini;
+      //-Keep normal or periodic particles. | Se queda con particulas normales o periodicas.
+      if(CODE_GetSpecialValue(code[p2])<=CODE_PERIODIC){
+        //-Get particle position. | Obtiene posicion de particula.
+        const tdouble3 ps=pos[p2];
+        tdouble3 ps2=ps+perinc;
+        if(Map_PosMin<=ps2 && ps2<Map_PosMax){
+          unsigned cp=listp[nmax]; listp[nmax]++; if(cp<nmax)listp[cp]=p2;
+        }
+        ps2=ps-perinc;
+        if(Map_PosMin<=ps2 && ps2<Map_PosMax){
+          unsigned cp=listp[nmax]; listp[nmax]++; if(cp<nmax)listp[cp]=(p2|0x80000000);
+        }
+      }
+    }
+    count=listp[nmax];
+    //-Reorder list if it is valid and stability is activated. | Reordena lista si es valida y stable esta activado.
+    if(stable && count && count<=nmax){
+      //-Don't make mistake because at the moment the list is not created using OpenMP. | No hace falta porque de momento no se crea la lista usando OpenMP.
+    }
+  }
+  return(count);
+}
+
+//==============================================================================
+/// Duplicate the indicated particle position applying displacement.
+/// Duplicated particles are considered to be always valid and are inside
+/// of the domain.
+/// This kernel works for single-cpu & multi-cpu because the computations are done  
+/// starting from domposmin.
+/// It is controlled that the coordinates of the cell do not exceed the maximum.
+///
+/// Duplica la posicion de la particula indicada aplicandole un desplazamiento.
+/// Las particulas duplicadas se considera que siempre son validas y estan dentro
+/// del dominio.
+/// Este kernel vale para single-cpu y multi-cpu porque los calculos se hacen 
+/// a partir de domposmin.
+/// Se controla que las coordendas de celda no sobrepasen el maximo.
+//==============================================================================
+void JSphCpuSingle::PeriodicDuplicatePos(unsigned pnew,unsigned pcopy,bool inverse,double dx,double dy,double dz,tuint3 cellmax,tdouble3 *pos,unsigned *dcell)const{
+  //-Get pos of particle to be duplicated. | Obtiene pos de particula a duplicar.
+  tdouble3 ps=pos[pcopy];
+  //-Apply displacement. | Aplica desplazamiento.
+  ps.x+=(inverse? -dx: dx);
+  ps.y+=(inverse? -dy: dy);
+  ps.z+=(inverse? -dz: dz);
+  //-Calculate coordinates of cell inside of domain. | Calcula coordendas de celda dentro de dominio.
+  unsigned cx=unsigned((ps.x-DomPosMin.x)/Scell);
+  unsigned cy=unsigned((ps.y-DomPosMin.y)/Scell);
+  unsigned cz=unsigned((ps.z-DomPosMin.z)/Scell);
+  //-Adjust coordinates of cell is they exceed maximum. | Ajusta las coordendas de celda si sobrepasan el maximo.
+  cx=(cx<=cellmax.x? cx: cellmax.x);
+  cy=(cy<=cellmax.y? cy: cellmax.y);
+  cz=(cz<=cellmax.z? cz: cellmax.z);
+  //-Record position and cell of new particles. |  Graba posicion y celda de nuevas particulas.
+  pos[pnew]=ps;
+  dcell[pnew]=DCEL_Cell(DomCellCode,cx,cy,cz);
+}
+
+//==============================================================================
+/// Create periodic particles starting from a list of the particles to duplicate.
+/// Assume that all the particles are valid.
+/// This kernel works for single-cpu & multi-cpu because it uses domposmin.
+///
+/// Crea particulas periodicas a partir de una lista con las particulas a duplicar.
+/// Se presupone que todas las particulas son validas.
+/// Este kernel vale para single-cpu y multi-cpu porque usa domposmin. 
+//==============================================================================
+void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cellmax
+  ,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
+  ,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tfloat4 *velrhopm1,tsymatrix3d *sigma,tsymatrix3d *sigmam1,float *porepress,float *porepress0,float *porepressrate,float *porepressm1)const
+{
+  const int n=int(np);
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (static) if(n>OMP_LIMIT_COMPUTELIGHT)
+  #endif
+  for(int p=0;p<n;p++){
+    const unsigned pnew=unsigned(p)+pini;
+    const unsigned rp=listp[p];
+    const unsigned pcopy=(rp&0x7FFFFFFF);
+    //-Adjust position and cell of new particle. | Ajusta posicion y celda de nueva particula.
+    PeriodicDuplicatePos(pnew,pcopy,(rp>=0x80000000),perinc.x,perinc.y,perinc.z,cellmax,pos,dcell);
+    //-Copy the rest of the values. | Copia el resto de datos.
+    idp[pnew]=idp[pcopy];
+    code[pnew]=CODE_SetPeriodic(code[pcopy]);
+    velrhop[pnew]=velrhop[pcopy];
+    sigma[pnew]=sigma[pcopy];//mdbr
+    velrhopm1[pnew]=velrhopm1[pcopy];
+    sigmam1[pnew]=sigmam1[pcopy];//mdbr
+    Kplasticc[pnew]=Kplasticc[pcopy];
+    KplasticM1c[pnew]=KplasticM1c[pcopy];
+    if(porepress)porepress[pnew]=porepress[pcopy];
+    if(porepress0)porepress0[pnew]=porepress0[pcopy];
+    if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];
+    if(porepressm1)porepressm1[pnew]=porepressm1[pcopy];
+    if(spstau)spstau[pnew]=spstau[pcopy];
+  }
+}
+
+//==============================================================================
+/// Create periodic particles starting from a list of the particles to duplicate.
+/// Assume that all the particles are valid.
+/// This kernel works for single-cpu & multi-cpu because it uses domposmin.
+///
+/// Crea particulas periodicas a partir de una lista con las particulas a duplicar.
+/// Se presupone que todas las particulas son validas.
+/// Este kernel vale para single-cpu y multi-cpu porque usa domposmin. 
+//==============================================================================
+void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
+  ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3d *sigma, tsymatrix3d *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre)const
+{
+  const int n=int(np);
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (static) if(n>OMP_LIMIT_COMPUTELIGHT)
+  #endif
+  for(int p=0;p<n;p++){
+    const unsigned pnew=unsigned(p)+pini;
+    const unsigned rp=listp[p];
+    const unsigned pcopy=(rp&0x7FFFFFFF);
+    //-Adjust position and cell of new particle. | Ajusta posicion y celda de nueva particula.
+    PeriodicDuplicatePos(pnew,pcopy,(rp>=0x80000000),perinc.x,perinc.y,perinc.z,cellmax,pos,dcell);
+    //-Copy the rest of the values. | Copia el resto de datos.
+    idp[pnew]=idp[pcopy];
+    code[pnew]=CODE_SetPeriodic(code[pcopy]);
+    velrhop[pnew]=velrhop[pcopy];
+    sigma[pnew]=sigma[pcopy];//mdbr
+    Kplasticc[pnew]=Kplasticc[pcopy];
+    if(porepress)porepress[pnew]=porepress[pcopy];
+    if(porepress0)porepress0[pnew]=porepress0[pcopy];
+    if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];
+    if(porepresspre)porepresspre[pnew]=porepresspre[pcopy];
+    if(PoroJc)PoroJc[pnew]=PoroJc[pcopy];
+    if(PoroThetac)PoroThetac[pnew]=PoroThetac[pcopy];
+    if(PoroJPrec)PoroJPrec[pnew]=PoroJPrec[pcopy];
+    if(pospre)pospre[pnew]=pospre[pcopy];
+    if(velrhoppre)velrhoppre[pnew]=velrhoppre[pcopy];
+    if(spstau)spstau[pnew]=spstau[pcopy];
+    if(sigmapre)sigmapre[pnew] = sigmapre[pcopy];//mdbr
+  }
+}
+
+//==============================================================================
+/// Create periodic particles starting from a list of the particles to duplicate.
+/// Assume that all the particles are valid.
+/// This kernel works for single-cpu & multi-cpu because it uses domposmin.
+///
+/// Crea particulas periodicas a partir de una lista con las particulas a duplicar.
+/// Se presupone que todas las particulas son validas.
+/// Este kernel vale para single-cpu y multi-cpu porque usa domposmin. 
+//==============================================================================
+void JSphCpuSingle::PeriodicDuplicateNormals(unsigned np,unsigned pini,tuint3 cellmax
+  ,tdouble3 perinc,const unsigned *listp,tfloat3 *normals,tfloat3 *motionvel,byte *boundslipmode)const
+{
+  const int n=int(np);
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (static) if(n>OMP_LIMIT_COMPUTELIGHT)
+  #endif
+  for(int p=0;p<n;p++){
+    const unsigned pnew=unsigned(p)+pini;
+    const unsigned rp=listp[p];
+    const unsigned pcopy=(rp&0x7FFFFFFF);
+    normals[pnew]=normals[pcopy];
+    if(motionvel)motionvel[pnew]=motionvel[pcopy];
+    if(boundslipmode)boundslipmode[pnew]=boundslipmode[pcopy];
+  }
+}
+
+//==============================================================================
+/// Create duplicate particles for periodic conditions.
+/// Create new periodic particles and mark the old ones to be ignored.
+/// New periodic particles are created from Np of the beginning, first the NpbPer
+/// of the boundry and then the NpfPer fluid ones. The Np of the those leaving contains also the
+/// new periodic ones.
+///
+/// Crea particulas duplicadas de condiciones periodicas.
+/// Crea nuevas particulas periodicas y marca las viejas para ignorarlas.
+/// Las nuevas periodicas se situan a partir del Np de entrada, primero las NpbPer
+/// de contorno y despues las NpfPer fluidas. El Np de salida contiene tambien las
+/// nuevas periodicas.
+//==============================================================================
+void JSphCpuSingle::RunPeriodic(){
+  Timersc->TmStart(TMC_SuPeriodic);
+  //-Keep number of present periodic. | Guarda numero de periodicas actuales.
+  NpfPerM1=NpfPer;
+  NpbPerM1=NpbPer;
+  //-Mark present periodic particles to ignore. | Marca periodicas actuales para ignorar.
+  for(unsigned p=0;p<Np;p++){
+    const typecode rcode=Codec[p];
+    if(CODE_IsPeriodic(rcode))Codec[p]=CODE_SetOutIgnore(rcode);
+  }
+  //-Create new periodic particles. | Crea las nuevas periodicas.
+  const unsigned npb0=Npb;
+  const unsigned npf0=Np-Npb;
+  const unsigned np0=Np;
+  NpbPer=NpfPer=0;
+  BoundChanged=true;
+  for(unsigned ctype=0;ctype<2;ctype++){//-0:bound, 1:fluid+floating.
+    //-Calculate range of particles to be examined (bound or fluid). | Calcula rango de particulas a examinar (bound o fluid).
+    const unsigned pini=(ctype? npb0: 0);
+    const unsigned num= (ctype? npf0: npb0);
+    //-Search for periodic in each direction (X, Y, or Z). | Busca periodicas en cada eje (X, Y e Z).
+    for(unsigned cper=0;cper<3;cper++)if((cper==0 && PeriX) || (cper==1 && PeriY) || (cper==2 && PeriZ)){
+      tdouble3 perinc=(cper==0? PeriXinc: (cper==1? PeriYinc: PeriZinc));
+      //-First search in the list of new periodic particles and then in the initial list of particles (this is needed for periodic particles in more than one direction).
+      //-Primero busca en la lista de periodicas nuevas y despues en la lista inicial de particulas (necesario para periodicas en mas de un eje).
+      for(unsigned cblock=0;cblock<2;cblock++){//-0:new periodic, 1:original particles. | 0:periodicas nuevas, 1:particulas originales
+        const unsigned nper=(ctype? NpfPer: NpbPer); //-Number of new periodic particles of type to be processed. | Numero de periodicas nuevas del tipo a procesar.
+        const unsigned pini2=(cblock? pini: Np-nper);
+        const unsigned num2= (cblock? num:  nper);
+        //-Repeat the search if the resulting memory available is insufficient and it had to be increased.
+        //-Repite la busqueda si la memoria disponible resulto insuficiente y hubo que aumentarla.
+        bool run=true;
+        while(run && num2){
+          //-Reserve memory to create list of periodic particles. | Reserva memoria para crear lista de particulas periodicas.
+          unsigned* listp=ArraysCpu->ReserveUint();
+          unsigned nmax=CpuParticlesSize-1; //-Maximmum number of particles that fit in the list. | Numero maximo de particulas que caben en la lista.
+          //-Generate list of new periodic particles. | Genera lista de nuevas periodicas.
+          if(Np>=0x80000000)Run_Exceptioon("The number of particles is too big.");//-Because the last bit is used to mark the direction in which a new periodic particle is created. | Porque el ultimo bit se usa para marcar el sentido en que se crea la nueva periodica.
+          unsigned count=PeriodicMakeList(num2,pini2,Stable,nmax,perinc,Posc,Codec,listp);
+          //-Redimension memory for particles if there is insufficient space and repeat the search process.
+          //-Redimensiona memoria para particulas si no hay espacio suficiente y repite el proceso de busqueda.
+          if(count>nmax || !CheckCpuParticlesSize(count+Np)){
+            ArraysCpu->Free(listp); listp=NULL;
+            Timersc->TmStop(TMC_SuPeriodic);
+            ResizeParticlesSize(Np+count,PERIODIC_OVERMEMORYNP,false);
+            Timersc->TmStart(TMC_SuPeriodic);
+          }
+          else{
+            run=false;
+            //-Create new duplicate periodic particles in the list
+            //-Crea nuevas particulas periodicas duplicando las particulas de la lista.
+            if(TStep==STEP_Verlet)PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,VelrhopM1c,Sigmac,SigmaM1c,PorePressc,PorePress0c,PorePressRatec,PorePressM1c);
+            if(TStep==STEP_Symplectic){
+              if((PosPrec || VelrhopPrec) && (!PosPrec || !VelrhopPrec))Run_Exceptioon("Symplectic data is invalid.") ;
+              PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,PosPrec,VelrhopPrec,Sigmac,SigmaPrec,PorePressc,PorePress0c,PorePressRatec,PorePressPrec);
+            }
+            if(UseNormals)PeriodicDuplicateNormals(count,Np,DomCells,perinc,listp,BoundNormalc,MotionVelc,BoundSlipModec);
+
+            //-Free the list and update the number of particles. | Libera lista y actualiza numero de particulas.
+            ArraysCpu->Free(listp); listp=NULL;
+            Np+=count;
+            //-Update number of new periodic particles. | Actualiza numero de periodicas nuevas.
+            if(!ctype)NpbPer+=count;
+            else NpfPer+=count;
+          }
+        }
+      }
+    }
+  }
+  Timersc->TmStop(TMC_SuPeriodic);
+}
+
+//==============================================================================
+/// Executes divide of particles in cells.
+/// Ejecuta divide de particulas en celdas.
+//==============================================================================
+void JSphCpuSingle::RunCellDivide(bool updateperiodic){
+  DivData=DivDataCpuNull();
+  //-Creates new periodic particles and marks the old ones to be ignored.
+  //-Crea nuevas particulas periodicas y marca las viejas para ignorarlas.
+  if(updateperiodic && PeriActive)RunPeriodic();
+
+  //-Initiates Divide.
+  CellDivSingle->Divide(Npb,Np-Npb-NpbPer-NpfPer,NpbPer,NpfPer,BoundChanged
+    ,Dcellc,Codec,Idpc,Posc,Timersc);
+  DivData=CellDivSingle->GetCellDivData();
+
+  //-Sorts particle data. | Ordena datos de particulas.
+  Timersc->TmStart(TMC_NlSortData);
+  CellDivSingle->SortArray(Idpc);
+  CellDivSingle->SortArray(Codec);
+  CellDivSingle->SortArray(Dcellc);
+  CellDivSingle->SortArray(Posc);
+  CellDivSingle->SortArray(Velrhopc);
+  //===mdbr
+  CellDivSingle->SortArray(Sigmac);
+  CellDivSingle->SortArray(Kplasticc);
+  if(PorePressc)CellDivSingle->SortArray(PorePressc);
+  if(PorePress0c)CellDivSingle->SortArray(PorePress0c);
+  if(PorePressRatec)CellDivSingle->SortArray(PorePressRatec);
+  if(PoroJc)CellDivSingle->SortArray(PoroJc);
+  if(PoroThetac)CellDivSingle->SortArray(PoroThetac);
+  if(TStep==STEP_Verlet){
+    CellDivSingle->SortArray(VelrhopM1c);
+    CellDivSingle->SortArray(SigmaM1c);
+    CellDivSingle->SortArray(KplasticM1c);
+    if(PorePressM1c)CellDivSingle->SortArray(PorePressM1c);
+  }
+  else if(TStep==STEP_Symplectic && (PosPrec || VelrhopPrec)){//-In reality, this is only necessary in divide for corrector, not in predictor??? | En realidad solo es necesario en el divide del corrector, no en el predictor???
+    if(!PosPrec || !VelrhopPrec)Run_Exceptioon("Symplectic data is invalid.") ;
+    CellDivSingle->SortArray(PosPrec);
+    CellDivSingle->SortArray(VelrhopPrec);
+    CellDivSingle->SortArray(SigmaPrec);
+    if(PorePressPrec)CellDivSingle->SortArray(PorePressPrec);
+    if(PoroJPrec)CellDivSingle->SortArray(PoroJPrec);
+  }
+  if(TVisco==VISCO_LaminarSPS)CellDivSingle->SortArray(SpsTauc);
+  if(FSTypec)CellDivSingle->SortArray(FSTypec);
+  if(FSNormalc)CellDivSingle->SortArray(FSNormalc);
+  if(PosDivc)CellDivSingle->SortArray(PosDivc);
+  if(HydroMechLoadAcec)CellDivSingle->SortArray(HydroMechLoadAcec);
+  if(UseNormals){
+    CellDivSingle->SortArray(BoundNormalc);
+    if(MotionVelc)CellDivSingle->SortArray(MotionVelc);
+    if(BoundSlipModec)CellDivSingle->SortArray(BoundSlipModec);
+  }
+
+  //-Collect divide data. | Recupera datos del divide.
+  Np=CellDivSingle->GetNpFinal();
+  Npb=CellDivSingle->GetNpbFinal();
+  NpbOk=Npb-CellDivSingle->GetNpbIgnore();
+
+  //-Manages excluded particles fixed, moving and floating before aborting the execution.
+  if(CellDivSingle->GetNpbOut())AbortBoundOut();
+
+  //-Collect position of floating particles. | Recupera posiciones de floatings.
+  if(CaseNfloat)CalcRidp(PeriActive!=0,Np-Npb,Npb,CaseNpb,CaseNpb+CaseNfloat,Codec,Idpc,FtRidp);
+  if(HydroMech){
+    ApplyPorePressureBoundaries();
+    if(!PorePressPrec && PoreShepardRegularization && PoreShepardInterval && ((Nstep+1)%PoreShepardInterval)==0){
+      if(DynamicPoreWall)ComputeDynamicPoreWallStateCpu();
+      else InteractionPorePressureMdbcCorrection();
+      ShepardRegularizePorePressure();
+      if(DynamicPoreWall)ComputeDynamicPoreWallStateCpu();
+      else InteractionPorePressureMdbcCorrection();
+    }
+  }
+  Timersc->TmStop(TMC_NlSortData);
+
+  //-Control of excluded particles (only fluid because excluded boundary are checked before).
+  //-Gestion de particulas excluidas (solo fluid porque las boundary excluidas se comprueban antes).
+  Timersc->TmStart(TMC_NlOutCheck);
+  unsigned npfout=CellDivSingle->GetNpfOut();
+  if(npfout){
+    unsigned* idp=ArraysCpu->ReserveUint();
+    tdouble3* pos=ArraysCpu->ReserveDouble3();
+    tfloat3* vel=ArraysCpu->ReserveFloat3();
+    float* rhop=ArraysCpu->ReserveFloat();
+    typecode* code=ArraysCpu->ReserveTypeCode();
+    //========= mdbr
+    tfloat3* sigmakk=ArraysCpu->ReserveFloat3();
+    tfloat3* sigmaij=ArraysCpu->ReserveFloat3();
+    float* kplastic=ArraysCpu->ReserveFloat();
+    //=========
+    unsigned num=GetParticlesData(npfout,Np,false,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,code);
+    AddParticlesOut(npfout,idp,pos,vel,rhop,code);
+    ArraysCpu->Free(idp);
+    ArraysCpu->Free(pos);
+    ArraysCpu->Free(vel);
+    ArraysCpu->Free(rhop);
+    ArraysCpu->Free(code);
+    //======== mdbr
+    ArraysCpu->Free(sigmakk);
+    ArraysCpu->Free(sigmaij);
+    ArraysCpu->Free(kplastic);
+  }
+  Timersc->TmStop(TMC_NlOutCheck);
+  BoundChanged=false;
+}
+
+//==============================================================================
+/// Manages excluded particles fixed, moving and floating before aborting the execution.
+/// Gestiona particulas excluidas fixed, moving y floating antes de abortar la ejecucion.
+//==============================================================================
+void JSphCpuSingle::AbortBoundOut(){
+  const unsigned nboundout=CellDivSingle->GetNpbOut();
+  //-Get data of excluded boundary particles.
+  unsigned* idp=ArraysCpu->ReserveUint();
+  tdouble3* pos=ArraysCpu->ReserveDouble3();
+  tfloat3* vel=ArraysCpu->ReserveFloat3();
+  float* rhop=ArraysCpu->ReserveFloat();
+  typecode* code=ArraysCpu->ReserveTypeCode();
+  //========= mdbr
+  tfloat3* sigmakk=ArraysCpu->ReserveFloat3();
+  tfloat3* sigmaij=ArraysCpu->ReserveFloat3();
+  float* kplastic=ArraysCpu->ReserveFloat();
+  //=========
+  GetParticlesData(nboundout,Np,false,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,code);
+  //-Shows excluded particles information and aborts execution.
+  JSph::AbortBoundOut(Log,nboundout,idp,pos,vel,rhop,code);
+}
+
+//==============================================================================
+/// Interaction to calculate forces.
+/// Interaccion para el calculo de fuerzas.
+//==============================================================================
+void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
+  if(DynamicPoreWall){
+    //-Its same-stage J/p/stress/velocity closure runs in free-surface tracking below.
+  }
+  else if(HydroMechNoWall)CheckHydroMechNoWallSupportCpu();
+  else if(TBoundary==BC_MDBC){
+    if(MdbcCorrector || interstep!=INTERSTEP_SymCorrector)MdbcBoundCorrection(); //-Boundary correction for mDBC.
+  }
+  else CdbcBoundCorrection(); //Corrected dummy boundary condition
+  InterStep=interstep;
+  PreInteraction_Forces();
+  ComputeBoundaryDerivativeVelocity();
+  ComputeFreeSurfaceTracking();
+  ApplyHydroMechTopLoadAcceleration();
+  tfloat3 *dengradcorr=NULL;
+
+  Timersc->TmStart(TMC_CfForces);
+  //-Interaction of Fluid-Fluid/Bound & Bound-Fluid (forces and DEM). | Interaccion Fluid-Fluid/Bound & Bound-Fluid (forces and DEM).
+  if(HydroMech)ApplyFreeSurfacePorePressure();
+  if(ArtificialStressc && PorosityFeedback)PrepareArtificialStress();
+  const stinterparmsc parms=StInterparmsc(Np,Npb,NpbOk
+    ,DivData,Dcellc
+    ,Posc,Velrhopc,Idpc,Codec,Pressc,(HydroMech? PorePressc: NULL)
+    ,(HydroMech? PorePressRatec: NULL),(HydroMech? FSTypec: NULL),(HydroMech? FSNormalc: NULL)
+    ,dengradcorr,CorrMatc
+    ,Arc,Acec,Deltac
+    ,ShiftingMode,ShiftPosfsc
+    ,SpsTauc,SpsGradvelc
+    ,Sigmac,Rsigmac
+    ,ArtificialStressc
+  );
+  StInterResultc res;
+  res.viscdt=0;
+  JSphCpu::Interaction_Forces_ct(parms,res);
+  if(SoilDamping)AddSoilDampingCpu(Np,Npb,Codec,Velrhopc,Acec);
+
+  //-For 2-D simulations zero the 2nd component. | Para simulaciones 2D anula siempre la 2nd componente.
+  if(Simulate2D){
+    const int ini=int(Npb),fin=int(Np),npf=int(Np-Npb);
+    #ifdef OMP_USE
+      #pragma omp parallel for schedule (static) if(npf>OMP_LIMIT_COMPUTELIGHT)
+    #endif
+    for(int p=ini;p<fin;p++)Acec[p].y=0;
+  }
+
+  //-Add Delta-SPH correction to Arg[]. | Anhade correccion de Delta-SPH a Arg[].
+  if(Deltac){
+    const int ini=int(Npb),fin=int(Np),npf=int(Np-Npb);
+    #ifdef OMP_USE
+      #pragma omp parallel for schedule (static) if(npf>OMP_LIMIT_COMPUTELIGHT)
+    #endif
+    for(int p=ini;p<fin;p++)if(Deltac[p]!=FLT_MAX)Arc[p]+=Deltac[p];
+  }
+
+  //-Calculates maximum value of ViscDt.
+  ViscDtMax=res.viscdt;
+  //-Reuse raw loading from the main neighbour pass, then add the GNOG history.
+  //-Both precede the single final acceleration maximum reduction.
+  if(HydroMechTopLoadMode==HMLOAD_TopKernelBand)NormalizeHydroMechTopBandLoad();
+  if(HourglassCpu){
+    if(interstep==INTERSTEP_SymPredictor)
+      HourglassCpu->PredictorForce(Np,Npb,Idpc,Codec,Posc,Velrhopc,Kplasticc,Acec,SymplecticDtPre,(PorosityFeedback? PoroJc: NULL));
+    else HourglassCpu->CorrectorForce(Np,Npb,Idpc,Codec,Acec,(PorosityFeedback? PoroJc: NULL));
+  }
+  if(DynamicPorePressure)ComputeDynamicPorePressureRateCpu();
+  //-Calculates maximum value of Ace (periodic particles are ignored).
+  AceMax=ComputeAceMax(Np-Npb,Acec+Npb,Codec+Npb);
+
+  Timersc->TmStop(TMC_CfForces);
+}
+
+//==============================================================================
+/// Calculates extrapolated data on boundary particles from fluid domain for mDBC.
+/// Calcula datos extrapolados en el contorno para mDBC.
+//==============================================================================
+void JSphCpuSingle::MdbcBoundCorrection(){
+  Timersc->TmStart(TMC_CfPreForces);
+  if(BoundModec)memset(BoundModec,BMODE_DBC,sizeof(byte)*Np);
+  const TpSlipMode slipmode=(MdbcSlipModeByMk? MdbcSlipModeMax: SlipMode);
+  Interaction_MdbcCorrection(slipmode,DivData,Posc,Codec,Idpc,BoundNormalc,MotionVelc,Velrhopc,Sigmac,BoundModec,BoundSlipModec,TangenVelc
+    ,(HydroMech? PorePress0c: NULL),(HydroMech? PorePressc: NULL));
+  Timersc->TmStop(TMC_CfPreForces);
+}
+
+//==============================================================================
+/// Calculates extrapolated data on boundary particles from fluid domain for cDBC.
+/// Calcula datos extrapolados en el contorno para mDBC.
+//==============================================================================
+void JSphCpuSingle::CdbcBoundCorrection(){
+  if(HydroMech)Run_Exceptioon("Hydromechanical wall boundaries require mDBC; cDBC correction is not supported.");
+  if(!NpbOk || !BoundNormalc)return;
+  Timersc->TmStart(TMC_CfPreForces);
+  const TpSlipMode slipmode=(MdbcSlipModeByMk? MdbcSlipModeMax: SlipMode);
+  Interaction_CdbcCorrection(slipmode,DivData,Posc,Codec,Idpc,BoundNormalc,MotionVelc,Velrhopc,Sigmac,BoundSlipModec,TangenVelc);
+  Timersc->TmStop(TMC_CfPreForces);
+}
+
+//==============================================================================
+/// Returns maximum value of ace (modulus), periodic and inout particles must be ignored.
+/// Devuelve el valor maximo de ace (modulo), se deben ignorar las particulas periodicas e inout.
+//==============================================================================
+double JSphCpuSingle::ComputeAceMax(unsigned np,const tfloat3* ace,const typecode *code)const{
+  const bool check=(PeriActive!=0 || InOut!=NULL);
+  if(check)return(ComputeAceMaxOmp<true >(Np-Npb,Acec+Npb,Codec+Npb));
+  else     return(ComputeAceMaxOmp<false>(Np-Npb,Acec+Npb,Codec+Npb));
+}
+
+//==============================================================================
+/// Returns maximum value of ace (modulus), periodic particles must be ignored.
+/// Devuelve el valor maximo de ace (modulo), se deben ignorar las particulas periodicas.
+//==============================================================================
+template<bool checkcode> double JSphCpuSingle::ComputeAceMaxSeq(unsigned np
+  ,const tfloat3* ace,const typecode *code)const
+{
+  float acemax=0;
+  const int n=int(np);
+  for(int p=0;p<n;p++){
+    const typecode cod=(checkcode? code[p]: 0);
+    const tfloat3 a=(!checkcode || (CODE_IsNormal(cod) && !CODE_IsFluidInout(cod))? ace[p]: TFloat3(0));
+    const float a2=a.x*a.x+a.y*a.y+a.z*a.z;
+    acemax=max(acemax,a2);
+  }
+  return(sqrt(double(acemax)));
+}
+
+//==============================================================================
+/// Returns maximum value of ace (modulus) using OpenMP, periodic particles must be ignored.
+/// Devuelve el valor maximo de ace (modulo) using OpenMP, se deben ignorar las particulas periodicas.
+//==============================================================================
+template<bool checkcode> double JSphCpuSingle::ComputeAceMaxOmp(unsigned np
+  ,const tfloat3* ace,const typecode *code)const
+{
+  double acemax=0;
+  #ifdef OMP_USE
+    if(np>OMP_LIMIT_COMPUTELIGHT){
+      const int n=int(np);
+      if(n<0)Run_Exceptioon("Number of values is too big.");
+      float amax=0;
+      #pragma omp parallel 
+      {
+        float amax2=0;
+        #pragma omp for nowait
+        for(int p=0;p<n;++p){
+          const typecode cod=(checkcode? code[p]: 0);
+          const tfloat3 a=(!checkcode || (CODE_IsNormal(cod) && !CODE_IsFluidInout(cod))? ace[p]: TFloat3(0));
+          const float a2=a.x*a.x+a.y*a.y+a.z*a.z;
+          if(amax2<a2)amax2=a2;
+        }
+        #pragma omp critical 
+        {
+          if(amax<amax2)amax=amax2;
+        }
+      }
+      //-Saves result.
+      acemax=sqrt(double(amax));
+    }
+    else if(np)acemax=ComputeAceMaxSeq<checkcode>(np,ace,code);
+  #else
+    if(np)acemax=ComputeAceMaxSeq<checkcode>(np,ace,code);
+  #endif
+  return(acemax);
+}
+
+//<vs_ddramp_ini>
+//==============================================================================
+/// Applies initial DDT ramp.
+//==============================================================================
+void JSphCpuSingle::RunInitialDDTRamp(){
+  if(TimeStep<DDTRamp.x){
+    if((Nstep%10)==0){//-DDTkh value is updated every 10 calculation steps.
+      if(TimeStep<=DDTRamp.y)DDTkh=KernelSize * float(DDTRamp.z);
+      else{
+        const double tt=TimeStep-DDTRamp.y;
+        const double tr=DDTRamp.x-DDTRamp.y;
+        DDTkh=KernelSize * float(((tr-tt)/tr)*(DDTRamp.z-DDTValue)+DDTValue);
+      }
+    }
+  }
+  else{
+    if(DDTkh!=DDTkhCte)CSP.ddtkh=DDTkh=DDTkhCte;
+    DDTRamp.x=0;
+  }
+}//<vs_ddramp_end>
+
+//==============================================================================
+/// Perform interactions and updates of particles according to forces 
+/// calculated in the interaction using Verlet.
+///
+/// Realiza interaccion y actualizacion de particulas segun las fuerzas 
+/// calculadas en la interaccion usando Verlet.
+//==============================================================================
+double JSphCpuSingle::ComputeStep_Ver(){
+  Interaction_Forces(INTERSTEP_Verlet);    //-Interaction.
+  const double dt=DtVariable(true);        //-Calculate new dt.
+  if(CaseNmoving)CalcMotion(dt);           //-Calculate motion for moving bodies.
+  DemDtForce=dt;                           //(DEM)
+  if(Shifting)RunShifting(dt);             //-Shifting.
+  ComputeVerlet(dt);                       //-Update particles using Verlet.
+  if(CaseNfloat)RunFloating(dt,false);     //-Control of floating bodies.
+  PosInteraction_Forces();                 //-Free memory used for interaction.
+  if(Damping)RunDamping(dt,Np,Npb,Posc,Codec,Velrhopc); //-Applies Damping.
+  if(RelaxZones)RunRelaxZone(dt);          //-Generate waves using RZ.
+  return(dt);
+}
+
+//==============================================================================
+/// Perform interactions and updates of particles according to forces 
+/// calculated in the interaction using Symplectic.
+///
+/// Realiza interaccion y actualizacion de particulas segun las fuerzas 
+/// calculadas en la interaccion usando Symplectic.
+//==============================================================================
+double JSphCpuSingle::ComputeStep_Sym(){
+  const double dt=SymplecticDtPre;
+  if(CaseNmoving)CalcMotion(dt);               //-Calculate motion for moving bodies.
+  //-Predictor
+  //-----------
+  DemDtForce=dt*0.5f;                          //(DEM)
+  Interaction_Forces(INTERSTEP_SymPredictor);  //-Interaction.
+  const double ddt_p=DtVariable(false);        //-Calculate dt of predictor step.
+  if(Shifting)RunShifting(dt*.5);              //-Shifting.
+  ComputeSymplecticPre(dt);                    //-Apply Symplectic-Predictor to particles (periodic particles become invalid).
+  if(HourglassCpu)HourglassCpu->PredictorUpdate(dt);
+  if(CaseNfloat)RunFloating(dt*.5,true);       //-Control of floating bodies.
+  PosInteraction_Forces();                     //-Free memory used for interaction.
+  //-Corrector
+  //-----------
+  DemDtForce=dt;                               //(DEM)
+  RunCellDivide(true);
+  Interaction_Forces(INTERSTEP_SymCorrector);  //-Interaction.
+  const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
+  if(Shifting)RunShifting(dt);                 //-Shifting.
+  ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
+  if(HourglassCpu)HourglassCpu->CorrectorUpdate(Np,Npb,Idpc,Codec,Posc,Velrhopc,Kplasticc,dt,(PorosityFeedback? PoroJc: NULL));
+  if(CaseNfloat)RunFloating(dt,false);         //-Control of floating bodies.
+  PosInteraction_Forces();                     //-Free memory used for interaction.
+  if(Damping)RunDamping(dt,Np,Npb,Posc,Codec,Velrhopc); //-Applies Damping.
+  if(RelaxZones)RunRelaxZone(dt);              //-Generate waves using RZ.
+  SymplecticDtPre=min(ddt_p,ddt_c);            //-Calculate dt for next ComputeStep.
+  if(HourglassCpu && !FixedDt)SymplecticDtPre=min(SymplecticDtPre,HourglassCpu->GetDtLimit());
+  return(dt);
+}
+
+//==============================================================================
+/// Calculate distance between floating particles & centre according to periodic conditions.
+/// Calcula distancia entre pariculas floatin y centro segun condiciones periodicas.
+//==============================================================================
+tfloat3 JSphCpuSingle::FtPeriodicDist(const tdouble3 &pos,const tdouble3 &center,float radius)const{
+  tdouble3 distd=(pos-center);
+  if(PeriX && fabs(distd.x)>radius){
+    if(distd.x>0)distd=distd+PeriXinc;
+    else distd=distd-PeriXinc;
+  }
+  if(PeriY && fabs(distd.y)>radius){
+    if(distd.y>0)distd=distd+PeriYinc;
+    else distd=distd-PeriYinc;
+  }
+  if(PeriZ && fabs(distd.z)>radius){
+    if(distd.z>0)distd=distd+PeriZinc;
+    else distd=distd-PeriZinc;
+  }
+  return(ToTFloat3(distd));
+}
+
+//==============================================================================
+/// Calculate summation of linear and angular forces starting from acceleration of particles.
+/// Calcula suma de fuerzas lineal y angular a partir de la aceleracion de las particulas.
+//==============================================================================
+void JSphCpuSingle::FtCalcForcesSum(unsigned cf,tfloat3 &face,tfloat3 &fomegaace)const{
+  const StFloatingData &fobj=FtObjs[cf];
+  const unsigned fpini=fobj.begin-CaseNpb;
+  const unsigned fpfin=fpini+fobj.count;
+  const float fradius=fobj.radius;
+  const tdouble3 fcenter=fobj.center;
+  const float fmassp=fobj.massp;
+
+  //-Computes sumation of forces starting from acceleration of particles.
+  face=TFloat3(0);
+  fomegaace=TFloat3(0);
+  //-Calculate summation: face, fomegaace. | Calcula sumatorios: face, fomegaace.
+  for(unsigned fp=fpini;fp<fpfin;fp++){
+    int p=FtRidp[fp];
+    const tfloat3 force=Acec[p]*fmassp;
+    face=face+force;
+    const tfloat3 dist=(PeriActive? FtPeriodicDist(Posc[p],fcenter,fradius): ToTFloat3(Posc[p]-fcenter)); 
+    fomegaace.x+= force.z*dist.y - force.y*dist.z;
+    fomegaace.y+= force.x*dist.z - force.z*dist.x;
+    fomegaace.z+= force.y*dist.x - force.x*dist.y;
+  }
+}
+
+//==============================================================================
+/// Computes final acceleration from particles and from external forces to ftoforces[].
+/// Calcula aceleracion final a parti de particulas y de fuerzas externas en ftoforces[].
+//==============================================================================
+void JSphCpuSingle::FtCalcForces(StFtoForces *ftoforces)const{
+  const int ftcount=int(FtCount);
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (guided)
+  #endif
+  for(int cf=0;cf<ftcount;cf++){
+    const StFloatingData fobj=FtObjs[cf];
+    const float fmass=fobj.mass;
+    const tfloat3 fang=fobj.angles;
+    tmatrix3f inert=fobj.inertiaini;
+
+    //-Compute a cumulative rotation matrix.
+    const tmatrix3f frot=fmath::RotMatrix3x3(fang);
+    //-Compute the inertia tensor by rotating the initial tensor to the curent orientation I=(R*I_0)*R^T.
+    inert=fmath::MulMatrix3x3(fmath::MulMatrix3x3(frot,inert),fmath::TrasMatrix3x3(frot));
+    //-Calculates the inverse of the inertia matrix to compute the I^-1 * L= W
+    const tmatrix3f invinert=fmath::InverseMatrix3x3(inert);
+
+    //-Compute summation of linear and angular forces starting from acceleration of particles.
+    tfloat3 face,fomegaace;
+    FtCalcForcesSum(cf,face,fomegaace);
+    //-Adds inital external forces from ForcePoints, Moorings and external files.
+    face=face+ftoforces[cf].face;
+    fomegaace=fomegaace+ftoforces[cf].fomegaace;
+
+    //-Calculate omega starting from fomegaace & invinert. | Calcula omega a partir de fomegaace y invinert.
+    {
+      tfloat3 omegaace;
+      omegaace.x=(fomegaace.x*invinert.a11+fomegaace.y*invinert.a12+fomegaace.z*invinert.a13);
+      omegaace.y=(fomegaace.x*invinert.a21+fomegaace.y*invinert.a22+fomegaace.z*invinert.a23);
+      omegaace.z=(fomegaace.x*invinert.a31+fomegaace.y*invinert.a32+fomegaace.z*invinert.a33);
+      fomegaace=omegaace;
+    }
+    //-Add gravity force and divide by mass. | Suma fuerza de gravedad y divide por la masa.
+    face.x=(face.x + fmass*Gravity.x) / fmass;
+    face.y=(face.y + fmass*Gravity.y) / fmass;
+    face.z=(face.z + fmass*Gravity.z) / fmass;
+    //-Keep result in ftoforces[]. | Guarda resultados en ftoforces[].
+    ftoforces[cf].face=face; //-Saves acceleration (forces/fmass);
+    ftoforces[cf].fomegaace=fomegaace;
+  }
+}
+
+//==============================================================================
+/// Calculate data to update floatings.
+/// Calcula datos para actualizar floatings.
+//==============================================================================
+void JSphCpuSingle::FtCalcForcesRes(double dt,const StFtoForces *ftoforces,StFtoForcesRes *ftoforcesres)const{
+  for(unsigned cf=0;cf<FtCount;cf++){
+    //-Get Floating object values. | Obtiene datos de floating.
+    const StFloatingData fobj=FtObjs[cf];
+    //-Compute fomega. | Calculo de fomega.
+    tfloat3 fomega=fobj.fomega;
+    {
+      const tfloat3 omegaace=ftoforces[cf].fomegaace;
+      fomega.x=float(dt*omegaace.x+fomega.x);
+      fomega.y=float(dt*omegaace.y+fomega.y);
+      fomega.z=float(dt*omegaace.z+fomega.z);
+    }
+    tfloat3 fvel=fobj.fvel;
+    //if(!cf)printf("--->fvel  f%d(%f,%f,%f)\n",cf,fvel.x,fvel.y,fvel.z);
+
+    //-Zero components for 2-D simulation. | Anula componentes para 2D.
+    tfloat3 face=ftoforces[cf].face;
+    if(Simulate2D){ face.y=0; fomega.x=0; fomega.z=0; fvel.y=0; }
+    //-Compute fcenter. | Calculo de fcenter.
+    tdouble3 fcenter=fobj.center;
+    fcenter.x+=dt*fvel.x;
+    fcenter.y+=dt*fvel.y;
+    fcenter.z+=dt*fvel.z;
+    //-Compute fvel. | Calculo de fvel.
+    fvel.x=float(dt*face.x+fvel.x);
+    fvel.y=float(dt*face.y+fvel.y);
+    fvel.z=float(dt*face.z+fvel.z);
+    //-Store data to update floating. | Guarda datos para actualizar floatings.
+    FtoForcesRes[cf].fomegares=fomega;
+    FtoForcesRes[cf].fvelres=fvel;
+    FtoForcesRes[cf].fcenterres=fcenter;
+  }
+}
+
+//==============================================================================
+/// Applies motion constraints.
+/// Aplica restricciones de movimiento.
+//==============================================================================
+void JSphCpuSingle::FtApplyConstraints(StFtoForces *ftoforces,StFtoForcesRes *ftoforcesres)const{
+  for(unsigned cf=0;cf<FtCount;cf++){
+    const StFloatingData fobj=FtObjs[cf];
+    if(fobj.constraints!=FTCON_Free){
+      ApplyConstraints(fobj.constraints,ftoforces[cf].face,ftoforces[cf].fomegaace);
+      ApplyConstraints(fobj.constraints,ftoforcesres[cf].fvelres,ftoforcesres[cf].fomegares);
+    }
+  }
+}
+
+//==============================================================================
+/// Applies imposed velocity.
+/// Aplica velocidad predefinida.
+//==============================================================================
+void JSphCpuSingle::FtApplyImposedVel(StFtoForcesRes *ftoforcesres)const{
+  for(unsigned cf=0;cf<FtCount;cf++)if(!FtObjs[cf].usechrono && (FtLinearVel[cf]!=NULL || FtAngularVel[cf]!=NULL)){
+    if(FtLinearVel[cf]!=NULL){
+      const tfloat3 v=FtLinearVel[cf]->GetValue3f(TimeStep);
+      if(v.x!=FLT_MAX)FtoForcesRes[cf].fvelres.x=v.x;
+      if(v.y!=FLT_MAX)FtoForcesRes[cf].fvelres.y=v.y;
+      if(v.z!=FLT_MAX)FtoForcesRes[cf].fvelres.z=v.z;
+      //tfloat3 a=FtoForcesRes[cf].fvelres;
+      //Log->Printf("%d> t:%f v(%f,%f,%f)",Nstep,TimeStep,a.x,a.y,a.z);
+    }
+    if(FtAngularVel[cf]!=NULL){
+      const tfloat3 v=FtAngularVel[cf]->GetValue3f(TimeStep);
+      if(v.x!=FLT_MAX)FtoForcesRes[cf].fomegares.x=v.x;
+      if(v.y!=FLT_MAX)FtoForcesRes[cf].fomegares.y=v.y;
+      if(v.z!=FLT_MAX)FtoForcesRes[cf].fomegares.z=v.z;
+    }
+  }
+}
+
+//==============================================================================
+/// Process floating objects
+/// Procesa floating objects.
+//==============================================================================
+void JSphCpuSingle::RunFloating(double dt,bool predictor){
+  Timersc->TmStart(TMC_SuFloating);
+  if(TimeStep>=FtPause){//-Operator >= is used because when FtPause=0 in symplectic-predictor, code would not enter here. | Se usa >= pq si FtPause es cero en symplectic-predictor no entraria.
+    //-Initialises forces of floatings.
+    memset(FtoForces,0,sizeof(StFtoForces)*FtCount); 
+
+    //-Adds external forces (ForcePoints, Moorings, external file) to FtoForces[].
+    if(ForcePoints!=NULL || FtLinearForce!=NULL){
+      //-Loads sum of linear and angular forces from ForcePoints and Moorings.
+      if(ForcePoints)ForcePoints->GetFtForcesSum(FtoForces);
+      //-Adds the external forces.
+      if(FtLinearForce!=NULL){
+        for(unsigned cf=0;cf<FtCount;cf++){
+          FtoForces[cf].face     =FtoForces[cf].face     +GetFtExternalForceLin(cf,TimeStep);
+          FtoForces[cf].fomegaace=FtoForces[cf].fomegaace+GetFtExternalForceAng(cf,TimeStep);
+        }
+      }
+    }
+
+    //-Computes final acceleration from particles and from external forces in FtoForces[].
+    FtCalcForces(FtoForces);
+
+    //-Calculate data to update floatings. | Calcula datos para actualizar floatings.
+    FtCalcForcesRes(dt,FtoForces,FtoForcesRes);
+    //-Applies imposed velocity.
+    if(FtLinearVel!=NULL)FtApplyImposedVel(FtoForcesRes);
+    //-Applies motion constraints.
+    if(FtConstraints)FtApplyConstraints(FtoForces,FtoForcesRes);
+
+    //-Saves face and fomegace for debug.
+    if(SaveFtAce)SaveFtAceFun(dt,predictor,FtoForces);
+
+    //-Run floating with Chrono library.
+    if(ChronoObjects){
+      Timersc->TmStop(TMC_SuFloating);
+      Timersc->TmStart(TMC_SuChrono);
+      //-Export data / Exporta datos.
+      for(unsigned cf=0;cf<FtCount;cf++)if(FtObjs[cf].usechrono){
+        ChronoObjects->SetFtData(FtObjs[cf].mkbound,FtoForces[cf].face,FtoForces[cf].fomegaace);
+      }
+      //-Applies the external velocities to each floating body of Chrono.
+      if(FtLinearVel!=NULL)ChronoFtApplyImposedVel();
+      //-Calculate data using Chrono / Calcula datos usando Chrono.
+      ChronoObjects->RunChrono(Nstep,TimeStep,dt,predictor);
+      //-Load calculated data by Chrono / Carga datos calculados por Chrono.
+      for(unsigned cf=0;cf<FtCount;cf++)if(FtObjs[cf].usechrono)ChronoObjects->GetFtData(FtObjs[cf].mkbound,FtoForcesRes[cf].fcenterres,FtoForcesRes[cf].fvelres,FtoForcesRes[cf].fomegares);
+      Timersc->TmStop(TMC_SuChrono);
+      Timersc->TmStart(TMC_SuFloating);
+    }
+
+    //-Apply movement around floating objects. | Aplica movimiento sobre floatings.
+    const int ftcount=int(FtCount);
+    #ifdef OMP_USE
+      #pragma omp parallel for schedule (guided)
+    #endif
+    for(int cf=0;cf<ftcount;cf++){
+      //-Get Floating object values.
+      const StFloatingData fobj=FtObjs[cf];
+      const tfloat3 fomega=FtoForcesRes[cf].fomegares;
+      const tfloat3 fvel=FtoForcesRes[cf].fvelres;
+      const tdouble3 fcenter=FtoForcesRes[cf].fcenterres;
+      //-Updates floating particles.
+      const float fradius=fobj.radius;
+      const unsigned fpini=fobj.begin-CaseNpb;
+      const unsigned fpfin=fpini+fobj.count;
+      for(unsigned fp=fpini;fp<fpfin;fp++){
+        const int p=FtRidp[fp];
+        if(p!=UINT_MAX){
+          tfloat4 *velrhop=Velrhopc+p;
+          //-Compute and record position displacement. | Calcula y graba desplazamiento de posicion.
+          const double dx=dt*double(velrhop->x);
+          const double dy=dt*double(velrhop->y);
+          const double dz=dt*double(velrhop->z);
+          UpdatePos(Posc[p],dx,dy,dz,false,p,Posc,Dcellc,Codec);
+          //-Compute and record new velocity. | Calcula y graba nueva velocidad.
+          tfloat3 dist=(PeriActive? FtPeriodicDist(Posc[p],fcenter,fradius): ToTFloat3(Posc[p]-fcenter)); 
+          velrhop->x=fvel.x+(fomega.y*dist.z-fomega.z*dist.y);
+          velrhop->y=fvel.y+(fomega.z*dist.x-fomega.x*dist.z);
+          velrhop->z=fvel.z+(fomega.x*dist.y-fomega.y*dist.x);
+        }
+      }
+
+      //-Stores floating data.
+      if(!predictor){
+        FtObjs[cf].center=(PeriActive? UpdatePeriodicPos(fcenter): fcenter);
+        FtObjs[cf].angles=ToTFloat3(ToTDouble3(FtObjs[cf].angles)+ToTDouble3(fomega)*dt);
+        FtObjs[cf].facelin=(fvel  -FtObjs[cf].fvel  )/float(dt);
+        FtObjs[cf].faceang=(fomega-FtObjs[cf].fomega)/float(dt);
+        FtObjs[cf].fvel=fvel;
+        FtObjs[cf].fomega=fomega;
+        //-Updates floating normals for mDBC.
+        if(UseNormalsFt){
+          const tdouble3 dang=ToTDouble3(FtObjs[cf].angles-fobj.angles)*TODEG;
+          const tdouble3 cen=FtObjs[cf].center;
+          JMatrix4d mat;
+          mat.Move(cen);
+          mat.Rotate(dang);
+          mat.Move(fobj.center*-1);
+          for(unsigned fp=fpini;fp<fpfin;fp++){
+            const int p=FtRidp[fp];
+            if(p!=UINT_MAX)BoundNormalc[p]=ToTFloat3(mat.MulNormal(ToTDouble3(BoundNormalc[p])));
+          }
+        }
+        //<vs_ftmottionsv_ini>
+        if(FtMotSave && FtMotSave->CheckTime(TimeStep+dt))
+          FtMotSave->SaveFtDataCpu(TimeStep+dt,Nstep+1,FtObjs,Np,Posc,FtRidp);
+        //<vs_ftmottionsv_end>
+      }
+    }
+  }
+  Timersc->TmStop(TMC_SuFloating);
+  //-Update data of points in FtForces and calculates motion data of affected floatings.
+  if(!predictor && ForcePoints){
+    Timersc->TmStart(TMC_SuMoorings);
+    ForcePoints->UpdatePoints(TimeStep,dt,FtObjs);
+    if(Moorings)Moorings->ComputeForces(Nstep,TimeStep,dt,ForcePoints);
+    ForcePoints->ComputeForcesSum();
+    Timersc->TmStop(TMC_SuMoorings);
+  }
+}
+
+//==============================================================================
+/// Runs calculations in configured gauges.
+/// Ejecuta calculos en las posiciones de medida configuradas.
+//==============================================================================
+void JSphCpuSingle::RunGaugeSystem(double timestep,bool saveinput){
+  if(!Nstep || GaugeSystem->GetCount()){
+    Timersc->TmStart(TMC_SuGauges);
+    //const bool svpart=(TimeStep>=TimePartNext);
+    GaugeSystem->CalculeCpu(timestep,DivData,NpbOk,Npb,Np
+      ,Posc,Codec,Idpc,Velrhopc,Sigmac,saveinput);
+    Timersc->TmStop(TMC_SuGauges);
+  }
+}
+
+//==============================================================================
+/// Compute PIPS information of current particles.
+/// Calcula datos de PIPS de particulas actuales.
+//==============================================================================
+void JSphCpuSingle::ComputePips(bool run){
+  if(run || DsPips->CheckRun(Nstep)){
+    TimerSim.Stop();
+    const double timesim=TimerSim.GetElapsedTimeD()/1000.;
+    DsPips->ComputeCpu(Nstep,TimeStep,timesim,CSP,OmpThreads,Np,Npb,NpbOk
+      ,DivData,Dcellc,Posc);
+  }
+}
+
+//==============================================================================
+/// Retires the validated right MK once at a completed-step boundary; no state reinitialization.
+//==============================================================================
+void JSphCpuSingle::RunGravityPreloadRelease(){
+  if(!GravityPreload || GravityPreloadReleased || unsigned(Nstep)<GravityPreloadStep)return;
+  if(unsigned(Nstep)!=GravityPreloadStep || PosPrec || VelrhopPrec || SigmaPrec || PorePressPrec || PoroJPrec
+    || !GravityPreloadIdCount || Np!=CaseNp || Npb!=CaseNpb)
+    Run_Exceptioon("gravitypreload release requires the complete native state between full steps.");
+  Log->Printf("GravityPreload: release attempt requested=%.17g actual=%.17g completed_step=%u native_range=[%u,%u).",GravityPreloadTime,TimeStep,unsigned(Nstep),GravityPreloadIdBegin,GravityPreloadIdBegin+GravityPreloadIdCount);
+  unsigned retired=0,kept=0;const unsigned oldnp=Np,oldnb=Npb;
+  if(GravityPreloadKeepBedOverlap && (!BoundNormalc || !BoundSlipModec || GravityPreloadBedIds.empty()))
+    Run_Exceptioon("keep_bed_overlap requires its planned native IDs, normals and per-particle slip modes.");
+  for(unsigned p=0;p<Npb;p++)if(Idpc[p]>=GravityPreloadIdBegin && Idpc[p]-GravityPreloadIdBegin<GravityPreloadIdCount){
+    if(!CODE_IsNormal(Codec[p]) || !CODE_IsFixed(Codec[p]))Run_Exceptioon("gravitypreload selected an invalid fixed native ID.");
+    if(IsGravityPreloadBedId(Idpc[p])){
+      BoundNormalc[p]=TFloat3(0,0,float(Dp));BoundSlipModec[p]=byte(SLIP_NoSlip);kept++;
+    }
+    else{Codec[p]=CODE_SetOutIgnore(Codec[p]);retired++;}
+  }
+  if(GravityPreloadKeepBedOverlap){
+    if(retired+kept!=GravityPreloadIdCount || kept!=unsigned(GravityPreloadBedIds.size()))
+      Run_Exceptioon("keep_bed_overlap release did not preserve/retire exactly its planned native IDs.");
+  }
+  else if(retired!=GravityPreloadIdCount)Run_Exceptioon("gravitypreload did not retire its entire native MK block.");
+  SoilDamping=false;PoreShepardRegularization=false;
+  BoundChanged=true;RunCellDivide(true);
+  if(Np!=oldnp-retired || Npb!=oldnb-retired || CellDivSingle->GetNpbOutIgnore()!=retired
+    || CellDivSingle->GetNpbOut() || CellDivSingle->GetNpfOut() || CellDivSingle->GetNpfOutIgnore())
+    Run_Exceptioon("gravitypreload divide changed particles beyond its intentional right-wall retirement.");
+  NpMinimum-=retired; //-Remove only planned fixed samples; the original fluid-loss budget is unchanged.
+  GravityPreloadActualTime=TimeStep;GravityPreloadActualStep=Nstep;GravityPreloadReleased=true;
+  if(GravityPreloadKeepBedOverlap){
+    std::ostringstream ids;
+    for(unsigned c=0;c<unsigned(GravityPreloadBedIds.size());c++){
+      if(c)ids<<',';ids<<GravityPreloadBedIds[c];
+    }
+    Log->Printf("GravityPreload: release policy=KeepBedOverlap original_target=%u retired=%u kept_bed=%u kept_ids=%s; coordinates/IDs/fixed MK codes retained, bed normal=+DpZ NoSlip.",GravityPreloadIdCount,retired,kept,ids.str().c_str());
+  }
+  //-Private, bounded H1.8/psi0 release-only AV test; original PRE/XML contract keeps AV=.1.
+  if(!IsGravityPreloadHandoff() || !GravityPreloadReleased || GravityPreloadElasticSource
+    || GravityPreloadKeepBedOverlap || !GravityPreloadBedIds.empty()
+    || GravityPreloadActualStep!=2000000 || unsigned(Nstep)!=2000000
+    || GravityPreloadIdBegin!=1805 || GravityPreloadIdCount!=255 || retired!=255 || Np!=6805 || Npb!=1805
+    || !IsDynamicPorePlasticConfig() || !StrainSoftening || !UseDynamicPorePlaneContact()
+    || TKernel!=KERNEL_Wendland || Dp!=.04 || KernelH!=.072f
+    || !FixedDt || FixedDt->GetFixedValue()!=.000005 || SymplecticDtPre!=.000005
+    || !ArtificialStress || ArtificialStressCoef!=.3f || ArtificialStressExp!=2.55f
+    || ViscoTime || TVisco!=VISCO_Artificial || Visco!=.1f || ViscoBoundFactor!=1.f
+    || SoilCte.coh!=5000.f || SoilCte.dlt!=0.f || SoilCte.psiDecay!=0.f)
+    Run_Exceptioon("Private AV.2 requires the original AV.1 schema2 psi0 H1.8/5us AS.3n2.55 bed-role handoff.");
+  Visco=.2f;
+  Log->Printf("Private AV: policy=ReleaseOnly input_coefficient=%.9g actual_coefficient=%.9g completed_step=%u actual=%.17g; startup Configuration records certified input, native metadata records released AV.",double(.1f),double(Visco),unsigned(Nstep),TimeStep);
+  Log->Printf("GravityPreload: phase=released actual=%.17g completed_step=%u retired=%u; damping=OFF Shepard=OFF FreeSeepage=ON.",TimeStep,unsigned(Nstep),retired);
+}
+
+//==============================================================================
+/// Imports one qualified elastic full-step PRE state; this is not PART restart.
+//==============================================================================
+void JSphCpuSingle::RunGravityPreloadHandoffCpu(){
+  if(!IsGravityPreloadHandoff())return;
+  JGravityPreloadState source;LoadGravityPreloadState(source);
+  if(Np!=source.Count || Npb!=source.Fixed || PosPrec || VelrhopPrec || SigmaPrec || PorePressPrec || PoroJPrec)
+    Run_Exceptioon("Gravity preload handoff requires the complete fresh full-step allocation.");
+  std::vector<typecode> codebyid(Np);
+  std::vector<tfloat3> normalbyid(Np);
+  std::vector<byte> slipbyid(BoundSlipModec? Np: 0);
+  std::vector<bool> seen(Np,false);
+  for(unsigned p=0;p<Np;p++){
+    const unsigned id=Idpc[p];
+    if(id>=Np || seen[id] || !CODE_IsNormal(Codec[p]))Run_Exceptioon("Invalid fresh native ID in gravity preload handoff.");
+    seen[id]=true;codebyid[id]=Codec[p];normalbyid[id]=BoundNormalc[p];
+    if(BoundSlipModec)slipbyid[id]=BoundSlipModec[p];
+    const unsigned s=source.ById[id];
+    if(memcmp(PorePress0c+p,&source.PorePress0[s],sizeof(float))
+      || (CODE_IsFixed(Codec[p]) && (Posc[p].x!=source.Pos[s].x || Posc[p].y!=source.Pos[s].y || Posc[p].z!=source.Pos[s].z)))
+      Run_Exceptioon("Gravity preload fixed geometry or initial P0 differs from the fresh input.");
+  }
+  //-Start from the actual source slot order; keep fresh ID-owned static wall attributes.
+  for(unsigned p=0;p<Np;p++){
+    const unsigned id=source.Idp[p];Idpc[p]=id;Codec[p]=codebyid[id];BoundNormalc[p]=normalbyid[id];
+    if(BoundSlipModec)BoundSlipModec[p]=slipbyid[id];
+  }
+  const auto copystate=[&](){
+    for(unsigned p=0;p<Np;p++){
+      const unsigned s=source.ById[Idpc[p]];
+      Posc[p]=source.Pos[s];Velrhopc[p]=source.VelRhop[s];
+      const tdouble3 kk=source.SigmaKK[s],ij=source.SigmaIJ[s];
+      Sigmac[p]=TSymMatrix3d(kk.x,ij.x,ij.z,kk.y,ij.y,kk.z);
+      Kplasticc[p]=source.Kplastic[s];PorePressc[p]=source.PorePress[s];PorePress0c[p]=source.PorePress0[s];
+      PoroJc[p]=source.J[s];PoroThetac[p]=source.Theta[s];
+      FSTypec[p]=source.FSType[s];FSNormalc[p]=source.FSNormal[s];PosDivc[p]=source.PosDiv[s];
+    }
+  };
+  copystate();
+  LoadDcellParticles(Np,Codec,Posc,Dcellc);
+  const bool shepard=PoreShepardRegularization,freeseepage=HydroMechFreeSeepage;
+  PoreShepardRegularization=false;HydroMechFreeSeepage=false;
+  try{BoundChanged=true;RunCellDivide(true);}
+  catch(...){PoreShepardRegularization=shepard;HydroMechFreeSeepage=freeseepage;throw;}
+  PoreShepardRegularization=shepard;HydroMechFreeSeepage=freeseepage;
+  if(Np!=source.Count || Npb!=source.Fixed || CellDivSingle->GetNpbOut() || CellDivSingle->GetNpfOut()
+    || CellDivSingle->GetNpbOutIgnore() || CellDivSingle->GetNpfOutIgnore())
+    Run_Exceptioon("Gravity preload handoff cell rebuild changed native ownership.");
+  //-The rebuild may refresh ghosts/FS. Restore every saved primary/FS field by the real ID.
+  copystate();
+  RestoreGravityPreloadClock(source);
+}
+
+//==============================================================================
+/// Initialises execution of simulation.
+/// Inicia ejecucion de simulacion.
+//==============================================================================
+void JSphCpuSingle::Run(std::string appname,const JSphCfgRun *cfg,JLog2 *log){
+  if(!cfg||!log)return;
+  AppName=appname; Log=log; CfgRun=cfg;
+
+  //-Configure timers.
+  //-------------------
+  Timersc->Config(cfg->SvTimers);
+  Timersc->TmStart(TMC_Init);
+
+  //-Load parameters and values of input. | Carga de parametros y datos de entrada.
+  //--------------------------------------------------------------------------------
+  LoadConfig(cfg);
+  LoadCaseParticles();
+  VisuConfig();
+  ConfigDomain();
+  ConfigRunMode();
+  VisuParticleSummary();
+
+  //-Initialisation of execution variables. | Inicializacion de variables de ejecucion.
+  //------------------------------------------------------------------------------------
+  InitRunCpu();
+  RunGravityPreloadHandoffCpu();
+  RunGaugeSystem(TimeStep,true);
+  if(InOut)InOutInit(TimeStepIni);
+  FreePartsInit();
+  UpdateMaxValues();
+  PrintAllocMemory(GetAllocMemoryCpu());
+  if(!IsGravityPreloadHandoff())SaveData();
+  Timersc->ResetTimes();
+  Timersc->TmStop(TMC_Init);
+  if(Log->WarningCount())Log->PrintWarningList("\n[WARNINGS]","");
+  if(!IsGravityPreloadHandoff()){PartNstep=-1;Part++;}
+
+  //-Main Loop.
+  //------------
+  JTimeControl tc("30,60,300,600");//-Shows information at 0.5, 1, 5 y 10 minutes (before first PART).
+  bool partoutstop=false;
+  TimerSim.Start();
+  TimerPart.Start();
+  Log->Print(string("\n[Initialising simulation (")+RunCode+")  "+fun::GetDateTime()+"]");
+  if(DsPips)ComputePips(true);
+  PrintHeadPart();
+  while(TimeStep<TimeMax){
+    if(GravityPreload && !GravityPreloadReleased)RunGravityPreloadRelease();
+    InterStep=(TStep==STEP_Symplectic? INTERSTEP_SymPredictor: INTERSTEP_Verlet);
+    if(ViscoTime)Visco=ViscoTime->GetVisco(float(TimeStep));
+    if(DDTRamp.x)RunInitialDDTRamp(); //<vs_ddramp>
+    double stepdt=ComputeStep();
+    RunGaugeSystem(TimeStep+stepdt);
+    if(CaseNmoving)RunMotion(stepdt);
+    if(InOut)InOutComputeStep(stepdt);
+    else RunCellDivide(true);
+    TimeStep+=stepdt;
+    LastDt=stepdt;
+    partoutstop=(Np<NpMinimum || !Np);
+    //-Retain the final native state even when TimeMax is between output events.
+    if(TimeStep>=TimePartNext || partoutstop || TimeStep>=TimeMax || (NstepsBreak && Nstep+1>=NstepsBreak)
+      || (GravityPreload && !GravityPreloadReleased && unsigned(Nstep+1)==GravityPreloadStep)){
+      if(partoutstop){
+        Log->PrintWarning("Particles OUT limit reached...");
+        TimeMax=TimeStep;
+      }
+      SaveData();
+      Part++;
+      PartNstep=Nstep;
+      TimeStepM1=TimeStep;
+      TimePartNext=(SvAllSteps? TimeStep: OutputTime->GetNextTime(TimeStep));
+      TimerPart.Start();
+    }
+    UpdateMaxValues();
+    Nstep++;
+    const bool laststep=(TimeStep>=TimeMax || (NstepsBreak && Nstep>=NstepsBreak));
+    if(DsPips)ComputePips(laststep);
+    if(Part<=PartIni+1 && tc.CheckTime())Log->Print(string("  ")+tc.GetInfoFinish((TimeStep-TimeStepIni)/(TimeMax-TimeStepIni)));
+    if(NstepsBreak && Nstep>=NstepsBreak)break; //-For debugging.
+  }
+  TimerSim.Stop(); TimerTot.Stop();
+
+  //-End of Simulation.
+  //--------------------
+  FinishRun(partoutstop);
+}
+
+//==============================================================================
+/// Generates files with output data.
+/// Genera los ficheros de salida de datos.
+//==============================================================================
+void JSphCpuSingle::SaveData(){
+  const bool save=(SvData!=SDAT_None && SvData!=SDAT_Info);
+  const unsigned npsave=Np-NpbPer-NpfPer; //-Subtracts the periodic particles if they exist. | Resta las periodicas si las hubiera.
+  Timersc->TmStart(TMC_SuSavePart);
+  //-Collect particle values in original order. | Recupera datos de particulas en orden original.
+  unsigned *idp=NULL;
+  tdouble3 *pos=NULL;
+  tfloat3 *vel=NULL;
+  float *rhop=NULL;
+  //========== mdbr
+  tfloat3 *sigmakk=NULL;
+  tfloat3 *sigmaij=NULL;
+  tdouble3 *sigmastatekk=NULL;
+  tdouble3 *sigmastateij=NULL;
+  float *kplastic=NULL;
+  unsigned *fstype=NULL;
+  tfloat3 *fsnormal=NULL;
+  float *porepress=NULL;
+  float *porepress0=NULL;
+  float *posdiv=NULL;
+  tfloat3 *hydromechloadace=NULL;
+  double *poroj=NULL,*porotheta=NULL;
+  //==========
+  if(save){
+    ComputeFreeSurfaceTracking();
+    //-Assign memory and collect particle values. | Asigna memoria y recupera datos de las particulas.
+    idp=ArraysCpu->ReserveUint();
+    pos=ArraysCpu->ReserveDouble3();
+    vel=ArraysCpu->ReserveFloat3();
+    rhop=ArraysCpu->ReserveFloat();
+    //========= mdbr
+	sigmakk=ArraysCpu->ReserveFloat3();
+    sigmaij=ArraysCpu->ReserveFloat3();
+    //-Keep full stress state for restart; legacy float fields remain for plotting.
+    sigmastatekk=new tdouble3[Np];
+    sigmastateij=new tdouble3[Np];
+    kplastic=ArraysCpu->ReserveFloat();
+    fstype=ArraysCpu->ReserveUint();
+    fsnormal=ArraysCpu->ReserveFloat3();
+    if(HydroMech){
+      porepress=ArraysCpu->ReserveFloat();
+      porepress0=ArraysCpu->ReserveFloat();
+      hydromechloadace=ArraysCpu->ReserveFloat3();
+    }
+    if(PorosityObserver){poroj=new double[Np];porotheta=new double[Np];}
+    if(HydroMechDynamicSeepage)posdiv=new float[Np];
+	//=========
+    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,fstype,fsnormal,posdiv,porepress,porepress0,hydromechloadace,sigmastatekk,sigmastateij,poroj,porotheta);
+    if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
+  }
+  //-Gather additional information. | Reune informacion adicional.
+  StInfoPartPlus infoplus;
+  memset(&infoplus,0,sizeof(StInfoPartPlus));
+  if(SvData&SDAT_Info){
+    infoplus.nct=CellDivSingle->GetNct();
+    infoplus.npbin=NpbOk;
+    infoplus.npbout=Npb-NpbOk;
+    infoplus.npf=Np-Npb;
+    infoplus.npbper=NpbPer;
+    infoplus.npfper=NpfPer;
+    infoplus.newnp=(InOut? InOut->GetNewNpPart(): 0);
+    infoplus.memorycpualloc=this->GetAllocMemoryCpu();
+    infoplus.gpudata=false;
+    TimerSim.Stop();
+    infoplus.timesim=TimerSim.GetElapsedTimeD()/1000.;
+  }
+  //-Obtains current domain limits.
+  const tdouble3 vdom[2]={CellDivSingle->GetDomainLimits(true),CellDivSingle->GetDomainLimits(false)};
+  //-Stores particle data. | Graba datos de particulas.
+  JDataArrays arrays;
+  AddBasicArrays(arrays,npsave,pos,idp,vel,rhop,sigmakk,sigmaij,kplastic);//mdbr
+  if(save){
+    arrays.AddArray("SigmaState_kk",npsave,sigmastatekk,true);
+    arrays.AddArray("SigmaState_ij",npsave,sigmastateij,true);
+    arrays.AddArray("FSType",npsave,fstype);
+    arrays.AddArray("FSNormal",npsave,fsnormal);
+    if(PorosityObserver){
+      double *porosity=new double[npsave];
+      for(unsigned p=0;p<npsave;p++)
+        porosity[p]=(idp[p]<CaseNpb? 0.: 1.-(1.-double(SoilCte.Porosity))/poroj[p]);
+      arrays.AddArray("PoroVolumeRatio",npsave,poroj,true);
+      arrays.AddArray("PoroPorosity",npsave,porosity,true);
+      arrays.AddArray("PoroThetaLastStage",npsave,porotheta,true);
+      if(HydroMechDynamicSeepage){
+        arrays.AddArray("PosDiv",npsave,posdiv,true);
+        double *volume=new double[npsave],*density=new double[npsave],*conductivity=new double[npsave];
+        const double k0=SoilCte.HydraulicConductivity;
+        for(unsigned p=0;p<npsave;p++){
+          //-Use compacted saved J, not a compacted index into the working particle arrays.
+          const bool soil=(idp[p]>=CaseNpb);
+          volume[p]=(soil? double(MassFluid)/double(RhopZero)*poroj[p]: 0.);
+          density[p]=(soil? double(SoilCte.PoreWaterRho)+(double(RhopZero)-double(SoilCte.PoreWaterRho))/poroj[p]: 0.);
+          conductivity[p]=(soil? (DynamicPoreConductivity && k0>0 && poroj[p]!=1.?
+            k0*exp((poroj[p]-1.)/((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)): k0): 0.);
+          if(!std::isfinite(conductivity[p]) || (soil && k0>0 && conductivity[p]<=0))
+            Run_Exceptioon("Saved dynamic conductivity left its finite positive domain.");
+        }
+        arrays.AddArray("PoroCurrentVolume",npsave,volume,true);
+        arrays.AddArray("PoroMixtureDensity",npsave,density,true);
+        arrays.AddArray("PoroHydraulicConductivity",npsave,conductivity,true);
+      }
+    }
+    if(HydroMech && porepress && porepress0){
+      float *poreexcess=new float[npsave];
+      for(unsigned p=0;p<npsave;p++)poreexcess[p]=porepress[p]-porepress0[p];
+      arrays.AddArray("PorePress",npsave,porepress);
+      arrays.AddArray("PorePress0",npsave,porepress0);
+      arrays.AddArray("ExcessPorePress",npsave,poreexcess,true);
+      arrays.AddArray("HydroMechLoadAce",npsave,hydromechloadace);
+    }
+  }
+  //AddBasicArrays(arrays,npsave,pos,idp,vel,rhop);
+  JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
+  //-Free auxiliary memory for particle data. | Libera memoria auxiliar para datos de particulas.
+  ArraysCpu->Free(idp);
+  ArraysCpu->Free(pos);
+  ArraysCpu->Free(vel);
+  ArraysCpu->Free(rhop);
+  //===== mdbr
+  ArraysCpu->Free(sigmakk);
+  ArraysCpu->Free(sigmaij);
+  ArraysCpu->Free(kplastic);
+  ArraysCpu->Free(fstype);
+  ArraysCpu->Free(fsnormal);
+  ArraysCpu->Free(porepress);
+  ArraysCpu->Free(porepress0);
+  ArraysCpu->Free(hydromechloadace);
+  //=====
+  if(UseNormals && SvNormals)SaveVtkNormals("normals/Normals.vtk",Part,npsave,Npb,Posc,Idpc,BoundNormalc,1.f);
+  //-Save extra data.
+  if(SvExtraDataBi4)SaveExtraData();
+  Timersc->TmStop(TMC_SuSavePart);
+}
+
+//==============================================================================
+/// Displays and stores final summary of the execution.
+/// Muestra y graba resumen final de ejecucion.
+//==============================================================================
+void JSphCpuSingle::SaveExtraData(){
+  const bool svextra=(BoundNormalc!=NULL);
+  if(svextra && SvExtraDataBi4->CheckSave(Part)){
+    SvExtraDataBi4->InitPartData(Part,TimeStep,Nstep);
+    //-Saves normals of mDBC.
+    if(BoundNormalc){
+      SvExtraDataBi4->AddNormals(UseNormalsFt,Np,Npb,Idpc,(PeriActive? Codec: NULL),BoundNormalc);
+    }
+    //-Saves file.
+    SvExtraDataBi4->SavePartData();
+  }
+}
+
+//==============================================================================
+/// Displays and stores final summary of the execution.
+/// Muestra y graba resumen final de ejecucion.
+//==============================================================================
+void JSphCpuSingle::FinishRun(bool stop){
+  float tsim=TimerSim.GetElapsedTimeF()/1000.f,ttot=TimerTot.GetElapsedTimeF()/1000.f;
+  JSph::ShowResume(stop,tsim,ttot,true,"");
+  if(HourglassCpu){
+    const auto& hg=HourglassCpu->GetStats();
+    Log->Printf("SoilHourglass: forcecalls=%u predictorupdates=%u correctorupdates=%u ratecalls=%u",
+      hg.forcecalls,hg.predictorupdates,hg.correctorupdates,hg.ratecalls);
+    Log->Printf("SoilHourglass: ratecalculations=%u endpoint_rate_reuses=%u",
+      hg.ratecalculations,hg.ratecachehits);
+    Log->Printf((PorosityFeedback?
+      "SoilHourglass: max|sum(M0*Href)|=%g max|sum(mi*deltaAce)|=%g max(dt/tau)=%g spinbound=%g":
+      "SoilHourglass: max|sum(m*H)|=%g max|sum(m*deltaAce)|=%g max(dt/tau)=%g spinbound=%g"),
+      hg.maxnetforce,hg.maxactualnetforce,hg.maxtauratio,hg.spinbound);
+  }
+  Log->Print(" ");
+  string hinfo,dinfo;
+  if(SvTimers){
+    Timersc->ShowTimes("[CPU Timers]",Log);
+    Timersc->GetTimersInfo(hinfo,dinfo);
+  }
+  if(SvRes)SaveRes(tsim,ttot,hinfo,dinfo);
+  Log->PrintFilesList();
+  Log->PrintWarningList();
+  VisuRefs();
+}
+
+
