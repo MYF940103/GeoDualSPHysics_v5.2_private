@@ -1,0 +1,848 @@
+{
+  "stage": "c08_h18_rv_radial_review_r1",
+  "passed": true,
+  "physical_acceptance": false,
+  "physical_steps": 0,
+  "solver_invocations": 0,
+  "native_invocations": 0,
+  "component_invocations": 0,
+  "build_invocations": 0,
+  "GPU_actions": 0,
+  "SHA_scans": 0,
+  "automatic_next_job": false,
+  "analysis_complete": true,
+  "source_gate": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_rv_radial_candidate_r1.check.json",
+    "bytes": 10694,
+    "mtime_ns": 1794680525483659700
+  },
+  "old_vector_review": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_rv_onset_review_r1.check.json",
+    "bytes": 23107,
+    "mtime_ns": 1794679682857461000
+  },
+  "completion_counts": {
+    "stage": "c08_h18_rv_radial_candidate_r1",
+    "passed": true,
+    "trajectory_count": 2,
+    "parts": [
+      40,
+      42,
+      43,
+      76,
+      90
+    ],
+    "source_samples_each": 91,
+    "actual_force_calls": 10,
+    "actual_Darcy_calls": 20,
+    "extra_Darcy_calls": 10,
+    "actual_DtVariable_false_calls": 20,
+    "bare_CPU_control_bit_rows": 50000,
+    "external_GPU_RHS_bit_rows": 0,
+    "literal_rate_rows": 100000,
+    "soil_rows": 50000,
+    "pair_rows": 80,
+    "focus_rows": 160,
+    "manufactured_rows": 50,
+    "limiter_scalar_fixture_rows": 8,
+    "operator": "compression_only_radial_residual_limiter",
+    "alpha": 0.1,
+    "old_vector_form_identity_claimed": false,
+    "frozen_Euler_only": true,
+    "clock_rows": 10,
+    "max_final_float_budget_ratio": 0.49797574971831815,
+    "max_expanded_budget_ratio": 0.4978732655915922,
+    "actual_CPUcell_RV_graph": true,
+    "reverse_membership_required": true,
+    "GPU_bittruth_claimed": false,
+    "physical_steps": 0,
+    "material_return_calls": 0,
+    "filter_calls": 0,
+    "public_source_changed": false,
+    "physical_acceptance": false
+  },
+  "preserved_pair_rows": 80,
+  "preserved_focus_rows": 160,
+  "new_soil_rows_checked": 50000,
+  "old_soil_reread": false,
+  "actual_states": 10,
+  "manufactured_rows": 50,
+  "limiter_fixture_rows": 8,
+  "clock_rows": 10,
+  "selected_clocks_byte_identical": true,
+  "independent_radial_certificates": 60,
+  "old_vector_form_identity_used": false,
+  "CSV_channel_arithmetic_max_budget_ratio": 0.023759209836302825,
+  "seven_physical_channels": [
+    "compression",
+    "LP",
+    "Taylor_pressure",
+    "Da",
+    "FS_Ace_Lx",
+    "chain_pressure",
+    "chain_Ace"
+  ],
+  "independent_numeric_residual_not_redefined": true,
+  "actual_AS_tensor_nn_units": "Pa",
+  "AS_tensor_rescaled_or_renamed": false,
+  "approaching_response_counts": [
+    {
+      "case": "original",
+      "pairs": 40,
+      "approaching": 22,
+      "vector_inward": 11,
+      "radial_inward": 11,
+      "direct_radial_active": 11
+    },
+    {
+      "case": "rv",
+      "pairs": 40,
+      "approaching": 26,
+      "vector_inward": 9,
+      "radial_inward": 10,
+      "direct_radial_active": 16
+    }
+  ],
+  "illustrative_pairs_not_full_scope": [
+    {
+      "pair": [
+        {
+          "pair_row_index": 52,
+          "case": "rv",
+          "part": 42,
+          "time_s": 10.420004999690107,
+          "tau_s": 0.42000499998409957,
+          "completed_step": 2084001,
+          "ID_i": 6964,
+          "ID_j": 7012,
+          "distance_m_vector": 0.019709914935687266,
+          "distance_over_dp_vector": 0.4927478733921816,
+          "rdot_m_s_vector": -0.2090757061430194,
+          "curvature_m_s2_vector": 1.9102327789461757,
+          "direct_neighbor_vector": 1,
+          "beta_vector": 1562.7174723172652,
+          "dv_affine_n_m_s_vector": -0.12057156109753303,
+          "rbar_n_m_s_vector": -0.08850414504548637,
+          "ri_n_m_s_vector": -0.10596957507452183,
+          "rj_n_m_s_vector": -0.07103871501645088,
+          "direct_RV_Fi_n_N_m_vector": 13.830697383508307,
+          "direct_RV_relative_a_n_m_s2_vector": 8.297961442091484,
+          "allneighbor_ideal_da_n_m_s2_vector": 22.18540618835993,
+          "allneighbor_committed_da_n_m_s2_vector": 22.185406334643197,
+          "base_relative_a_n_m_s2_vector": -21.07653794790802,
+          "candidate_relative_a_n_m_s2_vector": 1.1088683867351787,
+          "base_rddot_m_s2_vector": -19.16630516896184,
+          "candidate_rddot_m_s2_vector": 3.0191011656813544,
+          "distance_m_radial": 0.019709914935687266,
+          "distance_over_dp_radial": 0.4927478733921816,
+          "rdot_m_s_radial": -0.2090757061430194,
+          "curvature_m_s2_radial": 1.9102327789461757,
+          "direct_neighbor_radial": 1,
+          "beta_radial": 1562.7174723172652,
+          "dv_affine_n_m_s_radial": -0.12057156109753303,
+          "rbar_n_m_s_radial": -0.08850414504548637,
+          "ri_n_m_s_radial": -0.10596957507452183,
+          "rj_n_m_s_radial": -0.07103871501645088,
+          "radial_s_m_s": -0.2090757061430194,
+          "radial_q_m_s": -0.08850414504548634,
+          "limiter_a_m_s": 0.08850414504548634,
+          "direct_active": 1,
+          "current_vector_direct_Fi_n_shadow_N_m": 13.830697383508307,
+          "direct_RV_Fi_n_N_m_radial": 13.830697383508301,
+          "direct_RV_relative_a_n_m_s2_radial": 8.29796144209148,
+          "allneighbor_ideal_da_n_m_s2_radial": 14.05274096369235,
+          "allneighbor_committed_da_n_m_s2_radial": 14.05274123665729,
+          "base_relative_a_n_m_s2_radial": -21.07653794790802,
+          "candidate_relative_a_n_m_s2_radial": -7.02379671125073,
+          "base_rddot_m_s2_radial": -19.16630516896184,
+          "candidate_rddot_m_s2_radial": -5.1135639323045545,
+          "approaching": true,
+          "vector_allneighbor_inward": false,
+          "vector_approaching_and_inward": false,
+          "radial_allneighbor_inward": false,
+          "radial_approaching_and_inward": false
+        }
+      ],
+      "endpoints": [
+        {
+          "focus_row_index": 104,
+          "case": "rv",
+          "part": 42,
+          "time_s": 10.420004999690107,
+          "tau_s": 0.42000499998409957,
+          "completed_step": 2084001,
+          "pair_i": 6964,
+          "pair_j": 7012,
+          "native_id": 6964,
+          "p_Pa": -10206.0068359375,
+          "P0_Pa": 17854.201171875,
+          "J": 1.0058775568806457,
+          "kappa": 1.1486804485321045,
+          "saved_FS": 0,
+          "fresh_FS": 0,
+          "total_eigen_f32_0": 6878.306640625,
+          "total_eigen_f32_1": 8485.552734375,
+          "total_eigen_f32_2": 10078.48046875,
+          "total_positive_eigen_sum_Pa": 25442.33984375,
+          "total_nn_Pa": 7068.927451964387,
+          "effective_nn_Pa": -3137.079383973111,
+          "actual_AS_tensor_nn_Pa": -2120.6786694201733,
+          "base_R_Pa_s": -10069818.0,
+          "candidate_R_Pa_s": -9089754.0,
+          "base_Acex": -10.932756423950195,
+          "base_Acez": 2.508819580078125,
+          "ideal_RV_dax": -4.4744350613123025,
+          "ideal_RV_daz": 5.642474059238717,
+          "committed_RV_dax": -4.474434852600098,
+          "committed_RV_daz": 5.642474174499512,
+          "Lxx": 2.430859212464212,
+          "Lxz": 9.273887156806792,
+          "Lzx": -0.2725206679546708,
+          "Lzz": -3.2885072208495405,
+          "delta_R_Pa_s": 980064.0,
+          "base_compression": 109930511.09668542,
+          "base_LP": -127457877.66426969,
+          "base_Taylor_pressure": 2576637.438986884,
+          "base_Da": 4983396.675791503,
+          "base_FS_Ace_Lx": 0.0,
+          "base_chain_pressure": -107153.99689577187,
+          "base_chain_Ace": 4668.939760134217,
+          "base_numeric_residual": -0.4900584891438484,
+          "candidate_compression": 109930511.09668542,
+          "candidate_LP": -127457877.66426969,
+          "candidate_Taylor_pressure": 2576637.438986884,
+          "candidate_Da": 5975638.14265392,
+          "candidate_FS_Ace_Lx": 0.0,
+          "candidate_chain_pressure": -107153.99689577187,
+          "candidate_chain_Ace": -7509.3503283416,
+          "candidate_numeric_residual": 0.3331675697118044,
+          "delta_compression": 0,
+          "delta_LP": 0,
+          "delta_Taylor_pressure": 0,
+          "delta_Da": 992241.4668624168,
+          "delta_FS_Ace_Lx": 0.0,
+          "delta_chain_pressure": 0,
+          "delta_chain_Ace": -12178.290088475816,
+          "delta_numeric_residual": 0.8232260588556528,
+          "vector_candidate_R_Pa_s": -10510192.0,
+          "vector_delta_R_Pa_s": -440374.0,
+          "vector_delta_compression": 0,
+          "vector_delta_LP": 0,
+          "vector_delta_Taylor_pressure": 0,
+          "vector_delta_Da": -418607.7549497131,
+          "vector_delta_FS_Ace_Lx": 0,
+          "vector_delta_chain_pressure": 0,
+          "vector_delta_chain_Ace": -21766.837063137747,
+          "vector_delta_numeric_residual": 0.5920128524303436
+        },
+        {
+          "focus_row_index": 105,
+          "case": "rv",
+          "part": 42,
+          "time_s": 10.420004999690107,
+          "tau_s": 0.42000499998409957,
+          "completed_step": 2084001,
+          "pair_i": 6964,
+          "pair_j": 7012,
+          "native_id": 7012,
+          "p_Pa": -21390.318359375,
+          "P0_Pa": 18639.0,
+          "J": 1.0160433980981696,
+          "kappa": 1.6824588775634766,
+          "saved_FS": 0,
+          "fresh_FS": 0,
+          "total_eigen_f32_0": 23536.73046875,
+          "total_eigen_f32_1": 23536.73046875,
+          "total_eigen_f32_2": 23536.73046875,
+          "total_positive_eigen_sum_Pa": 70610.19140625,
+          "total_nn_Pa": 23536.730616335917,
+          "effective_nn_Pa": 2146.41225696092,
+          "actual_AS_tensor_nn_Pa": -7061.019531249999,
+          "base_R_Pa_s": -13543638.0,
+          "candidate_R_Pa_s": -11708550.0,
+          "base_Acex": -26.641334533691406,
+          "base_Acez": 19.94845962524414,
+          "ideal_RV_dax": 6.531610191830563,
+          "ideal_RV_daz": -5.833685731543786,
+          "committed_RV_dax": 6.531610488891602,
+          "committed_RV_daz": -5.833685874938965,
+          "Lxx": 2.4180360050662038,
+          "Lxz": 10.705733382519309,
+          "Lzx": -0.30968891302614837,
+          "Lzz": -4.80621242251563,
+          "delta_R_Pa_s": 1835088.0,
+          "base_compression": -702171195.392354,
+          "base_LP": 720071529.6361059,
+          "base_Taylor_pressure": -30843398.51963502,
+          "base_Da": -303629.87306270143,
+          "base_FS_Ace_Lx": 0.0,
+          "base_chain_pressure": -285568.0931540213,
+          "base_chain_Ace": -11375.737587291873,
+          "base_numeric_residual": -0.020312847569584846,
+          "candidate_compression": -702171195.392354,
+          "candidate_LP": 720071529.6361059,
+          "candidate_Taylor_pressure": -30843398.51963502,
+          "candidate_Da": 1524975.152113543,
+          "candidate_FS_Ace_Lx": 0.0,
+          "candidate_chain_pressure": -285568.0931540213,
+          "candidate_chain_Ace": -4892.374711344013,
+          "candidate_numeric_residual": -0.4083650391548872,
+          "delta_compression": 0,
+          "delta_LP": 0,
+          "delta_Taylor_pressure": 0,
+          "delta_Da": 1828605.0251762443,
+          "delta_FS_Ace_Lx": 0.0,
+          "delta_chain_pressure": 0,
+          "delta_chain_Ace": 6483.36287594786,
+          "delta_numeric_residual": -0.38805219158530235,
+          "vector_candidate_R_Pa_s": -10257133.0,
+          "vector_delta_R_Pa_s": 3286505.0,
+          "vector_delta_compression": 0,
+          "vector_delta_LP": 0,
+          "vector_delta_Taylor_pressure": 0,
+          "vector_delta_Da": 3288177.5041163187,
+          "vector_delta_FS_Ace_Lx": 0,
+          "vector_delta_chain_pressure": 0,
+          "vector_delta_chain_Ace": -1672.4839588754712,
+          "vector_delta_numeric_residual": -0.02015744335949421
+        }
+      ]
+    },
+    {
+      "pair": [
+        {
+          "pair_row_index": 78,
+          "case": "rv",
+          "part": 90,
+          "time_s": 10.899999999671936,
+          "tau_s": 0.899999999965928,
+          "completed_step": 2180000,
+          "ID_i": 6918,
+          "ID_j": 6967,
+          "distance_m_vector": 0.008460589031651703,
+          "distance_over_dp_vector": 0.21151472579129257,
+          "rdot_m_s_vector": -0.011123277214222295,
+          "curvature_m_s2_vector": 0.11141707906899968,
+          "direct_neighbor_vector": 1,
+          "beta_vector": 2010.265183994155,
+          "dv_affine_n_m_s_vector": -0.01774797727141069,
+          "rbar_n_m_s_vector": 0.006624700057188397,
+          "ri_n_m_s_vector": 0.007244940292329588,
+          "rj_n_m_s_vector": 0.006004459822047206,
+          "direct_RV_Fi_n_N_m_vector": -1.3317403879369922,
+          "direct_RV_relative_a_n_m_s2_vector": -0.8008011318353905,
+          "allneighbor_ideal_da_n_m_s2_vector": -1.8411501155506658,
+          "allneighbor_committed_da_n_m_s2_vector": -1.8411496034655928,
+          "base_relative_a_n_m_s2_vector": 1.400944714174085,
+          "candidate_relative_a_n_m_s2_vector": -0.44020488929150786,
+          "base_rddot_m_s2_vector": 1.5123617932430846,
+          "candidate_rddot_m_s2_vector": -0.3287878102225082,
+          "distance_m_radial": 0.008460589031651703,
+          "distance_over_dp_radial": 0.21151472579129257,
+          "rdot_m_s_radial": -0.011123277214222295,
+          "curvature_m_s2_radial": 0.11141707906899968,
+          "direct_neighbor_radial": 1,
+          "beta_radial": 2010.265183994155,
+          "dv_affine_n_m_s_radial": -0.01774797727141069,
+          "rbar_n_m_s_radial": 0.006624700057188397,
+          "ri_n_m_s_radial": 0.007244940292329588,
+          "rj_n_m_s_radial": 0.006004459822047206,
+          "radial_s_m_s": -0.011123277214222295,
+          "radial_q_m_s": 0.006624700057188397,
+          "limiter_a_m_s": 0.0,
+          "direct_active": 0,
+          "current_vector_direct_Fi_n_shadow_N_m": -1.3317403879369922,
+          "direct_RV_Fi_n_N_m_radial": 0.0,
+          "direct_RV_relative_a_n_m_s2_radial": 0.0,
+          "allneighbor_ideal_da_n_m_s2_radial": -0.389398917168442,
+          "allneighbor_committed_da_n_m_s2_radial": -0.38939881509310964,
+          "base_relative_a_n_m_s2_radial": 1.400944714174085,
+          "candidate_relative_a_n_m_s2_radial": 1.0115458990809754,
+          "base_rddot_m_s2_radial": 1.5123617932430846,
+          "candidate_rddot_m_s2_radial": 1.122962978149975,
+          "approaching": true,
+          "vector_allneighbor_inward": true,
+          "vector_approaching_and_inward": true,
+          "radial_allneighbor_inward": true,
+          "radial_approaching_and_inward": true
+        }
+      ],
+      "endpoints": [
+        {
+          "focus_row_index": 156,
+          "case": "rv",
+          "part": 90,
+          "time_s": 10.899999999671936,
+          "tau_s": 0.899999999965928,
+          "completed_step": 2180000,
+          "pair_i": 6918,
+          "pair_j": 6967,
+          "native_id": 6918,
+          "p_Pa": -9235.1640625,
+          "P0_Pa": 16284.6005859375,
+          "J": 0.9991630364564512,
+          "kappa": 2.613318681716919,
+          "saved_FS": 0,
+          "fresh_FS": 0,
+          "total_eigen_f32_0": -14801.7109375,
+          "total_eigen_f32_1": -7187.27685546875,
+          "total_eigen_f32_2": 440.7581787109375,
+          "total_positive_eigen_sum_Pa": 440.7581787109375,
+          "total_nn_Pa": -11804.547649956256,
+          "effective_nn_Pa": -21039.711712456257,
+          "actual_AS_tensor_nn_Pa": -26.000202218084027,
+          "base_R_Pa_s": 1022872.5625,
+          "candidate_R_Pa_s": 913087.625,
+          "base_Acex": -5.122127532958984,
+          "base_Acez": 7.918243408203125,
+          "ideal_RV_dax": -0.47591382417274014,
+          "ideal_RV_daz": 0.1734320895326762,
+          "committed_RV_dax": -0.47591400146484375,
+          "committed_RV_daz": 0.1734323501586914,
+          "Lxx": 0.9446425981376312,
+          "Lxz": 5.6481501297066865,
+          "Lzx": 0.11977108941288912,
+          "Lzz": -1.1379410554016225,
+          "delta_R_Pa_s": -109784.9375,
+          "base_compression": -21475228.091837324,
+          "base_LP": 17734662.620741412,
+          "base_Taylor_pressure": 3680832.1944335634,
+          "base_Da": 1114999.1763192243,
+          "base_FS_Ace_Lx": 0.0,
+          "base_chain_pressure": -14145.830291154281,
+          "base_chain_Ace": -18247.53002583478,
+          "base_numeric_residual": 0.023160113603807986,
+          "candidate_compression": -21475228.091837324,
+          "candidate_LP": 17734662.620741412,
+          "candidate_Taylor_pressure": 3680832.1944335634,
+          "candidate_Da": 1006026.1135241801,
+          "candidate_FS_Ace_Lx": 0.0,
+          "candidate_chain_pressure": -14145.830291154281,
+          "candidate_chain_Ace": -19059.373851330678,
+          "candidate_numeric_residual": -0.007719346322119236,
+          "delta_compression": 0,
+          "delta_LP": 0,
+          "delta_Taylor_pressure": 0,
+          "delta_Da": -108973.06279504416,
+          "delta_FS_Ace_Lx": 0.0,
+          "delta_chain_pressure": 0,
+          "delta_chain_Ace": -811.8438254958965,
+          "delta_numeric_residual": -0.030879459925927222,
+          "vector_candidate_R_Pa_s": 272498.6875,
+          "vector_delta_R_Pa_s": -750373.875,
+          "vector_delta_compression": 0,
+          "vector_delta_LP": 0,
+          "vector_delta_Taylor_pressure": 0,
+          "vector_delta_Da": -748393.7515665106,
+          "vector_delta_FS_Ace_Lx": 0,
+          "vector_delta_chain_pressure": 0,
+          "vector_delta_chain_Ace": -1980.0885844294571,
+          "vector_delta_numeric_residual": -0.03484905988443643
+        },
+        {
+          "focus_row_index": 157,
+          "case": "rv",
+          "part": 90,
+          "time_s": 10.899999999671936,
+          "tau_s": 0.899999999965928,
+          "completed_step": 2180000,
+          "pair_i": 6918,
+          "pair_j": 6967,
+          "native_id": 6967,
+          "p_Pa": -9302.306640625,
+          "P0_Pa": 16677.0,
+          "J": 1.0134111160488084,
+          "kappa": 3.137409210205078,
+          "saved_FS": 0,
+          "fresh_FS": 0,
+          "total_eigen_f32_0": -16718.021484375,
+          "total_eigen_f32_1": -8528.1611328125,
+          "total_eigen_f32_2": -320.5147399902344,
+          "total_positive_eigen_sum_Pa": 0.0,
+          "total_nn_Pa": -13236.279599300164,
+          "effective_nn_Pa": -22538.586239925164,
+          "actual_AS_tensor_nn_Pa": 0.0,
+          "base_R_Pa_s": 116785.8984375,
+          "candidate_R_Pa_s": 19246.5625,
+          "base_Acex": -2.1943092346191406,
+          "base_Acez": 7.077545166015625,
+          "ideal_RV_dax": -1.0390544446402765,
+          "ideal_RV_daz": 0.45746926099597074,
+          "committed_RV_dax": -1.0390543937683105,
+          "committed_RV_daz": 0.45746946334838867,
+          "Lxx": 0.8308822674988815,
+          "Lxz": 5.450665295275676,
+          "Lzx": 0.10324712299532258,
+          "Lzz": -1.0238092664467322,
+          "delta_R_Pa_s": -97539.3359375,
+          "base_compression": -27323458.02548132,
+          "base_LP": 22823239.63382889,
+          "base_Taylor_pressure": 4480418.824722765,
+          "base_Da": 151504.35539147872,
+          "base_FS_Ace_Lx": 0.0,
+          "base_chain_pressure": 13415.79094201766,
+          "base_chain_Ace": -28334.67965764393,
+          "base_numeric_residual": -0.0013086861290503293,
+          "candidate_compression": -27323458.02548132,
+          "candidate_LP": 22823239.63382889,
+          "candidate_Taylor_pressure": 4480418.824722765,
+          "candidate_Da": 56197.09539012437,
+          "candidate_FS_Ace_Lx": 0.0,
+          "candidate_chain_pressure": 13415.79094201766,
+          "candidate_chain_Ace": -30566.75700886407,
+          "candidate_numeric_residual": 0.00010638836829457432,
+          "delta_compression": 0,
+          "delta_LP": 0,
+          "delta_Taylor_pressure": 0,
+          "delta_Da": -95307.26000135436,
+          "delta_FS_Ace_Lx": 0.0,
+          "delta_chain_pressure": 0,
+          "delta_chain_Ace": -2232.0773512201413,
+          "delta_numeric_residual": 0.0014150744973449036,
+          "vector_candidate_R_Pa_s": 300446.1875,
+          "vector_delta_R_Pa_s": 183660.2890625,
+          "vector_delta_compression": 0,
+          "vector_delta_LP": 0,
+          "vector_delta_Taylor_pressure": 0,
+          "vector_delta_Da": 196950.8144743008,
+          "vector_delta_FS_Ace_Lx": 0,
+          "vector_delta_chain_pressure": 0,
+          "vector_delta_chain_Ace": -13290.526262693718,
+          "vector_delta_numeric_residual": 0.0008508928876835853
+        }
+      ]
+    }
+  ],
+  "raw_signed_dterror_retained": true,
+  "source_formed_budgets_not_reconstructed_from_all_neighbors": true,
+  "frozen_Euler_only": true,
+  "sparse_component_values_not_actual_stage_history": true,
+  "GPU_bittruth_claimed": false,
+  "causal_mechanism_automatically_accepted": false,
+  "visual_QA_pending": true,
+  "consumed": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_rv_radial_candidate_r1.check.json",
+      "bytes": 10694,
+      "mtime_ns": 1794680525483659700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_rv_onset_review_r1.check.json",
+      "bytes": 23107,
+      "mtime_ns": 1794679682857461000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_h18_rv_radial_review_r1.py",
+      "bytes": 28807,
+      "mtime_ns": 1794681213403790000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\notes\\c08_h18_rv_radial_review_r1.md",
+      "bytes": 11157,
+      "mtime_ns": 1794681213407811300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_h18_wend_matrix_r1.py",
+      "bytes": 23449,
+      "mtime_ns": 1794593943565762800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_h18_rv_onset_review_r1.py",
+      "bytes": 19705,
+      "mtime_ns": 1794679566163277800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_rv_radial_candidate_r1.build.json",
+      "bytes": 155671,
+      "mtime_ns": 1794680280146169500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1_build\\C08H18RvRadialCandidateR1.exe",
+      "bytes": 13523968,
+      "mtime_ns": 1794680279435995300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1_build\\DsphConfig.xml",
+      "bytes": 300,
+      "mtime_ns": 1697414720000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1_build\\ChronoEngine.dll",
+      "bytes": 6067712,
+      "mtime_ns": 1697414718000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1_build\\dsphchrono.dll",
+      "bytes": 772096,
+      "mtime_ns": 1697414722000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1_build\\vcomp140.dll",
+      "bytes": 185144,
+      "mtime_ns": 1697414722000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1_build\\msvcp140.dll",
+      "bytes": 578384,
+      "mtime_ns": 1688102775894223200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1_build\\vcruntime140.dll",
+      "bytes": 109440,
+      "mtime_ns": 1688102775972745900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1_build\\vcruntime140_1.dll",
+      "bytes": 49560,
+      "mtime_ns": 1688102775982743700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\c08_h18_rv_onset_force_r1.selection.csv",
+      "bytes": 6058,
+      "mtime_ns": 1794678222634282900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_rv_onset_force_r1.check.json",
+      "bytes": 10616,
+      "mtime_ns": 1794678594132947700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_onset_force_r1\\soil.csv",
+      "bytes": 40708264,
+      "mtime_ns": 1794678593509055900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_rv_onset_force_r1.AS_units_resolution_r2.json",
+      "bytes": 1503,
+      "mtime_ns": 1794678664903454800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wend_psi0_pre_r2\\data\\Part_1000.bi4",
+      "bytes": 1550298,
+      "mtime_ns": 1794593062744243700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as03_n255_r1\\c08_h18_as03_n255_r1.xml",
+      "bytes": 16191,
+      "mtime_ns": 1794633937313178400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as03_n255_r1\\c08_h18_as03_n255_r1.bi4",
+      "bytes": 312060,
+      "mtime_ns": 1794633937298649000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as03_n255_r1\\c08_h18_as03_n255_r1_Normals.nbi4",
+      "bytes": 49955,
+      "mtime_ns": 1794633937329003700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as03_n255_r1\\native_r1\\typed22.bin",
+      "bytes": 131282800,
+      "mtime_ns": 1794636006155999000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as03_n255_r1\\native_r1\\typed22_layout.csv",
+      "bytes": 602,
+      "mtime_ns": 1794636006157001600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as03_n255_r1\\native_r1\\clocks.csv",
+      "bytes": 11839,
+      "mtime_ns": 1794636006157001600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as03_n255_r1\\native_r1\\completion.json",
+      "bytes": 2784,
+      "mtime_ns": 1794636006157001600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as03_n255_r1\\native_r1\\bedkeep_metadata.json",
+      "bytes": 1592,
+      "mtime_ns": 1794636006172512000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_window_GPU_r2\\native_r1\\typed22.bin",
+      "bytes": 131282800,
+      "mtime_ns": 1794676496580436500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_window_GPU_r2\\native_r1\\typed22_layout.csv",
+      "bytes": 602,
+      "mtime_ns": 1794676496580436500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_window_GPU_r2\\native_r1\\clocks.csv",
+      "bytes": 11834,
+      "mtime_ns": 1794676496580436500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_window_GPU_r2\\native_r1\\completion.json",
+      "bytes": 2781,
+      "mtime_ns": 1794676496581672100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_window_GPU_r2\\native_r1\\bedkeep_metadata.json",
+      "bytes": 1795,
+      "mtime_ns": 1794676496598208000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_rv_radial_candidate_r1.build.json",
+      "bytes": 155671,
+      "mtime_ns": 1794680280146169500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_rv_radial_candidate_r1.call.json",
+      "bytes": 2968,
+      "mtime_ns": 1794680525474335600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1\\completion.json",
+      "bytes": 893,
+      "mtime_ns": 1794680524921278800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1_build\\C08H18RvRadialCandidateR1.exe",
+      "bytes": 13523968,
+      "mtime_ns": 1794680279435995300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_h18_rv_radial_candidate_r1.cpp",
+      "bytes": 40231,
+      "mtime_ns": 1794680168992298100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\notes\\c08_h18_rv_radial_candidate_r1.md",
+      "bytes": 13074,
+      "mtime_ns": 1794680168997069900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_rv_onset_force_r1.AS_units_resolution_r2.json",
+      "bytes": 1503,
+      "mtime_ns": 1794678664903454800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_rv_onset_force_r1.AS_units_erratum_r1.json",
+      "bytes": 820,
+      "mtime_ns": 1794678539808074100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_source_r1\\full_source.zip",
+      "bytes": 1082321,
+      "mtime_ns": 1794222843308768900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1\\pairs.csv",
+      "bytes": 37465,
+      "mtime_ns": 1794680524900261200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1\\focus.csv",
+      "bytes": 74598,
+      "mtime_ns": 1794680524900261200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1\\soil.csv",
+      "bytes": 40855577,
+      "mtime_ns": 1794680524899257800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1\\metrics.csv",
+      "bytes": 12623,
+      "mtime_ns": 1794680524900261200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1\\manufactured.csv",
+      "bytes": 27980,
+      "mtime_ns": 1794680524900261200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1\\limiter_fixtures.csv",
+      "bytes": 356,
+      "mtime_ns": 1794680451682039100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_rv_radial_candidate_r1\\selected_clocks.csv",
+      "bytes": 1485,
+      "mtime_ns": 1794680524900261200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_rv_onset_review_r1_pairs.csv",
+      "bytes": 33620,
+      "mtime_ns": 1794679679882105600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_rv_onset_review_r1_focus_RHS.csv",
+      "bytes": 133339,
+      "mtime_ns": 1794679679895146600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_rv_onset_review_r1_metrics.csv",
+      "bytes": 11079,
+      "mtime_ns": 1794679679904664300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_rv_onset_review_r1_RHS_summary.csv",
+      "bytes": 4897,
+      "mtime_ns": 1794679679915687600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_rv_onset_review_r1_selected_clocks.csv",
+      "bytes": 1485,
+      "mtime_ns": 1794679679919697800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\c08_h18_rv_onset_force_r1.selection.csv",
+      "bytes": 6058,
+      "mtime_ns": 1794678222634282900
+    }
+  ],
+  "consumed_stats_unchanged": true,
+  "files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_rv_radial_review_r1_pairs.csv",
+      "bytes": 68279,
+      "mtime_ns": 1794681457146567500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_rv_radial_review_r1_focus_RHS.csv",
+      "bytes": 148584,
+      "mtime_ns": 1794681457162670700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_rv_radial_review_r1_metrics.csv",
+      "bytes": 13265,
+      "mtime_ns": 1794681457171025900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_rv_radial_review_r1_RHS_summary.csv",
+      "bytes": 6636,
+      "mtime_ns": 1794681457198004400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_rv_radial_review_r1_certificates.csv",
+      "bytes": 13096,
+      "mtime_ns": 1794681457203521800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_rv_radial_review_r1_limiter_fixtures.csv",
+      "bytes": 356,
+      "mtime_ns": 1794681457208029700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_rv_radial_review_r1_selected_clocks.csv",
+      "bytes": 1485,
+      "mtime_ns": 1794681457211037900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_rv_radial_review_r1_mechanics.png",
+      "bytes": 387973,
+      "mtime_ns": 1794681458749612500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_rv_radial_review_r1_RHS_certificates.png",
+      "bytes": 583938,
+      "mtime_ns": 1794681459968496800
+    }
+  ]
+}
