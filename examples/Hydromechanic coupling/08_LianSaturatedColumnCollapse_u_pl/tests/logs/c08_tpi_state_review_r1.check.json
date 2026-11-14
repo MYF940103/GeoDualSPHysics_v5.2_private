@@ -1,0 +1,199 @@
+{
+  "stage": "c08_tpi_state_review_r1",
+  "passed": true,
+  "soil_rows": 20000,
+  "states": [
+    {
+      "part": 38,
+      "time_s": 10.380004999691621,
+      "S_min": 0.1860210810813026,
+      "S_median": 0.21274659554802283,
+      "S_max": 0.2741488377148312,
+      "proposal_S_min": 0.1860210810813026,
+      "proposal_S_median": 0.21274659554802283,
+      "proposal_S_max": 0.2741488377148312,
+      "true_Dirichlet_count": 0,
+      "FS_count": 145,
+      "positive_FS_cap_count": 9,
+      "negative_raw_unchanged_by_policy_count": 1124,
+      "Rgamma_RMS_old": 1.3658214344252069,
+      "Rgamma_RMS_new": 1.3577724173660477,
+      "Rgamma_RMS_change_percent": -0.5893169382384544,
+      "Rgamma_max_old": 34.45212587631276,
+      "Rgamma_max_new": 34.88784868408412,
+      "rate_RMS_old_Pa_s": 397883.8190151547,
+      "rate_RMS_new_Pa_s": 395482.0868368349,
+      "pressure_change_min_Pa": -125.732421875,
+      "pressure_change_RMS_Pa": 4.979218259178984,
+      "pressure_change_max_Pa": 24.3118896484375
+    },
+    {
+      "part": 76,
+      "time_s": 10.760004999677236,
+      "S_min": 0.13357636846191048,
+      "S_median": 0.21273807383551946,
+      "S_max": 0.2797033967319288,
+      "proposal_S_min": 0.13357636846191048,
+      "proposal_S_median": 0.21273807383551946,
+      "proposal_S_max": 0.2797033967319288,
+      "true_Dirichlet_count": 0,
+      "FS_count": 156,
+      "positive_FS_cap_count": 0,
+      "negative_raw_unchanged_by_policy_count": 2267,
+      "Rgamma_RMS_old": 8.80534416865057,
+      "Rgamma_RMS_new": 8.699943419853488,
+      "Rgamma_RMS_change_percent": -1.1970088480168435,
+      "Rgamma_max_old": 33.30901627585317,
+      "Rgamma_max_new": 32.512599862838655,
+      "rate_RMS_old_Pa_s": 2568154.7582827057,
+      "rate_RMS_new_Pa_s": 2537426.0371300583,
+      "pressure_change_min_Pa": -94.7041015625,
+      "pressure_change_RMS_Pa": 41.372059119666595,
+      "pressure_change_max_Pa": 156.609375
+    }
+  ],
+  "pairs": [
+    {
+      "part": 38,
+      "id_i": 4953,
+      "id_j": 4954,
+      "distance_m": 0.02772749717446873,
+      "rdot_m_s": -0.047048495805422086,
+      "rddot_old_m_s2": 0.3183408298446486,
+      "rddot_new_m_s2": 0.3176181436990685,
+      "rddot_change_m_s2": -0.0007226861455801314
+    },
+    {
+      "part": 38,
+      "id_i": 6767,
+      "id_j": 6865,
+      "distance_m": 0.09194016594300708,
+      "rdot_m_s": -0.23013066845921964,
+      "rddot_old_m_s2": 1.8906765333125446,
+      "rddot_new_m_s2": 2.0825250893478975,
+      "rddot_change_m_s2": 0.1918485560353529
+    },
+    {
+      "part": 76,
+      "id_i": 4953,
+      "id_j": 4954,
+      "distance_m": 0.026382010500711848,
+      "rdot_m_s": -0.016112921654513966,
+      "rddot_old_m_s2": -0.3849698270848471,
+      "rddot_new_m_s2": -0.3976923630670183,
+      "rddot_change_m_s2": -0.012722535982171157
+    },
+    {
+      "part": 76,
+      "id_i": 6767,
+      "id_j": 6865,
+      "distance_m": 0.027803755943807264,
+      "rdot_m_s": -0.11430707250085634,
+      "rddot_old_m_s2": 1.6950067629928554,
+      "rddot_new_m_s2": 1.648040374076738,
+      "rddot_change_m_s2": -0.046966388916117374
+    }
+  ],
+  "positive_FS_cap_native_IDs": {
+    "38": [
+      7024,
+      7025,
+      7026,
+      7027,
+      7028,
+      7029,
+      7030,
+      7031,
+      7032
+    ],
+    "76": []
+  },
+  "baseline_bits_reused": 10000,
+  "actual_force_calls_reused": 4,
+  "S_LP_positive_is_not_full_operator_or_trajectory_acceptance": true,
+  "pressure_proposal_history_is_not_available": true,
+  "trial_proposal_allowed_default_is_not_a_second_iteration_proof": true,
+  "negative_preservation_scope": "raw proposed negative pressure versus after-original-completed-policy pressure; not baseline versus proposal",
+  "norm_recalculation_budget": "64*eps*5000*(abs(original)+abs(recalculated)) plus denormal term; arithmetic only",
+  "consumed": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_tpi_state_review_r1.py",
+      "bytes": 14935,
+      "mtime_ns": 1794668700133096700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\notes\\c08_tpi_state_review_r1.md",
+      "bytes": 3143,
+      "mtime_ns": 1794668540684241500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_tpi_state_r1.check.json",
+      "bytes": 13840,
+      "mtime_ns": 1794667922778129800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_tpi_state_r1.component.call.json",
+      "bytes": 2853,
+      "mtime_ns": 1794667922738034300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_tpi_state_r1\\completion.json",
+      "bytes": 1013,
+      "mtime_ns": 1794667922708319900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_tpi_state_r1\\soil.csv",
+      "bytes": 13035982,
+      "mtime_ns": 1794667922707318900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_tpi_state_r1\\summary.csv",
+      "bytes": 719,
+      "mtime_ns": 1794667922707318900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_tpi_state_r1\\focus.csv",
+      "bytes": 2819,
+      "mtime_ns": 1794667922707318900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_tpi_state_r1\\pairs.csv",
+      "bytes": 2063,
+      "mtime_ns": 1794667922707318900
+    }
+  ],
+  "consumed_stats_unchanged": true,
+  "outputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_tpi_state_review_r1_states.csv",
+      "bytes": 1025,
+      "mtime_ns": 1794668701216270900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_tpi_state_review_r1_pairs.csv",
+      "bytes": 547,
+      "mtime_ns": 1794668701232554800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_tpi_state_review_r1_focus.csv",
+      "bytes": 1370,
+      "mtime_ns": 1794668701238073700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_tpi_state_review_r1_summary.png",
+      "bytes": 402244,
+      "mtime_ns": 1794668702390753600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_tpi_state_review_r1_spatial.png",
+      "bytes": 1318003,
+      "mtime_ns": 1794668703052347600
+    }
+  ],
+  "unsmoothed_actual_scatter": true,
+  "solver_invocations": 0,
+  "native_invocations": 0,
+  "SHA_scans": 0,
+  "physical_acceptance": false,
+  "clumping_repair_or_time_trajectory_claimed": false
+}
