@@ -1,0 +1,109 @@
+{
+  "stage": "upl_tpi_x0_short_r1.prepare",
+  "passed": true,
+  "consumed": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_tpi_x0_short_r1_prepare.py",
+      "bytes": 6494,
+      "mtime_ns": 1794665017192032500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\upl_column_public_coarse_r1.xml",
+      "bytes": 14759,
+      "mtime_ns": 1793644266275560700
+    }
+  ],
+  "XML": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\upl_tpi_x0_short_r1_Def.xml",
+    "bytes": 14275,
+    "mtime_ns": 1794665161226786800
+  },
+  "clock_plan": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\upl_tpi_x0_short_r1.clock.csv",
+    "bytes": 11969,
+    "mtime_ns": 1794665161231038300
+  },
+  "changes": [
+    {
+      "key": "Visco",
+      "value": "0.1",
+      "comment": "Original artificial viscosity alpha=0.1; common to all three CPU test programs"
+    },
+    {
+      "key": "SoilBoundaryDerivativeSPR",
+      "value": "1",
+      "comment": "Explicit derivative SPR flag; dynamic wall remains the authoritative same-stage image"
+    },
+    {
+      "key": "SoilDamping",
+      "value": "1",
+      "comment": "Retained soil damping enabled for the common short test"
+    },
+    {
+      "key": "SoilDampingCoef",
+      "value": "0.04",
+      "comment": "Retained soil damping coefficient"
+    },
+    {
+      "key": "SoilStressRateGradCorr",
+      "value": "1",
+      "comment": "Retained corrected velocity gradient"
+    },
+    {
+      "key": "SoilHourglassXi",
+      "value": "0",
+      "comment": "HG disabled; this test isolates pressure time integration"
+    },
+    {
+      "key": "DtIni",
+      "value": "0.000005",
+      "comment": "Common initial step; original current-state necessary bounds remain mandatory"
+    },
+    {
+      "key": "DtFixed",
+      "value": "0.000005",
+      "comment": "Common fixed 5 microsecond step; no clipping or acceptance implied"
+    },
+    {
+      "key": "TimeMax",
+      "value": "0.15",
+      "comment": "One fresh bounded CPU implementation and phase window; not full consolidation"
+    },
+    {
+      "key": "TimeOut",
+      "value": "0.001",
+      "comment": "Regular 1 millisecond native saves, plus the actual final TimeMax crossing"
+    }
+  ],
+  "special_timeout_removed": true,
+  "original_events_s": 0.01,
+  "dt_s": 5e-06,
+  "nominal_end_s": 0.15,
+  "cadence_s": 0.001,
+  "planned_samples": 151,
+  "planned_completed_steps": 30000,
+  "planned_scalar_end_s": 0.15000000000007963,
+  "event_completed_step": 2000,
+  "event_native_part": null,
+  "first_post_open_part": 10,
+  "post_open_frames": 141,
+  "scalar_clock_not_n_times_dt": true,
+  "fixed_grid_event_preopen_until_completed_2000": true,
+  "expected_controls": [
+    "frozen_original",
+    "private_default_OFF",
+    "private_X0_ON"
+  ],
+  "control_runs_not_started": true,
+  "original_source_and_formal_inputs_untouched": true,
+  "original_SPR_flag_does_not_override_DynamicPoreWall": true,
+  "TPI_beta": 0,
+  "TPI_alpha": 0.5,
+  "ON_is_incompressible_limit_not_same_finite_Kw_equations": true,
+  "ON_OFF_5Pa_equivalence_claimed": false,
+  "SHA_scans": 0,
+  "GenCase_invocations": 0,
+  "solver_invocations": 0,
+  "reader_invocations": 0,
+  "physical_acceptance": false
+}

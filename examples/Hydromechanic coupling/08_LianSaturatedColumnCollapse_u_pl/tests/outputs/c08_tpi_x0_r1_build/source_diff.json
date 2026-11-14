@@ -1,0 +1,167 @@
+{
+  "stage": "c08_tpi_x0_r1.source_diff",
+  "passed": true,
+  "archive": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_source_r1\\full_source.zip",
+    "bytes": 1082321,
+    "mtime_ns": 1794222843308768900
+  },
+  "header": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_tpi_x0_r1.h",
+    "bytes": 12389,
+    "mtime_ns": 1794665376373281800
+  },
+  "replacements": [
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "private_header",
+      "count": 1,
+      "method_scope": null,
+      "before": "#include <climits>\n",
+      "after": "#include \"c08_tpi_x0_r1.h\"\n\n#include <climits>\n"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "single_extern_definition",
+      "count": 1,
+      "method_scope": null,
+      "before": "using namespace std;\n",
+      "after": "using namespace std;\nnamespace c08x0 { State state; }\n"
+    },
+    {
+      "file": "JSphCpuSingle.cpp",
+      "anchor": "private_header",
+      "count": 1,
+      "method_scope": null,
+      "before": "#include \"JSphCpuSingle.h\"\n",
+      "after": "#include \"JSphCpuSingle.h\"\n#include \"JDsFixedDt.h\"\n#include \"c08_tpi_x0_r1.h\"\n"
+    },
+    {
+      "file": "JSphCpuSingle.cpp",
+      "anchor": "fresh_qualification_after_initialization",
+      "count": 1,
+      "method_scope": null,
+      "before": "  InitRunCpu();\n  RunGravityPreloadHandoffCpu();",
+      "after": "  InitRunCpu();\n\n  if(c08x0::Requested()){\n    c08x0::Need(Simulate2D && TStep==STEP_Symplectic && OmpThreads==1\n      && CaseNp==1040 && CaseNfixed==40 && CaseNfluid==1000 && CaseNpb==40\n      && !CaseNmoving && !CaseNfloat && !NpDynamic && !InOut && !Shifting && !Damping && !RelaxZones && !UseDEM && !Symmetry\n      && (!GaugeSystem || GaugeSystem->GetCount()==0),\"X0 only admits fresh CPU1 1040-ID no-gauge column\");\n    c08x0::Need(!PartBegin && PartBeginDir.empty() && !GravityPreload && !IsGravityPreloadHandoff()\n      && TimeStep==0. && Nstep==0 && TimeMax==.15 && FixedDt && FixedDt->GetFixedValue()==c08x0::Dt\n      && SymplecticDtPre==c08x0::Dt,\"X0 fresh 5us/.15s clock contract rejected\");\n    c08x0::Need(HydroMech && HydroMechDynamicSeepage && PorosityObserver && PorosityFeedback && DynamicPorePressure\n      && DynamicPoreWall && !DynamicPoreConductivity && !DynamicPoreFreeBody && !HydroMechNoWall\n      && HydroMechInitMode==HMINIT_None && SoilCte.Porosity==.3f && SoilCte.PoreWaterBulkModulus==2e8\n      && SoilCte.HydraulicConductivity==.0001f && SoilCte.PoreWaterRho==1000.\n      && SoilCte.ModulusE==2e6f && SoilCte.PRvs==.3f && DPCtes==DP_PS,\"X0 constant-k dynamic column contract rejected\");\n    c08x0::Need(TBoundary==BC_MDBC && SlipMode==SLIP_FreeSlip && !MdbcSlipModeByMk && !NoPenetration\n      && PeriX && !PeriY && !PeriZ && PeriActive==1 && std::fabs(std::fabs(PeriXinc.x)-.1)<=64.*DBL_EPSILON*.1\n      && PeriXinc.y==0. && PeriXinc.z==0. && TKernel==KERNEL_Wendland && Dp==.01\n      && KernelH==float(.018) && RhopZero==2100.f,\"X0 wall/kernel/geometry/periodic contract rejected\");\n    c08x0::Need(!HourglassCpu && SoilHourglassXi==0. && !PoreShepardRegularization && !ArtificialStress && !StrainSoftening\n      && SoilBoundaryDerivativeSPR && SoilStressRateGradCorr && SoilDamping && SoilDampingCoef==.04f\n      && TVisco==VISCO_Artificial && Visco==.1f && ViscoBoundFactor==1.f && !ViscoTime && TDensity==DDT_None && !DDTArray\n      && Gravity.x==0. && Gravity.y==0. && Gravity.z==0.,\"X0 only admits HG0/ShepardOFF/elastic SPR1/AV.1/G1/eta.04\");\n    c08x0::Need(HydroMechTopLoadMode==HMLOAD_TopKernelBand && HydroMechTopLoadQ0==10000.\n      && HydroMechTopLoadRampTime==.01 && HydroMechDrainage && HydroMechDrainageFixedGrid\n      && HydroMechDrainageStartTime==.01 && !HydroMechFreeSeepage,\"X0 original decimal load/drain contract rejected\");\n    c08x0::Init(this,DirOut,Np,Idpc,Codec,PorePressc,PorePress0c,PoroJc,Kplasticc);\n    Log->Print(\"C02TpiX0: private CPU1 beta0 alpha0.5 cold history; endpoint geometry/original source clock n; no paper-LF/implicit claim.\");\n  }\n  RunGravityPreloadHandoffCpu();"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "history_half_instead_of_finite_Kw_predictor",
+      "count": 1,
+      "method_scope": "void JSphCpu::ComputeSymplecticPrePorePressure(double dt){",
+      "before": "  const double dt05=dt*.5;\n",
+      "after": "\n  if(c08x0::Requested()){\n    c08x0::Begin(this,Np,Idpc,Codec,PorePressPrec,PoroJc,TimeStep,Nstep,dt);\n    const bool drain=IsHydroMechDrainageActive();\n    for(unsigned p=0;p<Np;p++){\n      if(p<Npb || !CODE_IsFluid(Codec[p]))PorePressc[p]=PorePressPrec[p];\n      else PorePressc[p]=(drain && IsHydroMechDrainedParticle(p,PosPrec,Codec,FSTypec)? 0.f: c08x0::Half(Idpc[p]));\n      if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p]))c08x0::HalfActual(Idpc[p],PorePressc[p]);\n    }\n    return; // No finite-Kw predictor pressure update on X0.\n  }\n  const double dt05=dt*.5;\n"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "history_guess_instead_of_finite_Kw_corrector",
+      "count": 1,
+      "method_scope": "void JSphCpu::ComputeSymplecticCorrPorePressure(double dt){",
+      "before": "  const bool drainfs=(DynamicPorePressure && IsHydroMechDrainageActive());\n",
+      "after": "\n  if(c08x0::Requested()){\n    c08x0::Need(dt==c08x0::state.dt,\"X0 corrector dt changed\");\n    c08x0::Corr(this,Np,Idpc,Codec,PorePressc,PoroJc,PoroThetac);\n    const bool drain=IsHydroMechDrainageActive();\n    for(unsigned p=0;p<Np;p++){\n      if(p<Npb || !CODE_IsFluid(Codec[p]))PorePressc[p]=PorePressPrec[p];\n      else PorePressc[p]=(drain && IsHydroMechDrainedParticle(p,Posc,Codec,FSTypec)? 0.f: c08x0::Guess(Idpc[p]));\n    }\n    return; // No finite-Kw corrector pressure update or history rotation here.\n  }\n  const bool drainfs=(DynamicPorePressure && IsHydroMechDrainageActive());\n"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "capture_single_original_J_corrector",
+      "count": 1,
+      "method_scope": null,
+      "before": "  ComputeSymplecticCorrPorePressure(dt);\n  ComputeSymplecticCorrPorosity(dt);",
+      "after": "  ComputeSymplecticCorrPorePressure(dt);\n  ComputeSymplecticCorrPorosity(dt);\n  if(c08x0::Requested())c08x0::CaptureJ(this,Np,Idpc,Codec,PoroJc);"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "X0_requires_actual_elastic_return_Pre",
+      "count": 1,
+      "method_scope": "void JSphCpu::ComputeSymplecticPre(double dt){",
+      "before": "  const bool requireelastic=RequireElasticGravityPreload();",
+      "after": "  const bool requireelastic=(RequireElasticGravityPreload() || c08x0::Requested());"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "X0_requires_actual_elastic_return_Corr",
+      "count": 1,
+      "method_scope": "void JSphCpu::ComputeSymplecticCorr(double dt){",
+      "before": "  const bool requireelastic=RequireElasticGravityPreload();",
+      "after": "  const bool requireelastic=(RequireElasticGravityPreload() || c08x0::Requested());"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "temporary_guess_skips_only_completed_positive_FS_cap",
+      "count": 1,
+      "method_scope": "void JSphCpu::ApplyPorePressureBoundaries(){",
+      "before": "  if(HydroMechFreeSeepage && !PorePressPrec){",
+      "after": "  if(HydroMechFreeSeepage && !PorePressPrec && !(c08x0::Requested() && c08x0::state.temporary)){"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "endpoint_row_context",
+      "count": 1,
+      "method_scope": "template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){",
+      "before": "  DynamicConductivitySpeedMax=0.;",
+      "after": "  const bool x0endpoint=(c08x0::Requested() && c08x0::state.endpoint);\n  if(x0endpoint)c08x0::Need(c08x0::state.owner==this && !DynamicPoreConductivity,\"X0 endpoint owner/constant-k changed\");\n  DynamicConductivitySpeedMax=0.;"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "drained_row_priority",
+      "count": 1,
+      "method_scope": "template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){",
+      "before": "      PorePressRatec[p1]=0; //-Dirichlet p is constrained; theta and J still evolve normally.",
+      "after": "      if(x0endpoint)c08x0::Row(Idpc[p1],true,0.,0.,PoroThetac[p1],PorePressc[p1]);\n      PorePressRatec[p1]=0; //-Dirichlet p is constrained; theta and J still evolve normally."
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "endpoint_diagonal_accumulator",
+      "count": 1,
+      "method_scope": "template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){",
+      "before": "    double lp=0,da=0;",
+      "after": "    double lp=0,da=0;\n    double x0sumw=0.;"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "original_weight_sum_only_endpoint",
+      "count": 1,
+      "method_scope": "template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){",
+      "before": "          lp+=w*dp;lx=lx+d*w;gp=gp-gi*(vol2*dp);",
+      "after": "          if(x0endpoint)x0sumw+=w;\n          lp+=w*dp;lx=lx+d*w;gp=gp-gi*(vol2*dp);"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "actual_double_unscaled_row_before_original_float_rate_store",
+      "count": 1,
+      "method_scope": "template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){",
+      "before": "    if(!std::isfinite(rate) || fabs(rate)>FLT_MAX)invalid++;",
+      "after": "    if(x0endpoint)c08x0::Row(Idpc[p1],false,-khyd*x0sumw,-gamma*PoroThetac[p1]+khyd*lap,PoroThetac[p1],PorePressc[p1]);\n    if(!std::isfinite(rate) || fabs(rate)>FLT_MAX)invalid++;"
+    },
+    {
+      "file": "JSphCpuSingle.cpp",
+      "anchor": "third_force_after_original_completed_geometry_before_clock_increment",
+      "count": 1,
+      "method_scope": null,
+      "before": "    else RunCellDivide(true);\n    TimeStep+=stepdt;",
+      "after": "    else RunCellDivide(true);\n\n    if(c08x0::Requested()){\n      c08x0::Endpoint(this,Np,Idpc,Codec,PorePressc,PoroJc,TimeStep,Nstep,stepdt);\n      bool forceScratch=false;\n      try{\n        forceScratch=true;\n        Interaction_Forces(INTERSTEP_SymCorrector); // Third genuine force; no solid/material/J update.\n        const double endpointdt=DtVariable(false); // Original necessary force/wave/pore limits, no final dt-stat commit.\n        c08x0::Need(endpointdt==stepdt,\"X0 endpoint fixed dt changed\");\n        c08x0::PrepareFinal(this,Np,Idpc,Codec,PoroJc);\n        PosInteraction_Forces();forceScratch=false;\n        c08x0::WriteFinal(Np,Npb,Idpc,Codec,PorePressc);\n        c08x0::state.endpoint=false;c08x0::state.temporary=false;\n        ApplyPorePressureBoundaries(); // Original final drainage/FS/positive-cap and periodic copying.\n        const bool drain=IsHydroMechDrainageActive();\n        for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p]))\n          c08x0::state.commitDrained[Idpc[p]]=unsigned(drain && IsHydroMechDrainedParticle(p,Posc,Codec,FSTypec));\n        c08x0::Commit(this,Np,Idpc,Codec,PorePressc,PoroJc); // Full history rotates exactly once after all checks.\n      }\n      catch(...){\n        c08x0::state.endpoint=false;c08x0::state.temporary=false;\n        if(forceScratch)PosInteraction_Forces();\n        throw; // No history commit or new SaveData on failed endpoint.\n      }\n    }\n    TimeStep+=stepdt;"
+    },
+    {
+      "file": "JSphCpuSingle.cpp",
+      "anchor": "save_only_sidecar_after_real_native_save",
+      "count": 1,
+      "method_scope": null,
+      "before": "  JSph::SaveData(npsave,arrays,1,vdom,&infoplus);",
+      "after": "  JSph::SaveData(npsave,arrays,1,vdom,&infoplus);\n  if(c08x0::Requested())c08x0::Saved(this,Part,TimeStep,Nstep,Np,Idpc,Codec,PorePressc,PoroJc);"
+    },
+    {
+      "file": "JSphCpuSingle.cpp",
+      "anchor": "finish_implementation_counters",
+      "count": 1,
+      "method_scope": null,
+      "before": "  FinishRun(partoutstop);",
+      "after": "  if(c08x0::Requested())c08x0::Finish(this,Nstep,TimeStep);\n  FinishRun(partoutstop);"
+    }
+  ],
+  "normalized_line_endings_only_outside_replacements": true,
+  "unified_diff": "--- archive/JSphCpu.cpp\n+++ private/JSphCpu.cpp\n@@ -45,10 +45,13 @@\n #include \"JSphInOut.h\"\n #include \"JSphShifting.h\"\n \n+#include \"c08_tpi_x0_r1.h\"\n+\n #include <climits>\n #include <cmath>\n \n using namespace std;\n+namespace c08x0 { State state; }\n \n static void ComputeArtificialStressArray(unsigned np,const typecode *code,const tfloat4 *velrhop,const tsymatrix3d *sigma,const float coef,tsymatrix3f *artificialstress);\n \n@@ -1634,7 +1637,7 @@\n   if(!HydroMech || !PorePressc || !DivData.begincell)return;\n   ComputeFreeSurfaceTracking();\n   ApplyFreeSurfacePorePressure();\n-  if(HydroMechFreeSeepage && !PorePressPrec){\n+  if(HydroMechFreeSeepage && !PorePressPrec && !(c08x0::Requested() && c08x0::state.temporary)){\n     //-Completed geometry only; predictor pressure/rate are not constrained by this policy.\n     for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p])\n       && IsFreeSurfaceParticle(p,Codec,FSTypec) && std::isfinite(PorePressc[p]) && PorePressc[p]>0)PorePressc[p]=0.f;\n@@ -3172,6 +3175,8 @@\n /// Lstar cancels affine-pressure bias, but is not a conservative pair flux.\n //==============================================================================\n template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){\n+  const bool x0endpoint=(c08x0::Requested() && c08x0::state.endpoint);\n+  if(x0endpoint)c08x0::Need(c08x0::state.owner==this && !DynamicPoreConductivity,\"X0 endpoint owner/constant-k changed\");\n   DynamicConductivitySpeedMax=0.;\n   unsigned* ridp=NULL;\n   if(PeriActive){\n@@ -3200,6 +3205,7 @@\n       if(!std::isfinite(r2) || r2>=DynamicPoreBodyRadius2){invalid++;continue;}\n     }\n     if(drainfs && IsHydroMechDrainedParticle(unsigned(p1),Posc,Codec,FSTypec)){\n+      if(x0endpoint)c08x0::Row(Idpc[p1],true,0.,0.,PoroThetac[p1],PorePressc[p1]);\n       PorePressRatec[p1]=0; //-Dirichlet p is constrained; theta and J still evolve normally.\n       continue;\n     }\n@@ -3208,6 +3214,7 @@\n     const double ki=GetDynamicConductivityCpu(unsigned(p1));\n     if(!std::isfinite(ki) || ki<0 || (khyd>0 && ki==0)){invalid++;continue;}\n     double lp=0,da=0;\n+    double x0sumw=0.;\n     tdouble3 lx=TDouble3(0),gp=TDouble3(0),gjstate=TDouble3(0);\n     if(khyd>0){\n       const tmatrix3d ci=CorrMatc[p1];\n@@ -3228,6 +3235,7 @@\n           const tdouble3 gj=TDouble3(cj.a11*g.x+cj.a12*g.y+cj.a13*g.z,cj.a21*g.x+cj.a22*g.y+cj.a23*g.z,cj.a31*g.x+cj.a32*g.y+cj.a33*g.z);\n           const double vol2=vol0*PoroJc[p2],dp=double(PorePressc[p1])-double(PorePressc[p2]);\n           const double w=vol2*(d.x*(gi.x+gj.x)+d.y*(gi.y+gj.y)+d.z*(gi.z+gj.z))/(rr2+double(Eta2));\n+          if(x0endpoint)x0sumw+=w;\n           lp+=w*dp;lx=lx+d*w;gp=gp-gi*(vol2*dp);\n           if(DynamicPoreConductivity)gjstate=gjstate+gi*(vol2*(PoroJc[p2]-PoroJc[p1]));\n           da+=vol2*((double(Acec[p2].x)-Acec[p1].x)*gi.x\n@@ -3263,6 +3271,7 @@\n       const int th=omp_get_thread_num();\n       if(speedth[th*OMP_STRIDE]<speed)speedth[th*OMP_STRIDE]=speed;\n     }\n+    if(x0endpoint)c08x0::Row(Idpc[p1],false,-khyd*x0sumw,-gamma*PoroThetac[p1]+khyd*lap,PoroThetac[p1],PorePressc[p1]);\n     if(!std::isfinite(rate) || fabs(rate)>FLT_MAX)invalid++;\n     PorePressRatec[p1]=float(rate); //-Replace the complete old rate; never add compression twice.\n   }\n@@ -3345,6 +3354,17 @@\n //==============================================================================\n void JSphCpu::ComputeSymplecticPrePorePressure(double dt){\n   if(!HydroMech || !PorePressc || !PorePressPrec || !PorePressRatec)return;\n+\n+  if(c08x0::Requested()){\n+    c08x0::Begin(this,Np,Idpc,Codec,PorePressPrec,PoroJc,TimeStep,Nstep,dt);\n+    const bool drain=IsHydroMechDrainageActive();\n+    for(unsigned p=0;p<Np;p++){\n+      if(p<Npb || !CODE_IsFluid(Codec[p]))PorePressc[p]=PorePressPrec[p];\n+      else PorePressc[p]=(drain && IsHydroMechDrainedParticle(p,PosPrec,Codec,FSTypec)? 0.f: c08x0::Half(Idpc[p]));\n+      if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p]))c08x0::HalfActual(Idpc[p],PorePressc[p]);\n+    }\n+    return; // No finite-Kw predictor pressure update on X0.\n+  }\n   const double dt05=dt*.5;\n   const bool drainfs=(DynamicPorePressure && IsHydroMechDrainageActive());\n   const int np=int(Np);\n@@ -3364,6 +3384,17 @@\n //==============================================================================\n void JSphCpu::ComputeSymplecticCorrPorePressure(double dt){\n   if(!HydroMech || !PorePressc || !PorePressPrec || !PorePressRatec)return;\n+\n+  if(c08x0::Requested()){\n+    c08x0::Need(dt==c08x0::state.dt,\"X0 corrector dt changed\");\n+    c08x0::Corr(this,Np,Idpc,Codec,PorePressc,PoroJc,PoroThetac);\n+    const bool drain=IsHydroMechDrainageActive();\n+    for(unsigned p=0;p<Np;p++){\n+      if(p<Npb || !CODE_IsFluid(Codec[p]))PorePressc[p]=PorePressPrec[p];\n+      else PorePressc[p]=(drain && IsHydroMechDrainedParticle(p,Posc,Codec,FSTypec)? 0.f: c08x0::Guess(Idpc[p]));\n+    }\n+    return; // No finite-Kw corrector pressure update or history rotation here.\n+  }\n   const bool drainfs=(DynamicPorePressure && IsHydroMechDrainageActive());\n   const int np=int(Np);\n   #ifdef OMP_USE\n@@ -3452,7 +3483,7 @@\n   tdouble3 *movc=ArraysCpu->ReserveDouble3();\n   const tfloat3 *indirvel=(InOut? InOut->GetDirVel(): NULL);\n   unsigned materialerror=0;\n-  const bool requireelastic=RequireElasticGravityPreload();\n+  const bool requireelastic=(RequireElasticGravityPreload() || c08x0::Requested());\n   #ifdef OMP_USE\n     #pragma omp parallel for schedule (static) if(npf>OMP_LIMIT_COMPUTESTEP) reduction(|:materialerror)\n   #endif\n@@ -3591,7 +3622,7 @@\n   tdouble3 *movc=ArraysCpu->ReserveDouble3();\n   const tfloat3 *indirvel=(InOut? InOut->GetDirVel(): NULL);\n   unsigned materialerror=0;\n-  const bool requireelastic=RequireElasticGravityPreload();\n+  const bool requireelastic=(RequireElasticGravityPreload() || c08x0::Requested());\n   #ifdef OMP_USE\n     #pragma omp parallel for schedule (static) if(npf>OMP_LIMIT_COMPUTESTEP) reduction(|:materialerror)\n   #endif\n@@ -3723,6 +3754,7 @@\n \n   ComputeSymplecticCorrPorePressure(dt);\n   ComputeSymplecticCorrPorosity(dt);\n+  if(c08x0::Requested())c08x0::CaptureJ(this,Np,Idpc,Codec,PoroJc);\n \n   //-Free memory assigned to variables Pre and ComputeSymplecticPre(). | Libera memoria asignada a variables Pre en ComputeSymplecticPre().\n   ArraysCpu->Free(PosPrec);      PosPrec=NULL;\n\n--- archive/JSphCpuSingle.cpp\n+++ private/JSphCpuSingle.cpp\n@@ -19,6 +19,8 @@\n /// \\file JSphCpuSingle.cpp \\brief Implements the class \\ref JSphCpuSingle.\n \n #include \"JSphCpuSingle.h\"\n+#include \"JDsFixedDt.h\"\n+#include \"c08_tpi_x0_r1.h\"\n #include \"JGravityPreloadState.h\"\n #include \"JSphHourglassCpu.h\"\n #include \"JCellDivCpuSingle.h\"\n@@ -1366,6 +1368,34 @@\n   //-Initialisation of execution variables. | Inicializacion de variables de ejecucion.\n   //------------------------------------------------------------------------------------\n   InitRunCpu();\n+\n+  if(c08x0::Requested()){\n+    c08x0::Need(Simulate2D && TStep==STEP_Symplectic && OmpThreads==1\n+      && CaseNp==1040 && CaseNfixed==40 && CaseNfluid==1000 && CaseNpb==40\n+      && !CaseNmoving && !CaseNfloat && !NpDynamic && !InOut && !Shifting && !Damping && !RelaxZones && !UseDEM && !Symmetry\n+      && (!GaugeSystem || GaugeSystem->GetCount()==0),\"X0 only admits fresh CPU1 1040-ID no-gauge column\");\n+    c08x0::Need(!PartBegin && PartBeginDir.empty() && !GravityPreload && !IsGravityPreloadHandoff()\n+      && TimeStep==0. && Nstep==0 && TimeMax==.15 && FixedDt && FixedDt->GetFixedValue()==c08x0::Dt\n+      && SymplecticDtPre==c08x0::Dt,\"X0 fresh 5us/.15s clock contract rejected\");\n+    c08x0::Need(HydroMech && HydroMechDynamicSeepage && PorosityObserver && PorosityFeedback && DynamicPorePressure\n+      && DynamicPoreWall && !DynamicPoreConductivity && !DynamicPoreFreeBody && !HydroMechNoWall\n+      && HydroMechInitMode==HMINIT_None && SoilCte.Porosity==.3f && SoilCte.PoreWaterBulkModulus==2e8\n+      && SoilCte.HydraulicConductivity==.0001f && SoilCte.PoreWaterRho==1000.\n+      && SoilCte.ModulusE==2e6f && SoilCte.PRvs==.3f && DPCtes==DP_PS,\"X0 constant-k dynamic column contract rejected\");\n+    c08x0::Need(TBoundary==BC_MDBC && SlipMode==SLIP_FreeSlip && !MdbcSlipModeByMk && !NoPenetration\n+      && PeriX && !PeriY && !PeriZ && PeriActive==1 && std::fabs(std::fabs(PeriXinc.x)-.1)<=64.*DBL_EPSILON*.1\n+      && PeriXinc.y==0. && PeriXinc.z==0. && TKernel==KERNEL_Wendland && Dp==.01\n+      && KernelH==float(.018) && RhopZero==2100.f,\"X0 wall/kernel/geometry/periodic contract rejected\");\n+    c08x0::Need(!HourglassCpu && SoilHourglassXi==0. && !PoreShepardRegularization && !ArtificialStress && !StrainSoftening\n+      && SoilBoundaryDerivativeSPR && SoilStressRateGradCorr && SoilDamping && SoilDampingCoef==.04f\n+      && TVisco==VISCO_Artificial && Visco==.1f && ViscoBoundFactor==1.f && !ViscoTime && TDensity==DDT_None && !DDTArray\n+      && Gravity.x==0. && Gravity.y==0. && Gravity.z==0.,\"X0 only admits HG0/ShepardOFF/elastic SPR1/AV.1/G1/eta.04\");\n+    c08x0::Need(HydroMechTopLoadMode==HMLOAD_TopKernelBand && HydroMechTopLoadQ0==10000.\n+      && HydroMechTopLoadRampTime==.01 && HydroMechDrainage && HydroMechDrainageFixedGrid\n+      && HydroMechDrainageStartTime==.01 && !HydroMechFreeSeepage,\"X0 original decimal load/drain contract rejected\");\n+    c08x0::Init(this,DirOut,Np,Idpc,Codec,PorePressc,PorePress0c,PoroJc,Kplasticc);\n+    Log->Print(\"C02TpiX0: private CPU1 beta0 alpha0.5 cold history; endpoint geometry/original source clock n; no paper-LF/implicit claim.\");\n+  }\n   RunGravityPreloadHandoffCpu();\n   RunGaugeSystem(TimeStep,true);\n   if(InOut)InOutInit(TimeStepIni);\n@@ -1397,6 +1427,31 @@\n     if(CaseNmoving)RunMotion(stepdt);\n     if(InOut)InOutComputeStep(stepdt);\n     else RunCellDivide(true);\n+\n+    if(c08x0::Requested()){\n+      c08x0::Endpoint(this,Np,Idpc,Codec,PorePressc,PoroJc,TimeStep,Nstep,stepdt);\n+      bool forceScratch=false;\n+      try{\n+        forceScratch=true;\n+        Interaction_Forces(INTERSTEP_SymCorrector); // Third genuine force; no solid/material/J update.\n+        const double endpointdt=DtVariable(false); // Original necessary force/wave/pore limits, no final dt-stat commit.\n+        c08x0::Need(endpointdt==stepdt,\"X0 endpoint fixed dt changed\");\n+        c08x0::PrepareFinal(this,Np,Idpc,Codec,PoroJc);\n+        PosInteraction_Forces();forceScratch=false;\n+        c08x0::WriteFinal(Np,Npb,Idpc,Codec,PorePressc);\n+        c08x0::state.endpoint=false;c08x0::state.temporary=false;\n+        ApplyPorePressureBoundaries(); // Original final drainage/FS/positive-cap and periodic copying.\n+        const bool drain=IsHydroMechDrainageActive();\n+        for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p]))\n+          c08x0::state.commitDrained[Idpc[p]]=unsigned(drain && IsHydroMechDrainedParticle(p,Posc,Codec,FSTypec));\n+        c08x0::Commit(this,Np,Idpc,Codec,PorePressc,PoroJc); // Full history rotates exactly once after all checks.\n+      }\n+      catch(...){\n+        c08x0::state.endpoint=false;c08x0::state.temporary=false;\n+        if(forceScratch)PosInteraction_Forces();\n+        throw; // No history commit or new SaveData on failed endpoint.\n+      }\n+    }\n     TimeStep+=stepdt;\n     LastDt=stepdt;\n     partoutstop=(Np<NpMinimum || !Np);\n@@ -1425,6 +1480,7 @@\n \n   //-End of Simulation.\n   //--------------------\n+  if(c08x0::Requested())c08x0::Finish(this,Nstep,TimeStep);\n   FinishRun(partoutstop);\n }\n \n@@ -1545,6 +1601,7 @@\n   }\n   //AddBasicArrays(arrays,npsave,pos,idp,vel,rhop);\n   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);\n+  if(c08x0::Requested())c08x0::Saved(this,Part,TimeStep,Nstep,Np,Idpc,Codec,PorePressc,PoroJc);\n   //-Free auxiliary memory for particle data. | Libera memoria auxiliar para datos de particulas.\n   ArraysCpu->Free(idp);\n   ArraysCpu->Free(pos);\n",
+  "public_files_changed": false,
+  "class_or_header_ABI_changed": false,
+  "default_OFF_no_private_allocations": true,
+  "endpoint_original_source_clock": true,
+  "physical_acceptance": false
+}
