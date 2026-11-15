@@ -1,0 +1,108 @@
+--- passed_HG/CUDA
++++ c08_h18_hg_matprobe_r1/CUDA
+@@ -462,6 +462,80 @@
+     <<','<<s.adjoint_defect<<','<<s.adjoint_budget<<','<<s.net_x<<','<<s.net_z<<','<<s.net_budget<<','<<s.torque<<','<<s.torque_budget
+     <<','<<s.max_force<<','<<s.max_delta_ace<<','<<s.max_commit_error<<','<<s.commit_budget<<','<<acceptedBorn<<','<<acceptedDead<<','<<discarded<<','<<angle<<'\n';
+ }
++
++// Failure-only Pre raw observation. Actual material status/returned kappa are NOT observed.
++std::string MatProbeQuoted(const std::string& text){
++  std::ostringstream out;out<<'"';
++  for(unsigned char c:text){
++    if(c=='"'||c=='\\')out<<'\\'<<char(c);
++    else if(c=='\n')out<<"\\n";else if(c=='\r')out<<"\\r";else if(c=='\t')out<<"\\t";
++    else if(c<32)out<<"\\u00"<<std::hex<<std::setw(2)<<std::setfill('0')<<unsigned(c)<<std::dec;
++    else out<<char(c);
++  }out<<'"';return out.str();
++}
++template<class F> void MatProbeValue(std::ostream& out,const std::string& name,F value,bool& comma){
++  static_assert(sizeof(F)==4||sizeof(F)==8,"Only native float/double raw values");
++  uint64_t bits=0;std::memcpy(&bits,&value,sizeof(F));
++  std::ostringstream decimal,hex;decimal<<std::setprecision(17)<<double(value);
++  hex<<std::hex<<std::setw(unsigned(sizeof(F)*2))<<std::setfill('0')<<bits;
++  if(comma)out<<",\n";comma=true;
++  out<<"    {\"name\":"<<MatProbeQuoted(name)<<",\"storage\":\"binary"<<sizeof(F)*8
++     <<"\",\"decimal17\":"<<MatProbeQuoted(decimal.str())<<",\"ieee_hex\":"<<MatProbeQuoted(hex.str())<<'}';
++}
++void CapturePreMismatch(Impl& p,unsigned np,const unsigned* id,const tsymatrix3d* actual_sigma,
++  const float* actual_kappa,const tsymatrix3d* base_sigma,const tsymatrix3f* rate,
++  const std::string& directory,const std::string& first_error){
++  // Preserve the genuinely observed first cause BEFORE any further CUDA read.
++  std::string dir=directory;if(!dir.empty()&&dir.back()!='/'&&dir.back()!='\\')dir+='/';
++  const std::string first=dir+"C08HGMatProbeFirstError.json",raw=dir+"C08HGMatProbePreRaw.json";
++  Need(!std::ifstream(first).good()&&!std::ifstream(raw).good(),"existing material raw evidence protected");
++  std::ofstream cause(first);cause<<std::setprecision(17)
++    <<"{\"schema\":1,\"phase\":\"PreMaterial\",\"first_error\":"<<MatProbeQuoted(first_error)
++    <<",\"source_step\":"<<p.step
++    <<",\"reported_clock_is_not_saved_native_state\":true,\"strict_rejection_retained\":true,\"values\":[\n";
++  bool first_comma=false;MatProbeValue(cause,"source_time_s",p.time,first_comma);cause<<"\n]}\n";
++  cause.flush();Need(bool(cause),"cannot preserve original material first error");
++  Failure f={};Cuda(cudaMemcpy(&f,p.failure,sizeof(f),cudaMemcpyDeviceToHost),"failure-only first mismatch download");
++  Need(f.bits==MaterialMismatch&&f.claimed&&f.id>=FirstId&&f.id<Original&&f.slot<np&&f.detail<=6,
++    "raw capture requires the genuinely claimed isolated material mismatch");
++  Need(base_sigma&&rate&&id&&actual_sigma&&actual_kappa,"Pre live base/rate/context missing");
++  unsigned actual_id=~0u,mapped=~0u;
++  Cuda(cudaMemcpy(&actual_id,id+f.slot,sizeof(actual_id),cudaMemcpyDeviceToHost),"failure-only actual native ID");
++  Cuda(cudaMemcpy(&mapped,p.map+f.id,sizeof(mapped),cudaMemcpyDeviceToHost),"failure-only native map");
++  Need(actual_id==f.id&&mapped==f.slot,"failure raw ID/map/slot differs");
++  Node shadow={};double2 base[3]={},actual[3]={};float2 rsigma[3]={};float actual_old_kappa=0;
++  Cuda(cudaMemcpy(&shadow,p.node+(f.id-FirstId),sizeof(shadow),cudaMemcpyDeviceToHost),"failure-only shadow node");
++  Cuda(cudaMemcpy(base,reinterpret_cast<const double2*>(base_sigma)+size_t(f.slot)*3,sizeof(base),cudaMemcpyDeviceToHost),"failure-only live SigmaPreg");
++  Cuda(cudaMemcpy(rsigma,reinterpret_cast<const float2*>(rate)+size_t(f.slot)*3,sizeof(rsigma),cudaMemcpyDeviceToHost),"failure-only live Rsigma");
++  Cuda(cudaMemcpy(actual,reinterpret_cast<const double2*>(actual_sigma)+size_t(f.slot)*3,sizeof(actual),cudaMemcpyDeviceToHost),"failure-only actual half sigma");
++  Cuda(cudaMemcpy(&actual_old_kappa,actual_kappa+f.slot,sizeof(actual_old_kappa),cudaMemcpyDeviceToHost),"failure-only predictor old kappa");
++  Need(shadow.slot==f.slot,"material shadow and actual Pre slot differ");
++  const double b[6]={base[0].x,base[0].y,base[1].x,base[1].y,base[2].x,base[2].y};
++  const float r[6]={rsigma[0].x,rsigma[0].y,rsigma[1].x,rsigma[1].y,rsigma[2].x,rsigma[2].y};
++  const double a[6]={actual[0].x,actual[0].y,actual[1].x,actual[1].y,actual[2].x,actual[2].y};
++  const double e[6]={shadow.expected.xx,shadow.expected.xy,shadow.expected.xz,shadow.expected.yy,shadow.expected.yz,shadow.expected.zz};
++  const char* component[6]={"xx","xy","xz","yy","yz","zz"};
++  std::ofstream out(raw);out<<"{\n  \"schema\":1,\"capture\":\"failure_only_PreMaterial\",\"native_id\":"<<f.id
++    <<",\"sorted_slot\":"<<f.slot<<",\"failure_bits\":"<<f.bits<<",\"failure_component\":"<<f.detail
++    <<",\"source_step\":"<<p.step<<",\"shadow_status\":"<<shadow.status
++    <<",\"shadow_status_is_actual_status\":false,\"actual_material_status_observed\":false"
++    <<",\"actual_returned_kappa_observed\":false,\"actual_Pre_kappa_array_still_old\":true"
++    <<",\"packed_order\":\"(xx,xy)/(xz,yy)/(yz,zz)\",\"base_is_live_SigmaPreg\":true"
++    <<",\"strict_rejection_retained\":true,\"saved_native_failure_state_claimed\":false"
++    <<",\"first_error\":"<<MatProbeQuoted(first_error)<<",\n  \"values\":[\n";
++  bool comma=false;
++  MatProbeValue(out,"source_time_s",p.time,comma);MatProbeValue(out,"operator_width_s",StepDt*.5,comma);
++  for(unsigned k=0;k<6;k++)MatProbeValue(out,std::string("base_sigma.")+component[k],b[k],comma);
++  for(unsigned k=0;k<6;k++)MatProbeValue(out,std::string("sigma_rate.")+component[k],r[k],comma);
++  for(unsigned k=0;k<6;k++)MatProbeValue(out,std::string("actual_half_sigma.")+component[k],a[k],comma);
++  for(unsigned k=0;k<6;k++)MatProbeValue(out,std::string("shadow_expected_sigma.")+component[k],e[k],comma);
++  MatProbeValue(out,"actual_Pre_kappa_array_old",actual_old_kappa,comma);
++  MatProbeValue(out,"shadow_old_kappa",shadow.old_kappa,comma);MatProbeValue(out,"shadow_returned_kappa",shadow.new_kappa,comma);
++  MatProbeValue(out,"shadow_qtrial",shadow.qtrial,comma);MatProbeValue(out,"shadow_qreturn",shadow.qreturn,comma);
++  MatProbeValue(out,"shadow_gamma",shadow.gamma.v,comma);MatProbeValue(out,"shadow_root_ratio",shadow.root_ratio,comma);
++  for(unsigned k=0;k<4;k++)MatProbeValue(out,"failure_reported_value_"+std::to_string(k),f.value[k],comma);
++  out<<"\n  ]\n}\n";out.flush();Need(bool(out),"failure-only material raw write failed");
++}
+ } // anonymous namespace
+ 
+ State::State():impl_(nullptr){}
+@@ -506,12 +580,22 @@
+   if(s.corrector){p.have_cor=true;p.cor_calls++;p.Counts(p.latest);p.cor=p.latest;}
+   else{p.have_pre=true;p.pre_calls++;p.Counts(p.latest);p.pre=p.latest;}
+ }
+-void State::CheckMaterial(unsigned np,unsigned npb,const unsigned* id,const typecode* code,const tsymatrix3d* sigma,const float* kappa,bool corrector){
++void State::CheckMaterial(unsigned np,unsigned npb,const unsigned* id,const typecode* code,const tsymatrix3d* sigma,const float* kappa,bool corrector,const tsymatrix3d* diagnostic_base,const tsymatrix3f* diagnostic_rate,const std::string& diagnostic_dir){
+   Need(impl_&&np==Fixed+Nodes&&npb==Fixed&&id&&code&&sigma&&kappa,"material-check extent/state invalid");
+   auto& p=*static_cast<Impl*>(impl_);
+   Need(corrector?(p.have_cor&&!p.cor_checked):(p.have_pre&&!p.pre_checked&&!p.have_cor),"material-check phase/order differs");
+   p.error_phase=corrector?"CorMaterial":"PreMaterial";p.Map(np,npb,id,code);
+-  CheckMaterialKernel<<<(Nodes+Block-1)/Block,Block>>>(np,id,p.map,sigma,kappa,corrector,p.node,p.failure);Cuda(cudaGetLastError(),"actual material bit check launch");p.ErrorNow();
++  CheckMaterialKernel<<<(Nodes+Block-1)/Block,Block>>>(np,id,p.map,sigma,kappa,corrector,p.node,p.failure);Cuda(cudaGetLastError(),"actual material bit check launch");
++  try{p.ErrorNow();}
++  catch(const std::exception& original){
++    if(!corrector&&p.latest.error==MaterialMismatch){
++      try{CapturePreMismatch(p,np,id,sigma,kappa,diagnostic_base,diagnostic_rate,diagnostic_dir,original.what());}
++      catch(const std::exception& dump){std::ostringstream note;note<<"\nPrivate HG matprobe capture failed: "<<dump.what()
++        <<"; original strict first error retained: "<<original.what()<<"\n";const std::string text=note.str();std::fwrite(text.data(),1,text.size(),stderr);}
++    }
++    throw;
++  }
++
+   p.latest.material_checked=Nodes;
+   if(corrector){p.cor_checked=true;p.cor=p.latest;}else{p.pre_checked=true;p.pre=p.latest;}
+ }

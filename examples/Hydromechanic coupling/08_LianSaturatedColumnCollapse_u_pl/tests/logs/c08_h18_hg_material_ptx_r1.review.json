@@ -1,0 +1,113 @@
+{
+  "stage": "c08_h18_hg_material_ptx_r1.read_only_review",
+  "physical_acceptance": false,
+  "source_edits": 0,
+  "builds": 0,
+  "solver_runs": 0,
+  "device_runs": 0,
+  "SHA_scans": 0,
+  "frozen_material_failure": {
+    "nstep": 2000731,
+    "phase": "PreMaterial",
+    "native_id": 7011,
+    "component": "sigma_xx",
+    "actual": "-5599.0531266314883",
+    "shadow": "-5599.0531266314892",
+    "observed_ULP_distance": 1,
+    "old_kappa": "4.0899690247897524e-06",
+    "returned_kappa": "4.4425305532058701e-06",
+    "not_a_repaired_run": true
+  },
+  "same_flags": {
+    "toolset": "CUDA11.7/MSVC14.36.32532",
+    "target": "sm_86,compute_86",
+    "fast_math": true,
+    "explicit_fmad_override_in_either_material_TU": false,
+    "original_material_object_retained": true,
+    "has_keep_dir_but_not_keep": true
+  },
+  "embedded_PTX": [
+    {
+      "role": "new_shadow",
+      "object": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_h18_hg_gpu_r1\\Release\\c08_h18_hg_gpu_r1.cu.obj",
+      "kind": 1,
+      "payload_offset": 425091,
+      "compressed_bytes": 132565,
+      "decompressed_bytes": 525403,
+      "complete_kernel": "_ZN5c08hg53_GLOBAL__N__02df0565_20_c08_h18_hg_gpu_r1_cu_3495b6d110NodeKernelENS_6ConfigENS_8MaterialENS_5StageEPKjPNS0_4NodeEPNS0_7FailureE(",
+      "complete_kernel_decoded_offset": 5595,
+      "PTX_fma_rn_f64_in_selected_kernel": 1549
+    },
+    {
+      "role": "actual_original_Pre",
+      "object": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Release\\int\\JSphGpuSimple_ker.cu.obj",
+      "kind": 1,
+      "payload_offset": 2541617,
+      "compressed_bytes": 4475132,
+      "decompressed_bytes": 18208443,
+      "complete_kernel": "_ZN6cusphs27KerComputeStepSymplecticPreILb0ELb0ELb0EL8TpDPCtes3EEEvjjPK6float4PKfPK6float3S4_PK7double2S6_PK6float2S9_dfffS7_PtPSA_PdPS2_SH_PfSK_NS_19StPorosityRhopStateEPjb(",
+      "complete_kernel_decoded_offset": 11839973,
+      "PTX_fma_rn_f64_in_selected_kernel": 991,
+      "template": {
+        "floating": false,
+        "shift": false,
+        "inout": false,
+        "DP_PS": 3
+      }
+    }
+  ],
+  "byte_parsing": {
+    "format": "existing COFF .nv_fatbin kind1 compressed PTX",
+    "decoder": "in-memory standard LZ4 block decode",
+    "decoded_lengths_exact": true,
+    "no_object_rewrite": true,
+    "PTX_excerpt_newlines": "CRLF normalized to LF; complete selected kernel bodies"
+  },
+  "SASS_tools": [
+    {
+      "program": "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.7/bin/cuobjdump.exe",
+      "arguments": [
+        "--dump-sass",
+        "--function",
+        "_ZN5c08hg53_GLOBAL__N__02df0565_20_c08_h18_hg_gpu_r1_cu_3495b6d110NodeKernelENS_6ConfigENS_8MaterialENS_5StageEPKjPNS0_4NodeEPNS0_7FailureE",
+        "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_h18_hg_gpu_r1\\Release\\c08_h18_hg_gpu_r1.cu.obj"
+      ],
+      "ActualToolExit": 0,
+      "Output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_hg_material_ptx_r1.node.sass.txt",
+      "Bytes": 3142490,
+      "Lines": 25158
+    },
+    {
+      "program": "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.7/bin/cuobjdump.exe",
+      "arguments": [
+        "--dump-sass",
+        "--function",
+        "_ZN6cusphs27KerComputeStepSymplecticPreILb0ELb0ELb0EL8TpDPCtes3EEEvjjPK6float4PKfPK6float3S4_PK7double2S6_PK6float2S9_dfffS7_PtPSA_PdPS2_SH_PfSK_NS_19StPorosityRhopStateEPjb",
+        "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Release\\int\\JSphGpuSimple_ker.cu.obj"
+      ],
+      "ActualToolExit": 0,
+      "Output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_hg_material_ptx_r1.pre_dp_ps.sass.txt",
+      "Bytes": 2064536,
+      "Lines": 16535
+    }
+  ],
+  "confirmed_instructions": {
+    "new_trial_sigma_six": "SASS DFMA 0x09a0 through 0x09f0",
+    "original_trial_sigma_six": "SASS DFMA 0x09d0 through 0x0a20; 0x09a0 through 0x09c0 are velocity",
+    "new_soft_return_sigma_xx_PTX": "div.rn I/3; sub.f64 trialxx-oldmean; div.rn newI/3; fma.rn scale*residual+mean",
+    "original_soft_return_sigma_xx_PTX": "same instruction shape",
+    "source_trials_and_last_radial_return_are_both_fused": true
+  },
+  "not_established": [
+    "No actual failed-stage trial inputs/intermediate lambda/root/scale were captured by this review.",
+    "Instruction-count differences are not proof of a cause.",
+    "Same compiler flags and shared source header do not guarantee bit identity across different inlining and output-use contexts.",
+    "This review does not establish a physical instability or a numerical repair."
+  ],
+  "next_minimum_diagnosis": [
+    "Preserve the actual failed run and obtain only the already separately admitted failure-only raw capture.",
+    "Compare actual base/rate/width/six trial stress bits, kappa and material constants before comparing return internals.",
+    "If inputs match, compare continuous lambda/kappa, new_I, scale, root residual/budget/status at the same point.",
+    "Only then consider a zero-advance fixed-fit3/original-adapter probe or a single shared outlined material implementation. Do not relax 0ULP or blindly change --fmad flags."
+  ]
+}

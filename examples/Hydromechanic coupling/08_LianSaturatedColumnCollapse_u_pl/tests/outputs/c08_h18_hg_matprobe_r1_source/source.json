@@ -1,0 +1,127 @@
+{
+  "stage": "c08_h18_hg_matprobe_r1.source",
+  "passed": true,
+  "prepared_only": true,
+  "parent_build": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_hg_gpu_Release_r1.build.json",
+    "bytes": 268065,
+    "mtime_ns": 1794717168046876000
+  },
+  "parent_source_capture": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_gpu_r1_source\\source.json",
+    "bytes": 9024,
+    "mtime_ns": 1794717033911709400
+  },
+  "source_archive": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_source_r1\\full_source.zip",
+    "bytes": 1082321,
+    "mtime_ns": 1794222843308768900
+  },
+  "baseline_source_capture": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_source_r1\\full_source.json",
+    "bytes": 48353,
+    "mtime_ns": 1794222843364623500
+  },
+  "private_sources": {
+    "host": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_matprobe_r1_source\\JSphGpuSingle.cpp",
+      "bytes": 77418,
+      "mtime_ns": 1794720080875566900
+    },
+    "CUDA": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_matprobe_r1_source\\c08_h18_hg_gpu_r1.cu",
+      "bytes": 49093,
+      "mtime_ns": 1794720080880085600
+    },
+    "header": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_matprobe_r1_source\\c08_h18_hg_gpu_r1.hpp",
+      "bytes": 2764,
+      "mtime_ns": 1794720080884108200
+    }
+  },
+  "proof": {
+    "host": [
+      {
+        "label": "Pre live base/rate only",
+        "original": "C08HgState->CheckMaterial(Np,Npb,Idpg,Codeg,Sigmag,Kplasticg,false);",
+        "replacement": "C08HgState->CheckMaterial(Np,Npb,Idpg,Codeg,Sigmag,Kplasticg,false,SigmaPreg,Rsigmag,DirOut);",
+        "matches": 1
+      },
+      {
+        "label": "Corr no dead base access",
+        "original": "C08HgState->CheckMaterial(Np,Npb,Idpg,Codeg,Sigmag,Kplasticg,true);",
+        "replacement": "C08HgState->CheckMaterial(Np,Npb,Idpg,Codeg,Sigmag,Kplasticg,true,NULL,NULL,DirOut);",
+        "matches": 1
+      }
+    ],
+    "CUDA": [
+      {
+        "label": "host-only API signature",
+        "original": "const tsymatrix3d* sigma,const float* kappa,bool corrector){",
+        "replacement": "const tsymatrix3d* sigma,const float* kappa,bool corrector,const tsymatrix3d* diagnostic_base,const tsymatrix3f* diagnostic_rate,const std::string& diagnostic_dir){",
+        "matches": 1
+      },
+      {
+        "label": "host-only failure capture definitions",
+        "original": "} // anonymous namespace",
+        "replacement": "\n// Failure-only Pre raw observation. Actual material status/returned kappa are NOT observed.\nstd::string MatProbeQuoted(const std::string& text){\n  std::ostringstream out;out<<'\"';\n  for(unsigned char c:text){\n    if(c=='\"'||c=='\\\\')out<<'\\\\'<<char(c);\n    else if(c=='\\n')out<<\"\\\\n\";else if(c=='\\r')out<<\"\\\\r\";else if(c=='\\t')out<<\"\\\\t\";\n    else if(c<32)out<<\"\\\\u00\"<<std::hex<<std::setw(2)<<std::setfill('0')<<unsigned(c)<<std::dec;\n    else out<<char(c);\n  }out<<'\"';return out.str();\n}\ntemplate<class F> void MatProbeValue(std::ostream& out,const std::string& name,F value,bool& comma){\n  static_assert(sizeof(F)==4||sizeof(F)==8,\"Only native float/double raw values\");\n  uint64_t bits=0;std::memcpy(&bits,&value,sizeof(F));\n  std::ostringstream decimal,hex;decimal<<std::setprecision(17)<<double(value);\n  hex<<std::hex<<std::setw(unsigned(sizeof(F)*2))<<std::setfill('0')<<bits;\n  if(comma)out<<\",\\n\";comma=true;\n  out<<\"    {\\\"name\\\":\"<<MatProbeQuoted(name)<<\",\\\"storage\\\":\\\"binary\"<<sizeof(F)*8\n     <<\"\\\",\\\"decimal17\\\":\"<<MatProbeQuoted(decimal.str())<<\",\\\"ieee_hex\\\":\"<<MatProbeQuoted(hex.str())<<'}';\n}\nvoid CapturePreMismatch(Impl& p,unsigned np,const unsigned* id,const tsymatrix3d* actual_sigma,\n  const float* actual_kappa,const tsymatrix3d* base_sigma,const tsymatrix3f* rate,\n  const std::string& directory,const std::string& first_error){\n  // Preserve the genuinely observed first cause BEFORE any further CUDA read.\n  std::string dir=directory;if(!dir.empty()&&dir.back()!='/'&&dir.back()!='\\\\')dir+='/';\n  const std::string first=dir+\"C08HGMatProbeFirstError.json\",raw=dir+\"C08HGMatProbePreRaw.json\";\n  Need(!std::ifstream(first).good()&&!std::ifstream(raw).good(),\"existing material raw evidence protected\");\n  std::ofstream cause(first);cause<<std::setprecision(17)\n    <<\"{\\\"schema\\\":1,\\\"phase\\\":\\\"PreMaterial\\\",\\\"first_error\\\":\"<<MatProbeQuoted(first_error)\n    <<\",\\\"source_step\\\":\"<<p.step\n    <<\",\\\"reported_clock_is_not_saved_native_state\\\":true,\\\"strict_rejection_retained\\\":true,\\\"values\\\":[\\n\";\n  bool first_comma=false;MatProbeValue(cause,\"source_time_s\",p.time,first_comma);cause<<\"\\n]}\\n\";\n  cause.flush();Need(bool(cause),\"cannot preserve original material first error\");\n  Failure f={};Cuda(cudaMemcpy(&f,p.failure,sizeof(f),cudaMemcpyDeviceToHost),\"failure-only first mismatch download\");\n  Need(f.bits==MaterialMismatch&&f.claimed&&f.id>=FirstId&&f.id<Original&&f.slot<np&&f.detail<=6,\n    \"raw capture requires the genuinely claimed isolated material mismatch\");\n  Need(base_sigma&&rate&&id&&actual_sigma&&actual_kappa,\"Pre live base/rate/context missing\");\n  unsigned actual_id=~0u,mapped=~0u;\n  Cuda(cudaMemcpy(&actual_id,id+f.slot,sizeof(actual_id),cudaMemcpyDeviceToHost),\"failure-only actual native ID\");\n  Cuda(cudaMemcpy(&mapped,p.map+f.id,sizeof(mapped),cudaMemcpyDeviceToHost),\"failure-only native map\");\n  Need(actual_id==f.id&&mapped==f.slot,\"failure raw ID/map/slot differs\");\n  Node shadow={};double2 base[3]={},actual[3]={};float2 rsigma[3]={};float actual_old_kappa=0;\n  Cuda(cudaMemcpy(&shadow,p.node+(f.id-FirstId),sizeof(shadow),cudaMemcpyDeviceToHost),\"failure-only shadow node\");\n  Cuda(cudaMemcpy(base,reinterpret_cast<const double2*>(base_sigma)+size_t(f.slot)*3,sizeof(base),cudaMemcpyDeviceToHost),\"failure-only live SigmaPreg\");\n  Cuda(cudaMemcpy(rsigma,reinterpret_cast<const float2*>(rate)+size_t(f.slot)*3,sizeof(rsigma),cudaMemcpyDeviceToHost),\"failure-only live Rsigma\");\n  Cuda(cudaMemcpy(actual,reinterpret_cast<const double2*>(actual_sigma)+size_t(f.slot)*3,sizeof(actual),cudaMemcpyDeviceToHost),\"failure-only actual half sigma\");\n  Cuda(cudaMemcpy(&actual_old_kappa,actual_kappa+f.slot,sizeof(actual_old_kappa),cudaMemcpyDeviceToHost),\"failure-only predictor old kappa\");\n  Need(shadow.slot==f.slot,\"material shadow and actual Pre slot differ\");\n  const double b[6]={base[0].x,base[0].y,base[1].x,base[1].y,base[2].x,base[2].y};\n  const float r[6]={rsigma[0].x,rsigma[0].y,rsigma[1].x,rsigma[1].y,rsigma[2].x,rsigma[2].y};\n  const double a[6]={actual[0].x,actual[0].y,actual[1].x,actual[1].y,actual[2].x,actual[2].y};\n  const double e[6]={shadow.expected.xx,shadow.expected.xy,shadow.expected.xz,shadow.expected.yy,shadow.expected.yz,shadow.expected.zz};\n  const char* component[6]={\"xx\",\"xy\",\"xz\",\"yy\",\"yz\",\"zz\"};\n  std::ofstream out(raw);out<<\"{\\n  \\\"schema\\\":1,\\\"capture\\\":\\\"failure_only_PreMaterial\\\",\\\"native_id\\\":\"<<f.id\n    <<\",\\\"sorted_slot\\\":\"<<f.slot<<\",\\\"failure_bits\\\":\"<<f.bits<<\",\\\"failure_component\\\":\"<<f.detail\n    <<\",\\\"source_step\\\":\"<<p.step<<\",\\\"shadow_status\\\":\"<<shadow.status\n    <<\",\\\"shadow_status_is_actual_status\\\":false,\\\"actual_material_status_observed\\\":false\"\n    <<\",\\\"actual_returned_kappa_observed\\\":false,\\\"actual_Pre_kappa_array_still_old\\\":true\"\n    <<\",\\\"packed_order\\\":\\\"(xx,xy)/(xz,yy)/(yz,zz)\\\",\\\"base_is_live_SigmaPreg\\\":true\"\n    <<\",\\\"strict_rejection_retained\\\":true,\\\"saved_native_failure_state_claimed\\\":false\"\n    <<\",\\\"first_error\\\":\"<<MatProbeQuoted(first_error)<<\",\\n  \\\"values\\\":[\\n\";\n  bool comma=false;\n  MatProbeValue(out,\"source_time_s\",p.time,comma);MatProbeValue(out,\"operator_width_s\",StepDt*.5,comma);\n  for(unsigned k=0;k<6;k++)MatProbeValue(out,std::string(\"base_sigma.\")+component[k],b[k],comma);\n  for(unsigned k=0;k<6;k++)MatProbeValue(out,std::string(\"sigma_rate.\")+component[k],r[k],comma);\n  for(unsigned k=0;k<6;k++)MatProbeValue(out,std::string(\"actual_half_sigma.\")+component[k],a[k],comma);\n  for(unsigned k=0;k<6;k++)MatProbeValue(out,std::string(\"shadow_expected_sigma.\")+component[k],e[k],comma);\n  MatProbeValue(out,\"actual_Pre_kappa_array_old\",actual_old_kappa,comma);\n  MatProbeValue(out,\"shadow_old_kappa\",shadow.old_kappa,comma);MatProbeValue(out,\"shadow_returned_kappa\",shadow.new_kappa,comma);\n  MatProbeValue(out,\"shadow_qtrial\",shadow.qtrial,comma);MatProbeValue(out,\"shadow_qreturn\",shadow.qreturn,comma);\n  MatProbeValue(out,\"shadow_gamma\",shadow.gamma.v,comma);MatProbeValue(out,\"shadow_root_ratio\",shadow.root_ratio,comma);\n  for(unsigned k=0;k<4;k++)MatProbeValue(out,\"failure_reported_value_\"+std::to_string(k),f.value[k],comma);\n  out<<\"\\n  ]\\n}\\n\";out.flush();Need(bool(out),\"failure-only material raw write failed\");\n}\n} // anonymous namespace",
+        "matches": 1
+      },
+      {
+        "label": "preserve original rejection around failure I/O",
+        "original": "CheckMaterialKernel<<<(Nodes+Block-1)/Block,Block>>>(np,id,p.map,sigma,kappa,corrector,p.node,p.failure);Cuda(cudaGetLastError(),\"actual material bit check launch\");p.ErrorNow();",
+        "replacement": "CheckMaterialKernel<<<(Nodes+Block-1)/Block,Block>>>(np,id,p.map,sigma,kappa,corrector,p.node,p.failure);Cuda(cudaGetLastError(),\"actual material bit check launch\");\n  try{p.ErrorNow();}\n  catch(const std::exception& original){\n    if(!corrector&&p.latest.error==MaterialMismatch){\n      try{CapturePreMismatch(p,np,id,sigma,kappa,diagnostic_base,diagnostic_rate,diagnostic_dir,original.what());}\n      catch(const std::exception& dump){std::ostringstream note;note<<\"\\nPrivate HG matprobe capture failed: \"<<dump.what()\n        <<\"; original strict first error retained: \"<<original.what()<<\"\\n\";const std::string text=note.str();std::fwrite(text.data(),1,text.size(),stderr);}\n    }\n    throw;\n  }\n",
+        "matches": 1
+      }
+    ],
+    "header": [
+      {
+        "label": "private failure context",
+        "original": "const tsymatrix3d* sigma,const float* kappa,bool corrector);",
+        "replacement": "const tsymatrix3d* sigma,const float* kappa,bool corrector,const tsymatrix3d* diagnostic_base,const tsymatrix3f* diagnostic_rate,const std::string& diagnostic_dir);",
+        "matches": 1
+      },
+      {
+        "label": "host failure logging declaration",
+        "original": "#include <string>",
+        "replacement": "#include <string>\n#include <cstdio>",
+        "matches": 1
+      }
+    ]
+  },
+  "diffs": {
+    "host": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_matprobe_r1_source\\host.diff",
+      "bytes": 156357,
+      "mtime_ns": 1794720080889351600
+    },
+    "CUDA": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_matprobe_r1_source\\CUDA.diff",
+      "bytes": 8676,
+      "mtime_ns": 1794720080895351800
+    },
+    "header": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_matprobe_r1_source\\header.diff",
+      "bytes": 1035,
+      "mtime_ns": 1794720080899351100
+    }
+  },
+  "exact_reverse_parent_sources": true,
+  "original_device_prefix_bytes": 25414,
+  "original_device_prefix_byte_identical": true,
+  "NodeKernel_numeric_body_unchanged": true,
+  "new_device_functions": 0,
+  "new_kernels": 0,
+  "public_source_changed": false,
+  "public_class_or_CTE_layout_changed": false,
+  "private_API_failure_context_only": true,
+  "Pre_only_capture": true,
+  "Corr_capture": false,
+  "actual_returned_kappa_observed": false,
+  "actual_material_status_observed": false,
+  "strict_material_bit_guard_unchanged": true,
+  "normal_path_new_CUDA_reads": 0,
+  "solver_invocations": 0,
+  "reader_invocations": 0,
+  "physical_acceptance": false
+}

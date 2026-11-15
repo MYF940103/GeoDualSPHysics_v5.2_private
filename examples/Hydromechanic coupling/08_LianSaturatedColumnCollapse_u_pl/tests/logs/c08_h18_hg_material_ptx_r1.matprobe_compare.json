@@ -1,0 +1,150 @@
+{
+  "stage": "c08_h18_hg_matprobe_r1.normal_Node_compilation_review",
+  "physical_acceptance": false,
+  "source_edits": 0,
+  "builds": 0,
+  "solver_runs": 0,
+  "device_runs": 0,
+  "Git_actions": 0,
+  "queue_actions": 0,
+  "SHA_scans": 0,
+  "comparison": "Original HG Release NodeKernel versus matprobe Release NodeKernel; both build receipts passed",
+  "recipe": {
+    "OldBuildPassed": true,
+    "NewBuildPassed": true,
+    "OldNVCCPopen": 0,
+    "OldNVCCWin32": 0,
+    "NewNVCCPopen": 0,
+    "NewNVCCWin32": 0,
+    "ArgumentsExactAfterOnlyPrivatePathRelocation": true,
+    "Arguments": [
+      "-ID:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_matprobe_r1_build\\frozen\\src\\source",
+      "-gencode=arch=compute_86,code=\"sm_86,compute_86\"",
+      "--use-local-env",
+      "-ccbin",
+      "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\bin\\HostX86\\x64",
+      "-x",
+      "cu",
+      "-IC:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\include",
+      "--keep-dir",
+      "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_h18_hg_matprobe_r1\\Release",
+      "-maxrregcount=0",
+      "--machine",
+      "64",
+      "--compile",
+      "-cudart",
+      "static",
+      "-use_fast_math",
+      "-Xcompiler",
+      "/wd 4267",
+      "-Wno-deprecated-gpu-targets",
+      "-D_WITHGPU",
+      "-DWIN32",
+      "-D_CONSOLE",
+      "-D_VC80_UPGRADE=0x0710",
+      "-D_MBCS",
+      "-Xcompiler",
+      "/EHsc /W3 /nologo /O2 /FdC:\\Users\\syosh\\AppData\\Local\\Temp\\c08_h18_hg_matprobe_r1\\Release\\cuda.pdb /FS   /MT ",
+      "-o",
+      "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_h18_hg_matprobe_r1\\Release\\c08_h18_hg_gpu_r1.cu.obj",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_matprobe_r1_build\\frozen\\src\\source\\c08_h18_hg_gpu_r1.cu"
+    ],
+    "NewSourcePrefixByteProof": true,
+    "NewSourcePrefixBytes": 25414,
+    "MaterialOriginalObjectExactRecordedBinding": true,
+    "OriginalMaterial": {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Release\\int\\JSphGpuSimple_ker.cu.obj",
+      "bytes": 7554601,
+      "mtime_ns": 1794223048368553200
+    }
+  },
+  "embedded_PTX": {
+    "original_payload": {
+      "offset": 425091,
+      "compressed": 132565,
+      "decoded": 525403
+    },
+    "matprobe_payload": {
+      "offset": 434895,
+      "compressed": 132563,
+      "decoded": 525403
+    },
+    "original_kernel": "_ZN5c08hg53_GLOBAL__N__02df0565_20_c08_h18_hg_gpu_r1_cu_3495b6d110NodeKernelENS_6ConfigENS_8MaterialENS_5StageEPKjPNS0_4NodeEPNS0_7FailureE(",
+    "matprobe_kernel": "_ZN5c08hg53_GLOBAL__N__fbc22dc6_20_c08_h18_hg_gpu_r1_cu_3495b6d110NodeKernelENS_6ConfigENS_8MaterialENS_5StageEPKjPNS0_4NodeEPNS0_7FailureE(",
+    "same": true,
+    "oldLength": 379491,
+    "newLength": 379491,
+    "normalizedLength": 373219,
+    "firstDifference": -1,
+    "only_normalization": "Each complete mangled kernel symbol replaced by NODE_KERNEL, including parameter-name prefixes. No instruction/register/branch/constant/.loc/address metadata was removed.",
+    "entry_count_matprobe": 13
+  },
+  "CUBIN": {
+    "original_elf_object_offset": 94763,
+    "matprobe_elf_object_offset": 104567,
+    "method": "Actual same-length section byte sequences converted losslessly to hex and compared ordinally; no hash or masked instruction comparison",
+    "sections": [
+      {
+        "SectionPrefix": ".nv.info.",
+        "OldName": ".nv.info._ZN5c08hg53_GLOBAL__N__02df0565_20_c08_h18_hg_gpu_r1_cu_3495b6d110NodeKernelENS_6ConfigENS_8MaterialENS_5StageEPKjPNS0_4NodeEPNS0_7FailureE",
+        "NewName": ".nv.info._ZN5c08hg53_GLOBAL__N__fbc22dc6_20_c08_h18_hg_gpu_r1_cu_3495b6d110NodeKernelENS_6ConfigENS_8MaterialENS_5StageEPKjPNS0_4NodeEPNS0_7FailureE",
+        "OldObjectOffset": 124663,
+        "NewObjectOffset": 134467,
+        "OldBytes": 368,
+        "NewBytes": 368,
+        "ActualByteEqual": true
+      },
+      {
+        "SectionPrefix": ".rel.text.",
+        "OldName": ".rel.text._ZN5c08hg53_GLOBAL__N__02df0565_20_c08_h18_hg_gpu_r1_cu_3495b6d110NodeKernelENS_6ConfigENS_8MaterialENS_5StageEPKjPNS0_4NodeEPNS0_7FailureE",
+        "NewName": ".rel.text._ZN5c08hg53_GLOBAL__N__fbc22dc6_20_c08_h18_hg_gpu_r1_cu_3495b6d110NodeKernelENS_6ConfigENS_8MaterialENS_5StageEPKjPNS0_4NodeEPNS0_7FailureE",
+        "OldObjectOffset": 125443,
+        "NewObjectOffset": 135247,
+        "OldBytes": 352,
+        "NewBytes": 352,
+        "ActualByteEqual": true
+      },
+      {
+        "SectionPrefix": ".nv.constant2.",
+        "OldName": ".nv.constant2._ZN5c08hg53_GLOBAL__N__02df0565_20_c08_h18_hg_gpu_r1_cu_3495b6d110NodeKernelENS_6ConfigENS_8MaterialENS_5StageEPKjPNS0_4NodeEPNS0_7FailureE",
+        "NewName": ".nv.constant2._ZN5c08hg53_GLOBAL__N__fbc22dc6_20_c08_h18_hg_gpu_r1_cu_3495b6d110NodeKernelENS_6ConfigENS_8MaterialENS_5StageEPKjPNS0_4NodeEPNS0_7FailureE",
+        "OldObjectOffset": 131955,
+        "NewObjectOffset": 141759,
+        "OldBytes": 392,
+        "NewBytes": 392,
+        "ActualByteEqual": true
+      },
+      {
+        "SectionPrefix": ".nv.constant0.",
+        "OldName": ".nv.constant0._ZN5c08hg53_GLOBAL__N__02df0565_20_c08_h18_hg_gpu_r1_cu_3495b6d110NodeKernelENS_6ConfigENS_8MaterialENS_5StageEPKjPNS0_4NodeEPNS0_7FailureE",
+        "NewName": ".nv.constant0._ZN5c08hg53_GLOBAL__N__fbc22dc6_20_c08_h18_hg_gpu_r1_cu_3495b6d110NodeKernelENS_6ConfigENS_8MaterialENS_5StageEPKjPNS0_4NodeEPNS0_7FailureE",
+        "OldObjectOffset": 132347,
+        "NewObjectOffset": 142151,
+        "OldBytes": 760,
+        "NewBytes": 760,
+        "ActualByteEqual": true
+      },
+      {
+        "SectionPrefix": ".text.",
+        "OldName": ".text._ZN5c08hg53_GLOBAL__N__02df0565_20_c08_h18_hg_gpu_r1_cu_3495b6d110NodeKernelENS_6ConfigENS_8MaterialENS_5StageEPKjPNS0_4NodeEPNS0_7FailureE",
+        "NewName": ".text._ZN5c08hg53_GLOBAL__N__fbc22dc6_20_c08_h18_hg_gpu_r1_cu_3495b6d110NodeKernelENS_6ConfigENS_8MaterialENS_5StageEPKjPNS0_4NodeEPNS0_7FailureE",
+        "OldObjectOffset": 218795,
+        "NewObjectOffset": 228599,
+        "OldBytes": 201088,
+        "NewBytes": 201088,
+        "ActualByteEqual": true
+      }
+    ]
+  },
+  "conclusion": {
+    "normal_Node_PTX_instructions_identical_after_symbol_normalization": true,
+    "actual_Node_text_machine_bytes_identical": true,
+    "Node_text_machine_bytes": 201088,
+    "normal_Node_constant_and_relocation_section_bytes_identical": true,
+    "whole_object_or_program_bit_identity_claimed": false,
+    "physical_trajectory_acceptance_claimed": false,
+    "scope": "Failure-only host/API/cstdio additions did not change the normal Node numerical machine body. This is not an independent field-trajectory comparison or a fix for the original material mismatch."
+  },
+  "new_external_binary_tools_this_review": 0,
+  "retained_prior_SASS": "Original Node full SASS is already in c08_h18_hg_material_ptx_r1.node.sass.txt; actual identical .text and constants/relocations avoid a redundant new disassembly."
+}

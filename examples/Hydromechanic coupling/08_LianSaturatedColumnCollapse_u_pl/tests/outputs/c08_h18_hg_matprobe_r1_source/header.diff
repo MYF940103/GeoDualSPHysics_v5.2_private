@@ -1,0 +1,19 @@
+--- passed_HG/header
++++ c08_h18_hg_matprobe_r1/header
+@@ -5,6 +5,7 @@
+ #include "JCellDivDataGpu.h"
+ #include <cuda_runtime_api.h>
+ #include <string>
++#include <cstdio>
+ namespace c08hg {
+ constexpr unsigned Nodes=5000,FirstId=2060,Neighbors=128;
+ constexpr double Xi=.1,StepDt=.000005;
+@@ -40,7 +41,7 @@
+   // Called immediately AFTER the unchanged real predictor/corrector method returns.
+   // Expected six stress components and predictor-old/full-returned kappa are keyed by native ID.
+   void CheckMaterial(unsigned np,unsigned npb,const unsigned* id,const typecode* code,
+-    const tsymatrix3d* sigma,const float* kappa,bool corrector);
++    const tsymatrix3d* sigma,const float* kappa,bool corrector,const tsymatrix3d* diagnostic_base,const tsymatrix3f* diagnostic_rate,const std::string& diagnostic_dir);
+   // Only after the real full update, completed cell divide and actual scalar +=dt.
+   void Accept(unsigned np,unsigned npb,const unsigned* id,const typecode* code,
+     unsigned completed,double saved_time,double dt);
