@@ -177,6 +177,15 @@ template<TpKernel tker,unsigned stage> __global__ void KerDynamicPoreWall(unsign
   else if(stage==1){
     tmatrix3d m;m.a11=v[0];m.a12=qx*qy*v[1];m.a13=qx*qz*v[2];m.a21=qy*qx*v[3];m.a22=v[4];m.a23=qy*qz*v[5];m.a31=qz*qx*v[6];m.a32=qz*qy*v[7];m.a33=v[8];
     const double determinant=m.a11*m.a33-m.a13*m.a31;
+    if(isfinite(determinant) && determinant<=0 && CTE.simulate2d && !CTE.periactive && !retried){
+      bool nearestfinite=isfinite(nearest2) && nearest2<DBL_MAX && isfinite(nearx) && isfinite(nearz);
+      for(unsigned c=0;c<ncomp && nearestfinite;c++)nearestfinite=isfinite(nearest[c]);
+      if(nearestfinite && (nearx!=0 || nearz!=0)){
+        //-The same visited-source retry, still evaluated at the original mirror.
+        gp.x-=nearx;gp.z-=nearz;fitshiftx-=nearx;fitshiftz-=nearz;
+        retried=true;continue;
+      }
+    }
     if(!isfinite(determinant) || determinant<=0){atomicMin(invalid,p1);return;}
     corrmat[p1]=m;
   }

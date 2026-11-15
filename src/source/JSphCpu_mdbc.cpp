@@ -274,7 +274,7 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
         if(!firstorder)geometryfailed=true;
         else missing++;
       }
-      else write(p1,fieldfinal,firstorder? gradfieldx: nullptr,firstorder? gradfieldy: nullptr,firstorder? gradfieldz: nullptr);
+      else if(!write(p1,fieldfinal,firstorder? gradfieldx: nullptr,firstorder? gradfieldy: nullptr,firstorder? gradfieldz: nullptr))geometryfailed=true;
     }
     else if(DynamicPoreWall)geometryfailed=true;
     if(geometryfailed){
@@ -302,7 +302,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureMdbcCorr
   ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const float *porepress0,float *porepress)const
 {
   const auto readpressure=[&](unsigned,unsigned p,unsigned){return(double(porepress[p])-double(porepress0[p]));};
-  const auto writepressure=[&](unsigned p,const double *excess,const double*,const double*,const double*){porepress[p]=float(double(porepress0[p])+excess[0]);};
+  const auto writepressure=[&](unsigned p,const double *excess,const double*,const double*,const double*){porepress[p]=float(double(porepress0[p])+excess[0]);return true;};
   InterpolateBoundaryGhostFieldT<tker,sim2d,1>(n,divdata,pos,code,velrhop,boundnormal,readpressure,writepressure);
 }
 
@@ -325,7 +325,7 @@ void JSphCpu::ComputeBoundaryDerivativeVelocity(){
   };
   const auto writevelocity=[&](unsigned p,const double *velocity,const double*,const double*,const double*){
     const TpSlipMode mode=(BoundSlipModec? TpSlipMode(BoundSlipModec[p]): SlipMode);
-    if(mode>=SLIP_NoSlip && BoundModec && BoundModec[p]==BMODE_MDBC2OFF)return;
+    if(mode>=SLIP_NoSlip && BoundModec && BoundModec[p]==BMODE_MDBC2OFF)return true;
     const tfloat4 v=Velrhopc[p];
     const tfloat3 bnormal=BoundNormalc[p];
     if(mode==SLIP_Vel0 && bnormal.x==0 && bnormal.y==0){
@@ -351,6 +351,7 @@ void JSphCpu::ComputeBoundaryDerivativeVelocity(){
           float(double(v.y)+reflection*normal.y),float(double(v.z)+reflection*normal.z));
       }
     }
+    return true;
   };
   if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Wendland,true,3>(
     NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,readvelocity,writevelocity,true);
@@ -1185,6 +1186,7 @@ void JSphCpu::ComputeDynamicPoreWallStateCpu(){
     }
     Velrhopc[p]=TFloat4(0,0,0,RhopZero); //-The physical fixed wall never moves.
     BoundModec[p]=BMODE_MDBC2;
+    return true;
   };
   if(TKernel==KERNEL_Wendland){
     if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Wendland,true,11>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
@@ -1213,7 +1215,13 @@ void JSphCpu::ComputeDynamicPoreWallMatrixCpu(){
     const double v[9]={m.a11,m.a12,m.a13,m.a21,m.a22,m.a23,m.a31,m.a32,m.a33};return v[c];};
   const auto write=[&](unsigned p,const double *v,const double*,const double*,const double*){
     const tdouble3 q=DynamicPoreWallParity(BoundNormalc[p]);
-    CorrMatc[p]=TMatrix3d(v[0],q.x*q.y*v[1],q.x*q.z*v[2],q.y*q.x*v[3],v[4],q.y*q.z*v[5],q.z*q.x*v[6],q.z*q.y*v[7],v[8]);
+    const tmatrix3d m=TMatrix3d(v[0],q.x*q.y*v[1],q.x*q.z*v[2],q.y*q.x*v[3],v[4],q.y*q.z*v[5],q.z*q.x*v[6],q.z*q.y*v[7],v[8]);
+    if(DynamicPoreWall && Simulate2D && !PeriActive){
+      const double det=m.a11*m.a33-m.a13*m.a31;
+      if(std::isfinite(det) && det<=0)return false; //-Do not commit before the existing one-source retry.
+    }
+    CorrMatc[p]=m;
+    return true;
   };
   if(TKernel==KERNEL_Wendland){
     if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Wendland,true,9>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
@@ -1241,6 +1249,7 @@ void JSphCpu::ComputeDynamicPoreWallAccelerationCpu(){
   const auto write=[&](unsigned p,const double *v,const double*,const double*,const double*){
     const tdouble3 q=DynamicPoreWallParity(BoundNormalc[p]);
     Acec[p]=TFloat3(float(q.x*v[0]-Gravity.x),float(q.y*v[1]-Gravity.y),float(q.z*v[2]-Gravity.z));
+    return true;
   };
   if(TKernel==KERNEL_Wendland){
     if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Wendland,true,3>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);

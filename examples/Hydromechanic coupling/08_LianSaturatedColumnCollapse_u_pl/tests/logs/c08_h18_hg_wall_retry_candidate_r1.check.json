@@ -1,0 +1,395 @@
+{
+  "stage": "c08_h18_hg_wall_retry_candidate_r1",
+  "analysis_passed": true,
+  "physical_acceptance": false,
+  "physical_repair_selected": false,
+  "original_solver_still_failed": true,
+  "actual_GPU_branch_confirmed": false,
+  "actual_GPU_M_C_registers": false,
+  "source_changed": false,
+  "solver_invocations": 0,
+  "native_decodes": 0,
+  "GPU_invocations": 0,
+  "build_invocations": 0,
+  "VTK_invocations": 0,
+  "SHA_scans": 0,
+  "analysis_complete": true,
+  "consumed_stats_unchanged": true,
+  "derivation": {
+    "original_condition": "        if complete and not geometry and not attempt and nearfinite and (nearx!=0 or nearz!=0):",
+    "counterfactual_condition": "        if complete and ((not geometry) or (geometry and row['independent_C_det'] is not None and math.isfinite(row['independent_C_det']) and row['independent_C_det']<=0)) and not attempt and nearfinite and (nearx!=0 or nearz!=0):",
+    "replacements": 1,
+    "source_function_bytes": 7742,
+    "inverse_restores_original_function_bytes": true,
+    "original_module_function_replaced": false,
+    "arithmetic_neighbor_order_and_thresholds_changed": false
+  },
+  "original_attempts": 1,
+  "counterfactual_attempts": 2,
+  "original_first_pass_bits_equal": true,
+  "original_first_pass_donor_bits_equal": true,
+  "nonfinite_Cdet_retry_allowed": false,
+  "invalid_J_or_nonfinite_component_retry_added": false,
+  "original_geometry_and_positive_C_gates_unchanged": true,
+  "third_fallback_added": false,
+  "counterfactual_final_independent_gate_accepts": true,
+  "original_recomputation": {
+    "status": "independent_source_order_recomputation_complete",
+    "actual_branch_confirmed": false,
+    "original_mirror_point": [
+      4.9,
+      0.0,
+      0.019999999105930366
+    ],
+    "actual_target_C_input_raw_hex": [
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000"
+    ],
+    "target_C_input_is_not_rejected_fit": true
+  },
+  "counterfactual_recomputation": {
+    "status": "independent_source_order_recomputation_complete",
+    "actual_branch_confirmed": false,
+    "original_mirror_point": [
+      4.9,
+      0.0,
+      0.019999999105930366
+    ],
+    "actual_target_C_input_raw_hex": [
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000"
+    ],
+    "target_C_input_is_not_rejected_fit": true
+  },
+  "independent_attempts": [
+    {
+      "method": "Original source",
+      "attempt": 0,
+      "host_input_wall_slot": 690,
+      "host_input_wall_id": 894,
+      "Gx": 4.9,
+      "Gy": 0.0,
+      "Gz": 0.019999999105930366,
+      "shiftx": 0.0,
+      "shiftz": 0.0,
+      "visited_sorted_slots": 39,
+      "consumed_fluid_donors": 17,
+      "complete_geometry_accumulation": true,
+      "sumW": 0.3187024442351997,
+      "submerged": 0.8040496882435809,
+      "independent_M_det": 0.0010000250304429627,
+      "original_geometry_gate_margin": 2.503044296267229e-08,
+      "independent_geometry_accepts": true,
+      "nearest_slot": 2140,
+      "nearest_native_id": 7030,
+      "nearest_distance2": 0.0022382994100522816,
+      "first_invalid_J_slot": null,
+      "first_invalid_J_native_id": null,
+      "first_invalid_J_value": null,
+      "independent_C_det": -0.025220726336279253,
+      "independent_C_sym_eig_min": -0.013903747359226585,
+      "independent_C_sym_eig_max": 1.8139517127763887,
+      "independent_C_sym_defect": 0.0,
+      "negative_alpha_count": 13,
+      "alpha_L1": 5.7270055210977295,
+      "alpha_sum": 0.9999999999999936,
+      "candidate_reason": "independent_Cdet_nonpositive_or_nonfinite",
+      "actual_GPU_reason_confirmed": false,
+      "intermediates_are_independent": true,
+      "independent_C_min_eigvec_x": 0.9965376606576286,
+      "independent_C_min_eigvec_z": 0.08314259372319813,
+      "independent_C_min_eigvec_angle_rad": 0.08323868277128967,
+      "independent_C_symmetric_eigenvalue_gap": 1.8278554601356152,
+      "independent_C_direction_numerically_unique": true,
+      "independent_M0": 0.3187024442351997,
+      "independent_M1": 0.002718563308063979,
+      "independent_M2": -0.016184993303929782,
+      "independent_M3": -1.7044710964848102,
+      "independent_M4": -0.2353488716927293,
+      "independent_M5": 0.01601017885798234,
+      "independent_M6": 10.458075530935956,
+      "independent_M7": 0.016010178857982307,
+      "independent_M8": -0.5687008165508519,
+      "independent_Cwall0": -0.001268347569844508,
+      "independent_Cwall1": 0.0,
+      "independent_Cwall2": -0.15144646304282222,
+      "independent_Cwall3": 0.0,
+      "independent_Cwall4": 0.0,
+      "independent_Cwall5": -0.0,
+      "independent_Cwall6": -0.15144646304282222,
+      "independent_Cwall7": -0.0,
+      "independent_Cwall8": 1.8013163129870067
+    },
+    {
+      "method": "Counterfactual retry",
+      "attempt": 0,
+      "host_input_wall_slot": 690,
+      "host_input_wall_id": 894,
+      "Gx": 4.9,
+      "Gy": 0.0,
+      "Gz": 0.019999999105930366,
+      "shiftx": 0.0,
+      "shiftz": 0.0,
+      "visited_sorted_slots": 39,
+      "consumed_fluid_donors": 17,
+      "complete_geometry_accumulation": true,
+      "sumW": 0.3187024442351997,
+      "submerged": 0.8040496882435809,
+      "independent_M_det": 0.0010000250304429627,
+      "original_geometry_gate_margin": 2.503044296267229e-08,
+      "independent_geometry_accepts": true,
+      "nearest_slot": 2140,
+      "nearest_native_id": 7030,
+      "nearest_distance2": 0.0022382994100522816,
+      "first_invalid_J_slot": null,
+      "first_invalid_J_native_id": null,
+      "first_invalid_J_value": null,
+      "independent_C_det": -0.025220726336279253,
+      "independent_C_sym_eig_min": -0.013903747359226585,
+      "independent_C_sym_eig_max": 1.8139517127763887,
+      "independent_C_sym_defect": 0.0,
+      "negative_alpha_count": 13,
+      "alpha_L1": 5.7270055210977295,
+      "alpha_sum": 0.9999999999999936,
+      "candidate_reason": "independent_Cdet_nonpositive_or_nonfinite",
+      "actual_GPU_reason_confirmed": false,
+      "intermediates_are_independent": true,
+      "independent_C_min_eigvec_x": 0.9965376606576286,
+      "independent_C_min_eigvec_z": 0.08314259372319813,
+      "independent_C_min_eigvec_angle_rad": 0.08323868277128967,
+      "independent_C_symmetric_eigenvalue_gap": 1.8278554601356152,
+      "independent_C_direction_numerically_unique": true,
+      "independent_M0": 0.3187024442351997,
+      "independent_M1": 0.002718563308063979,
+      "independent_M2": -0.016184993303929782,
+      "independent_M3": -1.7044710964848102,
+      "independent_M4": -0.2353488716927293,
+      "independent_M5": 0.01601017885798234,
+      "independent_M6": 10.458075530935956,
+      "independent_M7": 0.016010178857982307,
+      "independent_M8": -0.5687008165508519,
+      "independent_Cwall0": -0.001268347569844508,
+      "independent_Cwall1": 0.0,
+      "independent_Cwall2": -0.15144646304282222,
+      "independent_Cwall3": 0.0,
+      "independent_Cwall4": 0.0,
+      "independent_Cwall5": -0.0,
+      "independent_Cwall6": -0.15144646304282222,
+      "independent_Cwall7": -0.0,
+      "independent_Cwall8": 1.8013163129870067
+    },
+    {
+      "method": "Counterfactual retry",
+      "attempt": 1,
+      "host_input_wall_slot": 690,
+      "host_input_wall_id": 894,
+      "Gx": 4.88955327711588,
+      "Gy": 0.0,
+      "Gz": 0.06614287928299208,
+      "shiftx": -0.010446722884120518,
+      "shiftz": 0.04614288017706171,
+      "visited_sorted_slots": 39,
+      "consumed_fluid_donors": 24,
+      "complete_geometry_accumulation": true,
+      "sumW": 0.8414626341462484,
+      "submerged": 1.234141555044588,
+      "independent_M_det": 0.21706088699880052,
+      "original_geometry_gate_margin": 0.21606088699880052,
+      "independent_geometry_accepts": true,
+      "nearest_slot": 2140,
+      "nearest_native_id": 7030,
+      "nearest_distance2": 0.0,
+      "first_invalid_J_slot": null,
+      "first_invalid_J_native_id": null,
+      "first_invalid_J_value": null,
+      "independent_C_det": 2.162256248008219,
+      "independent_C_sym_eig_min": 1.1097869234419568,
+      "independent_C_sym_eig_max": 1.948352609257706,
+      "independent_C_sym_defect": 0.0,
+      "negative_alpha_count": 18,
+      "alpha_L1": 2.315109691092698,
+      "alpha_sum": 1.0000000000000004,
+      "candidate_reason": "independent_original_C_gate_accepts",
+      "actual_GPU_reason_confirmed": false,
+      "intermediates_are_independent": true,
+      "independent_C_min_eigvec_x": 0.9528529846136498,
+      "independent_C_min_eigvec_z": -0.30343234783532813,
+      "independent_C_min_eigvec_angle_rad": -0.3082927779862027,
+      "independent_C_symmetric_eigenvalue_gap": 0.8385656858157491,
+      "independent_C_direction_numerically_unique": true,
+      "independent_M0": 0.8414626341462484,
+      "independent_M1": -0.0020381175628121284,
+      "independent_M2": -0.010820548726062196,
+      "independent_M3": 1.0640081533186903,
+      "independent_M4": -0.7961824822514806,
+      "independent_M5": -0.12321798927650597,
+      "independent_M6": 7.657395205311611,
+      "independent_M7": -0.12321798927650594,
+      "independent_M8": -0.4379590727931075,
+      "independent_Cwall0": 1.186994663787393,
+      "independent_Cwall1": 0.0,
+      "independent_Cwall2": 0.2424514932183478,
+      "independent_Cwall3": 0.0,
+      "independent_Cwall4": 0.0,
+      "independent_Cwall5": -0.0,
+      "independent_Cwall6": 0.2424514932183478,
+      "independent_Cwall7": -0.0,
+      "independent_Cwall8": 1.8711448689122698
+    }
+  ],
+  "donor_rows": 58,
+  "visual_QA_pending": true,
+  "files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_hg_wall_retry_candidate_r1_attempts.csv",
+      "bytes": 3246,
+      "mtime_ns": 1794752573509638800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_hg_wall_retry_candidate_r1_donors.csv",
+      "bytes": 30236,
+      "mtime_ns": 1794752573514154000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_h18_hg_wall_retry_candidate_r1_diagnostic.png",
+      "bytes": 245266,
+      "mtime_ns": 1794752574249755200
+    }
+  ],
+  "consumed": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_h18_hg_wall_retry_candidate_r1.py",
+      "bytes": 10139,
+      "mtime_ns": 1794752439497233700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\notes\\c08_h18_hg_wall_retry_candidate_r1.md",
+      "bytes": 2770,
+      "mtime_ns": 1794752439506743700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_h18_hg_wall_fault_review_r1.py",
+      "bytes": 28787,
+      "mtime_ns": 1794744731596407300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_h18_hg_wall_saved_proxy_r1.py",
+      "bytes": 18494,
+      "mtime_ns": 1794741149273264200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_hg_wall_fault_review_r1.check.json",
+      "bytes": 10115,
+      "mtime_ns": 1794751676191696500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_hg_wall_host_replay_GPU_r1.run.json",
+      "bytes": 117889,
+      "mtime_ns": 1794751548717699300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_hg_wall_host_replay_GPU_r1.call.json",
+      "bytes": 2674,
+      "mtime_ns": 1794751548673492400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_wall_host_capture_r2_Release_build\\DualSPHysics5.2_GEO_win64.exe",
+      "bytes": 29532160,
+      "mtime_ns": 1794744326511044400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_hg_wall_host_capture_r2_Release.build.json",
+      "bytes": 349435,
+      "mtime_ns": 1794744328896753500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_wall_host_capture_r2_Release_source\\source.json",
+      "bytes": 172019,
+      "mtime_ns": 1794744257720878000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_wall_host_replay_GPU_r1\\c08_h18_as03n255_full3_r1.xml",
+      "bytes": 16200,
+      "mtime_ns": 1794636635171283400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\c08_h18_hg_wall_host_replay_GPU_r1.steps.csv",
+      "bytes": 4512,
+      "mtime_ns": 1794744999065924800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_wall_host_replay_GPU_r1\\WallFaultCaptureHostR1\\schema.json",
+      "bytes": 5980,
+      "mtime_ns": 1794751548629380100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_wall_host_replay_GPU_r1\\WallFaultCaptureHostR1\\Idp.csv",
+      "bytes": 72654,
+      "mtime_ns": 1794751548407585900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_wall_host_replay_GPU_r1\\WallFaultCaptureHostR1\\Code.csv",
+      "bytes": 68349,
+      "mtime_ns": 1794751548416121700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_wall_host_replay_GPU_r1\\WallFaultCaptureHostR1\\Posxy.csv",
+      "bytes": 412191,
+      "mtime_ns": 1794751548440701600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_wall_host_replay_GPU_r1\\WallFaultCaptureHostR1\\Posz.csv",
+      "bytes": 290960,
+      "mtime_ns": 1794751548458898500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_wall_host_replay_GPU_r1\\WallFaultCaptureHostR1\\PosCell.csv",
+      "bytes": 863885,
+      "mtime_ns": 1794751548502511400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_wall_host_replay_GPU_r1\\WallFaultCaptureHostR1\\Dcell.csv",
+      "bytes": 93154,
+      "mtime_ns": 1794751548514049100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_wall_host_replay_GPU_r1\\WallFaultCaptureHostR1\\PoroJ.csv",
+      "bytes": 267331,
+      "mtime_ns": 1794751548529584100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_wall_host_replay_GPU_r1\\WallFaultCaptureHostR1\\CorrMat.csv",
+      "bytes": 1624247,
+      "mtime_ns": 1794751548603798000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_wall_host_replay_GPU_r1\\WallFaultCaptureHostR1\\BoundNormal.csv",
+      "bytes": 52573,
+      "mtime_ns": 1794751548615821300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_wall_host_replay_GPU_r1\\WallFaultCaptureHostR1\\BoundMode.csv",
+      "bytes": 6489,
+      "mtime_ns": 1794751548620844400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_wall_host_replay_GPU_r1\\WallFaultCaptureHostR1\\FluidCells.csv",
+      "bytes": 7963,
+      "mtime_ns": 1794751548624872200
+    }
+  ]
+}

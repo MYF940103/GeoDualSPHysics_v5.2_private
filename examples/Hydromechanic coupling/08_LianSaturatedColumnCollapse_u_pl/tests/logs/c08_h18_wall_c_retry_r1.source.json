@@ -1,0 +1,187 @@
+{
+  "stage": "c08_h18_wall_c_retry_r1.source",
+  "candidate_applied": true,
+  "physical_acceptance": false,
+  "requires_build_and_component_validation": true,
+  "root_original_kernel_proof": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_hg_wall_packet_component_r2.memcheck.check.json",
+    "bytes": 1639,
+    "mtime_ns": 1794753511145941500
+  },
+  "transform_script": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_h18_wall_c_retry_r1.py",
+    "bytes": 7602,
+    "mtime_ns": 1794753104135482800
+  },
+  "transform_note": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\notes\\c08_h18_wall_c_retry_r1.md",
+    "bytes": 7030,
+    "mtime_ns": 1794753104139484000
+  },
+  "files": [
+    {
+      "filename": "JSphCpu_mdbc.cpp",
+      "original_public_stat": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu_mdbc.cpp",
+        "bytes": 72717,
+        "mtime_ns": 1794606238778051900
+      },
+      "original_source_copy": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_c_retry_r1_source\\JSphCpu_mdbc.cpp.before",
+        "bytes": 72717,
+        "mtime_ns": 1794754005342516800
+      },
+      "candidate_source": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_c_retry_r1_source\\JSphCpu_mdbc.cpp",
+        "bytes": 73075,
+        "mtime_ns": 1794754005347517500
+      },
+      "diff": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_c_retry_r1_source\\JSphCpu_mdbc.cpp.diff",
+        "bytes": 3876,
+        "mtime_ns": 1794754005354520900
+      },
+      "inverse_proof": {
+        "stage": "c08_h18_wall_c_retry_r1",
+        "filename": "JSphCpu_mdbc.cpp",
+        "original_bytes": 72717,
+        "candidate_bytes": 73075,
+        "source_newline": "CRLF",
+        "original_BOM_preserved": true,
+        "exact_inverse_original_bytes": true,
+        "replacement_count": 7,
+        "replacements": [
+          {
+            "label": "writer_bool_commit_contract",
+            "original": "      else write(p1,fieldfinal,firstorder? gradfieldx: nullptr,firstorder? gradfieldy: nullptr,firstorder? gradfieldz: nullptr);",
+            "candidate": "      else if(!write(p1,fieldfinal,firstorder? gradfieldx: nullptr,firstorder? gradfieldy: nullptr,firstorder? gradfieldz: nullptr))geometryfailed=true;"
+          },
+          {
+            "label": "pressure_writer_accepts",
+            "original": "  const auto writepressure=[&](unsigned p,const double *excess,const double*,const double*,const double*){porepress[p]=float(double(porepress0[p])+excess[0]);};",
+            "candidate": "  const auto writepressure=[&](unsigned p,const double *excess,const double*,const double*,const double*){porepress[p]=float(double(porepress0[p])+excess[0]);return true;};"
+          },
+          {
+            "label": "SPR_inactive_writer_accepts",
+            "original": "    if(mode>=SLIP_NoSlip && BoundModec && BoundModec[p]==BMODE_MDBC2OFF)return;",
+            "candidate": "    if(mode>=SLIP_NoSlip && BoundModec && BoundModec[p]==BMODE_MDBC2OFF)return true;"
+          },
+          {
+            "label": "SPR_completed_writer_accepts",
+            "original": "      else{//-Legacy Vel0 keeps wall tangential velocity and mirrors only the normal derivative.\r\n        BoundDerivativeVelc[p]=TFloat3(float(double(v.x)+reflection*normal.x),\r\n          float(double(v.y)+reflection*normal.y),float(double(v.z)+reflection*normal.z));\r\n      }\r\n    }\r\n  };",
+            "candidate": "      else{//-Legacy Vel0 keeps wall tangential velocity and mirrors only the normal derivative.\r\n        BoundDerivativeVelc[p]=TFloat3(float(double(v.x)+reflection*normal.x),\r\n          float(double(v.y)+reflection*normal.y),float(double(v.z)+reflection*normal.z));\r\n      }\r\n    }\r\n    return true;\r\n  };"
+          },
+          {
+            "label": "dynamic_state_writer_accepts",
+            "original": "    Velrhopc[p]=TFloat4(0,0,0,RhopZero); //-The physical fixed wall never moves.\r\n    BoundModec[p]=BMODE_MDBC2;\r\n  };",
+            "candidate": "    Velrhopc[p]=TFloat4(0,0,0,RhopZero); //-The physical fixed wall never moves.\r\n    BoundModec[p]=BMODE_MDBC2;\r\n    return true;\r\n  };"
+          },
+          {
+            "label": "dynamic_C_writer_defers_finite_nonpositive_commit",
+            "original": "  const auto write=[&](unsigned p,const double *v,const double*,const double*,const double*){\r\n    const tdouble3 q=DynamicPoreWallParity(BoundNormalc[p]);\r\n    CorrMatc[p]=TMatrix3d(v[0],q.x*q.y*v[1],q.x*q.z*v[2],q.y*q.x*v[3],v[4],q.y*q.z*v[5],q.z*q.x*v[6],q.z*q.y*v[7],v[8]);\r\n  };",
+            "candidate": "  const auto write=[&](unsigned p,const double *v,const double*,const double*,const double*){\r\n    const tdouble3 q=DynamicPoreWallParity(BoundNormalc[p]);\r\n    const tmatrix3d m=TMatrix3d(v[0],q.x*q.y*v[1],q.x*q.z*v[2],q.y*q.x*v[3],v[4],q.y*q.z*v[5],q.z*q.x*v[6],q.z*q.y*v[7],v[8]);\r\n    if(DynamicPoreWall && Simulate2D && !PeriActive){\r\n      const double det=m.a11*m.a33-m.a13*m.a31;\r\n      if(std::isfinite(det) && det<=0)return false; //-Do not commit before the existing one-source retry.\r\n    }\r\n    CorrMatc[p]=m;\r\n    return true;\r\n  };"
+          },
+          {
+            "label": "dynamic_acceleration_writer_accepts",
+            "original": "    Acec[p]=TFloat3(float(q.x*v[0]-Gravity.x),float(q.y*v[1]-Gravity.y),float(q.z*v[2]-Gravity.z));\r\n  };",
+            "candidate": "    Acec[p]=TFloat3(float(q.x*v[0]-Gravity.x),float(q.y*v[1]-Gravity.y),float(q.z*v[2]-Gravity.z));\r\n    return true;\r\n  };"
+          }
+        ],
+        "candidate_is_numerical_change": true,
+        "output_only": false,
+        "public_source_written": false,
+        "new_XML_parameters": false,
+        "new_class_members": false,
+        "public_header_ABI_changed": false,
+        "solver_invocations": 0,
+        "reader_invocations": 0,
+        "build_invocations": 0,
+        "SHA_scans": 0,
+        "original_positive_C_gate_unchanged": true,
+        "original_geometry_threshold_unchanged": true,
+        "nonfinite_reconstructed_Cdet_retry_added": false,
+        "nonfinite_component_retry_added": false,
+        "invalid_J_retry_added": false,
+        "third_fit_added": false,
+        "identity_or_centroid_fallback_added": false,
+        "physical_acceptance": false
+      },
+      "current_public_stat": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu_mdbc.cpp",
+        "bytes": 73075,
+        "mtime_ns": 1794754005401552400
+      }
+    },
+    {
+      "filename": "JSphGpu_mdbc_ker.cuh",
+      "original_public_stat": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_mdbc_ker.cuh",
+        "bytes": 90424,
+        "mtime_ns": 1794606238787647700
+      },
+      "original_source_copy": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_c_retry_r1_source\\JSphGpu_mdbc_ker.cuh.before",
+        "bytes": 90424,
+        "mtime_ns": 1794754005358520400
+      },
+      "candidate_source": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_c_retry_r1_source\\JSphGpu_mdbc_ker.cuh",
+        "bytes": 90967,
+        "mtime_ns": 1794754005364522500
+      },
+      "diff": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wall_c_retry_r1_source\\JSphGpu_mdbc_ker.cuh.diff",
+        "bytes": 984,
+        "mtime_ns": 1794754005371531900
+      },
+      "inverse_proof": {
+        "stage": "c08_h18_wall_c_retry_r1",
+        "filename": "JSphGpu_mdbc_ker.cuh",
+        "original_bytes": 90424,
+        "candidate_bytes": 90967,
+        "source_newline": "CRLF",
+        "original_BOM_preserved": true,
+        "exact_inverse_original_bytes": true,
+        "replacement_count": 1,
+        "replacements": [
+          {
+            "label": "stage1_finite_nonpositive_C_uses_original_single_nearest_retry",
+            "original": "    const double determinant=m.a11*m.a33-m.a13*m.a31;\r\n    if(!isfinite(determinant) || determinant<=0){atomicMin(invalid,p1);return;}\r\n    corrmat[p1]=m;",
+            "candidate": "    const double determinant=m.a11*m.a33-m.a13*m.a31;\r\n    if(isfinite(determinant) && determinant<=0 && CTE.simulate2d && !CTE.periactive && !retried){\r\n      bool nearestfinite=isfinite(nearest2) && nearest2<DBL_MAX && isfinite(nearx) && isfinite(nearz);\r\n      for(unsigned c=0;c<ncomp && nearestfinite;c++)nearestfinite=isfinite(nearest[c]);\r\n      if(nearestfinite && (nearx!=0 || nearz!=0)){\r\n        //-The same visited-source retry, still evaluated at the original mirror.\r\n        gp.x-=nearx;gp.z-=nearz;fitshiftx-=nearx;fitshiftz-=nearz;\r\n        retried=true;continue;\r\n      }\r\n    }\r\n    if(!isfinite(determinant) || determinant<=0){atomicMin(invalid,p1);return;}\r\n    corrmat[p1]=m;"
+          }
+        ],
+        "candidate_is_numerical_change": true,
+        "output_only": false,
+        "public_source_written": false,
+        "new_XML_parameters": false,
+        "new_class_members": false,
+        "public_header_ABI_changed": false,
+        "solver_invocations": 0,
+        "reader_invocations": 0,
+        "build_invocations": 0,
+        "SHA_scans": 0,
+        "original_positive_C_gate_unchanged": true,
+        "original_geometry_threshold_unchanged": true,
+        "nonfinite_reconstructed_Cdet_retry_added": false,
+        "nonfinite_component_retry_added": false,
+        "invalid_J_retry_added": false,
+        "third_fit_added": false,
+        "identity_or_centroid_fallback_added": false,
+        "physical_acceptance": false
+      },
+      "current_public_stat": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_mdbc_ker.cuh",
+        "bytes": 90967,
+        "mtime_ns": 1794754005406063800
+      }
+    }
+  ],
+  "public_modified_files": [
+    "JSphCpu_mdbc.cpp",
+    "JSphGpu_mdbc_ker.cuh"
+  ],
+  "old_private_archives_programs_and_PRE_unchanged": true,
+  "new_XML_parameters": false,
+  "original_guards_unchanged": true,
+  "SHA_scans": 0
+}
