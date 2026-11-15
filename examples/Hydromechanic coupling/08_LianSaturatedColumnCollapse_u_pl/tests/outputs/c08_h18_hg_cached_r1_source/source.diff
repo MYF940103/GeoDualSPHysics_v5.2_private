@@ -1,0 +1,149 @@
+--- schema2/Single
++++ cached/Single
+@@ -19,6 +19,23 @@
+ /// \file JSphGpuSingle.cpp \brief Implements the class \ref JSphGpuSingle.
+ 
+ #include "JSphGpuSingle.h"
++
++#include "c08_h18_hg_cached_r1.hpp"
++#include "JDsFixedDt.h"
++#include <cstdlib>
++#include <memory>
++#include <stdexcept>
++namespace {
++  struct C08CachedRunScope{
++    std::unique_ptr<c08cached::State> state;
++    C08CachedRunScope(){
++      const char* e=std::getenv(c08cached::Environment());if(!e)return;
++      if(std::string(e)!="1")throw std::runtime_error("Private cached HG requires absent env or exact C08_HG_CACHED_H18=1.");
++      state.reset(new c08cached::State);c08cached::SetCurrent(state.get());
++    }
++    ~C08CachedRunScope(){if(state)c08cached::SetCurrent(NULL);}
++  };
++}
+ #include "JGravityPreloadState.h"
+ #include "JSphHourglassGpu.h"
+ #include "JCellDivGpuSingle.h"
+@@ -684,6 +701,38 @@
+   //-For 2D simulations always overrides the 2nd component (Y axis).
+   //-Para simulaciones 2D anula siempre la 2nd componente.
+   if(Simulate2D)cusph::Resety(Np-Npb,Npb,Aceg);
++
++  if(c08cached::Current()){
++    if(!GravityPreloadReleased || !GravityPreload || !IsGravityPreloadHandoff() || GravityPreloadElasticSource
++      || GravityPreloadKeepBedOverlap || !GravityPreloadBedIds.empty() || GravityPreloadActualStep!=2000000
++      || GravityPreloadIdBegin!=1805 || GravityPreloadIdCount!=255 || Np!=6805 || Npb!=1805 || NpbOk>Npb
++      || CaseNp!=7060 || CaseNpb!=2060 || CaseNfixed!=2060 || CaseNfluid!=5000 || PartBegin
++      || CaseNmoving || CaseNfloat || InOut || Symmetry || PeriActive || Shifting || Damping || RelaxZones || UseDEM || AccInput
++      || !UseDynamicPorePlaneContact() || !NoPenetration || TMdbc2!=MDBC2_NoPen || TBoundary!=BC_MDBC || !UseNormals
++      || !HydroMech || !HydroMechDynamicSeepage || !PorosityFeedback || !DynamicPorePressure || !DynamicPoreWall
++      || !DynamicPoreConductivity || HydroMechConductivityModel!=1 || DynamicPoreConductivityCk!=2.
++      || !Simulate2D || TKernel!=KERNEL_Wendland || TStep!=STEP_Symplectic || Dp!=.04 || KernelH!=.072f
++      || !FixedDt || !FixedDt->GetFile().empty() || FixedDt->GetFixedValue()!=.000005 || SymplecticDtPre!=.000005
++      || (interstep!=INTERSTEP_SymPredictor && interstep!=INTERSTEP_SymCorrector)
++      || !PoroJg || !Aceg || HourglassGpu || SoilHourglassXi || SoilDamping || PoreShepardRegularization || SoilBoundaryDerivativeSPR
++      || !ArtificialStress || ArtificialStressCoef!=.3f || ArtificialStressExp!=2.55f || TVisco!=VISCO_Artificial || Visco!=.1f || ViscoTime
++      || TDensity!=DDT_None || !SoilStressRateGradCorr || !HydroMechFreeSeepage || HydroMechDrainage
++      || HydroMechTopLoadMode!=HMLOAD_None || RhopZero!=2072.5f || SoilCte.PoreWaterRho!=1000.f
++      || SoilCte.PoreWaterBulkModulus!=1e9f || SoilCte.Porosity!=.35f || SoilCte.HydraulicConductivity!=.0002f
++      || SoilCte.ModulusE!=20e6f || SoilCte.PRvs!=.33f || DPCtes!=DP_PS || !StrainSoftening
++      || SoilCte.dlt!=0.f || SoilCte.psiDecay!=0.f || SoilCte.coh!=5000.f || SoilCte.coh_r!=1000.f || SoilCte.n_coh!=5.f
++      || SoilCte.n_phi!=0.f || SoilCte.phi!=SoilCte.phi_r || Gravity.x!=0 || Gravity.y!=0 || Gravity.z!=-9.81f)
++      Run_Exceptioon("Private H1.8 energy-normalized plastic HG requires unchanged schema2 psi0 Wendland/AS.3n2.55/5us/bedroles released target.");
++    const bool corrector=(interstep==INTERSTEP_SymCorrector);
++    if((corrector && (!SigmaPreg || !VelrhopPreg || !PoroJPreg)) || (!corrector && (SigmaPreg || PoroJPreg)))
++      Run_Exceptioon("Private HG predictor/corrector base pointers do not match genuine stage.");
++    const c08cached::Config hc={double(MassFluid)/double(RhopZero),double(RhopZero),double(SoilCte.PoreWaterRho),
++      1.-double(SoilCte.Porosity),KernelH,CSP.kwend.bwen,SoilCte.ModulusG};
++    const c08cached::Material hm={SoilCte,DPCtes,StrainSoftening,bool(PartBegin && StrainSoftening),RequireElasticGravityPreload()};
++    const c08cached::Stage hs={Np,Npb,unsigned(Nstep),TimeStep,SymplecticDtPre,corrector,DivData,Dcellg,Idpg,Codeg,
++      Posxyg,Poszg,Velrhopg,PoroJg,(corrector? SigmaPreg: Sigmag),Rsigmag,Kplasticg,Aceg};
++    c08cached::Current()->StageForce(hc,hm,hs);
++  }
+   if(DynamicPorePressure)ComputeDynamicPorePressureRateGpu(dynamicridpg);
+ 
+   //-Computes Tau for Laminar+SPS.
+@@ -811,9 +860,11 @@
+   //-----------
+   DemDtForce=dt*0.5f;                          //(DEM)
+   Interaction_Forces(INTERSTEP_SymPredictor);  //-Interaction.
+-  const double ddt_p=DtVariable(false);        //-Calculate dt of predictor step.
++  const double ddt_p=DtVariable(false);
++  if(c08cached::Current() && ddt_p!=c08cached::StepDt)Run_Exceptioon("Cached HG predictor selected dt differs from 5us.");        //-Calculate dt of predictor step.
+   if(Shifting)RunShifting(dt*.5);              //-Shifting.
+-  ComputeSymplecticPre(dt);                    //-Apply Symplectic-Predictor to particles (periodic particles become invalid).
++  ComputeSymplecticPre(dt);
++  if(c08cached::Current())c08cached::Current()->CheckMaterial(Np,Npb,Idpg,Codeg,Sigmag,Kplasticg,false);                    //-Apply Symplectic-Predictor to particles (periodic particles become invalid).
+   if(HourglassGpu)HourglassGpu->PredictorUpdate(dt);
+   if(CaseNfloat)RunFloating(dt*.5,true);       //-Control of floating bodies.
+   PosInteraction_Forces();                     //-Free memory used for interaction.
+@@ -822,9 +873,11 @@
+   DemDtForce=dt;                               //(DEM)
+   RunCellDivide(true);
+   Interaction_Forces(INTERSTEP_SymCorrector);  //-Interaction.
+-  const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
++  const double ddt_c=DtVariable(true);
++  if(c08cached::Current() && ddt_c!=c08cached::StepDt)Run_Exceptioon("Cached HG corrector selected dt differs from 5us.");         //-Calculate dt of corrector step.
+   if(Shifting)RunShifting(dt);                 //-Shifting.
+-  ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
++  ComputeSymplecticCorr(dt);
++  if(c08cached::Current())c08cached::Current()->CheckMaterial(Np,Npb,Idpg,Codeg,Sigmag,Kplasticg,true);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
+   if(HourglassGpu)HourglassGpu->CorrectorUpdate(Np,Npb,Idpg,Codeg,Posxyg,Poszg,Velrhopg,Kplasticg,dt,(PorosityFeedback? PoroJg: NULL));
+   if(CaseNfloat)RunFloating(dt,false);         //-Control of floating bodies.
+   PosInteraction_Forces();                     //-Free memory used for interaction.
+@@ -1179,6 +1232,7 @@
+ void JSphGpuSingle::Run(std::string appname,const JSphCfgRun *cfg,JLog2 *log){
+   if(!cfg || !log)return;
+   AppName=appname; Log=log; CfgRun=cfg;
++  C08CachedRunScope c08_cached_run_scope;
+ 
+   //-Selection of GPU.
+   //-------------------
+@@ -1234,6 +1288,7 @@
+     else RunCellDivide(true);
+     TimeStep+=stepdt;
+     LastDt=stepdt;
++    if(c08cached::Current())c08cached::Current()->Accept(Np,Npb,Idpg,Codeg,unsigned(Nstep+1),TimeStep,stepdt);
+     partoutstop=(Np<NpMinimum || !Np);
+     //-Retain the final native state even when TimeMax is between output events.
+     if(TimeStep>=TimePartNext || partoutstop || TimeStep>=TimeMax || (NstepsBreak && Nstep+1>=NstepsBreak)
+@@ -1357,6 +1412,7 @@
+     if(AuxHydroMechLoadAce)arrays.AddArray("HydroMechLoadAce",npsave,AuxHydroMechLoadAce);
+   }
+   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
++  if(c08cached::Current())c08cached::Current()->Save(DirOut,unsigned(Nstep+1),TimeStep);
+   if(UseNormals && SvNormals)SaveVtkNormalsGpu("normals/Normals.vtk",Part,npsave,Npb,Posxyg,Poszg,Idpg,BoundNormalg);
+   //-Save extra data.
+   if(SvExtraDataBi4)SaveExtraData();
+--- schema2/Gpu
++++ cached/Gpu
+@@ -19,6 +19,7 @@
+ /// \file JSphGpu.cpp \brief Implements the class \ref JSphGpu.
+ 
+ #include "JSphGpu.h"
++#include "c08_h18_hg_cached_r1.hpp"
+ #include "JException.h"
+ #include "JSphGpu_ker.h"
+ #include "JSphGpuSimple_ker.h"
+@@ -1786,6 +1787,10 @@
+     ,Idpg,FSTypeg,PorePressRateg,PorePressg,PorePressPreg,PoroJPreg,PoroJg,PoroThetag);}
+   catch(...){ArraysGpu->Free(movxyg);ArraysGpu->Free(movzg);throw;}
+ #endif
++  if(c08cached::Current())c08cached::Current()->ConsumePre(unsigned(Nstep),TimeStep,Idpg,WithFloating,shift,inout,DPCtes,Np,Npb,VelrhopPreg,Arg
++    ,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,dt05,RhopZero,RhopOutMin,RhopOutMax,Gravity
++    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg,RequireElasticGravityPreload());
++  else
+   cusphs::ComputeStepSymplecticPre(WithFloating,shift,inout,DPCtes,Np,Npb,VelrhopPreg,Arg
+     ,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,dt05,RhopZero,RhopOutMin,RhopOutMax,Gravity
+     ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg,RequireElasticGravityPreload());
+@@ -1850,6 +1855,10 @@
+     ,Idpg,FSTypeg,PorePressRateg,PorePressg,PorePressPreg,PoroJPreg,PoroJg,PoroThetag);}
+   catch(...){ArraysGpu->Free(movxyg);ArraysGpu->Free(movzg);throw;}
+ #endif
++  if(c08cached::Current())c08cached::Current()->ConsumeCor(unsigned(Nstep),TimeStep,Idpg,WithFloating,shift,inout,DPCtes,(UseDynamicPorePlaneContact()? MDBC2_Std: TMdbc2),Np,Npb,VelrhopPreg
++    ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,NoPenShiftg,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity
++    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg,RequireElasticGravityPreload());
++  else
+   cusphs::ComputeStepSymplecticCor(WithFloating,shift,inout,DPCtes,(UseDynamicPorePlaneContact()? MDBC2_Std: TMdbc2),Np,Npb,VelrhopPreg
+     ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,NoPenShiftg,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity
+     ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg,RequireElasticGravityPreload());

@@ -1,0 +1,99 @@
+--- c08_h18_hg_gpu_jobs_r1.py
++++ c08_h18_hg_cached_jobs_r1.py
+@@ -13,17 +13,17 @@
+ 
+ T, C, L = m.T, m.C, m.L
+ SCRIPT = Path(__file__).resolve()
+-NOTE = T / 'notes/c08_h18_hg_gpu_jobs_r1.md'
++NOTE = T / 'notes/c08_h18_hg_cached_jobs_r1.md'
+ THREAD = '01a07683-bc64-7463-8db7-9ee6243967d8'
+ CONTROL = 'c08_h18_as03_n255_r1'
+-ENVIRONMENT = 'C08_HG_H18'
+-OPERATOR = 'EnergyNormalizedAdjointLoadingOnly'
++ENVIRONMENT = 'C08_HG_CACHED_H18'
++OPERATOR = 'EnergyNormalizedAdjointLoadingOnlyCachedMaterial'
+ DT, PRESTEP = .000005, 2000000
+ SAN = Path('C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.7/compute-sanitizer/compute-sanitizer.exe')
+ JOBS = {
+-    'off1': dict(tag='c08_h18_hg_gpu_off1_r1', configuration='Release', on=False,
++    'off1': dict(tag='c08_h18_hg_cached_off1_r1', configuration='Release', on=False,
+                  steps=(2000001,), updates=1, frames=1),
+-    'debug2': dict(tag='c08_h18_hg_gpu_debug2_r1', configuration='Debug', on=True,
++    'debug2': dict(tag='c08_h18_hg_cached_debug2_r1', configuration='Debug', on=True,
+                    steps=(2000001, 2000002), updates=2, frames=2),
+ }
+ 
+@@ -88,35 +88,37 @@
+ 
+ def private_build(profile, original):
+     job = JOBS[profile]
+-    path = L / ('c08_h18_hg_gpu_' + job['configuration'] + '_r1.build.json')
++    path = L / ('c08_h18_hg_cached_' + job['configuration'] + '_r1.build.json')
+     b = m.read(path)
+     m.need(b['passed'] and b['consumed_stats_unchanged']
+            and b['configuration'] == job['configuration']
+-           and b['retained_original_objects'] == 112 and b['private_objects'] == 2
+-           and b['actual_link_objects'] == 114 and b['compile_invocations'] == 2
+-           and b['link_invocations'] == 1 and len(b['calls']) == 3
++           and b['retained_original_objects'] == 111 and b['private_objects'] == 3
++           and b['actual_link_objects'] == 114 and b['compile_invocations'] == 3
++           and b['link_invocations'] == 1 and len(b['calls']) == 4
+            and b['original_physical_CUDA_objects_retained']
+            and not b['public_source_changed'] and not b['class_or_CTE_layout_changed']
+            and b['source_archive'] == original['source_archive']
+            and b['baseline_source_capture'] == original['source_capture']
+            and b['ON_runtime_env'] == ENVIRONMENT + '=1'
+            and b['OFF_env_absent_no_HG_allocation_launch_sidecar']
+-           and b['operator'] == OPERATOR and b['xi'] == .1 and b['policy_schema'] == 1
++           and b['operator'] == OPERATOR and b['xi'] == .1 and b['policy_schema'] == 2
+            and b['neighbor_capacity'] == 128
++           and b['single_material_producer'] and b['OFF_calls_original_compiled_integrators']
++           and not b['cache_consumer_writeback_is_independent_material_solve']
+            and b['Debug_first_n_snapshot_macro_enabled'] == (profile == 'debug2'),
+-           'Exact separately passed private112+2 HG build required')
++           'Exact separately passed private111+3 cached HG build required')
+     entries = [m.stat(path)]
+     entries += [m.bind(b[key]) for key in ('program', 'source_capture', 'source_archive', 'baseline_source_capture')]
+-    m.need(set(b['private_sources']) == {'host', 'CUDA', 'header'}, 'Three actual private source captures required')
++    m.need(set(b['private_sources']) == {'host', 'gpu_host', 'CUDA', 'header', 'integrators'}, 'Five actual private host/CUDA/header/integrator captures required')
+     entries += [m.bind(q) for q in b['private_sources'].values()]
+     entries += [m.bind(q) for q in b['runtime']]
+     m.need(len(b['runtime']) == 9 and len({Path(q['path']).name.lower() for q in b['runtime']}) == 9,
+            'Original nine-file private runtime closure required')
+     cap = m.read(b['source_capture']['path'])
+     m.need(cap['passed'] and cap['prepared_only'] and cap['operator'] == OPERATOR
+-           and cap['policy_schema'] == 1 and cap['xi'] == .1
++           and cap['policy_schema'] == 2 and cap['xi'] == .1
+            and cap['default_OFF_env_absent'] and cap['explicit_ON_env'] == ENVIRONMENT + '=1'
+-           and cap['exact_reverse_original_host_bytes'] and cap['original_CUDA_members_unchanged']
++           and cap['exact_reverse_original_hosts_bytes'] and cap['exact_reverse_original_integrators_bytes'] and cap['original_CUDA_members_unchanged']
+            and not cap['public_source_changed'] and not cap['class_or_CTE_layout_changed']
+            and cap['private_sources'] == b['private_sources']
+            and cap['source_archive'] == original['source_archive']
+@@ -140,7 +142,7 @@
+            and all(not p[key].exists() for key in ('prep', 'run', 'start', 'call', 'log', 'status', 'completed')),
+            'Existing complete/partial profile is protected; no retry')
+     try:
+-        bp = L / ('c08_h18_hg_gpu_' + job['configuration'] + '_r1.build.json')
++        bp = L / ('c08_h18_hg_cached_' + job['configuration'] + '_r1.build.json')
+         admission(p['prepare_admission'], profile, 'prepare', bp)
+         cr, cp = L / (CONTROL + '.run.json'), L / (CONTROL + '.prepare.json')
+         cn, cv = L / 'c08_h18_as03_n255_native_r1.check.json', L / 'c08_h18_as03n255_review_r1.check.json'
+@@ -276,7 +278,7 @@
+     job, before, prep, call = JOBS[profile], [], None, None
+     p = paths(job)
+     out = T / 'outputs' / job['tag']
+-    bp = L / ('c08_h18_hg_gpu_' + job['configuration'] + '_r1.build.json')
++    bp = L / ('c08_h18_hg_cached_' + job['configuration'] + '_r1.build.json')
+     m.need(all(not p[key].exists() for key in ('run', 'start', 'call', 'log', 'status', 'completed')),
+            'Existing owned attempt/completion/partial protected; never rerun')
+     result = dict(stage=job['tag'], passed=False, solver_completed=False, profile=profile,
+@@ -410,7 +412,7 @@
+         result.setdefault('first_failure', str(error))
+     if (out / 'Run.out').exists():
+         text = (out / 'Run.out').read_text(encoding='utf-8-sig', errors='replace')
+-        exception = re.search(r'^Text: (.*)$', text, re.M)
++        exception = re.search(r'^(?:Text: |\*\*\* Exception\(exc\): )(.*)$', text, re.M)
+         result.update(Run_out=m.stat(out / 'Run.out'), first_engine_exception_text=exception[1] if exception else None,
+                       observed_saved_files=len(list((out / 'data').glob('Part_*.bi4'))))
+     if call and Path(call['log']['path']).is_file():
