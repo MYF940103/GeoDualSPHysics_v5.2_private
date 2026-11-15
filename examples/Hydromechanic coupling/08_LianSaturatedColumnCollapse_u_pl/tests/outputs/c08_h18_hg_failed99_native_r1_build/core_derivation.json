@@ -1,0 +1,106 @@
+{
+  "stage": "c08_h18_hg_failed99_native_r1.derive",
+  "baseline_build": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_as255_native_r1.build.json",
+    "bytes": 61268,
+    "mtime_ns": 1794617960067125000
+  },
+  "baseline_generated": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\h18_as255_entry_r1.cpp",
+      "bytes": 10696,
+      "mtime_ns": 1794617918065237000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\h18_headers_r1.h",
+      "bytes": 455,
+      "mtime_ns": 1794617918071236800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\public22_core_r1.h",
+      "bytes": 4781,
+      "mtime_ns": 1794617918169383100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\h18_source_core_r1.cpp",
+      "bytes": 21487,
+      "mtime_ns": 1794617918194195700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\h18_receiver_core_r1.cpp",
+      "bytes": 25303,
+      "mtime_ns": 1794617918207430900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\h18_profiles_r1.h",
+      "bytes": 188,
+      "mtime_ns": 1794617918218451100
+    }
+  ],
+  "entry_declared_replacements": [
+    [
+      "close source CLI",
+      " if(argc==7&&std::wstring(argv[1])==L\"--source\"){\n  const std::wstring mode=argv[2];H18Need(mode==L\"partial\"||mode==L\"full\",\"Source mode must be partial or full\");H18ReadPlan(argv[5],true,H18Event,H18SourceSamples);return h18source::wmain(argc,argv);\n }\n",
+      " // No source/full/formal/window CLI in this failed99 adapter.\n"
+    ],
+    [
+      "closed exact receiver CLI",
+      " H18Need(argc==9&&std::wstring(argv[1])==L\"--receiver\",\"Use --source partial|full DATA MATERIAL_CSV PLAN FRESHOUT; or --receiver window|formal GROUP DATA PRE PLAN PROFILE_CSV FRESHOUT\");const std::string profile=std::filesystem::path(argv[2]).string(),group=std::filesystem::path(argv[3]).string();const bool window=profile==\"window\";H18Need(window||profile==\"formal\",\"Only .90-window or full3 receiver profiles\");const unsigned end=window?H18WindowEnd:H18FormalEnd,samples=window?H18WindowSamples:H18FormalSamples;H18ReadPlan(argv[6],false,end,samples);H18ReadReceiverProfile(argv[7],group);const std::filesystem::path data=argv[4],out=argv[8];H18Need(std::filesystem::is_directory(data)&&!std::filesystem::exists(out),\"Missing DATA or protected output\");",
+      " H18Need(argc==9&&std::wstring(argv[1])==L\"--receiver\",\"Use --receiver failed99_hg psi0 DATA PRE COMPLETE301PLAN PROFILE17_CSV FRESHOUT\");const std::string profile=std::filesystem::path(argv[2]).string(),group=std::filesystem::path(argv[3]).string();H18Need(profile==\"failed99_hg\"&&group==\"psi0\",\"Only actual HG failed99 psi0 is exposed\");H18ReadPlan(argv[6],false,H18FormalEnd,H18FormalSamples);H18ReadReceiverProfile(argv[7],group);H18Need(H18Rows.size()==301&&H18Rows.back().completed==2600000&&H18Bits(H18AS,.3f)&&H18Bits(H18Exp,2.55f),\"Exact original full301 AS.3/n2.55 required\");const unsigned samples=99u,end=H18Rows[98].completed;H18Need(end==2196001,\"Actual last saved step differs\");const std::filesystem::path data=argv[4],out=argv[8];H18Need(std::filesystem::is_directory(data)&&!std::filesystem::exists(out),\"Missing DATA or protected output\");"
+    ],
+    [
+      "partial metadata",
+      "\\\"stage\\\":\\\"c08_h18_wend_native_r1.metadata\\\",\\\"passed\\\":true,",
+      "\\\"stage\\\":\\\"c08_h18_hg_failed99_native_r1.metadata\\\",\\\"passed\\\":true,\\\"partial\\\":true,\\\"whole_run_passed\\\":false,\\\"whole_run_native_passed\\\":false,\\\"full_run_completed\\\":false,\\\"saved_prefix_native_passed\\\":true,\\\"original_target_completed_step\\\":2600000,\\\"original_target_samples\\\":301,\\\"observed_saved_samples\\\":99,\\\"last_saved_part\\\":98,\\\"last_saved_completed_step\\\":2196001,\\\"original_plan_records\\\":301,\\\"observed_plan_prefix_records\\\":99,\\\"plan_modified\\\":false,\\\"unsaved_state_reconstructed\\\":false,"
+    ]
+  ],
+  "receiver_declared_replacements": [
+    [
+      "failed observation",
+      "static unsigned RunSamples(const fs::path& path,unsigned expected){\n  std::ifstream f(path);std::string h,d,extra;Need(bool(std::getline(f,h))&&bool(std::getline(f,d))&&!std::getline(f,extra),\"Closed completed two-line Run.csv required\");const char sep=h.find(';')==std::string::npos?',':';';const auto keys=Split(h,sep);auto values=Split(d,sep);const auto ci=std::find(keys.begin(),keys.end(),\"Configuration\");Need(ci!=keys.end(),\"Run.csv Configuration missing\");const unsigned at=unsigned(ci-keys.begin());\n  if(values.size()==keys.size()+1){Need(sep==';'&&at+1<values.size(),\"Only one embedded AS separator is recognized\");values[at]+=';'+values[at+1];values.erase(values.begin()+at+1);}Need(values.size()==keys.size(),\"Run.csv width differs\");const std::string marker=\"AS_Bui2008(\";const auto start=values[at].find(marker),split=values[at].find(';',start),close=values[at].find(')',split);Need(start!=std::string::npos&&values[at].find(marker,start+1)==std::string::npos&&split!=std::string::npos&&close!=std::string::npos,\"Actual AS Configuration token missing\");Need(H18Bits(float(H18Double(values[at].substr(start+marker.size(),split-start-marker.size()))),H18AS)&&H18Bits(float(H18Double(values[at].substr(split+1,close-split-1))),H18Exp),\"Actual AS Run.csv coefficient/exponent differs\");\n  std::map<std::string,std::string> r;for(unsigned q=0;q<keys.size();q++)Need(r.emplace(keys[q],values[q]).second,\"Duplicate Run.csv key\");\n  Need(std::stoul(r.at(\"Steps\"))==expected&&r.at(\"Np\")==\"7060\"&&r.at(\"Nbound\")==\"2060\"&&r.at(\"Nfixed\")==\"2060\"&&r.at(\"PartsOut\")==\"0\"&&r.at(\"PartsOutRhop\")==\"0\"&&r.at(\"PartsOutVel\")==\"0\",\"Actual global steps/original registry/no-exclusion summary differs\");const auto n=std::stoul(r.at(\"PartFiles\"));Need(n>0&&n<=expected-EventStep,\"Invalid actual PartFiles count\");return unsigned(n);\n}",
+      "static unsigned ObservedPartialSamples(const fs::path& runCsv,unsigned expected){\n  Need(H18Rows.size()==301&&H18Rows.back().completed==2600000&&expected==2196001&&H18Rows[98].completed==expected,\"Only actual99-of301 HG saved prefix is supported\");\n  Need(!fs::exists(runCsv),\"The failed HG run has no normal-completion Run.csv\");\n  const fs::path data=runCsv.parent_path()/\"data\";unsigned count=0;\n  for(const auto& p:fs::directory_iterator(data))if(p.is_regular_file()&&p.path().extension()==\".bi4\"&&p.path().filename().string().rfind(\"Part_\",0)==0)count++;\n  Need(count==99,\"Actual failed HG saved-file count differs\");\n  std::ifstream f(runCsv.parent_path()/\"Run.out\");Need(bool(f),\"Actual failed Run.out missing\");std::ostringstream text;text<<f.rdbuf();\n  Need(text.str().find(\"GPU dynamic wall requires a finite saturated first-order mirror fit at every active sample.\")!=std::string::npos&&text.str().find(\"Finished execution (code=1).\")!=std::string::npos&&text.str().find(\"DynamicPoreWall rejected: stage=1 sorted_slot=690 native_id=894 step_start=10.983389999668779 step=2196678 B=(4.9000000000000004,0,-0.019999999999999962) normal=(0,0,0.0399999991).\")!=std::string::npos,\"Exact reported HG wall894 failure/exit text differs\");\n  // Reported rejection is not an unsaved native state or independent Win32 audit.\n  return count;\n}"
+    ],
+    [
+      "full301 plan with99 reads",
+      "static std::vector<unsigned> Planned(const fs::path& path,unsigned samples,unsigned expected){\n  Need(fs::equivalent(path,H18PlanPath)&&H18Rows.size()==samples&&H18Rows.back().completed==expected,\"Original supplied complete plan identity differs\");std::vector<unsigned> steps;for(const auto& q:H18Rows)steps.push_back(q.completed);return steps;\n}",
+      "static std::vector<unsigned> Planned(const fs::path& path,unsigned samples,unsigned expected){\n  Need(fs::equivalent(path,H18PlanPath)&&H18Rows.size()==301&&H18Rows.back().completed==2600000&&samples==99&&expected==H18Rows[98].completed&&expected==2196001,\"Untouched complete301 plan and exact99 saved prefix required\");\n  std::vector<unsigned> steps;for(unsigned part=0;part<samples;part++)steps.push_back(H18Rows[part].completed);return steps;\n}"
+    ],
+    [
+      "call failed observation",
+      "Need(RunSamples(data.parent_path()/\"Run.csv\",expected)==samples,\"Normal Run.csv end/count differs from the explicit owner plan\");",
+      "Need(ObservedPartialSamples(data.parent_path()/\"Run.csv\",expected)==samples,\"Actual failed99 saved-file count differs\");"
+    ],
+    [
+      "saved-scope message",
+      "Actual final global step/full native coverage incomplete",
+      "Actual failed99 last saved step/native coverage incomplete"
+    ],
+    [
+      "partial completion",
+      "\\\"stage\\\":\\\"c08_h18_wend_native_r1.receiver\\\",\\\"passed\\\":true,",
+      "\\\"stage\\\":\\\"c08_h18_hg_failed99_native_r1.receiver\\\",\\\"passed\\\":false,\\\"diagnostic_complete\\\":true,\\\"certified_receiver\\\":false,\\\"source_PRE_is_complete\\\":true,\\\"actual_terminal_solver_step_proven\\\":false,\\\"new_updates_is_last_saved_scope\\\":true,\\\"partial\\\":true,\\\"whole_run_passed\\\":false,\\\"whole_run_native_passed\\\":false,\\\"full_run_completed\\\":false,\\\"saved_prefix_native_passed\\\":true,\\\"original_target_completed_step\\\":2600000,\\\"original_target_samples\\\":301,\\\"observed_saved_samples\\\":99,\\\"last_saved_part\\\":98,\\\"last_saved_completed_step\\\":2196001,\\\"original_plan_records\\\":301,\\\"observed_plan_prefix_records\\\":99,\\\"plan_modified\\\":false,\\\"unsaved_state_reconstructed\\\":false,"
+    ],
+    [
+      "failed-runtime distinction",
+      "\\\"completed_runtime_Run_csv_checked\\\":true",
+      "\\\"completed_runtime_Run_csv_checked\\\":false,\\\"actual_failed_Runout_text_checked\\\":true,\\\"actual_owner_Win32_failure_binding_required\\\":true"
+    ]
+  ],
+  "exact_inverse_original_entry_bytes": true,
+  "exact_inverse_original_receiver_bytes": true,
+  "source_numeric_core_byte_identical": true,
+  "original_field_validation_loop_bytes_identical": true,
+  "original_field_and_numerical_guards_changed": false,
+  "explicit_profile": "failed99_hg",
+  "allowed_group": "psi0",
+  "original_plan_records": 301,
+  "observed_prefix_records": 99,
+  "last_saved_part": 98,
+  "last_saved_completed_step": 2196001,
+  "original_target_completed_step": 2600000,
+  "whole_run_native_passed": false,
+  "full_run_completed": false,
+  "unsaved_state_reconstructed": false,
+  "actual_terminal_solver_step_proven": false,
+  "old_files_changed": false
+}

@@ -1,0 +1,163 @@
+--- actual_opt/JSphGpu_ker.cu
++++ private_failure_observer/JSphGpu_ker.cu
+@@ -25,6 +25,7 @@
+ #ifdef C08_STAGE_TRACE
+ #include "C08StageTrace.h"
+ #endif
++#include <stdio.h>
+ #include <cfloat>
+ #include <math_constants.h>
+ //:#include "JDgKerPrint.h"
+--- actual_opt/JSphGpu_mdbc_ker.cuh
++++ private_failure_observer/JSphGpu_mdbc_ker.cuh
+@@ -52,6 +52,81 @@
+   return a; //-Do not add signed zero on the old zero-normal-g path.
+ }
+ 
++// Private failure-only observations; no numerical state is assigned here.
++template<TpKernel tker,unsigned stage> __device__ __noinline__ void C08HgWallFailure(
++  unsigned reason,bool incomplete,unsigned p1,int scelldiv,int4 nc,int3 cellzero,
++  const int2* fluidcells,const double2* posxy,const double* posz,const typecode* code,
++  const float3* boundnormal,const byte* boundmode,const double* j,const tmatrix3d* corrmat,
++  const float4* poscell,double solid0,double3 gp,bool retried,double shiftx,double shiftz,
++  double sumwab,double submerged,float threshold,const tmatrix3d& moment,
++  double nearest2,double nearx,double nearz,const double* fitted)
++{
++  const float3 bn=boundnormal[p1];
++  printf("C08_HG_WALL_OBS reason=%u incomplete_M=%u stage=%u slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) boundmode=%u receiver_J=%.17g solid0=%.17g\n",
++    reason,unsigned(incomplete),stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,unsigned(boundmode[p1]),j[p1],solid0);
++  printf("C08_HG_WALL_OBS_FIT reason=%u stage=%u slot=%u attempt=%u G=(%.17g,%.17g,%.17g) shift=(%.17g,%.17g) sumWV=%.17g submerged=%.17g threshold=%.9g nearest2=%.17g near=(%.17g,%.17g)\n",
++    reason,stage,p1,unsigned(retried),gp.x,gp.y,gp.z,shiftx,shiftz,sumwab,submerged,double(threshold),nearest2,nearx,nearz);
++  printf("C08_HG_WALL_OBS_M reason=%u stage=%u slot=%u incomplete_M=%u M=(%.17g,%.17g,%.17g;%.17g,%.17g,%.17g;%.17g,%.17g,%.17g) detM=%.17g active=%u\n",
++    reason,stage,p1,unsigned(incomplete),moment.a11,moment.a12,moment.a13,moment.a21,moment.a22,moment.a23,moment.a31,moment.a32,moment.a33,
++    cumath::Determinant3x3(moment),unsigned(submerged>0 || sumwab>=double(threshold) || (threshold>=2 && sumwab+2>=double(threshold))));
++  if(stage==1 && fitted){
++    printf("C08_HG_WALL_OBS_RAW_C reason=%u stage=%u slot=%u raw_fitted_C=(%.17g,%.17g,%.17g;%.17g,%.17g,%.17g;%.17g,%.17g,%.17g) detXZ=%.17g asymXZ=%.17g\n",
++      reason,stage,p1,fitted[0],fitted[1],fitted[2],fitted[3],fitted[4],fitted[5],fitted[6],fitted[7],fitted[8],
++      fitted[0]*fitted[8]-fitted[2]*fitted[6],fitted[2]-fitted[6]);
++  }
++  // Exact stored physical wall from the original failed call, not a fitted range.
++  // This is an observation selector only. The kernel's participation is unchanged.
++  if(!(stage==1 && posxy[p1].x==4.9000000000000004 && posxy[p1].y==0.
++       && posz[p1]==-0.019999999999999962))return;
++  unsigned donors=0,observed_nearest_slot=~0u;double observed_nearest2=DBL_MAX;
++  int i1,f1,i2,f2,i3,f3;
++  cunsearch::InitCte(gp.x,gp.y,gp.z,scelldiv,nc,cellzero,i1,f1,i2,f2,i3,f3);
++  for(int c3=i3;c3<f3;c3+=nc.w)for(int c2=i2;c2<f2;c2+=nc.x){
++    unsigned begin,end=0;cunsearch::ParticleRange(c2,c3,i1,f1,fluidcells,begin,end);
++    if(end)for(unsigned p2=begin;p2<end;p2++)if(CODE_IsFluid(code[p2])){
++      const double dx=gp.x-posxy[p2].x,dz=gp.z-posz[p2];const float rr2=float(dx*dx+dz*dz);
++      if(rr2<=CTE.kernelsize2){
++        float fac;const double wab=(rr2==0? (fac=0.f,double(cufsph::GetKernel_Wab<tker>(rr2))): double(cufsph::GetKernel_WabFac<tker>(rr2,fac)));
++        const double vol=double(CTE.massf)/double(CTE.rhopzero)*j[p2];const double distance2=dx*dx+dz*dz;
++        if(distance2<observed_nearest2){observed_nearest2=distance2;observed_nearest_slot=p2;}
++        const tmatrix3d c=corrmat[p2];
++        printf("C08_HG_WALL_OBS_DONOR reason=%u stage=%u wall_slot=%u index=%u donor_slot=%u code=%u X=(%.17g,%.17g,%.17g) J=%.17g J_valid=%u dx=%.17g dz=%.17g rr2_float=%.9g\n",
++          reason,stage,p1,donors,p2,unsigned(code[p2]),posxy[p2].x,posxy[p2].y,posz[p2],j[p2],unsigned(isfinite(j[p2])&&j[p2]>solid0),dx,dz,double(rr2));
++        printf("C08_HG_WALL_OBS_DONOR_C reason=%u stage=%u wall_slot=%u donor_slot=%u C=(%.17g,%.17g,%.17g;%.17g,%.17g,%.17g;%.17g,%.17g,%.17g) detXZ=%.17g asymXZ=%.17g\n",
++          reason,stage,p1,p2,c.a11,c.a12,c.a13,c.a21,c.a22,c.a23,c.a31,c.a32,c.a33,c.a11*c.a33-c.a13*c.a31,c.a13-c.a31);
++        printf("C08_HG_WALL_OBS_DONOR_W reason=%u stage=%u wall_slot=%u donor_slot=%u W=%.17g fac=%.9g V=%.17g WV=%.17g gradWV=(%.17g,%.17g)\n",
++          reason,stage,p1,p2,wab,double(fac),vol,wab*vol,double(fac)*dx*vol,double(fac)*dz*vol);
++        donors++;
++      }
++    }
++  }
++  printf("C08_HG_WALL_OBS_DONORS_END reason=%u stage=%u wall_slot=%u donors=%u observed_nearest_slot=%u observed_nearest2=%.17g input_nearest2=%.17g\n",
++    reason,stage,p1,donors,observed_nearest_slot,observed_nearest2,nearest2);
++  // Independently observe the current physical-B union used by stage0. This does
++  // not rerun/reassign boundmode, and counts every candidate rather than early-out.
++  unsigned candidates=0,inside_double=0,inside_fsfloat=0,inside_forcefloat=0,inside_union=0;
++  double min_double=DBL_MAX;float min_fs=FLT_MAX,min_force=FLT_MAX;
++  cunsearch::InitCte(posxy[p1].x,posxy[p1].y,posz[p1],scelldiv,nc,cellzero,i1,f1,i2,f2,i3,f3);
++  for(int c3=i3;c3<f3;c3+=nc.w)for(int c2=i2;c2<f2;c2+=nc.x){
++    unsigned begin,end=0;cunsearch::ParticleRange(c2,c3,i1,f1,fluidcells,begin,end);
++    if(end)for(unsigned p2=begin;p2<end;p2++)if(CODE_IsFluid(code[p2])){
++      candidates++;const double dx=posxy[p1].x-posxy[p2].x,dz=posz[p1]-posz[p2],rr=dx*dx+dz*dz;
++      if(rr<min_double)min_double=rr;const bool a=rr<=double(CTE.kernelsize2)&&rr>=ALMOSTZERO;inside_double+=unsigned(a);
++      bool b=false,c=false;
++      if(poscell){const float4 p=poscell[p1],q=poscell[p2];
++        const float x=p.x-q.x+CTE.poscellsize*(PSCEL_GetfX(p.w)-PSCEL_GetfX(q.w));
++        const float y=p.y-q.y+CTE.poscellsize*(PSCEL_GetfY(p.w)-PSCEL_GetfY(q.w));
++        const float z=p.z-q.z+CTE.poscellsize*(PSCEL_GetfZ(p.w)-PSCEL_GetfZ(q.w));
++        const float rf=x*x+z*z,rg=x*x+y*y+z*z;if(rf<min_fs)min_fs=rf;if(rg<min_force)min_force=rg;
++        b=rf<=CTE.kernelsize2&&rf>=ALMOSTZERO;c=rg<=CTE.kernelsize2&&rg>=ALMOSTZERO;
++      }
++      inside_fsfloat+=unsigned(b);inside_forcefloat+=unsigned(c);inside_union+=unsigned(a||b||c);
++    }
++  }
++  printf("C08_HG_WALL_OBS_B reason=%u stage=%u slot=%u boundmode=%u candidates=%u inside_double=%u inside_fsfloat=%u inside_forcefloat=%u inside_union=%u min_r2=(%.17g,%.9g,%.9g) cutoff2=%.9g poscell_present=%u\n",
++    reason,stage,p1,unsigned(boundmode[p1]),candidates,inside_double,inside_fsfloat,inside_forcefloat,inside_union,min_double,double(min_fs),double(min_force),double(CTE.kernelsize2),unsigned(poscell!=NULL));
++}
++
+ template<TpKernel tker,unsigned stage> __global__ void KerDynamicPoreWall(unsigned np,unsigned npbok,float threshold
+   ,int scelldiv,int4 nc,int3 cellzero,const int2 *fluidcells,const double2 *posxy,const double *posz
+   ,const typecode *code,const float3 *boundnormal,byte *boundmode,float3 *tangenvel,float3 *derivativevel
+@@ -63,7 +138,8 @@
+   const float3 bn=boundnormal[p1];
+   const bool noslip=(stage==0 && (boundslipmode? unsigned(boundslipmode[p1]): CTE.slipmode)==unsigned(SLIP_NoSlip));
+   const double r2=double(bn.x)*bn.x+double(bn.y)*bn.y+double(bn.z)*bn.z;
+-  if(!CODE_IsFixed(code[p1]) || !isfinite(r2) || !(r2>0)){atomicMin(invalid,p1);return;}
++  if(!CODE_IsFixed(code[p1]) || !isfinite(r2) || !(r2>0)){printf("C08_HG_WALL_OBS reason=1 incomplete_M=1 stage=%u slot=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g) code=%u fixed=%u normal_r2=%.17g\n",stage,p1,posxy[p1].x,posxy[p1].y,posz[p1],bn.x,bn.y,bn.z,unsigned(code[p1]),unsigned(CODE_IsFixed(code[p1])),r2);
++atomicMin(invalid,p1);return;}
+   const bool currentb=(poscell && CTE.simulate2d && !CTE.periactive);
+   if(currentb){
+     if(stage==0){
+@@ -109,7 +185,8 @@
+       const double dx=gp.x-posxy[p2].x,dz=gp.z-posz[p2];
+       const float rr2=float(dx*dx+dz*dz);
+       if(rr2<=CTE.kernelsize2){
+-        if(!isfinite(j[p2]) || j[p2]<=solid0){atomicMin(invalid,p1);return;}
++        if(!isfinite(j[p2]) || j[p2]<=solid0){printf("C08_HG_WALL_OBS_RAW_J stage=%u slot=%u donor_slot=%u J=%.17g solid0=%.17g\n",stage,p1,p2,j[p2],solid0);C08HgWallFailure<tker,stage>(2,true,p1,scelldiv,nc,cellzero,fluidcells,posxy,posz,code,boundnormal,boundmode,j,corrmat,poscell,solid0,gp,retried,fitshiftx,fitshiftz,sumwab,submerged,threshold,moment,nearest2,nearx,nearz,NULL);
++atomicMin(invalid,p1);return;}
+         float fac;
+         const double wab=(rr2==0? (fac=0.f,double(cufsph::GetKernel_Wab<tker>(rr2))): double(cufsph::GetKernel_WabFac<tker>(rr2,fac)));
+         const double fx=double(fac)*dx,fz=double(fac)*dz;
+@@ -137,7 +214,8 @@
+       gp.x-=nearx;gp.z-=nearz;fitshiftx-=nearx;fitshiftz-=nearz;
+       retried=true;continue;
+     }
+-    atomicMin(invalid,p1);return;
++    C08HgWallFailure<tker,stage>(3,false,p1,scelldiv,nc,cellzero,fluidcells,posxy,posz,code,boundnormal,boundmode,j,corrmat,poscell,solid0,gp,retried,fitshiftx,fitshiftz,sumwab,submerged,threshold,moment,nearest2,nearx,nearz,NULL);
++atomicMin(invalid,p1);return;
+   }
+   const tmatrix3d inv=cumath::InverseMatrix3x3(moment,det);
+   double v[ncomp];
+@@ -147,7 +225,8 @@
+     v[c]=nearest[c]-gradx*nearx-gradz*nearz;
+     if(retried)v[c]+=gradx*fitshiftx+gradz*fitshiftz;
+     gx[c]=gradx;gz[c]=gradz; //-Keep the existing d=target-source coefficients for the state writer.
+-    if(!isfinite(v[c])){atomicMin(invalid,p1);return;}
++    if(!isfinite(v[c])){printf("C08_HG_WALL_OBS_FIELD stage=%u slot=%u field=%u value=%.17g nearest=%.17g sum=%.17g grad=(%.17g,%.17g)\n",stage,p1,c,v[c],nearest[c],sum[c],gradx,gradz);C08HgWallFailure<tker,stage>(4,false,p1,scelldiv,nc,cellzero,fluidcells,posxy,posz,code,boundnormal,boundmode,j,corrmat,poscell,solid0,gp,retried,fitshiftx,fitshiftz,sumwab,submerged,threshold,moment,nearest2,nearx,nearz,NULL);
++atomicMin(invalid,p1);return;}
+   }
+   if(stage==0){
+     const bool hydrostatichead=(normalg.x!=0.f || normalg.y!=0.f || normalg.z!=0.f);
+@@ -168,7 +247,8 @@
+       s.xx=v[5];s.yy=v[6];s.zz=v[7];s.xy=qx*qy*v[8];s.xz=qx*qz*v[9];s.yz=qy*qz*v[10];
+     }
+     if(v[0]<=solid0 || !isfinite(pressure) || fabs(pressure)>FLT_MAX || !isfinite(dv.x) || !isfinite(dv.y) || !isfinite(dv.z)
+-      || !isfinite(tv.x) || !isfinite(tv.y) || !isfinite(tv.z)){atomicMin(invalid,p1);return;}
++      || !isfinite(tv.x) || !isfinite(tv.y) || !isfinite(tv.z)){printf("C08_HG_WALL_OBS_DOMAIN stage=%u slot=%u J=%.17g pressure=%.17g dv=(%.9g,%.9g,%.9g) tv=(%.9g,%.9g,%.9g)\n",stage,p1,v[0],pressure,dv.x,dv.y,dv.z,tv.x,tv.y,tv.z);C08HgWallFailure<tker,stage>(5,false,p1,scelldiv,nc,cellzero,fluidcells,posxy,posz,code,boundnormal,boundmode,j,corrmat,poscell,solid0,gp,retried,fitshiftx,fitshiftz,sumwab,submerged,threshold,moment,nearest2,nearx,nearz,NULL);
++atomicMin(invalid,p1);return;}
+     j[p1]=v[0];theta[p1]=0.;porepress[p1]=float(pressure);sigma[p1]=s;
+     if(derivativevel)derivativevel[p1]=dv;
+     if(tangenvel)tangenvel[p1]=tv;
+@@ -177,14 +257,16 @@
+   else if(stage==1){
+     tmatrix3d m;m.a11=v[0];m.a12=qx*qy*v[1];m.a13=qx*qz*v[2];m.a21=qy*qx*v[3];m.a22=v[4];m.a23=qy*qz*v[5];m.a31=qz*qx*v[6];m.a32=qz*qy*v[7];m.a33=v[8];
+     const double determinant=m.a11*m.a33-m.a13*m.a31;
+-    if(!isfinite(determinant) || determinant<=0){atomicMin(invalid,p1);return;}
++    if(!isfinite(determinant) || determinant<=0){printf("C08_HG_WALL_OBS_C stage=%u slot=%u C=(%.17g,%.17g,%.17g;%.17g,%.17g,%.17g;%.17g,%.17g,%.17g) actual_detXZ=%.17g asymXZ=%.17g\n",stage,p1,m.a11,m.a12,m.a13,m.a21,m.a22,m.a23,m.a31,m.a32,m.a33,determinant,m.a13-m.a31);C08HgWallFailure<tker,stage>(6,false,p1,scelldiv,nc,cellzero,fluidcells,posxy,posz,code,boundnormal,boundmode,j,corrmat,poscell,solid0,gp,retried,fitshiftx,fitshiftz,sumwab,submerged,threshold,moment,nearest2,nearx,nearz,v);
++atomicMin(invalid,p1);return;}
+     corrmat[p1]=m;
+   }
+   else{
+     const bool hydrostatichead=(normalg.x!=0.f || normalg.y!=0.f || normalg.z!=0.f);
+     const float3 a=(hydrostatichead? make_float3(float(qx*v[0]-double(normalg.x)),float(qy*v[1]-double(normalg.y)),float(qz*v[2]-double(normalg.z)))
+       : make_float3(float(qx*v[0]),float(qy*v[1]),float(qz*v[2])));
+-    if(!isfinite(a.x) || !isfinite(a.y) || !isfinite(a.z)){atomicMin(invalid,p1);return;}
++    if(!isfinite(a.x) || !isfinite(a.y) || !isfinite(a.z)){printf("C08_HG_WALL_OBS_ACE stage=%u slot=%u A=(%.9g,%.9g,%.9g)\n",stage,p1,a.x,a.y,a.z);C08HgWallFailure<tker,stage>(7,false,p1,scelldiv,nc,cellzero,fluidcells,posxy,posz,code,boundnormal,boundmode,j,corrmat,poscell,solid0,gp,retried,fitshiftx,fitshiftz,sumwab,submerged,threshold,moment,nearest2,nearx,nearz,NULL);
++atomicMin(invalid,p1);return;}
+     ace[p1]=a; //-Q*(Ace+g_n)-g_n equals Q*(Ace+g)-g; zero g_n keeps the old literal path.
+   }
+   break;
