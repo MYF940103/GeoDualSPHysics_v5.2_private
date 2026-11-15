@@ -1,0 +1,319 @@
+{
+  "host_changes": [
+    {
+      "label": "Run-owned private API",
+      "old": "#include \"JSphGpuSingle.h\"\r\n",
+      "new": "#include \"JSphGpuSingle.h\"\r\n\r\n#include \"c08_h18_hg_opt_r1.hpp\"\r\n#include \"JDsFixedDt.h\"\r\n#include <cstdlib>\r\n#include <memory>\r\n#include <stdexcept>\r\nnamespace {\r\n  struct C08OptRunScope{\r\n    std::unique_ptr<c08cached::State> state;\r\n    C08OptRunScope(){\r\n      const char* e=std::getenv(c08cached::Environment());if(!e)return;\r\n      if(std::string(e)!=\"1\")throw std::runtime_error(\"Private cached HG requires absent env or exact C08_HG_OPT_H18=1.\");\r\n      state.reset(new c08cached::State);c08cached::SetCurrent(state.get());\r\n    }\r\n    ~C08OptRunScope(){if(state)c08cached::SetCurrent(NULL);}\r\n  };\r\n}\r\n",
+      "count": 1
+    },
+    {
+      "label": "Run owner",
+      "old": "  AppName=appname; Log=log; CfgRun=cfg;",
+      "new": "  AppName=appname; Log=log; CfgRun=cfg;\r\n  C08OptRunScope c08_cached_run_scope;",
+      "count": 1
+    },
+    {
+      "label": "one producer before sole original Darcy",
+      "old": "  if(DynamicPorePressure)ComputeDynamicPorePressureRateGpu(dynamicridpg);",
+      "new": "\r\n  if(c08cached::Current()){\r\n    if(!GravityPreloadReleased || !GravityPreload || !IsGravityPreloadHandoff() || GravityPreloadElasticSource\r\n      || GravityPreloadKeepBedOverlap || !GravityPreloadBedIds.empty() || GravityPreloadActualStep!=2000000\r\n      || GravityPreloadIdBegin!=1805 || GravityPreloadIdCount!=255 || Np!=6805 || Npb!=1805 || NpbOk>Npb\r\n      || CaseNp!=7060 || CaseNpb!=2060 || CaseNfixed!=2060 || CaseNfluid!=5000 || PartBegin\r\n      || CaseNmoving || CaseNfloat || InOut || Symmetry || PeriActive || Shifting || Damping || RelaxZones || UseDEM || AccInput\r\n      || !UseDynamicPorePlaneContact() || !NoPenetration || TMdbc2!=MDBC2_NoPen || TBoundary!=BC_MDBC || !UseNormals\r\n      || !HydroMech || !HydroMechDynamicSeepage || !PorosityFeedback || !DynamicPorePressure || !DynamicPoreWall\r\n      || !DynamicPoreConductivity || HydroMechConductivityModel!=1 || DynamicPoreConductivityCk!=2.\r\n      || !Simulate2D || TKernel!=KERNEL_Wendland || TStep!=STEP_Symplectic || Dp!=.04 || KernelH!=.072f\r\n      || !FixedDt || !FixedDt->GetFile().empty() || FixedDt->GetFixedValue()!=.000005 || SymplecticDtPre!=.000005\r\n      || (interstep!=INTERSTEP_SymPredictor && interstep!=INTERSTEP_SymCorrector)\r\n      || !PoroJg || !Aceg || HourglassGpu || SoilHourglassXi || SoilDamping || PoreShepardRegularization || SoilBoundaryDerivativeSPR\r\n      || !ArtificialStress || ArtificialStressCoef!=.3f || ArtificialStressExp!=2.55f || TVisco!=VISCO_Artificial || Visco!=.1f || ViscoTime\r\n      || TDensity!=DDT_None || !SoilStressRateGradCorr || !HydroMechFreeSeepage || HydroMechDrainage\r\n      || HydroMechTopLoadMode!=HMLOAD_None || RhopZero!=2072.5f || SoilCte.PoreWaterRho!=1000.f\r\n      || SoilCte.PoreWaterBulkModulus!=1e9f || SoilCte.Porosity!=.35f || SoilCte.HydraulicConductivity!=.0002f\r\n      || SoilCte.ModulusE!=20e6f || SoilCte.PRvs!=.33f || DPCtes!=DP_PS || !StrainSoftening\r\n      || SoilCte.dlt!=0.f || SoilCte.psiDecay!=0.f || SoilCte.coh!=5000.f || SoilCte.coh_r!=1000.f || SoilCte.n_coh!=5.f\r\n      || SoilCte.n_phi!=0.f || SoilCte.phi!=SoilCte.phi_r || Gravity.x!=0 || Gravity.y!=0 || Gravity.z!=-9.81f)\r\n      Run_Exceptioon(\"Private H1.8 energy-normalized plastic HG requires unchanged schema2 psi0 Wendland/AS.3n2.55/5us/bedroles released target.\");\r\n    const bool corrector=(interstep==INTERSTEP_SymCorrector);\r\n    if((corrector && (!SigmaPreg || !VelrhopPreg || !PoroJPreg)) || (!corrector && (SigmaPreg || PoroJPreg)))\r\n      Run_Exceptioon(\"Private HG predictor/corrector base pointers do not match genuine stage.\");\r\n    const c08cached::Config hc={double(MassFluid)/double(RhopZero),double(RhopZero),double(SoilCte.PoreWaterRho),\r\n      1.-double(SoilCte.Porosity),KernelH,CSP.kwend.bwen,SoilCte.ModulusG};\r\n    const c08cached::Material hm={SoilCte,DPCtes,StrainSoftening,bool(PartBegin && StrainSoftening),RequireElasticGravityPreload()};\r\n    const c08cached::Stage hs={Np,Npb,unsigned(Nstep),TimeStep,SymplecticDtPre,corrector,DivData,Dcellg,Idpg,Codeg,\r\n      Posxyg,Poszg,Velrhopg,PoroJg,(corrector? SigmaPreg: Sigmag),Rsigmag,Kplasticg,Aceg};\r\n    c08cached::Current()->StageForce(hc,hm,hs);\r\n  }\r\n  if(DynamicPorePressure)ComputeDynamicPorePressureRateGpu(dynamicridpg);",
+      "count": 1
+    },
+    {
+      "label": "selected predictor dt",
+      "old": "  const double ddt_p=DtVariable(false);",
+      "new": "  const double ddt_p=DtVariable(false);\r\n  if(c08cached::Current() && ddt_p!=c08cached::StepDt)Run_Exceptioon(\"Cached HG predictor selected dt differs from 5us.\");",
+      "count": 1
+    },
+    {
+      "label": "selected corrector dt",
+      "old": "  const double ddt_c=DtVariable(true);",
+      "new": "  const double ddt_c=DtVariable(true);\r\n  if(c08cached::Current() && ddt_c!=c08cached::StepDt)Run_Exceptioon(\"Cached HG corrector selected dt differs from 5us.\");",
+      "count": 1
+    },
+    {
+      "label": "predictor cache writeback",
+      "old": "  ComputeSymplecticPre(dt);",
+      "new": "  ComputeSymplecticPre(dt);\r\n  if(c08cached::Current())c08cached::Current()->CheckMaterial(Np,Npb,Idpg,Codeg,Sigmag,Kplasticg,false);",
+      "count": 1
+    },
+    {
+      "label": "corrector cache writeback",
+      "old": "  ComputeSymplecticCorr(dt);",
+      "new": "  ComputeSymplecticCorr(dt);\r\n  if(c08cached::Current())c08cached::Current()->CheckMaterial(Np,Npb,Idpg,Codeg,Sigmag,Kplasticg,true);",
+      "count": 1
+    },
+    {
+      "label": "accept after full divide and scalar clock",
+      "old": "    TimeStep+=stepdt;\r\n    LastDt=stepdt;",
+      "new": "    TimeStep+=stepdt;\r\n    LastDt=stepdt;\r\n    if(c08cached::Current())c08cached::Current()->Accept(Np,Npb,Idpg,Codeg,unsigned(Nstep+1),TimeStep,stepdt);",
+      "count": 1
+    },
+    {
+      "label": "sidecar after native save",
+      "old": "  JSph::SaveData(npsave,arrays,1,vdom,&infoplus);",
+      "new": "  JSph::SaveData(npsave,arrays,1,vdom,&infoplus);\r\n  if(c08cached::Current())c08cached::Current()->Save(DirOut,unsigned(Nstep+1),TimeStep);",
+      "count": 1
+    }
+  ],
+  "Gpu_host_changes": [
+    {
+      "label": "private nonowning current API",
+      "old": "#include \"JSphGpu.h\"\r\n",
+      "new": "#include \"JSphGpu.h\"\r\n#include \"c08_h18_hg_opt_r1.hpp\"\r\n",
+      "count": 1
+    },
+    {
+      "label": "ON cached Pre consumer; OFF exact original CUDA call",
+      "old": "  cusphs::ComputeStepSymplecticPre(WithFloating,shift,inout,DPCtes,Np,Npb,VelrhopPreg,Arg\r\n    ,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,dt05,RhopZero,RhopOutMin,RhopOutMax,Gravity\r\n    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg,RequireElasticGravityPreload());",
+      "new": "  if(c08cached::Current())c08cached::Current()->ConsumePre(unsigned(Nstep),TimeStep,Idpg,WithFloating,shift,inout,DPCtes,Np,Npb,VelrhopPreg,Arg\r\n    ,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,dt05,RhopZero,RhopOutMin,RhopOutMax,Gravity\r\n    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg,RequireElasticGravityPreload());\r\n  else\r\n  cusphs::ComputeStepSymplecticPre(WithFloating,shift,inout,DPCtes,Np,Npb,VelrhopPreg,Arg\r\n    ,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,dt05,RhopZero,RhopOutMin,RhopOutMax,Gravity\r\n    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg,RequireElasticGravityPreload());",
+      "count": 1
+    },
+    {
+      "label": "ON cached Cor consumer; OFF exact original CUDA call",
+      "old": "  cusphs::ComputeStepSymplecticCor(WithFloating,shift,inout,DPCtes,(UseDynamicPorePlaneContact()? MDBC2_Std: TMdbc2),Np,Npb,VelrhopPreg\r\n    ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,NoPenShiftg,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity\r\n    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg,RequireElasticGravityPreload());",
+      "new": "  if(c08cached::Current())c08cached::Current()->ConsumeCor(unsigned(Nstep),TimeStep,Idpg,WithFloating,shift,inout,DPCtes,(UseDynamicPorePlaneContact()? MDBC2_Std: TMdbc2),Np,Npb,VelrhopPreg\r\n    ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,NoPenShiftg,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity\r\n    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg,RequireElasticGravityPreload());\r\n  else\r\n  cusphs::ComputeStepSymplecticCor(WithFloating,shift,inout,DPCtes,(UseDynamicPorePlaneContact()? MDBC2_Std: TMdbc2),Np,Npb,VelrhopPreg\r\n    ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,NoPenShiftg,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity\r\n    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg,RequireElasticGravityPreload());",
+      "count": 1
+    }
+  ],
+  "integrator_changes": [
+    {
+      "role": "porosity",
+      "original": "template<bool corrector> static __device__ __forceinline__ bool KerPorosityRhopCache\r\n  (StPorosityRhopState state,unsigned p,double dt,float rho0,float minimum,float maximum,float &cache)\r\n{\r\n  const double jstage=state.j[p];\r\n  double value=jstage;\r\n  if(corrector){value=state.jn[p];value+=dt*jstage*state.theta[p];}\r\n  const double rhow=double(SOILSCTE.PoreWaterRho);\r\n  const double rhot=rhow+(double(rho0)-rhow)/value;\r\n  const bool out=(!isfinite(value) || value<=1.-double(SOILSCTE.Porosity)\r\n    || !isfinite(rhot) || rhot<=0 || rhot<minimum || rhot>maximum);\r\n  cache=float(rhot);\r\n  return(out || !isfinite(cache) || cache<=0.f);\r\n}",
+      "changes": [
+        {
+          "label": "helper private name",
+          "old": "KerPorosityRhopCache",
+          "new": "CachedPorosityRhopCache",
+          "count": 1
+        },
+        {
+          "label": "explicit soil helper argument",
+          "old": "float &cache)",
+          "new": "float &cache,const StSoilCte& cached_soil)",
+          "count": 1
+        },
+        {
+          "label": "same water density member",
+          "old": "SOILSCTE.PoreWaterRho",
+          "new": "cached_soil.PoreWaterRho",
+          "count": 1
+        },
+        {
+          "label": "same porosity member",
+          "old": "SOILSCTE.Porosity",
+          "new": "cached_soil.Porosity",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "role": "Pre",
+      "original": "template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void KerComputeStepSymplecticPre\r\n  (unsigned n,unsigned npb\r\n  ,const float4 *velrhoppre,const float *ar,const float3 *ace,const float4 *shiftposfs\r\n  ,const double2 *sigmapre,const float *kplasticpre,const float2 *rsigma\r\n  ,const float3 *indirvel,double dtm,float rhopzero,float rhopoutmin,float rhopoutmax,float3 gravity\r\n  ,typecode *code,double2 *movxy,double *movz,float4 *velrhop\r\n  ,double2 *sigma,float *kplastic,float *kplasticdk,StPorosityRhopState porostate,unsigned *materialerror,bool requireelastic)\r\n{\r\n  unsigned p=blockIdx.x*blockDim.x + threadIdx.x; //-Number of particle.\r\n  if(p<n){\r\n    if(p<npb){ //-Particles: Fixed & Moving.\r\n      //==== mdbr ==boundary keeps the same No update\r\n      float4 rvelrhop=velrhoppre[p];\r\n      //rvelrhop.w=float(double(rvelrhop.w)+dtm*ar[p]);\r\n      //rvelrhop.w=(rvelrhop.w<rhopzero? rhopzero: rvelrhop.w); //-To prevent absorption of fluid particles by boundaries. | Evita que las boundary absorvan a las fluidas.\r\n      rvelrhop.w=rhopzero;\r\n      velrhop[p]=rvelrhop;\r\n      sigma[p*3]=sigmapre[p*3];\r\n      sigma[p*3+1]=sigmapre[p*3+1];\r\n      sigma[p*3+2]=sigmapre[p*3+2];\r\n      //kplastic[p] = kplasticpre[p];\r\n    }\r\n    else{ //-Particles: Floating & Fluid.\r\n      const typecode rcode=code[p];\r\n      //-Updates density.\r\n      const float4 rvelrhoppre=velrhoppre[p];\r\n      float4 rvelrhopnew=rvelrhoppre;\r\n      const bool feedbackj=(porostate.j && CODE_IsFluid(rcode));\r\n      bool feedbackout=false;\r\n      if(feedbackj)feedbackout=KerPorosityRhopCache<false>(porostate,p,dtm,rhopzero,rhopoutmin,rhopoutmax,rvelrhopnew.w);\r\n      else rvelrhopnew.w=float(double(rvelrhoppre.w)+dtm*ar[p]);\r\n      //==== mdbr ==\r\n      double2 sigmapre_xx_xy=sigmapre[p*3];\r\n\t  double2 sigmapre_xz_yy=sigmapre[p*3+1];\r\n\t  double2 sigmapre_yz_zz=sigmapre[p*3+2];\r\n      double2 sigmanew_xx_xy=sigmapre_xx_xy;double2 sigmanew_xz_yy=sigmapre_xz_yy; double2 sigmanew_yz_zz=sigmapre_yz_zz;      \r\n      float kplasticnew=0;\r\n      if(!floating || CODE_IsFluid(rcode)){ //-Particles: Fluid.\r\n        //-Calculate displacement. | Calcula desplazamiento.\r\n        double dx=double(rvelrhoppre.x)*dtm;\r\n        double dy=double(rvelrhoppre.y)*dtm;\r\n        double dz=double(rvelrhoppre.z)*dtm;\r\n        if(shift){\r\n          const float4 rshiftpos=shiftposfs[p];\r\n          dx+=double(rshiftpos.x);\r\n          dy+=double(rshiftpos.y);\r\n          dz+=double(rshiftpos.z);\r\n        }\r\n        bool outrhop=(feedbackj? feedbackout: (rvelrhopnew.w<rhopoutmin || rvelrhopnew.w>rhopoutmax));\r\n        //-Calculate velocity & density. | Calcula velocidad y densidad.\r\n        const float3 race=ace[p];\r\n        rvelrhopnew.x=float(double(rvelrhoppre.x) + (double(race.x)+gravity.x) * dtm);\r\n        rvelrhopnew.y=float(double(rvelrhoppre.y) + (double(race.y)+gravity.y) * dtm);\r\n        rvelrhopnew.z=float(double(rvelrhoppre.z) + (double(race.z)+gravity.z) * dtm);\r\n        //-Calculate elastic stress\r\n        float2 rsigma_xx_xy=rsigma[p*3];\r\n\t    float2 rsigma_xz_yy=rsigma[p*3+1];\r\n        float2 rsigma_yz_zz=rsigma[p*3+2];\r\n        double2 sigma_e_xx_xy=make_double2(0,0);   double2 sigma_e_xz_yy=make_double2(0,0);   double2 sigma_e_yz_zz=make_double2(0,0);\r\n        float kplasticold = kplasticpre[p];\r\n#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)\r\n        const double c08baseI=(sigmapre_xx_xy.x+sigmapre_xz_yy.y)+sigmapre_yz_zz.y;\r\n#endif\r\n        sigma_e_xx_xy.x = double(sigmapre_xx_xy.x) + double(rsigma_xx_xy.x) * dtm;\r\n        sigma_e_xz_yy.y = double(sigmapre_xz_yy.y) + double(rsigma_xz_yy.y) * dtm;\r\n        sigma_e_yz_zz.y = double(sigmapre_yz_zz.y) + double(rsigma_yz_zz.y) * dtm;\r\n        sigma_e_xx_xy.y = double(sigmapre_xx_xy.y) + double(rsigma_xx_xy.y) * dtm;\r\n        sigma_e_yz_zz.x = double(sigmapre_yz_zz.x) + double(rsigma_yz_zz.x) * dtm;\r\n        sigma_e_xz_yy.x = double(sigmapre_xz_yy.x) + double(rsigma_xz_yy.x) * dtm;\r\n        const bool usesoftening=(SOILSTRAINSOFTENING!=0);\r\n        const fsoil::Status status=fsoil::ReturnMaterial(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,kplasticold,SOILSCTE\r\n          ,dpctes,usesoftening,(SOILPARTBEGIN && usesoftening),sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);\r\n#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)\r\n        C08CausalMaterial(p,dtm,c08baseI,status,kplasticold,kplasticnew,sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz\r\n          ,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,rsigma_xx_xy,rsigma_xz_yy,rsigma_yz_zz,sigmapre_xx_xy,sigmapre_xz_yy,sigmapre_yz_zz);\r\n#endif\r\n        if(!fsoil::CommitAllowed(status) || (requireelastic && status!=fsoil::Status::Elastic)){atomicOr(materialerror,1u<<unsigned(status));return;}\r\n\t\tkplasticnew=kplasticold;//Update in the corrector step\r\n        //-Restore data of inout particles.\r\n        if(inout && CODE_IsFluidInout(rcode)){\r\n          outrhop=false;\r\n          rvelrhopnew=rvelrhoppre;\r\n          const float3 vd=indirvel[CODE_GetIzoneFluidInout(rcode)];\r\n          if(vd.x!=FLT_MAX){\r\n            const float v=rvelrhopnew.x*vd.x + rvelrhopnew.y*vd.y + rvelrhopnew.z*vd.z;\r\n            dx=double(v*vd.x) * dtm;\r\n            dy=double(v*vd.y) * dtm;\r\n            dz=double(v*vd.z) * dtm;\r\n          }\r\n        }\r\n        //-Update particle data.\r\n        movxy[p]=make_double2(dx,dy);\r\n        movz[p]=dz;\r\n        if(outrhop){ //-Only brands as excluded normal particles (not periodic). | Solo marca como excluidas las normales (no periodicas).\r\n          if(CODE_IsNormal(rcode))code[p]=CODE_SetOutRhop(rcode);\r\n        }\r\n      }\r\n      else{ //-Particles: Floating.\r\n        rvelrhopnew.w=(rvelrhopnew.w<rhopzero? rhopzero: rvelrhopnew.w); //-To prevent absorption of fluid particles by boundaries. | Evita q las floating absorvan a las fluidas.\r\n      }\r\n      //-Stores new velocity and density.\r\n      velrhop[p]=rvelrhopnew;\r\n      //-Store new stress and kappa\r\n      sigma[p*3]  =sigmanew_xx_xy;\r\n      sigma[p*3+1]=sigmanew_xz_yy;\r\n      sigma[p*3+2]=sigmanew_yz_zz;\r\n      kplastic[p]=kplasticnew;\r\n#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)\r\n      C08CausalMaterialSaved(p,kplastic[p]);\r\n#endif\r\n    }\r\n  }\r\n}",
+      "changes": [
+        {
+          "label": "private Pre kernel name",
+          "old": "KerComputeStepSymplecticPre",
+          "new": "CachedSymplecticPre",
+          "count": 1
+        },
+        {
+          "label": "cache identity and explicit soil kernel inputs",
+          "old": "bool requireelastic)",
+          "new": "bool requireelastic,CacheView cache,unsigned source_step,double source_time,const unsigned* native_id,StSoilCte cached_soil)",
+          "count": 1
+        },
+        {
+          "label": "same Pre mixture-density cache formula",
+          "old": "KerPorosityRhopCache<false>(porostate,p,dtm,rhopzero,rhopoutmin,rhopoutmax,rvelrhopnew.w)",
+          "new": "CachedPorosityRhopCache<false>(porostate,p,dtm,rhopzero,rhopoutmin,rhopoutmax,rvelrhopnew.w,cached_soil)",
+          "count": 1
+        },
+        {
+          "label": "one producer cache replaces Pre material solve only",
+          "old": "        double2 sigma_e_xx_xy=make_double2(0,0);   double2 sigma_e_xz_yy=make_double2(0,0);   double2 sigma_e_yz_zz=make_double2(0,0);\r\n        float kplasticold = kplasticpre[p];\r\n#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)\r\n        const double c08baseI=(sigmapre_xx_xy.x+sigmapre_xz_yy.y)+sigmapre_yz_zz.y;\r\n#endif\r\n        sigma_e_xx_xy.x = double(sigmapre_xx_xy.x) + double(rsigma_xx_xy.x) * dtm;\r\n        sigma_e_xz_yy.y = double(sigmapre_xz_yy.y) + double(rsigma_xz_yy.y) * dtm;\r\n        sigma_e_yz_zz.y = double(sigmapre_yz_zz.y) + double(rsigma_yz_zz.y) * dtm;\r\n        sigma_e_xx_xy.y = double(sigmapre_xx_xy.y) + double(rsigma_xx_xy.y) * dtm;\r\n        sigma_e_yz_zz.x = double(sigmapre_yz_zz.x) + double(rsigma_yz_zz.x) * dtm;\r\n        sigma_e_xz_yy.x = double(sigmapre_xz_yy.x) + double(rsigma_xz_yy.x) * dtm;\r\n        const bool usesoftening=(SOILSTRAINSOFTENING!=0);\r\n        const fsoil::Status status=fsoil::ReturnMaterial(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,kplasticold,SOILSCTE\r\n          ,dpctes,usesoftening,(SOILPARTBEGIN && usesoftening),sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);\r\n#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)\r\n        C08CausalMaterial(p,dtm,c08baseI,status,kplasticold,kplasticnew,sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz\r\n          ,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,rsigma_xx_xy,rsigma_xz_yy,rsigma_yz_zz,sigmapre_xx_xy,sigmapre_xz_yy,sigmapre_yz_zz);\r\n#endif\r\n        if(!fsoil::CommitAllowed(status) || (requireelastic && status!=fsoil::Status::Elastic)){atomicOr(materialerror,1u<<unsigned(status));return;}\r\n",
+          "new": "        float kplasticold=kplasticpre[p];\r\n        if(!ReadCachedMaterial(cache,p,native_id[p],source_step,source_time,dtm,false,\r\n          sigmapre_xx_xy,sigmapre_xz_yy,sigmapre_yz_zz,rsigma_xx_xy,rsigma_xz_yy,rsigma_yz_zz,kplasticold,\r\n          sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew,materialerror,requireelastic))return;\r\n",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "role": "Cor",
+      "original": "template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void KerComputeStepSymplecticCor\r\n  (unsigned n,unsigned npb\r\n  ,const float4 *velrhoppre,const float *ar,const float3 *ace,const float4 *shiftposfs\r\n  ,const double2 *sigmapre,const float *kplasticpre,const float2 *rsigma\r\n  ,const float3 *indirvel,const float4 *nopenshift,TpMdbc2Mode mdbc2,double dtm,double dt,float rhopzero,float rhopoutmin,float rhopoutmax,float3 gravity\r\n  ,typecode *code,double2 *movxy,double *movz,float4 *velrhop\r\n  ,double2 *sigma,float *kplastic,float *kplasticdk,StPorosityRhopState porostate,unsigned *materialerror,bool requireelastic)\r\n{\r\n  unsigned p=blockIdx.x*blockDim.x + threadIdx.x; //-Number of particle.\r\n  if(p<n){\r\n    if(p<npb){ //-Particles: Fixed & Moving.\r\n      //double epsilon_rdot=(-double(ar[p])/double(velrhop[p].w))*dt;\r\n      //float rrhop=float(double(velrhoppre[p].w) * (2.-epsilon_rdot)/(2.+epsilon_rdot));\r\n      //rrhop=(rrhop<rhopzero? rhopzero: rrhop); //-To prevent absorption of fluid particles by boundaries. | Evita q las boundary absorvan a las fluidas.\r\n      float rrhop=rhopzero;\r\n      velrhop[p]=make_float4(0,0,0,rrhop);\r\n      //==== mdbr == No Update, Calculated in BoundCorr\r\n      //kplastic[p] = kplasticpre[p];\r\n    }\r\n    else{ //-Particles: Floating & Fluid.\r\n      const typecode rcode=code[p];\r\n      //-Updates density.\r\n      //const double epsilon_rdot=(-double(ar[p])/double(velrhop[p].w))*dt;\r\n      //const float4 rvelrhoppre=velrhoppre[p];\r\n      //float4 rvelrhopnew=rvelrhoppre;\r\n      //rvelrhopnew.w=float(double(rvelrhoppre.w) * (2.-epsilon_rdot)/(2.+epsilon_rdot));\r\n\r\n      const float4 rvelrhoppre=velrhoppre[p];\r\n      float4 rvelrhopnew=rvelrhoppre;\r\n      //rvelrhopnew.w=float(double(rvelrhoppre.w) * (2.-epsilon_rdot)/(2.+epsilon_rdot));\r\n      const bool feedbackj=(porostate.j && CODE_IsFluid(rcode));\r\n      bool feedbackout=false;\r\n      if(feedbackj)feedbackout=KerPorosityRhopCache<true>(porostate,p,dt,rhopzero,rhopoutmin,rhopoutmax,rvelrhopnew.w);\r\n      else rvelrhopnew.w=float(double(rvelrhoppre.w)+dt*ar[p]);\r\n      //==== mdbr ==\r\n     //==== mdbr ==\r\n      double2 sigmapre_xx_xy=sigmapre[p*3];\r\n      double2 sigmapre_xz_yy=sigmapre[p*3+1];\r\n\t  double2 sigmapre_yz_zz=sigmapre[p*3+2];\r\n      double2 sigmanew_xx_xy=sigmapre_xx_xy;double2 sigmanew_xz_yy=sigmapre_xz_yy; double2 sigmanew_yz_zz=sigmapre_yz_zz;      \r\n      float kplasticnew=0;\r\n      if(!floating || CODE_IsFluid(rcode)){//-Particles: Fluid.\r\n        //-Calculate velocity. | Calcula velocidad.\r\n        const float3 race=ace[p];\r\n        rvelrhopnew.x=float(double(rvelrhoppre.x) + (double(race.x)+gravity.x) * dt);\r\n        rvelrhopnew.y=float(double(rvelrhoppre.y) + (double(race.y)+gravity.y) * dt);\r\n        rvelrhopnew.z=float(double(rvelrhoppre.z) + (double(race.z)+gravity.z) * dt);\r\n        //-Calculate displacement. | Calcula desplazamiento.\r\n        double dx=(double(rvelrhoppre.x)+double(rvelrhopnew.x)) * dtm;\r\n        double dy=(double(rvelrhoppre.y)+double(rvelrhopnew.y)) * dtm;\r\n        double dz=(double(rvelrhoppre.z)+double(rvelrhopnew.z)) * dtm;\r\n        if(mdbc2==MDBC2_NoPen && nopenshift && nopenshift[p].w>5.f){\r\n          if(nopenshift[p].x!=0.f){\r\n            rvelrhopnew.x=rvelrhoppre.x+nopenshift[p].x;\r\n            dx=double(rvelrhopnew.x)*dt;\r\n          }\r\n          if(nopenshift[p].y!=0.f){\r\n            rvelrhopnew.y=rvelrhoppre.y+nopenshift[p].y;\r\n            dy=double(rvelrhopnew.y)*dt;\r\n          }\r\n          if(nopenshift[p].z!=0.f){\r\n            rvelrhopnew.z=rvelrhoppre.z+nopenshift[p].z;\r\n            dz=double(rvelrhopnew.z)*dt;\r\n          }\r\n        }\r\n        if(shift){\r\n          const float4 rshiftpos=shiftposfs[p];\r\n          dx+=double(rshiftpos.x);\r\n          dy+=double(rshiftpos.y);\r\n          dz+=double(rshiftpos.z);\r\n        }\r\n        bool outrhop=(feedbackj? feedbackout: (rvelrhopnew.w<rhopoutmin || rvelrhopnew.w>rhopoutmax));\r\n        //-Calculate elastic stress\r\n        double2 sigmapre_xx_xy=sigmapre[p*3];\r\n\t    double2 sigmapre_xz_yy=sigmapre[p*3+1];\r\n\t    double2 sigmapre_yz_zz=sigmapre[p*3+2];\r\n        float2 rsigma_xx_xy=rsigma[p*3];\r\n\t    float2 rsigma_xz_yy=rsigma[p*3+1];\r\n\t    float2 rsigma_yz_zz=rsigma[p*3+2];\r\n        double2 sigma_e_xx_xy=make_double2(0,0);double2 sigma_e_xz_yy=make_double2(0,0);double2 sigma_e_yz_zz=make_double2(0,0);\r\n        float kplasticold = kplasticpre[p];\r\n#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)\r\n        const double c08baseI=(sigmapre_xx_xy.x+sigmapre_xz_yy.y)+sigmapre_yz_zz.y;\r\n#endif\r\n        sigma_e_xx_xy.x = double(sigmapre_xx_xy.x) + double(rsigma_xx_xy.x) * dt;\r\n        sigma_e_xz_yy.y = double(sigmapre_xz_yy.y) + double(rsigma_xz_yy.y) * dt;\r\n        sigma_e_yz_zz.y = double(sigmapre_yz_zz.y) + double(rsigma_yz_zz.y) * dt;\r\n        sigma_e_xx_xy.y = double(sigmapre_xx_xy.y) + double(rsigma_xx_xy.y) * dt;\r\n        sigma_e_yz_zz.x = double(sigmapre_yz_zz.x) + double(rsigma_yz_zz.x) * dt;\r\n        sigma_e_xz_yy.x = double(sigmapre_xz_yy.x) + double(rsigma_xz_yy.x) * dt;\r\n        const bool usesoftening=(SOILSTRAINSOFTENING!=0);\r\n        const fsoil::Status status=fsoil::ReturnMaterial(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,kplasticold,SOILSCTE\r\n          ,dpctes,usesoftening,(SOILPARTBEGIN && usesoftening),sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);\r\n#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)\r\n        C08CausalMaterial(p,dt,c08baseI,status,kplasticold,kplasticnew,sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz\r\n          ,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,rsigma_xx_xy,rsigma_xz_yy,rsigma_yz_zz,sigmapre_xx_xy,sigmapre_xz_yy,sigmapre_yz_zz);\r\n#endif\r\n        if(!fsoil::CommitAllowed(status) || (requireelastic && status!=fsoil::Status::Elastic)){atomicOr(materialerror,1u<<unsigned(status));return;}\r\n        //-Restore data of inout particles.\r\n        if(inout && CODE_IsFluidInout(rcode)){\r\n          outrhop=false;\r\n          rvelrhopnew=rvelrhoppre;\r\n          const float3 vd=indirvel[CODE_GetIzoneFluidInout(rcode)];\r\n          if(vd.x!=FLT_MAX){\r\n            const float v=rvelrhopnew.x*vd.x + rvelrhopnew.y*vd.y + rvelrhopnew.z*vd.z;\r\n            dx=double(v*vd.x) * dt;\r\n            dy=double(v*vd.y) * dt;\r\n            dz=double(v*vd.z) * dt;\r\n          }\r\n          else{\r\n            dx=double(rvelrhopnew.x) * dt; \r\n            dy=double(rvelrhopnew.y) * dt; \r\n            dz=double(rvelrhopnew.z) * dt;\r\n          }\r\n        }\r\n        //-Update particle data.\r\n        movxy[p]=make_double2(dx,dy);\r\n        movz[p]=dz;\r\n        if(outrhop){ //-Only brands as excluded normal particles (not periodic). | Solo marca como excluidas las normales (no periodicas).\r\n          const typecode rcode=code[p];\r\n          if(CODE_IsNormal(rcode))code[p]=CODE_SetOutRhop(rcode);\r\n        }\r\n      }\r\n      else{ //-Particles: Floating.\r\n        rvelrhopnew.w=(rvelrhopnew.w<rhopzero? rhopzero: rvelrhopnew.w); //-To prevent absorption of fluid particles by boundaries. | Evita q las floating absorvan a las fluidas.\r\n      }\r\n      //-Stores new velocity and density.\r\n      velrhop[p]=rvelrhopnew;\r\n      //-Store new stress and kappa\r\n      sigma[p*3]  =sigmanew_xx_xy;\r\n      sigma[p*3+1]=sigmanew_xz_yy;\r\n      sigma[p*3+2]=sigmanew_yz_zz;\r\n      if(kplasticdk)kplasticdk[p]+=fmaxf(kplasticnew-kplasticpre[p],0.f);\r\n      kplastic[p] = kplasticnew;\r\n#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)\r\n      C08CausalMaterialSaved(p,kplastic[p]);\r\n#endif\r\n    }\r\n  }\r\n}",
+      "changes": [
+        {
+          "label": "private Cor kernel name",
+          "old": "KerComputeStepSymplecticCor",
+          "new": "CachedSymplecticCor",
+          "count": 1
+        },
+        {
+          "label": "cache identity and explicit soil kernel inputs",
+          "old": "bool requireelastic)",
+          "new": "bool requireelastic,CacheView cache,unsigned source_step,double source_time,const unsigned* native_id,StSoilCte cached_soil)",
+          "count": 1
+        },
+        {
+          "label": "same Cor mixture-density cache formula",
+          "old": "KerPorosityRhopCache<true>(porostate,p,dt,rhopzero,rhopoutmin,rhopoutmax,rvelrhopnew.w)",
+          "new": "CachedPorosityRhopCache<true>(porostate,p,dt,rhopzero,rhopoutmin,rhopoutmax,rvelrhopnew.w,cached_soil)",
+          "count": 1
+        },
+        {
+          "label": "one producer cache replaces Cor material solve only",
+          "old": "        double2 sigma_e_xx_xy=make_double2(0,0);double2 sigma_e_xz_yy=make_double2(0,0);double2 sigma_e_yz_zz=make_double2(0,0);\r\n        float kplasticold = kplasticpre[p];\r\n#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)\r\n        const double c08baseI=(sigmapre_xx_xy.x+sigmapre_xz_yy.y)+sigmapre_yz_zz.y;\r\n#endif\r\n        sigma_e_xx_xy.x = double(sigmapre_xx_xy.x) + double(rsigma_xx_xy.x) * dt;\r\n        sigma_e_xz_yy.y = double(sigmapre_xz_yy.y) + double(rsigma_xz_yy.y) * dt;\r\n        sigma_e_yz_zz.y = double(sigmapre_yz_zz.y) + double(rsigma_yz_zz.y) * dt;\r\n        sigma_e_xx_xy.y = double(sigmapre_xx_xy.y) + double(rsigma_xx_xy.y) * dt;\r\n        sigma_e_yz_zz.x = double(sigmapre_yz_zz.x) + double(rsigma_yz_zz.x) * dt;\r\n        sigma_e_xz_yy.x = double(sigmapre_xz_yy.x) + double(rsigma_xz_yy.x) * dt;\r\n        const bool usesoftening=(SOILSTRAINSOFTENING!=0);\r\n        const fsoil::Status status=fsoil::ReturnMaterial(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,kplasticold,SOILSCTE\r\n          ,dpctes,usesoftening,(SOILPARTBEGIN && usesoftening),sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);\r\n#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)\r\n        C08CausalMaterial(p,dt,c08baseI,status,kplasticold,kplasticnew,sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz\r\n          ,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,rsigma_xx_xy,rsigma_xz_yy,rsigma_yz_zz,sigmapre_xx_xy,sigmapre_xz_yy,sigmapre_yz_zz);\r\n#endif\r\n        if(!fsoil::CommitAllowed(status) || (requireelastic && status!=fsoil::Status::Elastic)){atomicOr(materialerror,1u<<unsigned(status));return;}\r\n",
+          "new": "        float kplasticold=kplasticpre[p];\r\n        if(!ReadCachedMaterial(cache,p,native_id[p],source_step,source_time,dt,true,\r\n          sigmapre_xx_xy,sigmapre_xz_yy,sigmapre_yz_zz,rsigma_xx_xy,rsigma_xz_yy,rsigma_yz_zz,kplasticold,\r\n          sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew,materialerror,requireelastic))return;\r\n",
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "exact_reverse_all_original_bytes": true,
+  "original_Simpleker_and_physical_CUDA_unchanged": true,
+  "original_consumer_SPHBSIZE": 256,
+  "optimization": {
+    "base_cached_source_capture": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_cached_r1_source\\source.json",
+      "bytes": 3411,
+      "mtime_ns": 1794722958802843400
+    },
+    "base_cached_CUDA": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_cached_r1_source\\c08_h18_hg_cached_r1.cu",
+      "bytes": 54346,
+      "mtime_ns": 1794722958768609100
+    },
+    "base_cached_header": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_cached_r1_source\\c08_h18_hg_cached_r1.hpp",
+      "bytes": 3967,
+      "mtime_ns": 1794722958773607900
+    },
+    "changes": [
+      {
+        "label": "CUDA family include labels",
+        "kernel": null,
+        "old": "c08_h18_hg_cached_r1",
+        "new": "c08_h18_hg_opt_r1",
+        "count": 2
+      },
+      {
+        "label": "exclusive sidecar/debug basenames",
+        "kernel": null,
+        "old": "C08CachedPlasticHG",
+        "new": "C08OptPlasticHG",
+        "count": 4
+      },
+      {
+        "label": "exclusive policy identity",
+        "kernel": null,
+        "old": "PrivateC08SingleProducerCachedPlasticHG",
+        "new": "PrivateC08SingleProducerOptPlasticHG",
+        "count": 1
+      },
+      {
+        "label": "one shared error snapshot before every return",
+        "kernel": "CheckConsumedKernel",
+        "old": "  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||atomicAdd(&cache.failure->bits,0u))return;",
+        "new": "  __shared__ unsigned c08_opt_block_error;\n  if(threadIdx.x==0)c08_opt_block_error=atomicAdd(&cache.failure->bits,0u);\n  __syncthreads();\n  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||c08_opt_block_error)return;",
+        "count": 1
+      },
+      {
+        "label": "one shared error snapshot before every return",
+        "kernel": "NeighborKernel",
+        "old": "  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||atomicAdd(&fail->bits,0u))return;",
+        "new": "  __shared__ unsigned c08_opt_block_error;\n  if(threadIdx.x==0)c08_opt_block_error=atomicAdd(&fail->bits,0u);\n  __syncthreads();\n  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||c08_opt_block_error)return;",
+        "count": 1
+      },
+      {
+        "label": "one shared error snapshot before every return",
+        "kernel": "FitKernel",
+        "old": "  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||atomicAdd(&fail->bits,0u))return;",
+        "new": "  __shared__ unsigned c08_opt_block_error;\n  if(threadIdx.x==0)c08_opt_block_error=atomicAdd(&fail->bits,0u);\n  __syncthreads();\n  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||c08_opt_block_error)return;",
+        "count": 1
+      },
+      {
+        "label": "one shared error snapshot before every return",
+        "kernel": "RowKernel",
+        "old": "  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||atomicAdd(&fail->bits,0u))return;",
+        "new": "  __shared__ unsigned c08_opt_block_error;\n  if(threadIdx.x==0)c08_opt_block_error=atomicAdd(&fail->bits,0u);\n  __syncthreads();\n  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||c08_opt_block_error)return;",
+        "count": 1
+      },
+      {
+        "label": "one shared error snapshot before every return",
+        "kernel": "AdjointFitKernel",
+        "old": "  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||atomicAdd(&fail->bits,0u))return;",
+        "new": "  __shared__ unsigned c08_opt_block_error;\n  if(threadIdx.x==0)c08_opt_block_error=atomicAdd(&fail->bits,0u);\n  __syncthreads();\n  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||c08_opt_block_error)return;",
+        "count": 1
+      },
+      {
+        "label": "one shared error snapshot before every return",
+        "kernel": "AdjointRowKernel",
+        "old": "  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||atomicAdd(&fail->bits,0u))return;",
+        "new": "  __shared__ unsigned c08_opt_block_error;\n  if(threadIdx.x==0)c08_opt_block_error=atomicAdd(&fail->bits,0u);\n  __syncthreads();\n  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||c08_opt_block_error)return;",
+        "count": 1
+      },
+      {
+        "label": "one shared error snapshot before every return",
+        "kernel": "ForceKernel",
+        "old": "  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||atomicAdd(&fail->bits,0u))return;",
+        "new": "  __shared__ unsigned c08_opt_block_error;\n  if(threadIdx.x==0)c08_opt_block_error=atomicAdd(&fail->bits,0u);\n  __syncthreads();\n  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||c08_opt_block_error)return;",
+        "count": 1
+      },
+      {
+        "label": "one shared error snapshot before every return",
+        "kernel": "AceUnchangedKernel",
+        "old": "  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||atomicAdd(&fail->bits,0u))return;",
+        "new": "  __shared__ unsigned c08_opt_block_error;\n  if(threadIdx.x==0)c08_opt_block_error=atomicAdd(&fail->bits,0u);\n  __syncthreads();\n  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||c08_opt_block_error)return;",
+        "count": 1
+      },
+      {
+        "label": "one shared error snapshot before every return",
+        "kernel": "CheckCommitKernel",
+        "old": "  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||atomicAdd(&fail->bits,0u))return;",
+        "new": "  __shared__ unsigned c08_opt_block_error;\n  if(threadIdx.x==0)c08_opt_block_error=atomicAdd(&fail->bits,0u);\n  __syncthreads();\n  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;if(i>=Nodes||c08_opt_block_error)return;",
+        "count": 1
+      },
+      {
+        "label": "remove old late Ace observation; preserve single commit",
+        "kernel": null,
+        "old": "  AceUnchangedKernel<<<(Nodes+Block-1)/Block,Block>>>(p.node,s.ace,p.failure);Cuda(cudaGetLastError(),\"precommit Ace check launch\");p.ErrorNow();\n  CommitAceKernel<<<(Nodes+Block-1)/Block,Block>>>(p.node,s.ace);Cuda(cudaGetLastError(),\"single Ace commit launch\");",
+        "new": "  CommitAceKernel<<<(Nodes+Block-1)/Block,Block>>>(p.node,s.ace);Cuda(cudaGetLastError(),\"single Ace commit launch\");",
+        "count": 1
+      },
+      {
+        "label": "Ace observation before readonly summaries",
+        "kernel": null,
+        "old": "  LocalSummaryKernel<<<(Nodes+Block-1)/Block,Block>>>(p.node,p.graph,p.memory,p.failure,p.partial_summary);Cuda(cudaGetLastError(),\"bounded receiver summary launch\");",
+        "new": "  AceUnchangedKernel<<<(Nodes+Block-1)/Block,Block>>>(p.node,s.ace,p.failure);Cuda(cudaGetLastError(),\"precommit Ace check launch\");\n  LocalSummaryKernel<<<(Nodes+Block-1)/Block,Block>>>(p.node,p.graph,p.memory,p.failure,p.partial_summary);Cuda(cudaGetLastError(),\"bounded receiver summary launch\");",
+        "count": 1
+      },
+      {
+        "label": "reuse summary error normal path; full first cause still fetched on failure",
+        "kernel": null,
+        "old": "  Cuda(cudaMemcpy(&p.latest,p.device_summary,sizeof(Summary),cudaMemcpyDeviceToHost),\"small summary download\");p.ErrorNow();",
+        "new": "  Cuda(cudaMemcpy(&p.latest,p.device_summary,sizeof(Summary),cudaMemcpyDeviceToHost),\"small summary download\");if(p.latest.error)p.ErrorNow();",
+        "count": 1
+      }
+    ],
+    "header_label_changes_only": true,
+    "complete_cached_CUDA_reverse_equal": true,
+    "NodeKernel_source_bytes_exact": true,
+    "nonNode_block_poll_kernels": [
+      "CheckConsumedKernel",
+      "NeighborKernel",
+      "FitKernel",
+      "RowKernel",
+      "AdjointFitKernel",
+      "AdjointRowKernel",
+      "ForceKernel",
+      "AceUnchangedKernel",
+      "CheckCommitKernel"
+    ],
+    "block_poll_before_out_of_range_return": true,
+    "Ace_check_precedes_readonly_summary": true,
+    "normal_summary_uses_error_field": true,
+    "full_ErrorNow_on_failure": true,
+    "same_stage_launch_count": true,
+    "same_numeric_formulas": true,
+    "same_topology_and_native_ID_order": true,
+    "source_proof_not_machine_code_equivalence": true
+  }
+}
