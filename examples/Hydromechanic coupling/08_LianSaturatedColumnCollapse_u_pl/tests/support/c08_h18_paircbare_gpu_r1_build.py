@@ -1,0 +1,88 @@
+"""Build one private Release pair-C/bare kernel only; never launch a program."""
+import argparse,datetime,os,re,shutil,subprocess,zipfile
+from pathlib import Path,PurePosixPath
+import upl_c08_shepard_release_r1_build as m
+T,L,S=m.T,m.L,m.S
+TAG='c08_h18_paircbare_gpu_r1';NOTE=T/'notes'/(TAG+'.md');LEAVES=('manufactured.csv','summary.csv','walls.csv','baseline.csv','restore_route.csv','selected_clocks.csv')
+OLD='          const double w=vol2*(d.x*(gi.x+gj.x)+d.y*(gi.y+gj.y)+d.z*(gi.z+gj.z))/(rr2+double(CTE.eta2));'
+NEW='          const double w=vol2*(d.x*(gi.x+gj.x)+d.y*(gi.y+gj.y)+d.z*(gi.z+gj.z))/rr2;'
+CPU_OLD='          const double w=vol2*(d.x*(gi.x+gj.x)+d.y*(gi.y+gj.y)+d.z*(gi.z+gj.z))/(rr2+double(Eta2));'
+CPU_NEW='          const double w=vol2*(d.x*(gi.x+gj.x)+d.y*(gi.y+gj.y)+d.z*(gi.z+gj.z))/rr2;'
+def one(s,a,b):m.need(s.count(a)==1,'Unique exact kernel/source anchor required');return s.replace(a,b,1)
+def samefile(a,b):return Path(a['path']).resolve()==Path(b['path']).resolve()and a['bytes']==b['bytes']and a['mtime_ns']==b['mtime_ns']
+def cpu_qualification():
+    path=L/'c08_h18_paircbare_cpu_r1.check.json';q=m.read(path)
+    m.need(q['passed']and q['consumed_stats_unchanged']and q['physical_steps']==0 and q['solver_invocations']==0,'New pair-C/bare actual CPU component must pass first')
+    refs={k:m.bind(q[k])for k in('completion','actual_call','build')};d=m.read(refs['completion']['path']);a=m.read(refs['actual_call']['path']);b=m.read(refs['build']['path']);before=[m.stat(path),*refs.values()]
+    m.need(d['passed']and d['stage']=='c08_h18_paircbare_cpu_r1'and d['pair_C_bare_enabled']and not d['receiver_C_bare_enabled']and not d['external_CPU_rate_compared_to_old']and not d['old_full_CSV_byte_comparison_performed']and d['external_CPU_baseline_scalar_bits']==570000 and d['actual_rate_float_bit_rows']==30000 and d['manufactured_rows']==60000 and d['summary_rows']==12 and d['total_mode_Darcy_API_calls']==8 and d['physical_steps']==d['material_return_calls']==d['filter_calls']==0,'Exact new CPU pair-C/bare counts and unchanged gates required')
+    m.need(a['actual_Popen_wait_exit']==a['actual_Win32_exit']==0 and a['ownership_failure']is None and b['passed']and b['configuration']=='DebugCPU'and b['consumed_stats_unchanged']and b['actual_link_objects']==87 and Path(a['program']).resolve()==Path(b['program']['path']).resolve(),'Actual new CPU component call/build binding required')
+    for leaf in LEAVES:
+        match=[e for e in q['files']if Path(e['path']).resolve()==(T/'outputs/c08_h18_paircbare_cpu_r1'/leaf).resolve()];m.need(len(match)==1,'One new CPU physical-data CSV seal required');before.append(m.bind(match[0]))
+    archive=m.bind(b['source_archive']);physical=m.bind(b['private_physical_source']);before += [archive,physical]
+    return before,[dict(check=m.stat(path),completion=refs['completion'],actual_call=refs['actual_call'],build=refs['build'],private_physical_source=physical,source_archive=archive,upstream_scalar_bits=570000,actual_rate_float_bits=30000)],archive
+def baseline(conf):
+    p=L/('c08_preload_schema2_'+conf+'_r1.build.json');b=m.read(p);m.need(b['passed']and b['configuration']==conf and b['consumed_stats_unchanged'],'Current successful schema2 GPU baseline required');a=m.read(m.bind(b['actual_call'])['path']);m.need(a['actual_Popen_wait_exit']==a['actual_Win32_exit']==0 and a['ownership_failure']is None and '/p:Configuration='+conf in a['arguments']and '/p:VCToolsVersion=14.36.32532'in a['arguments'],'Original genuine MSBuild/toolset receipt required');return p,b,a
+
+def build():
+    conf='Release';label=TAG;out=T/'outputs'/label;intdir=Path(os.environ['TEMP'])/TAG/'Release';check=L/(label+'.build.json');stages=(label+'.cuda_compile',label+'.link');calls=[];before=[]
+    m.need(' 'not in str(intdir.resolve())and not out.exists()and not intdir.exists()and not check.exists()and all(not(L/(q+s)).exists()for q in stages for s in('.call.json','.log')),'Protect existing builds/partials; require fresh no-space IntDir')
+    try:
+        prereqs,cpus,cpu_archive=cpu_qualification();before+=prereqs;bp,b,a=baseline(conf)
+        m.need(samefile(b['source_archive'],cpu_archive),'One current schema2/law2 CPU/GPU full source required')
+        invpath=L/('c08_h18_rv_gpu_'+conf+'_r2.build.json');inv=m.read(invpath);m.need(inv['passed']and inv['configuration']==conf and inv['consumed_stats_unchanged']and samefile(inv['source_archive'],b['source_archive'])and inv['baseline_source_capture']==b['source_capture']and inv['original_actual_build_call']==b['actual_call']and inv['original113_mtimes_within_actual_build']and inv['original_link_membership_exact'],'Already sealed ORIGINAL113 inventory and recipes required; no RV objects are adopted')
+        objects=[m.bind(e)for e in inv['fresh_original_objects']];m.need(len(objects)==113,'Exactly113 original objects required');removed=[q for q in objects if Path(q['path']).name.lower()=='jsphgpu_ker.cu.obj'];m.need(len(removed)==1,'One original GPUker object required');retained=[q for q in objects if q!=removed[0]];m.need(len(retained)==112 and sum(Path(q['path']).name.lower()=='main.obj'for q in retained)==sum(Path(q['path']).name.lower()=='jsphgpusingle.obj'for q in retained)==1,'Retain original main/host and exactly112 original objects')
+        ct=m.bind(inv['original_host_recipe']);lt=m.bind(inv['original_link_recipe']);log=m.bind(inv['original_CUDA_recipe_log']);ll=Path(lt['path']).read_text(encoding='utf-16').splitlines();m.need(sum(x.startswith('^')for x in ll)==1,'One original authoritative link block required');linkargs=m.windows_args(' '.join(x for x in ll if x and not x.startswith('^')));original_link=[Path(x).resolve()for x in linkargs if x.lower().endswith('.obj')]
+        start=datetime.datetime.fromisoformat(a['started_utc']).timestamp();end=datetime.datetime.fromisoformat(a['ended_utc']).timestamp();m.need(len(original_link)==len(set(original_link))==113 and set(original_link)=={Path(q['path']).resolve()for q in objects}and all(start<=q['mtime_ns']/1e9<=end for q in objects),'Original113 exact link membership and actual build-time interval required')
+        nv=[x.split(b'>',1)[-1].strip().decode('ascii')for x in Path(log['path']).read_bytes().splitlines()if b'nvcc.exe'in x.lower()and b'jsphgpu_ker.cu'in x.lower()];m.need(len(nv)==1,'One actual original NVCC command required');cuargs=m.windows_args(nv[0]);nvcc=Path(cuargs.pop(0));incs=[x[2:]for x in cuargs if x.startswith('-I')];m.need(len(incs)==1 and Path(incs[0]).resolve()==(nvcc.parent.parent/'include').resolve()and '-I'not in cuargs and not any(x.startswith('--include-path')for x in cuargs),'Original CUDA include closure must remain unchanged before private frozen root')
+        opt='/O2';crt='/MT';m.need(all(x in cuargs for x in('--compile','-use_fast_math','-D_WITHGPU'))and any('compute_86'in x and 'sm_86'in x for x in cuargs)and any(opt in x and crt in x for x in cuargs)and not any('rdc=true'in x or x in('--device-link','-dc','--fmad=false')or'C08_'in x for x in cuargs),'Retain exact config/CRT/sm86/fast_math/non-RDC policy; no RV/observer flags')
+        runtime=[m.bind(q['destination'])for q in b['runtime']];m.need(len(runtime)==9 and len({Path(q['path']).name.lower()for q in runtime})==9,'Nine original runtime companions required');archive=Path(m.bind(b['source_archive'])['path']);pre=T/'outputs/c08_h18_wend_psi0_pre_r2/data/Part_1000.bi4'
+        canonical=[m.stat(S.parent/'bin/windows'/name)for name in('DualSPHysics5.2CPU_win64_debug.exe','DualSPHysics5.2_win64_debug.exe','DualSPHysics5.2CPU_win64.exe','DualSPHysics5.2_GEO_win64.exe')if(S.parent/'bin/windows'/name).exists()]
+        before += canonical+[m.stat(q)for q in(Path(__file__),NOTE,Path(m.__file__),bp,invpath)]+[ct,lt,log]+[m.bind(b[k])for k in('actual_call','source_capture','source_archive','program')]+[m.stat(pre)]+objects+runtime
+        frozen=out/'frozen/src/source';newobj=intdir/'JSphGpu_ker.cu.obj';program=out/Path(b['program']['path']).name
+        with zipfile.ZipFile(archive)as z:
+            raw=z.read('src/source/JSphGpu_ker.cu');text=raw.decode('utf-8');private=one(text,OLD,NEW);m.need(one(private,NEW,OLD).encode('utf-8')==raw and text.count('lp+=w*dp;lx.x+=d.x*w;lx.y+=d.y*w;lx.z+=d.z*w;')==1,'Exactly reversible one pressure-LP/Lx source block required')
+            cpu_raw=z.read('src/source/JSphCpu.cpp');cpu_text=cpu_raw.decode('utf-8');cpu_private=one(cpu_text,CPU_OLD,CPU_NEW).encode('utf-8')
+            for q in cpus:m.need(Path(q['private_physical_source']['path']).read_bytes()==cpu_private,'GPU pair-C/bare formula must match the newly proven CPU private source')
+        nfd=0
+        for i,x in enumerate(cuargs):
+            if i and cuargs[i-1]=='-Xcompiler':cuargs[i],n=re.subn(r'(?i)(?<!\S)/Fd[^\s]+',lambda q:'/Fd'+str(intdir/'cuda.pdb'),x);nfd+=n
+        m.need(nfd==1 and cuargs.count('-o')==cuargs.count('--keep-dir')==1 and sum(Path(x).name.lower()=='jsphgpu_ker.cu'for x in cuargs)==1,'One source/object/PDB/keep-dir token required');cuargs=[str(frozen/'JSphGpu_ker.cu')if Path(x).name.lower()=='jsphgpu_ker.cu'else x for x in cuargs];cuargs[cuargs.index('-o')+1]=str(newobj);cuargs[cuargs.index('--keep-dir')+1]=str(intdir);cuargs=['-I'+str(frozen),*cuargs]
+        targets={'/out:':program,'/pdb:':out/(program.stem+'.pdb'),'/implib:':out/(program.stem+'.lib'),'/ltcgout:':intdir/(program.stem+'.iobj'),'/ilk:':out/(program.stem+'.ilk'),'/map:':out/(program.stem+'.map'),'/manifestfile:':intdir/'program.manifest','/pgd:':intdir/'program.pgd','/tlbout:':intdir/'program.tlb','/winmdfile:':intdir/'program.winmd'};seen={};linked=[]
+        for arg in linkargs:
+            if arg.lower().endswith('.obj')and Path(arg).resolve()==Path(removed[0]['path']).resolve():arg=str(newobj)
+            for key,target in targets.items():
+                if arg.lower().startswith(key):m.need(key not in seen,'Duplicate link output switch');seen[key]=str(target);arg=key+str(target);break
+            linked.append(arg)
+        actual=[Path(x).resolve()for x in linked if x.lower().endswith('.obj')];m.need(all(k in seen for k in('/out:','/pdb:','/implib:','/ltcgout:'))and len(actual)==len(set(actual))==113 and set(actual)=={Path(q['path']).resolve()for q in retained}|{newobj.resolve()},'Exactly112 original+one new GPUker, all link outputs isolated')
+        setup=subprocess.run('cmd.exe /d /s /c "call "D:/Program Files/VS2022/VC/Auxiliary/Build/vcvarsall.bat" x64 -vcvars_ver=14.36 >nul && set"',stdout=subprocess.PIPE,stderr=subprocess.PIPE,creationflags=subprocess.CREATE_NO_WINDOW);m.need(setup.returncode==0,'Original MSVC setup failed');env={k.upper():v for k,v in os.environ.items()};env.update((k.upper(),v)for k,v in(x.split('=',1)for x in setup.stdout.decode('mbcs').splitlines()if'='in x and not x.startswith('=')));m.need(env['VCTOOLSVERSION']=='14.36.32532','Original MSVC14.36 required')
+        for key in list(env):
+            if key.upper()in('CL','_CL_','NVCC_PREPEND_FLAGS','NVCC_APPEND_FLAGS'):env.pop(key)
+        link=Path(env['VCTOOLSINSTALLDIR'])/'bin/Hostx64/x64/link.exe';m.need('CUDA/v11.7'in str(nvcc).replace('\\','/')and cuargs.count('-ccbin')==1 and '14.36.32532'in cuargs[cuargs.index('-ccbin')+1]and Path(cuargs[cuargs.index('-ccbin')+1]).is_dir(),'Actual CUDA11.7/original MSVC ccbin required');before += [m.stat(nvcc),m.stat(link)]
+        libdirs=[S/'VS']+[Path(x.split(':',1)[1])if Path(x.split(':',1)[1]).is_absolute()else S/'VS'/x.split(':',1)[1]for x in linked if x.lower().startswith('/libpath:')]+[Path(x)for x in env.get('LIB','').split(';')if x]
+        for arg in linked:
+            if arg.lower().endswith('.lib')and not arg.startswith('/'):
+                options=[Path(arg)]if Path(arg).is_absolute()else[p/arg for p in libdirs];library=next((q for q in options if q.is_file()),None);m.need(library is not None,'Original resolved library missing: '+arg);before.append(m.stat(library))
+        m.need(all(m.stat(q['path'])==q for q in before),'Frozen dependencies changed before source generation');out.mkdir();intdir.mkdir(parents=True);files=[];headers=[]
+        with zipfile.ZipFile(archive)as z:
+            for info in z.infolist():
+                q=PurePosixPath(info.filename);m.need(not q.is_absolute()and '..'not in q.parts,'Unsafe archive member')
+                if info.is_dir()or len(q.parts)<3 or q.parts[:2]!=('src','source'):continue
+                m.need(q.suffix.lower()not in('.obj','.o','.pdb','.exe','.dll','.lib'),'Binary source member forbidden');dest=out/'frozen'/Path(*q.parts);dest.parent.mkdir(parents=True,exist_ok=True);data=private.encode('utf-8')if q.as_posix()=='src/source/JSphGpu_ker.cu'else z.read(info)
+                with dest.open('xb')as f:f.write(data)
+                m.need((one(data.decode('utf-8'),NEW,OLD).encode('utf-8')==z.read(info))if q.as_posix()=='src/source/JSphGpu_ker.cu'else data==z.read(info),'Private archive must differ at exactly one reversible TU block');v=m.stat(dest);files.append(v)
+                if q.suffix.lower()in('.h','.cuh'):headers.append(v)
+        m.need(len(headers)==160 and all((frozen/n).is_file()for n in('JSphGpu.h','JSph.h','JSphGpu_ker.h','FunSoilMaterial.h','FunctionsBasic_iker.h','FunSphKernel_iker.h','JCellSearch_iker.h')),'Full current law2/CTE frozen160-header closure required');capture=out/'source_capture.json';m.save(capture,dict(stage=TAG+'.source_capture',passed=True,prepared_only=True,configuration=conf,operator='pair-C/bare',pair_C_bare_enabled=True,receiver_C_bare_enabled=False,compile_macro=None,source_archive=m.stat(archive),baseline_source_capture=b['source_capture'],changed_member='src/source/JSphGpu_ker.cu',changed_source_blocks=1,exact_reverse_original_kernel_bytes=True,all_other_members_byte_equal=True,private_kernel=m.stat(frozen/'JSphGpu_ker.cu'),frozen_headers=headers,frozen_sources=files,CPU_prerequisites=cpus,original_objects=113,retained_original_objects=112,new_kernel_objects=1,actual_link_objects=113,host_main_material_objects_replaced=False,public_source_changed=False,class_or_CTE_layout_changed=False,CUDA_arithmetic_flags_changed=False,actual_program_or_test_invocations=0));before+=files+[m.stat(capture)]
+        cudaenv=dict(env);oldpath=env.get('Path',env.get('PATH',''))
+        for key in list(cudaenv):
+            if key.upper()=='PATH':cudaenv.pop(key)
+        cudaenv['PATH']=str(Path(cuargs[cuargs.index('-ccbin')+1]))+os.pathsep+oldpath
+        m.need(all(isinstance(x,str)for x in[str(nvcc),*cuargs,str(link),*linked]),'Tool argv must be strings');calls.append(m.invoke(stages[0],[str(nvcc),*cuargs],intdir,cudaenv));calls.append(m.invoke(stages[1],[str(link),*linked],S/'VS',env));copied=[]
+        for q in runtime:
+            dest=out/Path(q['path']).name;m.need(not dest.exists(),'Protect existing runtime');shutil.copy2(q['path'],dest);v=m.stat(dest);m.need((v['bytes'],v['mtime_ns'])==(q['bytes'],q['mtime_ns'])and dest.read_bytes()==Path(q['path']).read_bytes(),'Original runtime copy differs');copied.append(v)
+        m.need(all(m.stat(q['path'])==q for q in before),'Original source/object/program/PRE changed during build');warnings=[line for c in calls for line in Path(m.read(c['path'])['log']['path']).read_bytes().decode('mbcs').splitlines()if re.search(r'\bwarning\b',line,re.I)]
+        m.save(check,dict(stage=label+'.build',passed=True,configuration=conf,operator='pair-C/bare',pair_C_bare_enabled=True,receiver_C_bare_enabled=False,program=m.stat(program),source_capture=m.stat(capture),source_archive=m.stat(archive),baseline_source_capture=b['source_capture'],private_physical_source=m.stat(frozen/'JSphGpu_ker.cu'),private_physical_object=m.stat(newobj),CPU_prerequisites=cpus,original_baseline_build=m.stat(bp),original_actual_build_call=b['actual_call'],adopted_original_inventory=m.stat(invpath),original_inventory_is_post_build_seal=True,original_link_membership_exact=True,original_objects=113,retained_original_objects=112,private_objects=1,actual_link_objects=113,original_GPUker_object=removed[0],retained_object_stats=retained,new_private_objects=[m.stat(newobj)],actual_link_inputs=[str(q)for q in actual],original_CUDA_recipe_log=log,original_link_recipe=lt,original_host_recipe_retained=ct,changed_Darcy_terms=['LP','Lx'],unchanged_expression_terms=['Gp','Da','gradJ','chain','FS','wall','force','material'],exact_reversible_private_weight_block=True,compile_macro=None,original_sm86_fast_math_retained=True,CUDA_arithmetic_flags_changed=False,host_compiles=0,CUDA_compiles=1,link_invocations=1,tool_invocations=2,source_files=files,frozen_headers=headers,runtime=copied,IntDir=str(intdir),OutDir=str(out),calls=calls,link_output_flags=seen,warning_lines=warnings,new_warning_free_claimed=False,consumed=before,consumed_stats_unchanged=True,protected_canonical_programs=canonical,public_source_changed=False,class_or_CTE_layout_changed=False,full_project_builds=0,solver_invocations=0,program_invocations=0,help_invocations=0,memcheck_invocations=0,native_decodes=0,VTK_invocations=0,GPU_numerical_regression_completed=False,physical_acceptance=False,SHA_scans=0))
+    except Exception as e:
+        if not check.exists():m.save(check,dict(stage=label+'.build',passed=False,configuration=conf,operator='pair-C/bare',first_failure=str(e),calls=calls,consumed=before,partial_outputs_preserved=True,solver_invocations=0,program_invocations=0,native_decodes=0,physical_acceptance=False,SHA_scans=0))
+        raise
+if __name__=='__main__':
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--execution-authorized',action='store_true');a=p.parse_args();m.need(a.execution_authorized,'Independent root single-Release build-only admission required');build()
