@@ -1,0 +1,26 @@
+--- actual_opt/JSphGpu_mdbc.cpp
++++ host_failure_capture/JSphGpu_mdbc.cpp
+@@ -23,6 +23,7 @@
+ #include "FunctionsCuda.h"
+ #include "JArraysGpu.h"
+ #include "JSphMk.h"
++#include "c08_h18_hg_wall_host_capture_r1.hpp"
+ #include <cfloat>
+ #include <cmath>
+ #include <map>
+@@ -234,6 +235,15 @@
+       Check_CudaErroor("Failed reading rejected dynamic wall sample.");
+       Log->Printf("DynamicPoreWall rejected: stage=%u sorted_slot=%u native_id=%u step_start=%.17g step=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g)."
+         ,stage,invalid,id,TimeStep,unsigned(Nstep),posxy.x,posxy.y,posz,normal.x,normal.y,normal.z);
++      // Failure only: actual aborted-substage inputs, never rejected fitted registers.
++      c08wallhost::TryCapture(DirOut,
++        {Np,Npb,NpbOk,stage,invalid,static_cast<unsigned long long>(Nstep),TimeStep,DivData,
++         unsigned(TKernel),unsigned(MGDIV_Z),DomCellCode,unsigned(Simulate2D),unsigned(PeriActive),unsigned(SlipMode),
++         DomPosMin.x,DomPosMin.y,DomPosMin.z,Dp,
++         MdbcThreshold,float(MassFluid),RhopZero,KernelH,KernelSize2,PosCellSize,Scell,KWend.awen,KWend.bwen,
++         Gravity.x,Gravity.y,Gravity.z,SoilCte.Porosity,SoilCte.PoreWaterRho,1.-double(SoilCte.Porosity),
++         SigmaPreg!=NULL,PorePressPreg!=NULL,PoroJPreg!=NULL},
++        {Idpg,Codeg,Posxyg,Poszg,PosCellg,Dcellg,PoroJg,CorrMatg,BoundNormalg,BoundModeg});
+       Run_Exceptioon("GPU dynamic wall requires a finite saturated first-order mirror fit at every active sample.");
+     }
+   }
