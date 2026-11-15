@@ -1,0 +1,49 @@
+--- D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\support\c08_h18_hg_numeric_r1.hpp
++++ D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\outputs\c08_h18_hg_gpu_forcecheck_r1_build\c08_h18_hg_gpu_forcecheck_r1_core.hpp
+@@ -12,7 +12,7 @@
+ #include <string>
+ #include <vector>
+ 
+-namespace c08num {
++namespace c08gpucheck {
+ struct Config {double h=0,support=0,bwen=0,G=0,xi=0,dt=0;unsigned firstid=0,count=0;};
+ struct Input {unsigned id=0;double x=0,z=0,vx=0,vz=0,volume=0,mass=0,gamma=0;};
+ struct Force {unsigned id=0;double x=0,z=0,error_x=0,error_z=0;};
+@@ -127,12 +127,13 @@
+         const B radius=Sqrt(rr),s=B(1)-radius/(B(2)*h);Need(s.v>0,"HG nonpositive numerical Wendland interior weight");if constexpr(Checked)Need(Lo(s)>0,"HG positive Wendland interior weight not certified");
+         const B w=-(B(c.bwen)/h)*s*s*s,beta=B(c.xi)*B(c.G)*g.volume[i]*g.volume[j]*w,D=beta/B(2);
+         Need(w.v>0&&D.v>0,"HG numerical weight/energy factor not positive");if constexpr(Checked)Need(Lo(w)>0&&Lo(D)>0,"HG current positive weight/energy factor not certified");
+-        g.rows.push_back({i,j,d,g.volume[j]*w,D,radius,w});g.rows.push_back({j,i,-d,g.volume[i]*w,D,radius,w});
++        g.rows.push_back({i,j,d,g.volume[j]*w,D,radius,w});g.rows.push_back({j,i,g.x[j]-g.x[i],g.volume[i]*w,D,radius,w});
+         degree[i]=degree[i]+beta;degree[j]=degree[j]+beta;g.pairs++;
+         if(radius.v<g.minr){g.minr=radius.v;g.minrError=radius.e;}g.Dmin=(std::min)(g.Dmin,D.v);g.Dmax=(std::max)(g.Dmax,D.v);
+       }
+   }
+   Need(g.pairs>0&&g.rows.size()==2*g.pairs,"HG empty/invalid actual directed graph");
++  std::sort(g.rows.begin(),g.rows.end(),[](const Row& a,const Row& b){return a.i<b.i||(a.i==b.i&&a.j<b.j);});
+   for(const auto& r:g.rows){auto& m=g.moment[r.i];m.xx=m.xx+r.a*r.d.x*r.d.x;m.xz=m.xz+r.a*r.d.x*r.d.z;m.zz=m.zz+r.a*r.d.z*r.d.z;}
+   for(unsigned i=0;i<n;i++){auto& m=g.moment[i];m.det=m.xx*m.zz-m.xz*m.xz;
+     const double tr=m.xx.v+m.zz.v,hi=.5*(tr+std::hypot(m.xx.v-m.zz.v,2*m.xz.v)),lo=m.det.v/hi;
+@@ -150,10 +151,12 @@
+   for(size_t i=0;i<n;i++)f.L[i]=RightInverse(numerator[i],g.moment[i]);
+   for(const auto& r:g.rows)f.residual.push_back(g.v[r.i]-g.v[r.j]-Mul(f.L[r.i],r.d));return f;}
+ static std::vector<V> ApplyPT(const Graph& g,const std::vector<V>& y){
+-  Need(y.size()==g.rows.size(),"HG adjoint input extent differs");const size_t n=g.x.size();std::vector<M> z(n),t(n);std::vector<V> out(n);
++  Need(y.size()==g.rows.size(),"HG adjoint input extent differs");const size_t n=g.x.size();std::vector<M> z(n),t(n);std::vector<V> out(n),q(g.rows.size());std::vector<size_t> begin(n+1,0);
++  for(const auto& r:g.rows)begin[r.i+1]++;for(size_t i=0;i<n;i++)begin[i+1]+=begin[i];
+   for(size_t k=0;k<g.rows.size();k++){const auto& r=g.rows[k];z[r.i]=z[r.i]+Outer(y[k],r.d);}
+   for(size_t i=0;i<n;i++)t[i]=RightInverse(z[i],g.moment[i]);
+-  for(size_t k=0;k<g.rows.size();k++){const auto& r=g.rows[k];const V q=y[k]-r.a*Mul(t[r.i],r.d);out[r.i]=out[r.i]+q;out[r.j]=out[r.j]-q;}return out;
++  for(size_t k=0;k<g.rows.size();k++){const auto& r=g.rows[k];q[k]=y[k]-r.a*Mul(t[r.i],r.d);}
++  for(size_t i=0;i<n;i++){V force;for(size_t k=begin[i];k<begin[i+1];k++){const auto& r=g.rows[k];auto at=std::lower_bound(g.rows.begin()+begin[r.j],g.rows.begin()+begin[r.j+1],unsigned(i),[](const Row& row,unsigned j){return row.j<j;});Need(at!=g.rows.begin()+begin[r.j+1]&&at->j==i,"HG reference graph lacks true reverse row");const size_t rev=size_t(at-g.rows.begin());force=force-q[k]+q[rev];}out[i]=-force;}return out;
+ }
+ static B ClipTime(B q,B t){const double v=(std::max)(0.,(std::min)(t.v,q.v));if constexpr(Checked){const double low=(std::max)(0.,(std::min)(Lo(t),Lo(q))),high=(std::max)(0.,(std::min)(Hi(t),Hi(q)));if(audit&&((Lo(q)<=0&&Hi(q)>=0)||(Lo(q)<=Hi(t)&&Hi(q)>=Lo(t))))audit->events++;return B(v,Up((std::max)({0.,v-low,high-v})));}else return B(v);}
+ struct Step {V h,I;B A,Z,t1,t2,de,work,loss,total;unsigned branch=0;};
+@@ -302,6 +305,6 @@
+   if constexpr(Checked)C::Close(delta,"standalone repeated split-spin energy");
+   SpinResult out;out.e={next.x.v,next.z.v,next.x.e,next.z.e};out.energy_old=e0.v;out.energy_new=e1.v;out.energy_delta=delta.v;out.energy_delta_bound=delta.e;out.certificates=arithmetic.checks;out.max_error_ratio=arithmetic.maxratio;out.branch=middle.branch;out.audited_enclosures=Checked;return out;
+ }
+-} // namespace c08num
++} // namespace c08gpucheck
+ #endif
+ 

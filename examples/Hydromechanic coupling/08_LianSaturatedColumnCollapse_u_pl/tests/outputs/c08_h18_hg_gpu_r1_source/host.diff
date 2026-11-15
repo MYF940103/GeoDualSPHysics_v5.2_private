@@ -1,0 +1,121 @@
+--- schema2/JSphGpuSingle.cpp
++++ private/JSphGpuSingle.cpp
+@@ -19,6 +19,27 @@
+ /// \file JSphGpuSingle.cpp \brief Implements the class \ref JSphGpuSingle.
+ 
+ #include "JSphGpuSingle.h"
++
++#include "c08_h18_hg_gpu_r1.hpp"
++#include "JDsFixedDt.h"
++#include <cstdlib>
++#include <memory>
++#include <stdexcept>
++namespace {
++  // Nonowning only: the Run-local scope destroys all CUDA resources before base reset.
++  c08hg::State* C08HgState=NULL;
++  struct C08HgRunScope{
++    std::unique_ptr<c08hg::State> state;
++    C08HgRunScope(){
++      const char* e=std::getenv(c08hg::Environment());
++      if(!e)return;
++      if(std::string(e)!="1")throw std::runtime_error("Private C08 HG requires absent env or exact C08_HG_H18=1.");
++      if(C08HgState)throw std::runtime_error("Private C08 HG does not allow nested/concurrent owners.");
++      state.reset(new c08hg::State);C08HgState=state.get();
++    }
++    ~C08HgRunScope(){C08HgState=NULL;}
++  };
++}
+ #include "JGravityPreloadState.h"
+ #include "JSphHourglassGpu.h"
+ #include "JCellDivGpuSingle.h"
+@@ -684,6 +705,38 @@
+   //-For 2D simulations always overrides the 2nd component (Y axis).
+   //-Para simulaciones 2D anula siempre la 2nd componente.
+   if(Simulate2D)cusph::Resety(Np-Npb,Npb,Aceg);
++
++  if(C08HgState){
++    if(!GravityPreloadReleased || !GravityPreload || !IsGravityPreloadHandoff() || GravityPreloadElasticSource
++      || GravityPreloadKeepBedOverlap || !GravityPreloadBedIds.empty() || GravityPreloadActualStep!=2000000
++      || GravityPreloadIdBegin!=1805 || GravityPreloadIdCount!=255 || Np!=6805 || Npb!=1805 || NpbOk>Npb
++      || CaseNp!=7060 || CaseNpb!=2060 || CaseNfixed!=2060 || CaseNfluid!=5000 || PartBegin
++      || CaseNmoving || CaseNfloat || InOut || Symmetry || PeriActive || Shifting || Damping || RelaxZones || UseDEM || AccInput
++      || !UseDynamicPorePlaneContact() || !NoPenetration || TMdbc2!=MDBC2_NoPen || TBoundary!=BC_MDBC || !UseNormals
++      || !HydroMech || !HydroMechDynamicSeepage || !PorosityFeedback || !DynamicPorePressure || !DynamicPoreWall
++      || !DynamicPoreConductivity || HydroMechConductivityModel!=1 || DynamicPoreConductivityCk!=2.
++      || !Simulate2D || TKernel!=KERNEL_Wendland || TStep!=STEP_Symplectic || Dp!=.04 || KernelH!=.072f
++      || !FixedDt || !FixedDt->GetFile().empty() || FixedDt->GetFixedValue()!=.000005 || SymplecticDtPre!=.000005
++      || (interstep!=INTERSTEP_SymPredictor && interstep!=INTERSTEP_SymCorrector)
++      || !PoroJg || !Aceg || HourglassGpu || SoilHourglassXi || SoilDamping || PoreShepardRegularization || SoilBoundaryDerivativeSPR
++      || !ArtificialStress || ArtificialStressCoef!=.3f || ArtificialStressExp!=2.55f || TVisco!=VISCO_Artificial || Visco!=.1f || ViscoTime
++      || TDensity!=DDT_None || !SoilStressRateGradCorr || !HydroMechFreeSeepage || HydroMechDrainage
++      || HydroMechTopLoadMode!=HMLOAD_None || RhopZero!=2072.5f || SoilCte.PoreWaterRho!=1000.f
++      || SoilCte.PoreWaterBulkModulus!=1e9f || SoilCte.Porosity!=.35f || SoilCte.HydraulicConductivity!=.0002f
++      || SoilCte.ModulusE!=20e6f || SoilCte.PRvs!=.33f || DPCtes!=DP_PS || !StrainSoftening
++      || SoilCte.dlt!=0.f || SoilCte.psiDecay!=0.f || SoilCte.coh!=5000.f || SoilCte.coh_r!=1000.f || SoilCte.n_coh!=5.f
++      || SoilCte.n_phi!=0.f || SoilCte.phi!=SoilCte.phi_r || Gravity.x!=0 || Gravity.y!=0 || Gravity.z!=-9.81f)
++      Run_Exceptioon("Private H1.8 energy-normalized plastic HG requires unchanged schema2 psi0 Wendland/AS.3n2.55/5us/bedroles released target.");
++    const bool corrector=(interstep==INTERSTEP_SymCorrector);
++    if((corrector && (!SigmaPreg || !VelrhopPreg || !PoroJPreg)) || (!corrector && (SigmaPreg || PoroJPreg)))
++      Run_Exceptioon("Private HG predictor/corrector base pointers do not match genuine stage.");
++    const c08hg::Config hc={double(MassFluid)/double(RhopZero),double(RhopZero),double(SoilCte.PoreWaterRho),
++      1.-double(SoilCte.Porosity),KernelH,CSP.kwend.bwen,SoilCte.ModulusG};
++    const c08hg::Material hm={SoilCte,DPCtes,StrainSoftening,bool(PartBegin && StrainSoftening),RequireElasticGravityPreload()};
++    const c08hg::Stage hs={Np,Npb,unsigned(Nstep),TimeStep,SymplecticDtPre,corrector,DivData,Dcellg,Idpg,Codeg,
++      Posxyg,Poszg,Velrhopg,PoroJg,(corrector? SigmaPreg: Sigmag),Rsigmag,Kplasticg,Aceg};
++    C08HgState->StageForce(hc,hm,hs);
++  }
+   if(DynamicPorePressure)ComputeDynamicPorePressureRateGpu(dynamicridpg);
+ 
+   //-Computes Tau for Laminar+SPS.
+@@ -811,9 +864,11 @@
+   //-----------
+   DemDtForce=dt*0.5f;                          //(DEM)
+   Interaction_Forces(INTERSTEP_SymPredictor);  //-Interaction.
+-  const double ddt_p=DtVariable(false);        //-Calculate dt of predictor step.
++  const double ddt_p=DtVariable(false);
++  if(C08HgState && ddt_p!=c08hg::StepDt)Run_Exceptioon("Private HG predictor actual selected dt differs from fixed 5us.");        //-Calculate dt of predictor step.
+   if(Shifting)RunShifting(dt*.5);              //-Shifting.
+-  ComputeSymplecticPre(dt);                    //-Apply Symplectic-Predictor to particles (periodic particles become invalid).
++  ComputeSymplecticPre(dt);
++  if(C08HgState)C08HgState->CheckMaterial(Np,Npb,Idpg,Codeg,Sigmag,Kplasticg,false);                    //-Apply Symplectic-Predictor to particles (periodic particles become invalid).
+   if(HourglassGpu)HourglassGpu->PredictorUpdate(dt);
+   if(CaseNfloat)RunFloating(dt*.5,true);       //-Control of floating bodies.
+   PosInteraction_Forces();                     //-Free memory used for interaction.
+@@ -822,9 +877,11 @@
+   DemDtForce=dt;                               //(DEM)
+   RunCellDivide(true);
+   Interaction_Forces(INTERSTEP_SymCorrector);  //-Interaction.
+-  const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
++  const double ddt_c=DtVariable(true);
++  if(C08HgState && ddt_c!=c08hg::StepDt)Run_Exceptioon("Private HG corrector actual selected dt differs from fixed 5us.");         //-Calculate dt of corrector step.
+   if(Shifting)RunShifting(dt);                 //-Shifting.
+-  ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
++  ComputeSymplecticCorr(dt);
++  if(C08HgState)C08HgState->CheckMaterial(Np,Npb,Idpg,Codeg,Sigmag,Kplasticg,true);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
+   if(HourglassGpu)HourglassGpu->CorrectorUpdate(Np,Npb,Idpg,Codeg,Posxyg,Poszg,Velrhopg,Kplasticg,dt,(PorosityFeedback? PoroJg: NULL));
+   if(CaseNfloat)RunFloating(dt,false);         //-Control of floating bodies.
+   PosInteraction_Forces();                     //-Free memory used for interaction.
+@@ -1179,6 +1236,7 @@
+ void JSphGpuSingle::Run(std::string appname,const JSphCfgRun *cfg,JLog2 *log){
+   if(!cfg || !log)return;
+   AppName=appname; Log=log; CfgRun=cfg;
++  C08HgRunScope c08_hg_run_scope;
+ 
+   //-Selection of GPU.
+   //-------------------
+@@ -1234,6 +1292,7 @@
+     else RunCellDivide(true);
+     TimeStep+=stepdt;
+     LastDt=stepdt;
++    if(C08HgState)C08HgState->Accept(Np,Npb,Idpg,Codeg,unsigned(Nstep+1),TimeStep,stepdt);
+     partoutstop=(Np<NpMinimum || !Np);
+     //-Retain the final native state even when TimeMax is between output events.
+     if(TimeStep>=TimePartNext || partoutstop || TimeStep>=TimeMax || (NstepsBreak && Nstep+1>=NstepsBreak)
+@@ -1357,6 +1416,7 @@
+     if(AuxHydroMechLoadAce)arrays.AddArray("HydroMechLoadAce",npsave,AuxHydroMechLoadAce);
+   }
+   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
++  if(C08HgState)C08HgState->Save(DirOut,unsigned(Nstep+1),TimeStep);
+   if(UseNormals && SvNormals)SaveVtkNormalsGpu("normals/Normals.vtk",Part,npsave,Npb,Posxyg,Poszg,Idpg,BoundNormalg);
+   //-Save extra data.
+   if(SvExtraDataBi4)SaveExtraData();

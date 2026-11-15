@@ -1,0 +1,107 @@
+{
+  "stage": "c08_h18_hg_gpu_r1.source",
+  "passed": true,
+  "prepared_only": true,
+  "operator": "EnergyNormalizedAdjointLoadingOnly",
+  "policy_schema": 1,
+  "default_OFF_env_absent": true,
+  "explicit_ON_env": "C08_HG_H18=1",
+  "xi": 0.1,
+  "source_archive": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_source_r1\\full_source.zip",
+    "bytes": 1082321,
+    "mtime_ns": 1794222843308768900
+  },
+  "baseline_source_capture": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_source_r1\\full_source.json",
+    "bytes": 48353,
+    "mtime_ns": 1794222843364623500
+  },
+  "private_sources": {
+    "host": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_gpu_r1_source\\JSphGpuSingle.cpp",
+      "bytes": 77376,
+      "mtime_ns": 1794717033892981200
+    },
+    "CUDA": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_gpu_r1_source\\c08_h18_hg_gpu_r1.cu",
+      "bytes": 42277,
+      "mtime_ns": 1794717033896981400
+    },
+    "header": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_gpu_r1_source\\c08_h18_hg_gpu_r1.hpp",
+      "bytes": 2642,
+      "mtime_ns": 1794717033900981400
+    }
+  },
+  "host_diff": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_gpu_r1_source\\host.diff",
+    "bytes": 8027,
+    "mtime_ns": 1794717033904996400
+  },
+  "exact_reverse_original_host_bytes": true,
+  "exact_insertions": [
+    {
+      "label": "private API/nonowning Run scope",
+      "original_anchor": "#include \"JSphGpuSingle.h\"\r\n",
+      "replacement": "#include \"JSphGpuSingle.h\"\r\n\r\n#include \"c08_h18_hg_gpu_r1.hpp\"\r\n#include \"JDsFixedDt.h\"\r\n#include <cstdlib>\r\n#include <memory>\r\n#include <stdexcept>\r\nnamespace {\r\n  // Nonowning only: the Run-local scope destroys all CUDA resources before base reset.\r\n  c08hg::State* C08HgState=NULL;\r\n  struct C08HgRunScope{\r\n    std::unique_ptr<c08hg::State> state;\r\n    C08HgRunScope(){\r\n      const char* e=std::getenv(c08hg::Environment());\r\n      if(!e)return;\r\n      if(std::string(e)!=\"1\")throw std::runtime_error(\"Private C08 HG requires absent env or exact C08_HG_H18=1.\");\r\n      if(C08HgState)throw std::runtime_error(\"Private C08 HG does not allow nested/concurrent owners.\");\r\n      state.reset(new c08hg::State);C08HgState=state.get();\r\n    }\r\n    ~C08HgRunScope(){C08HgState=NULL;}\r\n  };\r\n}\r\n",
+      "matches": 1
+    },
+    {
+      "label": "Run resource lifetime",
+      "original_anchor": "  AppName=appname; Log=log; CfgRun=cfg;",
+      "replacement": "  AppName=appname; Log=log; CfgRun=cfg;\r\n  C08HgRunScope c08_hg_run_scope;",
+      "matches": 1
+    },
+    {
+      "label": "same-stage force before sole original Darcy",
+      "original_anchor": "  if(DynamicPorePressure)ComputeDynamicPorePressureRateGpu(dynamicridpg);",
+      "replacement": "\r\n  if(C08HgState){\r\n    if(!GravityPreloadReleased || !GravityPreload || !IsGravityPreloadHandoff() || GravityPreloadElasticSource\r\n      || GravityPreloadKeepBedOverlap || !GravityPreloadBedIds.empty() || GravityPreloadActualStep!=2000000\r\n      || GravityPreloadIdBegin!=1805 || GravityPreloadIdCount!=255 || Np!=6805 || Npb!=1805 || NpbOk>Npb\r\n      || CaseNp!=7060 || CaseNpb!=2060 || CaseNfixed!=2060 || CaseNfluid!=5000 || PartBegin\r\n      || CaseNmoving || CaseNfloat || InOut || Symmetry || PeriActive || Shifting || Damping || RelaxZones || UseDEM || AccInput\r\n      || !UseDynamicPorePlaneContact() || !NoPenetration || TMdbc2!=MDBC2_NoPen || TBoundary!=BC_MDBC || !UseNormals\r\n      || !HydroMech || !HydroMechDynamicSeepage || !PorosityFeedback || !DynamicPorePressure || !DynamicPoreWall\r\n      || !DynamicPoreConductivity || HydroMechConductivityModel!=1 || DynamicPoreConductivityCk!=2.\r\n      || !Simulate2D || TKernel!=KERNEL_Wendland || TStep!=STEP_Symplectic || Dp!=.04 || KernelH!=.072f\r\n      || !FixedDt || !FixedDt->GetFile().empty() || FixedDt->GetFixedValue()!=.000005 || SymplecticDtPre!=.000005\r\n      || (interstep!=INTERSTEP_SymPredictor && interstep!=INTERSTEP_SymCorrector)\r\n      || !PoroJg || !Aceg || HourglassGpu || SoilHourglassXi || SoilDamping || PoreShepardRegularization || SoilBoundaryDerivativeSPR\r\n      || !ArtificialStress || ArtificialStressCoef!=.3f || ArtificialStressExp!=2.55f || TVisco!=VISCO_Artificial || Visco!=.1f || ViscoTime\r\n      || TDensity!=DDT_None || !SoilStressRateGradCorr || !HydroMechFreeSeepage || HydroMechDrainage\r\n      || HydroMechTopLoadMode!=HMLOAD_None || RhopZero!=2072.5f || SoilCte.PoreWaterRho!=1000.f\r\n      || SoilCte.PoreWaterBulkModulus!=1e9f || SoilCte.Porosity!=.35f || SoilCte.HydraulicConductivity!=.0002f\r\n      || SoilCte.ModulusE!=20e6f || SoilCte.PRvs!=.33f || DPCtes!=DP_PS || !StrainSoftening\r\n      || SoilCte.dlt!=0.f || SoilCte.psiDecay!=0.f || SoilCte.coh!=5000.f || SoilCte.coh_r!=1000.f || SoilCte.n_coh!=5.f\r\n      || SoilCte.n_phi!=0.f || SoilCte.phi!=SoilCte.phi_r || Gravity.x!=0 || Gravity.y!=0 || Gravity.z!=-9.81f)\r\n      Run_Exceptioon(\"Private H1.8 energy-normalized plastic HG requires unchanged schema2 psi0 Wendland/AS.3n2.55/5us/bedroles released target.\");\r\n    const bool corrector=(interstep==INTERSTEP_SymCorrector);\r\n    if((corrector && (!SigmaPreg || !VelrhopPreg || !PoroJPreg)) || (!corrector && (SigmaPreg || PoroJPreg)))\r\n      Run_Exceptioon(\"Private HG predictor/corrector base pointers do not match genuine stage.\");\r\n    const c08hg::Config hc={double(MassFluid)/double(RhopZero),double(RhopZero),double(SoilCte.PoreWaterRho),\r\n      1.-double(SoilCte.Porosity),KernelH,CSP.kwend.bwen,SoilCte.ModulusG};\r\n    const c08hg::Material hm={SoilCte,DPCtes,StrainSoftening,bool(PartBegin && StrainSoftening),RequireElasticGravityPreload()};\r\n    const c08hg::Stage hs={Np,Npb,unsigned(Nstep),TimeStep,SymplecticDtPre,corrector,DivData,Dcellg,Idpg,Codeg,\r\n      Posxyg,Poszg,Velrhopg,PoroJg,(corrector? SigmaPreg: Sigmag),Rsigmag,Kplasticg,Aceg};\r\n    C08HgState->StageForce(hc,hm,hs);\r\n  }\r\n  if(DynamicPorePressure)ComputeDynamicPorePressureRateGpu(dynamicridpg);",
+      "matches": 1
+    },
+    {
+      "label": "selected predictor fixed dt",
+      "original_anchor": "  const double ddt_p=DtVariable(false);",
+      "replacement": "  const double ddt_p=DtVariable(false);\r\n  if(C08HgState && ddt_p!=c08hg::StepDt)Run_Exceptioon(\"Private HG predictor actual selected dt differs from fixed 5us.\");",
+      "matches": 1
+    },
+    {
+      "label": "selected corrector fixed dt",
+      "original_anchor": "  const double ddt_c=DtVariable(true);",
+      "replacement": "  const double ddt_c=DtVariable(true);\r\n  if(C08HgState && ddt_c!=c08hg::StepDt)Run_Exceptioon(\"Private HG corrector actual selected dt differs from fixed 5us.\");",
+      "matches": 1
+    },
+    {
+      "label": "real predictor material check",
+      "original_anchor": "  ComputeSymplecticPre(dt);",
+      "replacement": "  ComputeSymplecticPre(dt);\r\n  if(C08HgState)C08HgState->CheckMaterial(Np,Npb,Idpg,Codeg,Sigmag,Kplasticg,false);",
+      "matches": 1
+    },
+    {
+      "label": "real corrector material check",
+      "original_anchor": "  ComputeSymplecticCorr(dt);",
+      "replacement": "  ComputeSymplecticCorr(dt);\r\n  if(C08HgState)C08HgState->CheckMaterial(Np,Npb,Idpg,Codeg,Sigmag,Kplasticg,true);",
+      "matches": 1
+    },
+    {
+      "label": "accepted full history after actual divide/scalar clock",
+      "original_anchor": "    TimeStep+=stepdt;\r\n    LastDt=stepdt;",
+      "replacement": "    TimeStep+=stepdt;\r\n    LastDt=stepdt;\r\n    if(C08HgState)C08HgState->Accept(Np,Npb,Idpg,Codeg,unsigned(Nstep+1),TimeStep,stepdt);",
+      "matches": 1
+    },
+    {
+      "label": "sidecar only after actual native save",
+      "original_anchor": "  JSph::SaveData(npsave,arrays,1,vdom,&infoplus);",
+      "replacement": "  JSph::SaveData(npsave,arrays,1,vdom,&infoplus);\r\n  if(C08HgState)C08HgState->Save(DirOut,unsigned(Nstep+1),TimeStep);",
+      "matches": 1
+    }
+  ],
+  "original_CUDA_members_unchanged": true,
+  "public_source_changed": false,
+  "class_or_CTE_layout_changed": false,
+  "physical_objects_retained": 112,
+  "private_objects_required": 2,
+  "actual_link_objects_required": 114,
+  "neighbor_capacity": 128,
+  "physical_acceptance": false
+}

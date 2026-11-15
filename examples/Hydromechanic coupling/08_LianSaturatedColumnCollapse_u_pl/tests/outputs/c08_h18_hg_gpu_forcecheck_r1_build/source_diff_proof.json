@@ -1,0 +1,28 @@
+{
+  "namespace_tokens": 2,
+  "reverse_row": 1,
+  "canonical_row_sort": 1,
+  "PT_body": 1,
+  "inverse_original_all_bytes": true,
+  "old_PT": "static std::vector<V> ApplyPT(const Graph& g,const std::vector<V>& y){\n  Need(y.size()==g.rows.size(),\"HG adjoint input extent differs\");const size_t n=g.x.size();std::vector<M> z(n),t(n);std::vector<V> out(n);\n  for(size_t k=0;k<g.rows.size();k++){const auto& r=g.rows[k];z[r.i]=z[r.i]+Outer(y[k],r.d);}\n  for(size_t i=0;i<n;i++)t[i]=RightInverse(z[i],g.moment[i]);\n  for(size_t k=0;k<g.rows.size();k++){const auto& r=g.rows[k];const V q=y[k]-r.a*Mul(t[r.i],r.d);out[r.i]=out[r.i]+q;out[r.j]=out[r.j]-q;}return out;\n}\n",
+  "new_PT": "static std::vector<V> ApplyPT(const Graph& g,const std::vector<V>& y){\n  Need(y.size()==g.rows.size(),\"HG adjoint input extent differs\");const size_t n=g.x.size();std::vector<M> z(n),t(n);std::vector<V> out(n),q(g.rows.size());std::vector<size_t> begin(n+1,0);\n  for(const auto& r:g.rows)begin[r.i+1]++;for(size_t i=0;i<n;i++)begin[i+1]+=begin[i];\n  for(size_t k=0;k<g.rows.size();k++){const auto& r=g.rows[k];z[r.i]=z[r.i]+Outer(y[k],r.d);}\n  for(size_t i=0;i<n;i++)t[i]=RightInverse(z[i],g.moment[i]);\n  for(size_t k=0;k<g.rows.size();k++){const auto& r=g.rows[k];q[k]=y[k]-r.a*Mul(t[r.i],r.d);}\n  for(size_t i=0;i<n;i++){V force;for(size_t k=begin[i];k<begin[i+1];k++){const auto& r=g.rows[k];auto at=std::lower_bound(g.rows.begin()+begin[r.j],g.rows.begin()+begin[r.j+1],unsigned(i),[](const Row& row,unsigned j){return row.j<j;});Need(at!=g.rows.begin()+begin[r.j+1]&&at->j==i,\"HG reference graph lacks true reverse row\");const size_t rev=size_t(at-g.rows.begin());force=force-q[k]+q[rev];}out[i]=-force;}return out;\n}\n",
+  "inserted_sort": "  std::sort(g.rows.begin(),g.rows.end(),[](const Row& a,const Row& b){return a.i<b.i||(a.i==b.i&&a.j<b.j);});\n",
+  "old_reverse": "g.rows.push_back({j,i,-d,g.volume[i]*w,D,radius,w});",
+  "new_reverse": "g.rows.push_back({j,i,g.x[j]-g.x[i],g.volume[i]*w,D,radius,w});",
+  "original_header": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_h18_hg_numeric_r1.hpp",
+    "bytes": 30658,
+    "mtime_ns": 1794714902613901900
+  },
+  "generated_header": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_hg_gpu_forcecheck_r1_build\\c08_h18_hg_gpu_forcecheck_r1_core.hpp",
+    "bytes": 31294,
+    "mtime_ns": 1794717620901756500
+  },
+  "original_bytes": 30658,
+  "generated_bytes": 31294,
+  "value_change_scope": "directed row subtraction/order and receiver-gather PT only",
+  "Audit_arithmetic_LS_ExactStep_Rotate_State_other_bytes_preserved": true,
+  "degree_lambda_accumulation_original_order": true,
+  "physical_updates": 0
+}
