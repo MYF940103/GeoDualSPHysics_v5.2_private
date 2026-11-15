@@ -1,0 +1,39 @@
+# Four saved AS03 states: actual CPU force on pair6817/6866 r1
+
+Author-only three assets support/c08_h18_pair6817_force_r1.cpp, its _build.py and this note. No build/program/API/component/native/solver/VTK/PRE/Git/SHA has been executed or admitted by authoring. Root fully reads and separately admits build, then one component through its existing owned m.invoke helper. No new owner, watcher, notification, restart, half or trajectory is created. Old executed fixtures and public source are untouched.
+
+## Different pair and closed data, without another decode
+
+The new target is only6817/6866, not the former6767/6865 and4953/4954. Use the existing complete AS03 full301 typed export and its original full3seed, retaining the old reader/Restore/Map/Copy/Ledger/Roles/Unchanged/RAII/PairLiteral numeric code. New Parts38/60/83/87 have completed2076001/2120001/2166001/2174001. They are all inside the already proved90-record all22/time prefix shared with the .90s AS03 run, so no forced-final record90 is relabelled. Existing ledger, fixed roles/P0/κ, current H1.8/Wendland/AS.3n2.55/AV.1/5us/schema2/law2/keepfalse/retire255/input/clock guards remain.
+
+The independently passed saved shadow places these four actual pairs at1.244061/.703661/.324353/.270834dp, with both endpoints in the original raw-kernel support. Those are observations, not a new acceptance threshold. The actual CPU PairLiteral retains its positive-distance/support checks; any unexpected violation is a real failure to preserve, not an excuse to change the pair, time or support.
+
+Selected clocks are additionally copied as the original binary header plus four raw rows, preserving their original CRLF or LF bytes and signed diagnostics. The helper reads all301clock rows for identification, but copies no invented/recomputed time. It verifies actual saved step=completed−1, exact snapshot time/dt, signed dterror<=1e-14, nonempty interval and6805IDs. It does not rewrite the source clock file or construct n*dt.
+
+## Twelve fresh force evaluations and actual state
+
+Four states×baseline/ASoff/AVoff means exactly12 Interaction_Forces(SymCorrector), each including its actual dynamic Darcy evaluation. Before every variant the original full Restore/CellDivide/cell map/primary copy runs; the force freshly builds C/FS/dynamic mDBC ghosts and AS. There is no material return, filter, separate pressure cap, plane projection or position/J/velocity/time advance. All5000soil primaries and roles/ledger/TimeStep/Nstep remain checked. Fresh theta/FS/ghost/force arrays legitimately change and are not falsely called unchanged22arrays.
+
+PosInteraction_Forces cleanup stays inside the SwitchScope allocation flags, including exceptions; only then does RAII restore AS/AV. At actual force completion, capture real GravityPreload/GravityPreloadReleased/source-event step, ArtificialStress bool and tensor-array presence, coefficient/exponent and actual Visco. These observed flags must match the closed baseline/ASoff/AVoff state. Calls.csv does not infer the flags later from a mode label after restoration. Saved-vs-fresh FS changes and baseline-vs-variant FS changes are counted.
+
+DtVariable(false) is deliberately NOT called. Read-only audit of JSphCpu.cpp and JDsFixedDt.cpp showed that FixedDt->GetDt changes LastTimestepInput/LastDtInput/LastDtOutput and DtError even with final=false. Instead each completed force supplies actual AceMax/VelMax/ViscDtMax/ConductivitySpeed to the original necessary formulas: CFL*sqrt(h/AceMax), CFL*dynamic wave/visc scale, pore scale and k-gradient scale. Require the same finite positive minimum, current5us and DtMin within it; FixedDt->GetFixedValue is read only. Save all12bounds. This executes no integration or signed-dterror-cache update and is not a general coupled stability proof.
+
+## A bounded actual CPU control
+
+The old passed c08_h18_as03_pair_force_r1 fixture already contains first-stateP38 baseline5000soil rows under the same full301seed/native and original86objects. Builder and component read only its first5000rows, never scan the other55000rows or rerun the old12calls. They require baseline/P38/2076001, common real time and all5000unique IDs.
+
+Old output uses decimal17digits. Recover AceXYZ/rate via std::stof, theta via std::stod and freshFS via integer parsing; compare the recovered float/double values by bits to the new P38 baseline fields. This is30000common scalar checks, not a claim that a text CSV is a binary API record, nor native/GPU bit truth. Other three states have no asserted prior CPU0ULP control. A mismatch preserves actual first failure/partials; no rounding/field exclusions or retry are introduced.
+
+## Outputs and what they can establish
+
+Keep the original source literal math and units. Dynamic AS uses the actual CPU float Jacobi tensor of float(sigma_effective−pI), with rhop=1 and R in Pa; the force uses actual current-J volume/mixture inertia and raw kernel gradient. Pore/effective momentum is committed together; their separate direct rows remain double bookkeeping shadows. PairLiteral reconstructs source per-pair total/AS/AV float commits and records their cast and split residuals. It is not a callback observing the original GPU stage. P87actual direct AS and total+AS signs can then be compared offline with the passed NumPy shadow; agreement is a scientific result to observe, not an extra forced acceptance assertion.
+
+CSV coverage:60000all-soil actual Ace/rate/theta/FS and frozen-switch differences;24focus rows with real AS/C/σ/Rσ/NoPen scratch;12pair rows;60direct-term rows;12calls plus4original clock rows. Pair rows separate all-neighbor radial relative acceleration, saved-velocity curvature and their instantaneous CPU rddot. Direct positive radial acceleration tends to separate. The difference between all-neighbor and isolated-pair contributions contains other fluid neighbors, walls and accumulation roundoff; it does not uniquely identify a wall force. No per-donor patch/API or wall-policy intervention is added.
+
+ASoff also switches WabFac to Fac, whose floating multiplication path can change roundoff. Full force/RHS differences include legitimate freshly regenerated wall/pressure coupling and are counterfactual responses, not strict additive AS/AV source terms. Uniform gravity cancels in relative acceleration; no separate plane/contact work is executed. These saved completed GPU states are CPU snapshot inputs, not reconstructed actual GPU Pre/Cor history or proof of clustering causality.
+
+## Single private-entry build
+
+Builder adopts the passed old pair-force compiler/link recipe, original archived160headers, seven runtime companions and86 original DebugCPU physical objects. It derives the include root from the actual CL arguments, not from a nonexistent copied header folder. Link exactly86unchanged original objects plus one newly compiled entry=87; no Lstar/paired private JSphCpu object or main source is introduced. Only one CL and one link run if separately admitted; the builder never launches the component. Source/clock/control/program/runtime bindings use necessary size/mtime checks, with no hash sweep. Reverse-prefix proof keeps the entire old numeric typed/state lifecycle and PairLiteral text unchanged, apart from the explicit four-state diagnostic label/selection.
+
+Future root build: D:/anaconda3/python.exe -X utf8 -B tests/support/c08_h18_pair6817_force_r1_build.py --execution-authorized. Future component: C08H18Pair6817ForceR1.exe --check --native <existing AS03 full301 native_r1> -cpu -ompthreads:1 -stable -svres -mdbc_freeslip:1 <existing AS03 full3seed> <fresh tests/outputs/c08_h18_pair6817_force_r1>. Neither is executed here. Completed output/check does not admit a physical fix or another solver; any hard failure remains failed and preserved without automatic retry.
