@@ -1,0 +1,29 @@
+--- actual_psi0/JSphGpuSingle.cpp
++++ three_exact_groups/JSphGpuSingle.cpp
+@@ -703,6 +703,12 @@
+   if(Simulate2D)cusph::Resety(Np-Npb,Npb,Aceg);
+ 
+   if(c08cached::Current()){
++    // Private exact material admission only; the cached material law is unchanged.
++    // Match JSph::Read... float(TORAD*ReadElementFloat), including signed dilation.
++    const bool c08MaterialGroup=
++      (SoilCte.coh==5000.f && SoilCte.dlt==0.f && SoilCte.psiDecay==0.f)
++      || (SoilCte.coh==5000.f && SoilCte.dlt==float(TORAD*2.5f) && SoilCte.psiDecay==.2f)
++      || (SoilCte.coh==7500.f && SoilCte.dlt==float(TORAD*-5.f) && SoilCte.psiDecay==.2f);
+     if(!GravityPreloadReleased || !GravityPreload || !IsGravityPreloadHandoff() || GravityPreloadElasticSource
+       || GravityPreloadKeepBedOverlap || !GravityPreloadBedIds.empty() || GravityPreloadActualStep!=2000000
+       || GravityPreloadIdBegin!=1805 || GravityPreloadIdCount!=255 || Np!=6805 || Npb!=1805 || NpbOk>Npb
+@@ -720,9 +726,10 @@
+       || HydroMechTopLoadMode!=HMLOAD_None || RhopZero!=2072.5f || SoilCte.PoreWaterRho!=1000.f
+       || SoilCte.PoreWaterBulkModulus!=1e9f || SoilCte.Porosity!=.35f || SoilCte.HydraulicConductivity!=.0002f
+       || SoilCte.ModulusE!=20e6f || SoilCte.PRvs!=.33f || DPCtes!=DP_PS || !StrainSoftening
+-      || SoilCte.dlt!=0.f || SoilCte.psiDecay!=0.f || SoilCte.coh!=5000.f || SoilCte.coh_r!=1000.f || SoilCte.n_coh!=5.f
+-      || SoilCte.n_phi!=0.f || SoilCte.phi!=SoilCte.phi_r || Gravity.x!=0 || Gravity.y!=0 || Gravity.z!=-9.81f)
+-      Run_Exceptioon("Private H1.8 energy-normalized plastic HG requires unchanged schema2 psi0 Wendland/AS.3n2.55/5us/bedroles released target.");
++      || !c08MaterialGroup || SoilCte.coh_r!=1000.f || SoilCte.n_coh!=5.f || SoilCte.n_phi!=0.f
++      || SoilCte.phi!=float(TORAD*25.f) || SoilCte.phi_r!=float(TORAD*25.f)
++      || Gravity.x!=0 || Gravity.y!=0 || Gravity.z!=-9.81f)
++      Run_Exceptioon("Private H1.8 energy-normalized plastic HG requires one exact schema2 psi0/psi2p5/psim5 Wendland/AS.3n2.55/5us/bedroles released target.");
+     const bool corrector=(interstep==INTERSTEP_SymCorrector);
+     if((corrector && (!SigmaPreg || !VelrhopPreg || !PoroJPreg)) || (!corrector && (SigmaPreg || PoroJPreg)))
+       Run_Exceptioon("Private HG predictor/corrector base pointers do not match genuine stage.");
