@@ -1,0 +1,183 @@
+{
+  "stage": "upl_tpi_gpu_r1.source_diff",
+  "passed": true,
+  "replacements": [
+    {
+      "file": "JSphGpu.cpp",
+      "anchor": "host_implementation",
+      "count": 1,
+      "method_scope": null,
+      "before": "#include \"JSphGpu.h\"\n",
+      "after": "#include \"JSphGpu.h\"\n#define UPL_TPI_GPU_R1_IMPLEMENTATION\n#include \"upl_tpi_gpu_r1.h\"\n#undef UPL_TPI_GPU_R1_IMPLEMENTATION\n"
+    },
+    {
+      "file": "JSphGpu.cpp",
+      "anchor": "owner_free_before_reset",
+      "count": 1,
+      "method_scope": "JSphGpu::~JSphGpu(){",
+      "before": "  DestructorActive=true;\n",
+      "after": "  DestructorActive=true;\n  upl_tpi_gpu_r1::FreeOwner(UPL_TPI_GPU_OWNER); // No CUDA cleanup in static destruction.\n"
+    },
+    {
+      "file": "JSphHourglassGpu.h",
+      "anchor": "const_bulk_only_no_layout",
+      "count": 1,
+      "method_scope": null,
+      "before": "  tdouble3 GetRate(unsigned id)const;\n",
+      "after": "  tdouble3 GetRate(unsigned id)const;\n  const double2* GetHistoryDeviceReadonly()const{ return(Historyg); }\n  const double2* GetRateDeviceReadonly()const{ return(HistoryRateg); }\n"
+    },
+    {
+      "file": "JSphGpuSingle.cpp",
+      "anchor": "host_declarations",
+      "count": 1,
+      "method_scope": null,
+      "before": "#include \"JSphHourglassGpu.h\"\n",
+      "after": "#include \"JSphHourglassGpu.h\"\n#include \"JDsFixedDt.h\"\n#include \"upl_tpi_gpu_r1.h\"\n"
+    },
+    {
+      "file": "JSphGpuSingle.cpp",
+      "anchor": "bounded_init",
+      "count": 1,
+      "method_scope": null,
+      "before": "  InitRunGpu();\n  RunGaugeSystem(TimeStep,true);",
+      "after": "  InitRunGpu();\n\n  if(upl_tpi_gpu_r1::Enabled()){\n    upl_tpi_gpu_r1::Require(Simulate2D && TStep==STEP_Symplectic && CaseNp==1040 && CaseNfixed==40\n      && CaseNfluid==1000 && CaseNpb==40 && !CaseNmoving && !CaseNfloat && !NpDynamic && !InOut\n      && !Shifting && !Damping && !RelaxZones && !UseDEM && !Symmetry && !PartBegin && PartBeginDir.empty()\n      && TimeStep==0. && Nstep==0 && TimeMax>0. && TimeMax<=.15\n      && (!GaugeSystem || GaugeSystem->GetCount()==0),\"Private GPU P1 requires fresh bounded C02 owners/topology\");\n    upl_tpi_gpu_r1::Require(FixedDt && FixedDt->GetFixedValue()==6.2501430511474609e-6\n      && SymplecticDtPre==6.2501430511474609e-6 && HydroMech && HydroMechDynamicSeepage\n      && PorosityObserver && PorosityFeedback && DynamicPorePressure && DynamicPoreWall\n      && !DynamicPoreConductivity && !PoreShepardRegularization && SoilCte.Porosity==.3f\n      && SoilCte.PoreWaterBulkModulus==2e8 && SoilCte.HydraulicConductivity==.0001f\n      && SoilCte.PoreWaterRho==1000. && SoilCte.ModulusE==2e6f && SoilCte.PRvs==.3f && !StrainSoftening,\n      \"Private GPU P1 retains frozen constant-k elastic material and original necessary fixed-dt bounds\");\n    upl_tpi_gpu_r1::Require(TBoundary==BC_MDBC && SlipMode==SLIP_FreeSlip && !NoPenetration && PeriX && !PeriY && !PeriZ\n      && TKernel==KERNEL_Wendland && Dp==.01 && KernelH==float(.018) && HourglassGpu && SoilHourglassXi==.1\n      && SoilBoundaryDerivativeSPR && SoilStressRateGradCorr && !ArtificialStress && TVisco==VISCO_Artificial\n      && Visco==.1f && ViscoBoundFactor==1.f && !ViscoTime && SoilDamping && SoilDampingCoef==.04f\n      && TDensity==DDT_None && !DDTArray && Gravity.x==0. && Gravity.y==0. && Gravity.z==0.,\n      \"Private GPU P1 retains FreeSlip/SPR1/AV.1/HG.1/eta.04 and original kernel/periodic policy\");\n    upl_tpi_gpu_r1::Require(HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand\n      && HydroMechTopLoadQ0==10000.f && HydroMechTopLoadRampTime==.0100002288818359375\n      && HydroMechDrainage && HydroMechDrainageFixedGrid && HydroMechDrainageStartTime==.0100002288818359375,\n      \"Private GPU P1 retains actual source-clock ramp/drainage and normalized load\");\n    upl_tpi_gpu_r1::Init(UPL_TPI_GPU_OWNER,DirOut,UPL_TPI_GPU_VIEW,TimeStep,Nstep,SymplecticDtPre);\n    Log->Print(\"UplTpiGpuR1: private Symplectic TPI-neighbour prediction/single leading-LP M0 beta0 variant; not paper LF/implicit/second-order/restart acceptance.\");\n  }\n  RunGaugeSystem(TimeStep,true);"
+    },
+    {
+      "file": "JSphGpu.cpp",
+      "anchor": "history_predictor_only",
+      "count": 1,
+      "method_scope": null,
+      "before": "  if(HydroMech && PorePressg && PorePressPreg && PorePressRateg)\n    cusph::UpdatePorePressureSymplectic(Np,Npb,dt05,Codeg,PorePressPreg,PorePressRateg,PorePressg\n      ,DynamicPorePressure && IsHydroMechDrainageActive(),HydroMechTopLoadMode,PosxyPreg,FSTypeg);",
+      "after": "  if(upl_tpi_gpu_r1::Enabled())\n    upl_tpi_gpu_r1::Begin(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW,PorePressPreg,PosxyPreg,PorePressg,\n      TimeStep,Nstep,dt,IsHydroMechDrainageActive(),unsigned(HydroMechTopLoadMode));\n  else if(HydroMech && PorePressg && PorePressPreg && PorePressRateg)\n    cusph::UpdatePorePressureSymplectic(Np,Npb,dt05,Codeg,PorePressPreg,PorePressRateg,PorePressg\n      ,DynamicPorePressure && IsHydroMechDrainageActive(),HydroMechTopLoadMode,PosxyPreg,FSTypeg);"
+    },
+    {
+      "file": "JSphGpu.cpp",
+      "anchor": "actual_half_before_material_J",
+      "count": 1,
+      "method_scope": "void JSphGpu::ComputeSymplecticCorr(double dt){",
+      "before": "  Timersg->TmStart(TMG_SuComputeStep,false);",
+      "after": "  if(upl_tpi_gpu_r1::Enabled())upl_tpi_gpu_r1::Corr(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW);\n  Timersg->TmStart(TMG_SuComputeStep,false);"
+    },
+    {
+      "file": "JSphGpu.cpp",
+      "anchor": "original_single_J_capture",
+      "count": 1,
+      "method_scope": "void JSphGpu::ComputeSymplecticCorr(double dt){",
+      "before": "  ComputeSymplecticPorosity(true,dt);",
+      "after": "  ComputeSymplecticPorosity(true,dt);\n  if(upl_tpi_gpu_r1::Enabled())upl_tpi_gpu_r1::CaptureJ(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW);"
+    },
+    {
+      "file": "JSphGpu.cpp",
+      "anchor": "history_endpoint_guess_after_position",
+      "count": 1,
+      "method_scope": null,
+      "before": "  if(HydroMech && DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg)\n    cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg\n      ,IsHydroMechDrainageActive(),HydroMechTopLoadMode,Posxyg,FSTypeg);",
+      "after": "  if(upl_tpi_gpu_r1::Enabled())\n    upl_tpi_gpu_r1::Guess(UPL_TPI_GPU_VIEW,PorePressPreg,IsHydroMechDrainageActive(),unsigned(HydroMechTopLoadMode));\n  else if(HydroMech && DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg)\n    cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg\n      ,IsHydroMechDrainageActive(),HydroMechTopLoadMode,Posxyg,FSTypeg);"
+    },
+    {
+      "file": "JSphGpuSingle.cpp",
+      "anchor": "readonly_existing_HG_injection",
+      "count": 1,
+      "method_scope": "void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){",
+      "before": "  if(HourglassGpu){\n    if(interstep==INTERSTEP_SymPredictor)",
+      "after": "  if(HourglassGpu && upl_tpi_gpu_r1::Enabled() && upl_tpi_gpu_r1::EndpointActive())\n    upl_tpi_gpu_r1::AddReadonlyHG(UPL_TPI_GPU_VIEW,Aceg,HourglassGpu,MassFluid,RhopZero,SoilCte.PoreWaterRho);\n  else if(HourglassGpu){\n    if(interstep==INTERSTEP_SymPredictor)"
+    },
+    {
+      "file": "JSphGpuSingle.cpp",
+      "anchor": "endpoint_before_original_clock",
+      "count": 1,
+      "method_scope": null,
+      "before": "    else RunCellDivide(true);\n    TimeStep+=stepdt;",
+      "after": "    else RunCellDivide(true);\n    if(upl_tpi_gpu_r1::Enabled()){\n      bool scratch=false;\n      try{\n        upl_tpi_gpu_r1::StartEndpoint(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW,TimeStep,Nstep,stepdt,HourglassGpu);\n        scratch=true;Interaction_Forces(INTERSTEP_SymCorrector);\n        const double endpointdt=DtVariable(false);\n        upl_tpi_gpu_r1::Require(endpointdt==stepdt,\"Private GPU endpoint fixed dt changed\");\n        upl_tpi_gpu_r1::PrepareFinal(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW,HourglassGpu);\n        PosInteraction_Forces();scratch=false;\n        upl_tpi_gpu_r1::WriteFinal(UPL_TPI_GPU_VIEW);\n        ApplyPorePressureBoundaries();\n        upl_tpi_gpu_r1::Commit(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW,IsHydroMechDrainageActive(),unsigned(HydroMechTopLoadMode));\n      }catch(...){upl_tpi_gpu_r1::AbortEndpoint();if(scratch){try{PosInteraction_Forces();}catch(...){}}throw;}\n    }\n    TimeStep+=stepdt;"
+    },
+    {
+      "file": "JSphGpuSingle.cpp",
+      "anchor": "sidecar_after_actual_SaveData",
+      "count": 1,
+      "method_scope": null,
+      "before": "  JSph::SaveData(npsave,arrays,1,vdom,&infoplus);",
+      "after": "  JSph::SaveData(npsave,arrays,1,vdom,&infoplus);\n  if(upl_tpi_gpu_r1::Enabled())upl_tpi_gpu_r1::Saved(UPL_TPI_GPU_OWNER,Part,TimeStep,Nstep,UPL_TPI_GPU_VIEW);"
+    },
+    {
+      "file": "JSphGpuSingle.cpp",
+      "anchor": "summary_before_FinishRun",
+      "count": 1,
+      "method_scope": null,
+      "before": "  FinishRun(partoutstop);",
+      "after": "  if(upl_tpi_gpu_r1::Enabled())upl_tpi_gpu_r1::Finish(UPL_TPI_GPU_OWNER,Nstep,TimeStep);\n  FinishRun(partoutstop);"
+    },
+    {
+      "file": "JSphGpu_ker.cu",
+      "anchor": "private_kernel_declarations",
+      "count": 1,
+      "method_scope": null,
+      "before": "#include \"JSphGpu_ker.h\"\n",
+      "after": "#include \"JSphGpu_ker.h\"\n#include \"upl_tpi_gpu_r1.h\"\n"
+    },
+    {
+      "file": "JSphGpu_ker.cu",
+      "anchor": "single_template_spatial_body",
+      "count": 1,
+      "method_scope": null,
+      "before": "__global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb",
+      "after": "template<bool CaptureRows> __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb"
+    },
+    {
+      "file": "JSphGpu_ker.cu",
+      "anchor": "true_Dirichlet_row_before_return",
+      "count": 1,
+      "method_scope": "template<bool CaptureRows> __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb",
+      "before": "    if(drainfs && KerHydroMechIsDrainedParticle(p1,loadmode,posxy,code,fstype)){rate[p1]=0.f;return;}",
+      "after": "    if(drainfs && KerHydroMechIsDrainedParticle(p1,loadmode,posxy,code,fstype)){\n      if(CaptureRows)::upl_tpi_gpu_r1::CaptureRow(p1,true,0.,0.,theta[p1],porepress[p1]);\n      rate[p1]=0.f;return;}"
+    },
+    {
+      "file": "JSphGpu_ker.cu",
+      "anchor": "same_pair_diagonal_accumulator",
+      "count": 1,
+      "method_scope": "template<bool CaptureRows> __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb",
+      "before": "    double lp=0.,da=0.;",
+      "after": "    double lp=0.,da=0.;\n    double tpiSumWeights=0.;"
+    },
+    {
+      "file": "JSphGpu_ker.cu",
+      "anchor": "same_original_weight",
+      "count": 1,
+      "method_scope": "template<bool CaptureRows> __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb",
+      "before": "          lp+=w*dp;lx.x+=d.x*w;lx.y+=d.y*w;lx.z+=d.z*w;",
+      "after": "          if(CaptureRows)tpiSumWeights+=w;\n          lp+=w*dp;lx.x+=d.x*w;lx.y+=d.y*w;lx.z+=d.z*w;"
+    },
+    {
+      "file": "JSphGpu_ker.cu",
+      "anchor": "double_complete_R_before_legacy_float",
+      "count": 1,
+      "method_scope": "template<bool CaptureRows> __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb",
+      "before": "    rate[p1]=float(value); //-One complete overwrite, never add the compression source twice.",
+      "after": "    if(CaptureRows)::upl_tpi_gpu_r1::CaptureRow(p1,false,-__dmul_rn(khyd,tpiSumWeights),\n      __dadd_rn(-__dmul_rn(gamma,theta[p1]),__dmul_rn(khyd,lap)),theta[p1],porepress[p1]);\n    rate[p1]=float(value); //-Legacy scaled residual diagnostic, not the M0 dp/dt."
+    },
+    {
+      "file": "JSphGpu_ker.cu",
+      "anchor": "same_public_wrapper_false_or_endpoint_true",
+      "count": 1,
+      "method_scope": null,
+      "before": "    KerComputeDynamicPorePressureRate <<<sgrid,SPHBSIZE>>> (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,dcell\n      ,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,dvd.beginendcell,boundmode\n      ,fstype,fsnormal,drainfs,closedfs,unsigned(loadmode));",
+      "after": "    if(::upl_tpi_gpu_r1::CaptureEndpointHost()){\n    KerComputeDynamicPorePressureRate<true> <<<sgrid,SPHBSIZE>>> (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,dcell\n      ,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,dvd.beginendcell,boundmode\n      ,fstype,fsnormal,drainfs,closedfs,unsigned(loadmode));\n    }else{\n    KerComputeDynamicPorePressureRate<false> <<<sgrid,SPHBSIZE>>> (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,dcell\n      ,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,dvd.beginendcell,boundmode\n      ,fstype,fsnormal,drainfs,closedfs,unsigned(loadmode));\n    }"
+    },
+    {
+      "file": "JSphGpu_ker.cu",
+      "anchor": "private_definitions_after_original_namespaces",
+      "count": 1
+    }
+  ],
+  "unified_diff": "--- frozen_gpu/JSphGpu.cpp\n+++ private_P1/JSphGpu.cpp\n@@ -19,6 +19,9 @@\n /// \\file JSphGpu.cpp \\brief Implements the class \\ref JSphGpu.\n \n #include \"JSphGpu.h\"\n+#define UPL_TPI_GPU_R1_IMPLEMENTATION\n+#include \"upl_tpi_gpu_r1.h\"\n+#undef UPL_TPI_GPU_R1_IMPLEMENTATION\n #include \"JException.h\"\n #include \"JSphGpu_ker.h\"\n #include \"JSphGpuSimple_ker.h\"\n@@ -82,6 +85,7 @@\n //==============================================================================\n JSphGpu::~JSphGpu(){\n   DestructorActive=true;\n+  upl_tpi_gpu_r1::FreeOwner(UPL_TPI_GPU_OWNER); // No CUDA cleanup in static destruction.\n   //-Release gauge device buffers before destroying the CUDA context.\n   delete GaugeSystem; GaugeSystem=NULL;\n   FreeCpuMemoryParticles();\n@@ -1552,7 +1556,10 @@\n   //==== mdbr\n   swap(SigmaPreg,Sigmag);\n   if(HydroMech && PorePressPreg)swap(PorePressPreg,PorePressg);\n-  if(HydroMech && PorePressg && PorePressPreg && PorePressRateg)\n+  if(upl_tpi_gpu_r1::Enabled())\n+    upl_tpi_gpu_r1::Begin(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW,PorePressPreg,PosxyPreg,PorePressg,\n+      TimeStep,Nstep,dt,IsHydroMechDrainageActive(),unsigned(HydroMechTopLoadMode));\n+  else if(HydroMech && PorePressg && PorePressPreg && PorePressRateg)\n     cusph::UpdatePorePressureSymplectic(Np,Npb,dt05,Codeg,PorePressPreg,PorePressRateg,PorePressg\n       ,DynamicPorePressure && IsHydroMechDrainageActive(),HydroMechTopLoadMode,PosxyPreg,FSTypeg);\n   ComputeSymplecticPorosity(false,dt05);\n@@ -1585,6 +1592,7 @@\n /// Actualizacion de particulas segun fuerzas y dt usando Symplectic-Corrector.\n //==============================================================================\n void JSphGpu::ComputeSymplecticCorr(double dt){\n+  if(upl_tpi_gpu_r1::Enabled())upl_tpi_gpu_r1::Corr(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW);\n   Timersg->TmStart(TMG_SuComputeStep,false);\n   const bool shift=(ShiftingMode!=SHIFT_None);\n   const bool inout=(InOut!=NULL);\n@@ -1600,12 +1608,15 @@\n   if(HydroMech && !DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg)\n     cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg);\n   ComputeSymplecticPorosity(true,dt);\n+  if(upl_tpi_gpu_r1::Enabled())upl_tpi_gpu_r1::CaptureJ(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW);\n   //-Boundary conditions follow cell division, with matching geometry and neighbours.\n   //-Applies displacement to non-periodic fluid particles.\n   //-Aplica desplazamiento a las particulas fluid no periodicas.\n   cusph::ComputeStepPos2(PeriActive,WithFloating,Np,Npb,PosxyPreg,PoszPreg\n     ,movxyg,movzg,Posxyg,Poszg,Dcellg,Codeg);\n-  if(HydroMech && DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg)\n+  if(upl_tpi_gpu_r1::Enabled())\n+    upl_tpi_gpu_r1::Guess(UPL_TPI_GPU_VIEW,PorePressPreg,IsHydroMechDrainageActive(),unsigned(HydroMechTopLoadMode));\n+  else if(HydroMech && DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg)\n     cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg\n       ,IsHydroMechDrainageActive(),HydroMechTopLoadMode,Posxyg,FSTypeg);\n   //-Frees memory allocated for diplacement.\n\n--- frozen_gpu/JSphGpuSingle.cpp\n+++ private_P1/JSphGpuSingle.cpp\n@@ -20,6 +20,8 @@\n \n #include \"JSphGpuSingle.h\"\n #include \"JSphHourglassGpu.h\"\n+#include \"JDsFixedDt.h\"\n+#include \"upl_tpi_gpu_r1.h\"\n #include \"JCellDivGpuSingle.h\"\n #include \"JArraysGpu.h\"\n #include \"JSphMk.h\"\n@@ -744,7 +746,9 @@\n   cusph::Interaction_Forces(parms);\n   if(SoilDamping)cusph::AddSoilDamping(Np,Npb,Codeg,Velrhopg,Aceg,(DynamicPorePressure? GetDynamicSoilDampingRate(): 0.f));\n   NormalizeHydroMechTopBandLoad();\n-  if(HourglassGpu){\n+  if(HourglassGpu && upl_tpi_gpu_r1::Enabled() && upl_tpi_gpu_r1::EndpointActive())\n+    upl_tpi_gpu_r1::AddReadonlyHG(UPL_TPI_GPU_VIEW,Aceg,HourglassGpu,MassFluid,RhopZero,SoilCte.PoreWaterRho);\n+  else if(HourglassGpu){\n     if(interstep==INTERSTEP_SymPredictor)\n       HourglassGpu->PredictorForce(Np,Npb,Idpg,Codeg,Posxyg,Poszg,Velrhopg,Kplasticg,Aceg,SymplecticDtPre,(PorosityFeedback? PoroJg: NULL));\n     else HourglassGpu->CorrectorForce(Np,Npb,Idpg,Codeg,Aceg,(PorosityFeedback? PoroJg: NULL));\n@@ -1144,6 +1148,33 @@\n   //-Initialisation of execution variables. | Inicializacion de variables de ejecucion.\n   //------------------------------------------------------------------------------------\n   InitRunGpu();\n+\n+  if(upl_tpi_gpu_r1::Enabled()){\n+    upl_tpi_gpu_r1::Require(Simulate2D && TStep==STEP_Symplectic && CaseNp==1040 && CaseNfixed==40\n+      && CaseNfluid==1000 && CaseNpb==40 && !CaseNmoving && !CaseNfloat && !NpDynamic && !InOut\n+      && !Shifting && !Damping && !RelaxZones && !UseDEM && !Symmetry && !PartBegin && PartBeginDir.empty()\n+      && TimeStep==0. && Nstep==0 && TimeMax>0. && TimeMax<=.15\n+      && (!GaugeSystem || GaugeSystem->GetCount()==0),\"Private GPU P1 requires fresh bounded C02 owners/topology\");\n+    upl_tpi_gpu_r1::Require(FixedDt && FixedDt->GetFixedValue()==6.2501430511474609e-6\n+      && SymplecticDtPre==6.2501430511474609e-6 && HydroMech && HydroMechDynamicSeepage\n+      && PorosityObserver && PorosityFeedback && DynamicPorePressure && DynamicPoreWall\n+      && !DynamicPoreConductivity && !PoreShepardRegularization && SoilCte.Porosity==.3f\n+      && SoilCte.PoreWaterBulkModulus==2e8 && SoilCte.HydraulicConductivity==.0001f\n+      && SoilCte.PoreWaterRho==1000. && SoilCte.ModulusE==2e6f && SoilCte.PRvs==.3f && !StrainSoftening,\n+      \"Private GPU P1 retains frozen constant-k elastic material and original necessary fixed-dt bounds\");\n+    upl_tpi_gpu_r1::Require(TBoundary==BC_MDBC && SlipMode==SLIP_FreeSlip && !NoPenetration && PeriX && !PeriY && !PeriZ\n+      && TKernel==KERNEL_Wendland && Dp==.01 && KernelH==float(.018) && HourglassGpu && SoilHourglassXi==.1\n+      && SoilBoundaryDerivativeSPR && SoilStressRateGradCorr && !ArtificialStress && TVisco==VISCO_Artificial\n+      && Visco==.1f && ViscoBoundFactor==1.f && !ViscoTime && SoilDamping && SoilDampingCoef==.04f\n+      && TDensity==DDT_None && !DDTArray && Gravity.x==0. && Gravity.y==0. && Gravity.z==0.,\n+      \"Private GPU P1 retains FreeSlip/SPR1/AV.1/HG.1/eta.04 and original kernel/periodic policy\");\n+    upl_tpi_gpu_r1::Require(HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand\n+      && HydroMechTopLoadQ0==10000.f && HydroMechTopLoadRampTime==.0100002288818359375\n+      && HydroMechDrainage && HydroMechDrainageFixedGrid && HydroMechDrainageStartTime==.0100002288818359375,\n+      \"Private GPU P1 retains actual source-clock ramp/drainage and normalized load\");\n+    upl_tpi_gpu_r1::Init(UPL_TPI_GPU_OWNER,DirOut,UPL_TPI_GPU_VIEW,TimeStep,Nstep,SymplecticDtPre);\n+    Log->Print(\"UplTpiGpuR1: private Symplectic TPI-neighbour prediction/single leading-LP M0 beta0 variant; not paper LF/implicit/second-order/restart acceptance.\");\n+  }\n   RunGaugeSystem(TimeStep,true);\n   if(InOut)InOutInit(TimeStepIni);\n   FreePartsInit();\n@@ -1173,6 +1204,20 @@\n     if(CaseNmoving)RunMotion(stepdt);\n     if(InOut)InOutComputeStep(stepdt);\n     else RunCellDivide(true);\n+    if(upl_tpi_gpu_r1::Enabled()){\n+      bool scratch=false;\n+      try{\n+        upl_tpi_gpu_r1::StartEndpoint(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW,TimeStep,Nstep,stepdt,HourglassGpu);\n+        scratch=true;Interaction_Forces(INTERSTEP_SymCorrector);\n+        const double endpointdt=DtVariable(false);\n+        upl_tpi_gpu_r1::Require(endpointdt==stepdt,\"Private GPU endpoint fixed dt changed\");\n+        upl_tpi_gpu_r1::PrepareFinal(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW,HourglassGpu);\n+        PosInteraction_Forces();scratch=false;\n+        upl_tpi_gpu_r1::WriteFinal(UPL_TPI_GPU_VIEW);\n+        ApplyPorePressureBoundaries();\n+        upl_tpi_gpu_r1::Commit(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW,IsHydroMechDrainageActive(),unsigned(HydroMechTopLoadMode));\n+      }catch(...){upl_tpi_gpu_r1::AbortEndpoint();if(scratch){try{PosInteraction_Forces();}catch(...){}}throw;}\n+    }\n     TimeStep+=stepdt;\n     LastDt=stepdt;\n     partoutstop=(Np<NpMinimum || !Np);\n@@ -1200,6 +1245,7 @@\n \n   //-End of Simulation.\n   //--------------------\n+  if(upl_tpi_gpu_r1::Enabled())upl_tpi_gpu_r1::Finish(UPL_TPI_GPU_OWNER,Nstep,TimeStep);\n   FinishRun(partoutstop);\n }\n \n@@ -1297,6 +1343,7 @@\n     if(AuxHydroMechLoadAce)arrays.AddArray(\"HydroMechLoadAce\",npsave,AuxHydroMechLoadAce);\n   }\n   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);\n+  if(upl_tpi_gpu_r1::Enabled())upl_tpi_gpu_r1::Saved(UPL_TPI_GPU_OWNER,Part,TimeStep,Nstep,UPL_TPI_GPU_VIEW);\n   if(UseNormals && SvNormals)SaveVtkNormalsGpu(\"normals/Normals.vtk\",Part,npsave,Npb,Posxyg,Poszg,Idpg,BoundNormalg);\n   //-Save extra data.\n   if(SvExtraDataBi4)SaveExtraData();\n\n--- frozen_gpu/JSphGpu_ker.cu\n+++ private_P1/JSphGpu_ker.cu\n@@ -19,6 +19,7 @@\n /// \\file JSphGpu_ker.cu \\brief Implements functions and CUDA kernels for the Particle Interaction and System Update.\n \n #include \"JSphGpu_ker.h\"\n+#include \"upl_tpi_gpu_r1.h\"\n #include \"Functions.h\"\n #include \"FunctionsCuda.h\"\n #include \"JLog2.h\"\n@@ -1571,7 +1572,7 @@\n /// Complete rate with optional smooth div(k*(grad p+rho_w*Ace)) chain.\n /// Lstar cancels affine-pressure bias; it is not a conservative pair flux.\n //==============================================================================\n-__global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb\n+template<bool CaptureRows> __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb\n   ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcellfluid,const unsigned *dcell\n   ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace\n   ,const double *j,const double *theta,const float *porepress,float *rate\n@@ -1581,12 +1582,15 @@\n {\n   const unsigned p1=blockIdx.x*blockDim.x+threadIdx.x;\n   if(p1<np && p1>=npb && CODE_IsNormal(code[p1]) && CODE_IsFluid(code[p1])){\n-    if(drainfs && KerHydroMechIsDrainedParticle(p1,loadmode,posxy,code,fstype)){rate[p1]=0.f;return;}\n+    if(drainfs && KerHydroMechIsDrainedParticle(p1,loadmode,posxy,code,fstype)){\n+      if(CaptureRows)::upl_tpi_gpu_r1::CaptureRow(p1,true,0.,0.,theta[p1],porepress[p1]);\n+      rate[p1]=0.f;return;}\n     const double jp=j[p1],n=1.-solid0/jp;\n     if(!isfinite(jp) || jp<=solid0 || !isfinite(n) || !(n>0 && n<1)){atomicMin(invalid,p1);return;}\n     const double ki=KerDynamicConductivity(khyd,jp,solid0,conductivity,ck);\n     if(!isfinite(ki) || ki<0 || (khyd>0 && ki==0)){atomicMin(invalid,p1);return;}\n     double lp=0.,da=0.;\n+    double tpiSumWeights=0.;\n     double3 lx=make_double3(0,0,0),gp=make_double3(0,0,0),gjstate=make_double3(0,0,0);\n     if(khyd>0){\n       const tmatrix3d ci=corrmat[p1];\n@@ -1610,6 +1614,7 @@\n           const double3 gj=make_double3(cj.a11*g.x+cj.a12*g.y+cj.a13*g.z,cj.a21*g.x+cj.a22*g.y+cj.a23*g.z,cj.a31*g.x+cj.a32*g.y+cj.a33*g.z);\n           const double vol2=vol0*j[p2],dp=double(porepress[p1])-double(porepress[p2]);\n           const double w=vol2*(d.x*(gi.x+gj.x)+d.y*(gi.y+gj.y)+d.z*(gi.z+gj.z))/(rr2+double(CTE.eta2));\n+          if(CaptureRows)tpiSumWeights+=w;\n           lp+=w*dp;lx.x+=d.x*w;lx.y+=d.y*w;lx.z+=d.z*w;\n           gp.x-=gi.x*(vol2*dp);gp.y-=gi.y*(vol2*dp);gp.z-=gi.z*(vol2*dp);\n           if(conductivity){\n@@ -1646,7 +1651,9 @@\n     if(!isfinite(value) || fabs(value)>FLT_MAX){atomicMin(invalid,p1);return;}\n     //-Finite nonnegative double bits are ordered; no new block barrier after early returns.\n     if(maxspeed)atomicMax((unsigned long long*)maxspeed,(unsigned long long)__double_as_longlong(speed));\n-    rate[p1]=float(value); //-One complete overwrite, never add the compression source twice.\n+    if(CaptureRows)::upl_tpi_gpu_r1::CaptureRow(p1,false,-__dmul_rn(khyd,tpiSumWeights),\n+      __dadd_rn(-__dmul_rn(gamma,theta[p1]),__dmul_rn(khyd,lap)),theta[p1],porepress[p1]);\n+    rate[p1]=float(value); //-Legacy scaled residual diagnostic, not the M0 dp/dt.\n   }\n }\n \n@@ -1659,9 +1666,15 @@\n {\n   if(np){\n     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);\n-    KerComputeDynamicPorePressureRate <<<sgrid,SPHBSIZE>>> (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,dcell\n+    if(::upl_tpi_gpu_r1::CaptureEndpointHost()){\n+    KerComputeDynamicPorePressureRate<true> <<<sgrid,SPHBSIZE>>> (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,dcell\n       ,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,dvd.beginendcell,boundmode\n       ,fstype,fsnormal,drainfs,closedfs,unsigned(loadmode));\n+    }else{\n+    KerComputeDynamicPorePressureRate<false> <<<sgrid,SPHBSIZE>>> (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,dcell\n+      ,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,dvd.beginendcell,boundmode\n+      ,fstype,fsnormal,drainfs,closedfs,unsigned(loadmode));\n+    }\n   }\n }\n \n@@ -5699,3 +5712,6 @@\n #include \"JSphGpu_InOut_iker.cu\"\n \n \n+\n+// Private definitions outside the original cusph namespace.\n+#include \"upl_tpi_gpu_r1.cuh\"\n\n--- frozen_gpu/JSphHourglassGpu.h\n+++ private_P1/JSphHourglassGpu.h\n@@ -70,6 +70,8 @@\n   /// With single-J inertia, H=Q/M0 and Rate=Qdot/M0; neither is the current acceleration.\n   tdouble3 GetHistory(unsigned id)const;\n   tdouble3 GetRate(unsigned id)const;\n+  const double2* GetHistoryDeviceReadonly()const{ return(Historyg); }\n+  const double2* GetRateDeviceReadonly()const{ return(HistoryRateg); }\n   /// Internal fixture control only; no XML option or alternative physical law.\n   void SetRateCacheEnabled(bool enabled){ RateCacheEnabled=enabled;EndpointRateReady=false; }\n };\n",
+  "unchanged_other_263_files_copied_bytewise": true,
+  "old_kernel_external_signatures_changed": false,
+  "class_layout_or_virtual_ABI_changed": false,
+  "HG_cpp_recompile_for_complete_class_ODR": true,
+  "default_A_has_no_history_allocation_or_extra_endpoint": true,
+  "default_A_native_bit_proof_claimed": false,
+  "original_mechanics_J_kappa_update_count_unchanged": true,
+  "complete_R_retains_rhow_Da": true,
+  "static_destructor_has_no_CUDA_cleanup": true,
+  "public_source_changed": false,
+  "physical_acceptance": false
+}
