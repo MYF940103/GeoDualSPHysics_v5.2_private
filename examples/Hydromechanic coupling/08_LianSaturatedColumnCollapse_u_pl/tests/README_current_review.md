@@ -1,16 +1,18 @@
 # C08 当前排查与数据索引
 
-更新：2026-11-17。当前使用 Wendland Kernel2、hdp1.8、dp=.04、5us。用户已决定当前大变形不采用HG control；后续回到HG关闭的常规材料路径，下一候选为Lian负孔压稳定处理。AS.3/n2.55保持既有基线。以下状态以各真实收据为准，正常求解/native/HG检查通过不等于论文物理精度验收。
+更新：2026-11-17。当前使用 Wendland Kernel2、hdp1.8、dp=.04、5us。用户已决定当前大变形不采用HG control；后续回到HG关闭的常规材料路径，最新顺序：暂停长算，先TPI β0与PPE-t/有限Kw三方案的开发和benchmark，精度准入后才公共源码/XML，再考虑负孔压正则化。AS.3/n2.55保持既有基线。以下状态以各真实收据为准，正常求解/native/HG检查通过不等于论文物理精度验收。
 
 | 数据或阶段 | 当前状态 | 主要记录／位置 |
 |---|---|---|
-| 当前主线决定 | 大变形HG暂停，取消后续HG调参/纯力隔离；复用已有TPI研究，准备负孔压稳定候选。源HG本已关闭，继续 | [决定与审计](notes/c08_hg_off_pressure_stabilization_r1.md)；logs/c08_hg_off_pressure_stabilization_r1.decision.json |
+| 当前主线决定 | 大变形HG暂停；长算已挂起。先TPI β0及三方案benchmark计划；负孔压正则化后移，未构建/运行候选 | [决定与审计](notes/c08_hg_off_pressure_stabilization_r1.md)；logs/c08_hg_off_pressure_stabilization_r1.decision.json |
 | ψ0，C-quality修复+塑性HG，3s | 已完成原生/HG/全程图CSV及Fluid/Bound。翻转显著改善，但局部负压脉冲与早停仍记录，未物理验收 | [结果](notes/c08_h18_wall_c_retry_full3_outcome_r1.md)，outputs/c08_h18_wall_c_retry_full3_GPU_r2 |
 | ψ+2.5°，独立同材料10s源 | 唯一native_r2及近静止审查通过，可作有限撤墙比较；压力尾段仍缓慢变化，不宣称精确平衡 | logs/c08_h18_wend_psi2p5_source_root_review_r1.json |
 | ψ+2.5°，塑性HG，3s | 已完成301帧/22数组/HG602记录和图CSV、Fluid/Bound。无明显近对/翻转，但前缘只前进17.2mm，论文精度未通过 | [结果](notes/c08_h18_hg_psi2p5_outcome_r1.md)，[论文对照](figures/c08_h18_hg_psi2p5_paper_board_r1_fig16.png) |
-| ψ−5°，同材料10s源 | 当前唯一GPU物理运行；coh7500、ψ−5、sf.2，尚非源资格/平衡或collapse验收 | outputs/c08_h18_wend_branches_psim5_pre_r1；同标签logs/start/owner_admission/status/run（终态后） |
+| ψ−5°，同材料10s源 | 已按用户挂起原owner+GPU，最后报告9.660005s；仅RAM暂停，未完成10s，未native/平衡验收；不自动恢复 | outputs/c08_h18_wend_branches_psim5_pre_r1；同标签logs/start/owner_admission/status/run（终态后） |
 | ψ+2.5° HG/cache-OFF .30s | 仅配置/31帧计划与读取器已准备；未启动。可供非HG基线后续核准，不再为HG调参启动；OFF同时切换缓存材料路径 | [限定及下一步](notes/c08_h18_psi2p5_next_diagnosis_r1.md)，logs/c08_h18_psi2p5_hg0_w03_r1.prepare.json |
 | 压力与FS审计 | Eq19、有限Kw基础解析验证可复用。Eq47是TPI修正；p<=0与纸文一致。旧normal-Taylor候选实际窗未改善，未采用 | [压力/边界](notes/c08_h18_psi2p5_pressure_bc_audit_r1.md)，[实际FS闭合](notes/c08_h18_psi2p5_fs_closure_scope_r1.md) |
+
+三方案计划：[跨case开发与验收安排](../../validation/upl_tpi_three_scheme_plan_r1.md)。原run/status中的running属于挂起前观察，当前以logs/c08_psim5_user_pause_r1.result.json为准。
 
 ## 数据保留和清理
 

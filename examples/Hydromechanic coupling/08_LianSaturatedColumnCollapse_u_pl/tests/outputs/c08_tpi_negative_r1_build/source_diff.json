@@ -1,0 +1,173 @@
+{
+  "stage": "c08_tpi_negative_r1.source_diff",
+  "passed": true,
+  "archive": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_source_r1\\full_source.zip",
+    "bytes": 1082321,
+    "mtime_ns": 1794222843308768900
+  },
+  "header": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_tpi_negative_r1.h",
+    "bytes": 15116,
+    "mtime_ns": 1794843705444969600
+  },
+  "replacements": [
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "private_header",
+      "count": 1,
+      "method_scope": null,
+      "before": "#include <climits>\n",
+      "after": "#include \"c08_tpi_negative_r1.h\"\n\n#include <climits>\n"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "single_extern_definition",
+      "count": 1,
+      "method_scope": null,
+      "before": "using namespace std;\n",
+      "after": "using namespace std;\nnamespace c08negative { State state; }\n"
+    },
+    {
+      "file": "JSphCpuSingle.cpp",
+      "anchor": "private_header",
+      "count": 1,
+      "method_scope": null,
+      "before": "#include \"JSphCpuSingle.h\"\n",
+      "after": "#include \"JSphCpuSingle.h\"\n#include \"JDsFixedDt.h\"\n#include \"c08_tpi_negative_r1.h\"\n"
+    },
+    {
+      "file": "JSphCpuSingle.cpp",
+      "anchor": "fresh_qualification_after_initialization",
+      "count": 1,
+      "method_scope": null,
+      "before": "  InitRunCpu();\n  RunGravityPreloadHandoffCpu();",
+      "after": "  InitRunCpu();\n\n  if(c08negative::Requested()){\n    c08negative::RejectHGEnvironment();(void)c08negative::RequestedBeta();\n    c08negative::Need(Simulate2D && TStep==STEP_Symplectic && OmpThreads==1\n      && CaseNp==7060 && CaseNfixed==2060 && CaseNfluid==5000 && CaseNpb==2060\n      && !CaseNmoving && !CaseNfloat && !NpDynamic && !InOut && !Shifting && !Damping && !RelaxZones && !UseDEM && !Symmetry\n      && (!GaugeSystem || GaugeSystem->GetCount()==0),\"Private C08 TPI requires CPU1 bed-last 7060-ID source geometry and no gauge/dynamic topology\");\n    c08negative::Need(!PartBegin && PartBeginDir.empty() && GravityPreload && IsGravityPreloadHandoff()\n      && !GravityPreloadElasticSource && !GravityPreloadKeepBedOverlap && !GravityPreloadReleased\n      && GravityPreloadTime==10. && GravityPreloadStep==c08negative::SourceStep\n      && GravityPreloadMkBound==2 && GravityPreloadIdBegin==1805 && GravityPreloadIdCount==255\n      && TimeStep==0. && Nstep==0 && TimeMax>10. && TimeMax<=13.\n      && FixedDt && FixedDt->GetFixedValue()==c08negative::Dt && SymplecticDtPre==c08negative::Dt,\n      \"Private C08 TPI requires schema2 same-material 10s/2M PRE and a separately capped target\");\n    c08negative::Need(HydroMech && HydroMechDynamicSeepage && PorosityObserver && PorosityFeedback && DynamicPorePressure\n      && DynamicPoreWall && DynamicPoreConductivity && HydroMechConductivityModel==1 && HydroMechConductivityCk==2.\n      && !DynamicPoreFreeBody && !HydroMechNoWall && HydroMechInitMode==HMINIT_ConstantZ\n      && SoilCte.Porosity==.35f && SoilCte.PoreWaterBulkModulus==1e9 && SoilCte.HydraulicConductivity==.0002f\n      && SoilCte.PoreWaterRho==1000. && SoilCte.ModulusE==2e7f && SoilCte.PRvs==.33f && DPCtes==DP_PS\n      && IsDynamicPorePlasticConfig(),\"Private C08 TPI original dynamic/variable-k/plastic material contract rejected\");\n    c08negative::Need(TBoundary==BC_MDBC && SlipMode==SLIP_FreeSlip && MdbcSlipModeByMk && NoPenetration\n      && !PeriActive && TKernel==KERNEL_Wendland && Dp==.04 && KernelH==float(.072)\n      && !HourglassCpu && SoilHourglassXi==0. && !SoilBoundaryDerivativeSPR && SoilStressRateGradCorr\n      && ArtificialStress && ArtificialStressCoef==.3f && ArtificialStressExp==2.55f\n      && TVisco==VISCO_Artificial && Visco==.1f && ViscoBoundFactor==1.f && !ViscoTime\n      && TDensity==DDT_None && !DDTArray && Gravity.x==0. && Gravity.y==0. && Gravity.z==-9.81f,\n      \"Private C08 TPI original HG0/AS.3n2.55/AV.1/mixed-slip/plane/kernel configuration rejected\");\n    c08negative::Need(HydroMechTopLoadMode==HMLOAD_None && !HydroMechDrainage && !HydroMechDrainageFixedGrid\n      && HydroMechFreeSeepage,\"Private C08 TPI preserves original completed-only free seepage\");\n    Log->Print(\"C08TpiNegative: private M0/original-space Symplectic endpoint extension; alpha .5, explicit beta 0 or .04/m; cold history, no literal LF/implicit/physics claim.\");\n  }\n  RunGravityPreloadHandoffCpu();"
+    },
+    {
+      "file": "JSphCpuSingle.cpp",
+      "anchor": "cold_history_after_actual_original_release",
+      "count": 1,
+      "method_scope": null,
+      "before": "    if(GravityPreload && !GravityPreloadReleased)RunGravityPreloadRelease();",
+      "after": "    if(GravityPreload && !GravityPreloadReleased)RunGravityPreloadRelease();\n\n    if(c08negative::Requested() && !c08negative::state.ready){\n      c08negative::Need(GravityPreloadReleased && IsGravityPreloadHandoff() && !GravityPreloadKeepBedOverlap\n        && Np==6805 && Npb==1805 && !SoilDamping && !PoreShepardRegularization\n        && UseDynamicPorePlaneContact() && !HourglassCpu && SoilHourglassXi==0.\n        && TimeStep==GravityPreloadActualTime && unsigned(Nstep)==GravityPreloadActualStep,\n        \"C08 TPI cold history starts only after actual same-material handoff and retire255\");\n      c08negative::Init(this,DirOut,Np,Npb,Idpc,Codec,PorePressc,PorePress0c,PoroJc,Kplasticc,TimeStep,unsigned(Nstep),SymplecticDtPre);\n    }\n"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "history_half_instead_of_finite_Kw_predictor",
+      "count": 1,
+      "method_scope": "void JSphCpu::ComputeSymplecticPrePorePressure(double dt){",
+      "before": "  const double dt05=dt*.5;\n",
+      "after": "\n  if(c08negative::Requested()){\n    c08negative::Begin(this,Np,Idpc,Codec,PorePressPrec,PoroJc,TimeStep,Nstep,dt);\n    const bool drain=IsHydroMechDrainageActive();\n    for(unsigned p=0;p<Np;p++){\n      if(p<Npb || !CODE_IsFluid(Codec[p]))PorePressc[p]=PorePressPrec[p];\n      else PorePressc[p]=(drain && IsHydroMechDrainedParticle(p,PosPrec,Codec,FSTypec)? 0.f: c08negative::Half(Idpc[p]));\n      if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p]))c08negative::HalfActual(Idpc[p],PorePressc[p]);\n    }\n    return; // No finite-Kw predictor pressure update on C08 TPI.\n  }\n  const double dt05=dt*.5;\n"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "history_guess_instead_of_finite_Kw_corrector",
+      "count": 1,
+      "method_scope": "void JSphCpu::ComputeSymplecticCorrPorePressure(double dt){",
+      "before": "  const bool drainfs=(DynamicPorePressure && IsHydroMechDrainageActive());\n",
+      "after": "\n  if(c08negative::Requested()){\n    c08negative::Need(dt==c08negative::state.dt,\"C08 TPI corrector dt changed\");\n    c08negative::Corr(this,Np,Idpc,Codec,PorePressc,PoroJc,PoroThetac);\n    const bool drain=IsHydroMechDrainageActive();\n    for(unsigned p=0;p<Np;p++){\n      if(p<Npb || !CODE_IsFluid(Codec[p]))PorePressc[p]=PorePressPrec[p];\n      else PorePressc[p]=(drain && IsHydroMechDrainedParticle(p,Posc,Codec,FSTypec)? 0.f: c08negative::Guess(Idpc[p]));\n    }\n    return; // No finite-Kw corrector pressure update or history rotation here.\n  }\n  const bool drainfs=(DynamicPorePressure && IsHydroMechDrainageActive());\n"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "capture_single_original_J_corrector",
+      "count": 1,
+      "method_scope": null,
+      "before": "  ComputeSymplecticCorrPorePressure(dt);\n  ComputeSymplecticCorrPorosity(dt);",
+      "after": "  ComputeSymplecticCorrPorePressure(dt);\n  ComputeSymplecticCorrPorosity(dt);\n  if(c08negative::Requested())c08negative::CaptureJ(this,Np,Idpc,Codec,PoroJc);"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "temporary_guess_skips_only_completed_positive_FS_cap",
+      "count": 1,
+      "method_scope": "void JSphCpu::ApplyPorePressureBoundaries(){",
+      "before": "  if(HydroMechFreeSeepage && !PorePressPrec){",
+      "after": "  if(HydroMechFreeSeepage && !PorePressPrec && !(c08negative::Requested() && c08negative::state.temporary)){"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "endpoint_row_context",
+      "count": 1,
+      "method_scope": "template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){",
+      "before": "  DynamicConductivitySpeedMax=0.;",
+      "after": "  const bool negativeEndpoint=(c08negative::Requested() && c08negative::state.endpoint);\n  if(negativeEndpoint)c08negative::Need(c08negative::state.owner==this,\"C08 TPI endpoint owner changed\");\n  DynamicConductivitySpeedMax=0.;"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "drained_row_priority",
+      "count": 1,
+      "method_scope": "template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){",
+      "before": "      PorePressRatec[p1]=0; //-Dirichlet p is constrained; theta and J still evolve normally.",
+      "after": "      if(negativeEndpoint)c08negative::Row(Idpc[p1],true,0.,0.,PoroThetac[p1],PorePressc[p1]);\n      PorePressRatec[p1]=0; //-Dirichlet p is constrained; theta and J still evolve normally."
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "endpoint_diagonal_accumulator",
+      "count": 1,
+      "method_scope": "template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){",
+      "before": "    double lp=0,da=0;",
+      "after": "    double lp=0,da=0;\n    double tpiSumWeights=0.,tpiChain=0.;"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "original_weight_sum_only_endpoint",
+      "count": 1,
+      "method_scope": "template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){",
+      "before": "          lp+=w*dp;lx=lx+d*w;gp=gp-gi*(vol2*dp);",
+      "after": "          if(negativeEndpoint)tpiSumWeights+=w;\n          lp+=w*dp;lx=lx+d*w;gp=gp-gi*(vol2*dp);"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "actual_double_unscaled_row_before_original_float_rate_store",
+      "count": 1,
+      "method_scope": "template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){",
+      "before": "    if(!std::isfinite(rate) || fabs(rate)>FLT_MAX)invalid++;",
+      "after": "    if(negativeEndpoint)c08negative::Row(Idpc[p1],false,-ki*tpiSumWeights,-gamma*PoroThetac[p1]+ki*lap+tpiChain,PoroThetac[p1],PorePressc[p1]);\n    if(!std::isfinite(rate) || fabs(rate)>FLT_MAX)invalid++;"
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "anchor": "capture_actual_variable_k_chain_without_reconstruction",
+      "count": 1,
+      "method_scope": "template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){",
+      "before": "      rate=kw/porosity*(-PoroThetac[p1]+ki/gamma*lap+chain/gamma);",
+      "after": "      if(negativeEndpoint)tpiChain=chain;\n      rate=kw/porosity*(-PoroThetac[p1]+ki/gamma*lap+chain/gamma);"
+    },
+    {
+      "file": "JSphCpuSingle.cpp",
+      "anchor": "third_force_after_original_completed_geometry_before_clock_increment",
+      "count": 1,
+      "method_scope": null,
+      "before": "    else RunCellDivide(true);\n    TimeStep+=stepdt;",
+      "after": "    else RunCellDivide(true);\n\n    if(c08negative::Requested()){\n      c08negative::Endpoint(this,Np,Idpc,Codec,Posc,Velrhopc,Sigmac,Kplasticc,PorePress0c,PorePressc,PoroJc,TimeStep,Nstep,stepdt);\n      bool forceScratch=false;\n      try{\n        forceScratch=true;\n        Interaction_Forces(INTERSTEP_SymCorrector); // Third genuine force; no solid/material/J update.\n        const double endpointdt=DtVariable(false); // Original necessary force/wave/pore limits, no final dt-stat commit.\n        c08negative::Need(endpointdt==stepdt,\"C08 TPI endpoint fixed dt changed\");\n        c08negative::PrepareFinal(this,Np,Idpc,Codec,Posc,Velrhopc,Sigmac,Kplasticc,PorePress0c,PorePressc,PoroJc);\n        PosInteraction_Forces();forceScratch=false;\n        c08negative::WriteFinal(Np,Npb,Idpc,Codec,PorePressc);\n        c08negative::state.endpoint=false;c08negative::state.temporary=false;\n        ApplyPorePressureBoundaries(); // Original final drainage/FS/positive-cap and periodic copying.\n        const bool drain=IsHydroMechDrainageActive();\n        for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p]))\n          c08negative::state.commitDrained[Idpc[p]]=unsigned(drain && IsHydroMechDrainedParticle(p,Posc,Codec,FSTypec));\n        c08negative::Commit(this,Np,Idpc,Codec,FSTypec,PorePressc,PorePress0c,PoroJc); // Full history rotates exactly once after all checks.\n      }\n      catch(...){\n        c08negative::state.endpoint=false;c08negative::state.temporary=false;\n        if(forceScratch)PosInteraction_Forces();\n        throw; // No history commit or new SaveData on failed endpoint.\n      }\n    }\n    TimeStep+=stepdt;"
+    },
+    {
+      "file": "JSphCpuSingle.cpp",
+      "anchor": "save_only_sidecar_after_real_native_save",
+      "count": 1,
+      "method_scope": null,
+      "before": "  JSph::SaveData(npsave,arrays,1,vdom,&infoplus);",
+      "after": "  JSph::SaveData(npsave,arrays,1,vdom,&infoplus);\n  if(c08negative::Requested())c08negative::Saved(this,Part,TimeStep,Nstep,Np,Idpc,Codec,PorePressc,PoroJc);"
+    },
+    {
+      "file": "JSphCpuSingle.cpp",
+      "anchor": "finish_implementation_counters",
+      "count": 1,
+      "method_scope": null,
+      "before": "  FinishRun(partoutstop);",
+      "after": "  if(c08negative::Requested())c08negative::Finish(this,Nstep,TimeStep);\n  FinishRun(partoutstop);"
+    }
+  ],
+  "normalized_line_endings_only_outside_replacements": true,
+  "unified_diff": "--- archive/JSphCpu.cpp\n+++ private/JSphCpu.cpp\n@@ -45,10 +45,13 @@\n #include \"JSphInOut.h\"\n #include \"JSphShifting.h\"\n \n+#include \"c08_tpi_negative_r1.h\"\n+\n #include <climits>\n #include <cmath>\n \n using namespace std;\n+namespace c08negative { State state; }\n \n static void ComputeArtificialStressArray(unsigned np,const typecode *code,const tfloat4 *velrhop,const tsymatrix3d *sigma,const float coef,tsymatrix3f *artificialstress);\n \n@@ -1634,7 +1637,7 @@\n   if(!HydroMech || !PorePressc || !DivData.begincell)return;\n   ComputeFreeSurfaceTracking();\n   ApplyFreeSurfacePorePressure();\n-  if(HydroMechFreeSeepage && !PorePressPrec){\n+  if(HydroMechFreeSeepage && !PorePressPrec && !(c08negative::Requested() && c08negative::state.temporary)){\n     //-Completed geometry only; predictor pressure/rate are not constrained by this policy.\n     for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p])\n       && IsFreeSurfaceParticle(p,Codec,FSTypec) && std::isfinite(PorePressc[p]) && PorePressc[p]>0)PorePressc[p]=0.f;\n@@ -3172,6 +3175,8 @@\n /// Lstar cancels affine-pressure bias, but is not a conservative pair flux.\n //==============================================================================\n template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){\n+  const bool negativeEndpoint=(c08negative::Requested() && c08negative::state.endpoint);\n+  if(negativeEndpoint)c08negative::Need(c08negative::state.owner==this,\"C08 TPI endpoint owner changed\");\n   DynamicConductivitySpeedMax=0.;\n   unsigned* ridp=NULL;\n   if(PeriActive){\n@@ -3200,6 +3205,7 @@\n       if(!std::isfinite(r2) || r2>=DynamicPoreBodyRadius2){invalid++;continue;}\n     }\n     if(drainfs && IsHydroMechDrainedParticle(unsigned(p1),Posc,Codec,FSTypec)){\n+      if(negativeEndpoint)c08negative::Row(Idpc[p1],true,0.,0.,PoroThetac[p1],PorePressc[p1]);\n       PorePressRatec[p1]=0; //-Dirichlet p is constrained; theta and J still evolve normally.\n       continue;\n     }\n@@ -3208,6 +3214,7 @@\n     const double ki=GetDynamicConductivityCpu(unsigned(p1));\n     if(!std::isfinite(ki) || ki<0 || (khyd>0 && ki==0)){invalid++;continue;}\n     double lp=0,da=0;\n+    double tpiSumWeights=0.,tpiChain=0.;\n     tdouble3 lx=TDouble3(0),gp=TDouble3(0),gjstate=TDouble3(0);\n     if(khyd>0){\n       const tmatrix3d ci=CorrMatc[p1];\n@@ -3228,6 +3235,7 @@\n           const tdouble3 gj=TDouble3(cj.a11*g.x+cj.a12*g.y+cj.a13*g.z,cj.a21*g.x+cj.a22*g.y+cj.a23*g.z,cj.a31*g.x+cj.a32*g.y+cj.a33*g.z);\n           const double vol2=vol0*PoroJc[p2],dp=double(PorePressc[p1])-double(PorePressc[p2]);\n           const double w=vol2*(d.x*(gi.x+gj.x)+d.y*(gi.y+gj.y)+d.z*(gi.z+gj.z))/(rr2+double(Eta2));\n+          if(negativeEndpoint)tpiSumWeights+=w;\n           lp+=w*dp;lx=lx+d*w;gp=gp-gi*(vol2*dp);\n           if(DynamicPoreConductivity)gjstate=gjstate+gi*(vol2*(PoroJc[p2]-PoroJc[p1]));\n           da+=vol2*((double(Acec[p2].x)-Acec[p1].x)*gi.x\n@@ -3257,12 +3265,14 @@\n       const double scale=ki/((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk);\n       const double chain=scale*(gjstate.x*(gpcorr.x+rhow*Acec[p1].x)\n         +gjstate.y*(gpcorr.y+rhow*Acec[p1].y)+gjstate.z*(gpcorr.z+rhow*Acec[p1].z));\n+      if(negativeEndpoint)tpiChain=chain;\n       rate=kw/porosity*(-PoroThetac[p1]+ki/gamma*lap+chain/gamma);\n       const double speed=kw/porosity/gamma*scale*sqrt(gjstate.x*gjstate.x+gjstate.y*gjstate.y+gjstate.z*gjstate.z);\n       if(!std::isfinite(speed)){invalid++;continue;}\n       const int th=omp_get_thread_num();\n       if(speedth[th*OMP_STRIDE]<speed)speedth[th*OMP_STRIDE]=speed;\n     }\n+    if(negativeEndpoint)c08negative::Row(Idpc[p1],false,-ki*tpiSumWeights,-gamma*PoroThetac[p1]+ki*lap+tpiChain,PoroThetac[p1],PorePressc[p1]);\n     if(!std::isfinite(rate) || fabs(rate)>FLT_MAX)invalid++;\n     PorePressRatec[p1]=float(rate); //-Replace the complete old rate; never add compression twice.\n   }\n@@ -3345,6 +3355,17 @@\n //==============================================================================\n void JSphCpu::ComputeSymplecticPrePorePressure(double dt){\n   if(!HydroMech || !PorePressc || !PorePressPrec || !PorePressRatec)return;\n+\n+  if(c08negative::Requested()){\n+    c08negative::Begin(this,Np,Idpc,Codec,PorePressPrec,PoroJc,TimeStep,Nstep,dt);\n+    const bool drain=IsHydroMechDrainageActive();\n+    for(unsigned p=0;p<Np;p++){\n+      if(p<Npb || !CODE_IsFluid(Codec[p]))PorePressc[p]=PorePressPrec[p];\n+      else PorePressc[p]=(drain && IsHydroMechDrainedParticle(p,PosPrec,Codec,FSTypec)? 0.f: c08negative::Half(Idpc[p]));\n+      if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p]))c08negative::HalfActual(Idpc[p],PorePressc[p]);\n+    }\n+    return; // No finite-Kw predictor pressure update on C08 TPI.\n+  }\n   const double dt05=dt*.5;\n   const bool drainfs=(DynamicPorePressure && IsHydroMechDrainageActive());\n   const int np=int(Np);\n@@ -3364,6 +3385,17 @@\n //==============================================================================\n void JSphCpu::ComputeSymplecticCorrPorePressure(double dt){\n   if(!HydroMech || !PorePressc || !PorePressPrec || !PorePressRatec)return;\n+\n+  if(c08negative::Requested()){\n+    c08negative::Need(dt==c08negative::state.dt,\"C08 TPI corrector dt changed\");\n+    c08negative::Corr(this,Np,Idpc,Codec,PorePressc,PoroJc,PoroThetac);\n+    const bool drain=IsHydroMechDrainageActive();\n+    for(unsigned p=0;p<Np;p++){\n+      if(p<Npb || !CODE_IsFluid(Codec[p]))PorePressc[p]=PorePressPrec[p];\n+      else PorePressc[p]=(drain && IsHydroMechDrainedParticle(p,Posc,Codec,FSTypec)? 0.f: c08negative::Guess(Idpc[p]));\n+    }\n+    return; // No finite-Kw corrector pressure update or history rotation here.\n+  }\n   const bool drainfs=(DynamicPorePressure && IsHydroMechDrainageActive());\n   const int np=int(Np);\n   #ifdef OMP_USE\n@@ -3723,6 +3755,7 @@\n \n   ComputeSymplecticCorrPorePressure(dt);\n   ComputeSymplecticCorrPorosity(dt);\n+  if(c08negative::Requested())c08negative::CaptureJ(this,Np,Idpc,Codec,PoroJc);\n \n   //-Free memory assigned to variables Pre and ComputeSymplecticPre(). | Libera memoria asignada a variables Pre en ComputeSymplecticPre().\n   ArraysCpu->Free(PosPrec);      PosPrec=NULL;\n\n--- archive/JSphCpuSingle.cpp\n+++ private/JSphCpuSingle.cpp\n@@ -19,6 +19,8 @@\n /// \\file JSphCpuSingle.cpp \\brief Implements the class \\ref JSphCpuSingle.\n \n #include \"JSphCpuSingle.h\"\n+#include \"JDsFixedDt.h\"\n+#include \"c08_tpi_negative_r1.h\"\n #include \"JGravityPreloadState.h\"\n #include \"JSphHourglassCpu.h\"\n #include \"JCellDivCpuSingle.h\"\n@@ -1366,6 +1368,37 @@\n   //-Initialisation of execution variables. | Inicializacion de variables de ejecucion.\n   //------------------------------------------------------------------------------------\n   InitRunCpu();\n+\n+  if(c08negative::Requested()){\n+    c08negative::RejectHGEnvironment();(void)c08negative::RequestedBeta();\n+    c08negative::Need(Simulate2D && TStep==STEP_Symplectic && OmpThreads==1\n+      && CaseNp==7060 && CaseNfixed==2060 && CaseNfluid==5000 && CaseNpb==2060\n+      && !CaseNmoving && !CaseNfloat && !NpDynamic && !InOut && !Shifting && !Damping && !RelaxZones && !UseDEM && !Symmetry\n+      && (!GaugeSystem || GaugeSystem->GetCount()==0),\"Private C08 TPI requires CPU1 bed-last 7060-ID source geometry and no gauge/dynamic topology\");\n+    c08negative::Need(!PartBegin && PartBeginDir.empty() && GravityPreload && IsGravityPreloadHandoff()\n+      && !GravityPreloadElasticSource && !GravityPreloadKeepBedOverlap && !GravityPreloadReleased\n+      && GravityPreloadTime==10. && GravityPreloadStep==c08negative::SourceStep\n+      && GravityPreloadMkBound==2 && GravityPreloadIdBegin==1805 && GravityPreloadIdCount==255\n+      && TimeStep==0. && Nstep==0 && TimeMax>10. && TimeMax<=13.\n+      && FixedDt && FixedDt->GetFixedValue()==c08negative::Dt && SymplecticDtPre==c08negative::Dt,\n+      \"Private C08 TPI requires schema2 same-material 10s/2M PRE and a separately capped target\");\n+    c08negative::Need(HydroMech && HydroMechDynamicSeepage && PorosityObserver && PorosityFeedback && DynamicPorePressure\n+      && DynamicPoreWall && DynamicPoreConductivity && HydroMechConductivityModel==1 && HydroMechConductivityCk==2.\n+      && !DynamicPoreFreeBody && !HydroMechNoWall && HydroMechInitMode==HMINIT_ConstantZ\n+      && SoilCte.Porosity==.35f && SoilCte.PoreWaterBulkModulus==1e9 && SoilCte.HydraulicConductivity==.0002f\n+      && SoilCte.PoreWaterRho==1000. && SoilCte.ModulusE==2e7f && SoilCte.PRvs==.33f && DPCtes==DP_PS\n+      && IsDynamicPorePlasticConfig(),\"Private C08 TPI original dynamic/variable-k/plastic material contract rejected\");\n+    c08negative::Need(TBoundary==BC_MDBC && SlipMode==SLIP_FreeSlip && MdbcSlipModeByMk && NoPenetration\n+      && !PeriActive && TKernel==KERNEL_Wendland && Dp==.04 && KernelH==float(.072)\n+      && !HourglassCpu && SoilHourglassXi==0. && !SoilBoundaryDerivativeSPR && SoilStressRateGradCorr\n+      && ArtificialStress && ArtificialStressCoef==.3f && ArtificialStressExp==2.55f\n+      && TVisco==VISCO_Artificial && Visco==.1f && ViscoBoundFactor==1.f && !ViscoTime\n+      && TDensity==DDT_None && !DDTArray && Gravity.x==0. && Gravity.y==0. && Gravity.z==-9.81f,\n+      \"Private C08 TPI original HG0/AS.3n2.55/AV.1/mixed-slip/plane/kernel configuration rejected\");\n+    c08negative::Need(HydroMechTopLoadMode==HMLOAD_None && !HydroMechDrainage && !HydroMechDrainageFixedGrid\n+      && HydroMechFreeSeepage,\"Private C08 TPI preserves original completed-only free seepage\");\n+    Log->Print(\"C08TpiNegative: private M0/original-space Symplectic endpoint extension; alpha .5, explicit beta 0 or .04/m; cold history, no literal LF/implicit/physics claim.\");\n+  }\n   RunGravityPreloadHandoffCpu();\n   RunGaugeSystem(TimeStep,true);\n   if(InOut)InOutInit(TimeStepIni);\n@@ -1389,6 +1422,16 @@\n   PrintHeadPart();\n   while(TimeStep<TimeMax){\n     if(GravityPreload && !GravityPreloadReleased)RunGravityPreloadRelease();\n+\n+    if(c08negative::Requested() && !c08negative::state.ready){\n+      c08negative::Need(GravityPreloadReleased && IsGravityPreloadHandoff() && !GravityPreloadKeepBedOverlap\n+        && Np==6805 && Npb==1805 && !SoilDamping && !PoreShepardRegularization\n+        && UseDynamicPorePlaneContact() && !HourglassCpu && SoilHourglassXi==0.\n+        && TimeStep==GravityPreloadActualTime && unsigned(Nstep)==GravityPreloadActualStep,\n+        \"C08 TPI cold history starts only after actual same-material handoff and retire255\");\n+      c08negative::Init(this,DirOut,Np,Npb,Idpc,Codec,PorePressc,PorePress0c,PoroJc,Kplasticc,TimeStep,unsigned(Nstep),SymplecticDtPre);\n+    }\n+\n     InterStep=(TStep==STEP_Symplectic? INTERSTEP_SymPredictor: INTERSTEP_Verlet);\n     if(ViscoTime)Visco=ViscoTime->GetVisco(float(TimeStep));\n     if(DDTRamp.x)RunInitialDDTRamp(); //<vs_ddramp>\n@@ -1397,6 +1440,31 @@\n     if(CaseNmoving)RunMotion(stepdt);\n     if(InOut)InOutComputeStep(stepdt);\n     else RunCellDivide(true);\n+\n+    if(c08negative::Requested()){\n+      c08negative::Endpoint(this,Np,Idpc,Codec,Posc,Velrhopc,Sigmac,Kplasticc,PorePress0c,PorePressc,PoroJc,TimeStep,Nstep,stepdt);\n+      bool forceScratch=false;\n+      try{\n+        forceScratch=true;\n+        Interaction_Forces(INTERSTEP_SymCorrector); // Third genuine force; no solid/material/J update.\n+        const double endpointdt=DtVariable(false); // Original necessary force/wave/pore limits, no final dt-stat commit.\n+        c08negative::Need(endpointdt==stepdt,\"C08 TPI endpoint fixed dt changed\");\n+        c08negative::PrepareFinal(this,Np,Idpc,Codec,Posc,Velrhopc,Sigmac,Kplasticc,PorePress0c,PorePressc,PoroJc);\n+        PosInteraction_Forces();forceScratch=false;\n+        c08negative::WriteFinal(Np,Npb,Idpc,Codec,PorePressc);\n+        c08negative::state.endpoint=false;c08negative::state.temporary=false;\n+        ApplyPorePressureBoundaries(); // Original final drainage/FS/positive-cap and periodic copying.\n+        const bool drain=IsHydroMechDrainageActive();\n+        for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p]))\n+          c08negative::state.commitDrained[Idpc[p]]=unsigned(drain && IsHydroMechDrainedParticle(p,Posc,Codec,FSTypec));\n+        c08negative::Commit(this,Np,Idpc,Codec,FSTypec,PorePressc,PorePress0c,PoroJc); // Full history rotates exactly once after all checks.\n+      }\n+      catch(...){\n+        c08negative::state.endpoint=false;c08negative::state.temporary=false;\n+        if(forceScratch)PosInteraction_Forces();\n+        throw; // No history commit or new SaveData on failed endpoint.\n+      }\n+    }\n     TimeStep+=stepdt;\n     LastDt=stepdt;\n     partoutstop=(Np<NpMinimum || !Np);\n@@ -1425,6 +1493,7 @@\n \n   //-End of Simulation.\n   //--------------------\n+  if(c08negative::Requested())c08negative::Finish(this,Nstep,TimeStep);\n   FinishRun(partoutstop);\n }\n \n@@ -1545,6 +1614,7 @@\n   }\n   //AddBasicArrays(arrays,npsave,pos,idp,vel,rhop);\n   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);\n+  if(c08negative::Requested())c08negative::Saved(this,Part,TimeStep,Nstep,Np,Idpc,Codec,PorePressc,PoroJc);\n   //-Free auxiliary memory for particle data. | Libera memoria auxiliar para datos de particulas.\n   ArraysCpu->Free(idp);\n   ArraysCpu->Free(pos);\n",
+  "public_files_changed": false,
+  "class_or_header_ABI_changed": false,
+  "default_OFF_no_private_allocations": true,
+  "M0_ON_not_finite_Kw": true,
+  "beta_selected_only_later_by_root_env": true,
+  "cold_previous_from_actual_schema2_pn": true,
+  "endpoint_original_source_clock": true,
+  "HG_rejected": true,
+  "original_plastic_return_unchanged": true,
+  "no_new_CellDivide_NoPen_Shepard_in_extra_force": true,
+  "physical_acceptance": false
+}

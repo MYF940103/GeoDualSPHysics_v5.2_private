@@ -1,0 +1,51 @@
+{
+  "stage": "c08_psim5_user_pause_r1",
+  "passed": true,
+  "operation": "Suspend original owner first, then exact owned solver; no termination/restart",
+  "user_authorized": true,
+  "notification_rearmed": false,
+  "source_run_published": false,
+  "actions": [
+    {
+      "role": "owner",
+      "NtSuspendProcess_status": 0,
+      "utc": "2026-11-16T15:50:39.035221+00:00"
+    },
+    {
+      "role": "solver",
+      "NtSuspendProcess_status": 0,
+      "utc": "2026-11-16T15:50:39.035221+00:00"
+    }
+  ],
+  "post": {
+    "owner": {
+      "native_handle": {
+        "creation_filetime_100ns": 134392966788537857,
+        "win32_exit_code": 259,
+        "wait0": 258
+      },
+      "psutil_status": "stopped"
+    },
+    "solver": {
+      "native_handle": {
+        "creation_filetime_100ns": 134392966851984115,
+        "win32_exit_code": 259,
+        "wait0": 258
+      },
+      "psutil_status": "stopped"
+    }
+  },
+  "last_reported_original_console_line": "Part_0966      9.660005       1932001     2000    2061.24  17-11-2026 02:51:48\r\n",
+  "last_status_utc": "2026-11-16T15:50:31.815451+00:00",
+  "source_status_retained": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_wend_branches_psim5_pre_r1.status.json",
+    "bytes": 2526,
+    "mtime_ns": 1794844231822459800
+  },
+  "no_original_exit_claim": true,
+  "no_new_saved_state_inferred": true,
+  "source_native_or_equilibrium_acceptance": false,
+  "automatic_resume": false,
+  "checkpoint_is_RAM_only": true,
+  "utc": "2026-11-16T15:50:39.050255+00:00"
+}
