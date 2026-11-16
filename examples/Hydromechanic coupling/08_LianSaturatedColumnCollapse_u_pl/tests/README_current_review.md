@@ -1,4 +1,23 @@
-# C08 当前排查索引
+# C08 当前排查与数据索引
+
+更新：2026-11-16。当前使用 Wendland Kernel2、hdp1.8、dp=.04、5us；释放候选为AS.3/n2.55、私有塑性HG。以下状态以各真实收据为准，正常求解/native/HG检查通过不等于论文物理精度验收。
+
+| 数据或阶段 | 当前状态 | 主要记录／位置 |
+|---|---|---|
+| ψ0，C-quality修复+塑性HG，3s | 已完成原生/HG/全程图CSV及Fluid/Bound。翻转显著改善，但局部负压脉冲与早停仍记录，未物理验收 | [结果](notes/c08_h18_wall_c_retry_full3_outcome_r1.md)，outputs/c08_h18_wall_c_retry_full3_GPU_r2 |
+| ψ+2.5°，独立同材料10s源 | 唯一native_r2及近静止审查通过，可作有限撤墙比较；压力尾段仍缓慢变化，不宣称精确平衡 | logs/c08_h18_wend_psi2p5_source_root_review_r1.json |
+| ψ+2.5°，塑性HG，3s | 已完成301帧/22数组/HG602记录和图CSV、Fluid/Bound。无明显近对/翻转，但前缘只前进17.2mm，论文精度未通过 | [结果](notes/c08_h18_hg_psi2p5_outcome_r1.md)，[论文对照](figures/c08_h18_hg_psi2p5_paper_board_r1_fig16.png) |
+| ψ−5°，同材料10s源 | 当前唯一GPU物理运行；coh7500、ψ−5、sf.2，尚非源资格/平衡或collapse验收 | outputs/c08_h18_wend_branches_psim5_pre_r1；同标签logs/start/owner_admission/status/run（终态后） |
+| ψ+2.5° HG/cache-OFF .30s | 仅配置/31帧计划与离线读取器已准备；未启动。OFF同时切换缓存材料路径，不是纯HG力唯一差异 | [限定及下一步](notes/c08_h18_psi2p5_next_diagnosis_r1.md)，logs/c08_h18_psi2p5_hg0_w03_r1.prepare.json |
+| 压力与FS审计 | Eq19、有限Kw基础解析验证可复用。Eq47是TPI修正；p<=0与纸文一致。旧normal-Taylor候选实际窗未改善，未采用 | [压力/边界](notes/c08_h18_psi2p5_pressure_bc_audit_r1.md)，[实际FS闭合](notes/c08_h18_psi2p5_fs_closure_scope_r1.md) |
+
+## 数据保留和清理
+
+本轮可恢复清理已完成：83个无依赖绑定的旧ILK缓存经ZIP归档、完整CRC/长度验证后删除，扣除恢复包后的文件流占用净减少2,621,927,424 B（约2.62 GB，不计小型清单，非精确卷空闲增量）。[结果与恢复说明](notes/c08_cache_cleanup_outcome_r1.md)，[独立检查](logs/c08_cache_cleanup_r2.final_review.json)。8个已绑定及146个证据不足缓存保留。原始BI4/NBI4、typed22/真实clock/signed、PRE/重启链、程序/PDB/对象/源码归档、正式输入输出、图和CSV及全部Fluid/Bound VTK保持保护。活动ψ−5计算及全部依赖未更改。
+
+旧构建的ILK仅在无引用/已关闭/不属于活动或快照目录且实际白名单通过后，先ZIP归档、验证CRC及长度再删除原文件；恢复方法与清单另记。不改写历史通过/失败收据，不把本次清理记作数值验收。活动ψ−5程序和全部依赖保持原状。
+
+## 历史排查索引（截至2026-11-09，以下“当前／活动”属于历史记录）
 
 更新：2026-11-09。当前按用户要求比较 Cubic h/dp=1.8、人工应力系数 .3/.5/.7，选型后完成三组 ψ 的正式 3 s 计算。原 `c08_h18_pre_r2` 最后保存 .620005 s 后被弹性源资格拒绝，partial 已独立解码与成图；当前活动源为 `c08_h18_bedroles_pre_r1`，仅统一右下 5 点从预载开始的床归属，粒子坐标及材料不变。仍用 5 μs、阻尼 .03、Shepard40，从零预载至 10 s，源码及程序不变。完成原生状态和平衡趋势审查后才进入撤墙比较。根目录 ψ0/r6 的旧 3 s 结果仍为保留诊断结果。原 r2 GPU 10 s PRE 和旧失败保留；其他两组 ψ 尚未启动。
 
