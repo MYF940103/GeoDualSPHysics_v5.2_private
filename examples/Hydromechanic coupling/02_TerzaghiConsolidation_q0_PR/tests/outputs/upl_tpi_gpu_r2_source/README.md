@@ -1,0 +1,120 @@
+# 02 外载 1D 固结：入口与文件索引
+
+## 2026-11-03：u-pl 受限开发测试（不是新的正式发行）
+
+已验收的三组 u-pw 正式 XML/BAT、数据和图表保持不变。u-pl 的公开开关、原生状态及短窗 CPU/GPU 兼容性证据在 `tests/notes/upl_column_public_root_r1.json`；无辅助稳定项的 ON/OFF 各自 .125 s 半步检查与对比在 `tests/notes/upl_column_ringdown_on_off_root_r1.json`。两套框架仍有启动振荡，尚不能据此宣称完整固结精度通过。
+
+同一 1000 土粒子算例的顺序计时为 CPU 单线程 97.17 s、CPU 八线程 29.48 s、本机 RTX3050 71.62 s，详见 `tests/notes/upl_column_cost_root_r1.json`。后续该小算例优先 CPU 八线程；这是单轮本机测量，不外推到 A6000、大规模算例或通用 GPU 性能。
+
+下一候选仅在现有恒 k、无重力、单个水平 FreeSlip 底面、X 周期、归一化核带加载及固定时间格点排水的弹性 u-pl 算例中允许全局阻尼。按 Lian2023 式44，`c_d=eta_d*sqrt(E_s/(rho_s*h^2))`，`rho_s=(rho_t0-n0*rho_w)/(1-n0)` 是参考固体本征密度；与旧 u-pw 使用 legacy rhop 的阻尼尺度不同。原 u-pw 分支不改。阻尼后的同阶段最终加速度仍进入 Darcy 项和闭合自由面重构，不额外添加第二个阻尼孔压源。有限 `eta_d` 范围为 [0,0.1]，本轮仅计划 eta=.02；其他辅助稳定项和一般边界不因此解锁。
+
+七文件最小补丁、测试与原门限见 `tests/notes/upl_damp_plan_r1.json`。当前为待验证候选，不是长程、服务器程序、塑性或重启验收；测试配置、输出和图仍放在 `tests` 的浅层分类目录。
+
+同日的沙漏兼容阶段已完成 CPU Debug/Release 分量检查、原 u-pw＋HG 的逐位回归，以及 u-pl 关闭 HG 的全部 1469 帧／22 原生字段和实际时钟逐位回归，见 `tests/notes/upl_hg_cpu_private_root_r1.json`（备份节点 `98e3861`）。这不是开启 HG 后的耦合精度验收。下一候选仅开放上述恒 k、无重力、单个水平 FreeSlip 底面、X 周期、核带加载和固定格点排水的 CPU 弹性列柱；GPU、变 k、SPR、黏性／时变黏性、塑性和重启仍拒绝。现有 LS 沙漏残差不改，用 `H=Q/M0` 累计内力，以当前阶段的 `mi(J)` 换算加速度；同阶段完整加速度再进入 Darcy。`.2` 刚度时间比与 `.01 rad` 累计转动限值保持不变。短窗、半步长和逐粒子列间位移检查通过后，才考虑新的中期窗口；已有正式数据不因此重跑或改写。
+
+## 2026-10-25：五组旧结果已退役归档
+
+经用户确认，旧k1em2、旧k1em3、dp0005_dt2em6网格对照、孔压precision和孔压double五个输出目录，已完整归档至`tests/outputs/root_legacy_r1.zip`并从根目录移除。全部3889个结果文件及输入快照逐项解压核对SHA-256；这不是当前正式结果，也未重跑计算。
+
+旧`full_k1em4_out`基线和全部`*_release_*`输出保留原位。三个旧XML因历史模板／来源检查依赖继续保留、内容不改；三个退役CPU BAT仍在原归档位置，不应双击运行。
+
+详见[退役清单和原路径恢复说明](tests/notes/root_retire_r1.md)。下文旧记录中的“所有历史out原位保留”是整理前状态，以本节为准；原图、图表数据和历史哈希记录未改写。ZIP仅为本地数据归档，不是云端原始数据备份。
+
+2026-10-24边界扩展候选：正式三组图与配套CSV已同步核验，正式输入/数据不动。CPU多平面SPR和轴对齐NoPen的最小补丁及短窗证据见[测试记录](tests/notes/spr_planes_r1.md)；尚非通用二维/三维长程验收，GPU本轮未改。当前Yao二维验证在case06的tests内进行。
+
+## 2026-10-23：当前第三组改为 k=5e-5
+
+按用户要求，未完成的k=1e-5 CPU长算及其旧通知已停止，原始部分输出保留，停止审计为`tests/logs/k5_cpu_retire_r1.json`。当前三组为 **1e-3、1e-4、5e-5**；前两组不重跑、不覆盖。旧k1em5 XML/BAT/输出仅保留为历史，不再是当前第三组。
+
+用户随后要求三组统一粒距，现已停止中间网格r3正式GPU计算并保留部分输出：最后完整PART1、实际t=.3643749999996591 s，72875步，不是2Tv。停止审计为`tests/logs/k5em5_stop_r3.json`；旧worker不重启、不以普通PART精确续接HG。
+
+当前三份正式XML均为dp=.01 m、宽.1 m（1000土粒子），第三组dt=1e-5、2Tv终时145.75858 s（14575858步）、TimeOut=.36437142857142857 s（DeltaTv=.005），无special/timeout。第三组CPU八线程完整运行已于2026-10-24完成并按用户约定的一维孔压/沉降范围验收：实际145.75858003506625 s、402帧、主循环10.976小时。输出为`full_k5em5_release_CPU_uniform_out`，未覆盖旧r3目录。验收收据`tests/logs/k5em5_hg05_full_cpu_r1.review.json`，不重新触发已结束worker；普通PART不能精确续算HG。细/中网格没有用于本次正式对比。当前记录见[同粒距排查与完整验收](tests/notes/k5em5_uniform_r1.md)。
+
+同网格CPU短对照已排除“只需减半时间步”和单独密度率修正；法向Darcy矩修正也因综合检查未通过而放弃。采用的候选保持原孔压方程/离散，仅将HG强度xi=.1降至.05：.3 s粗/半通过原安全和5 Pa/.005 mm门，顶部应力差峰值118.93→65.74 Pa，末时Q10.81→6.77 Pa，孔压理论误差基本不变。CPU/GPU .3 s同物理核对以及CPU 1/15 s检查随后通过；密度/Darcy原型没有合入生产。详见上述记录和`tests/figures/k5em5_hg05_review_r1.png`。
+
+CPU八线程15 s粗/半已完成：15001对最大孔压半步差4.2151 Pa、沉降差.0002130 mm；60,061个输入/输出哈希一致，前1001帧分别与1 s同dt原生字段逐位一致。独立抽检每条14个原生帧并审阅三图，终点孔压理论RMSE8.22/8.64 Pa、顶部材料沉降误差+.1267%/+.1181%；最大应力残差98.26 Pa、顶部差65.74 Pa，原门不变。底层相对理论额外位移约.000508 mm；Q从约4.23回升至5.67 Pa，需完整周期继续观察。图为`tests/figures/k5em5_hg05_15s_cpu_r1_release_{history,guards,profiles}.png`；准入收据`tests/logs/k5em5_hg05_15s_cpu_r1.review.json`只准入下一条新鲜完整计算，不是2Tv验收。后端按本次相同网格实测选CPU八线程（短测比GPU快约1.51倍）；GPU的xi=.05仅有.3 s证据，不宣称第三组GPU完整验收。
+
+以下保留此前开发/发布记录；涉及旧k1em5的“运行中”等表述均为历史状态，以本节和对应退役审计为准。
+
+更新日期：2026-10-24。孔压/孔压率仍为原生 float u-pw PR，无高低位补偿、无 double 孔压状态或KEEP密度补偿；持久应力及其历史为double。当前一维正式配置采用应力率梯度修正、归一化核支持带加载、弹性HG、固定平面SPR和固定格点排水事件，阻尼0.04。k=1e-4 CPU/GPU完整2Tv及k=1e-3正式GPU完整2Tv按约定的一维范围验收，保留xi=.1；第三组5e-5 CPU使用xi=.05并完成同范围验收。三组粒距相同，但HG强度不同，不冒充仅k变化的严格对照。不能推广为塑性、复杂边界或大旋转验收；第三组GPU仅有.3 s核对，不宣称其GPU完整验收。
+
+当前三组正式图/CSV入口为[figures/README.md](figures/README.md)中的`full_validation_three_*`，旧两组`full_validation_latest_*`和所有冻结发行图保留。三组终点压力剖面RMSE为2.42883/.88109/1.16019 Pa，顶部材料沉降为3.657380/3.658754/3.658263 mm，理论相对误差-.45405%/-.41667%/-.43001%。第三组Tv=1至2的平均孔压剩余比例相对理论差-1.0297%，保存的晚期均值持续下降，无伪平台；Q仍约12.45 Pa，底层相对理论偏差.00127465 mm，不称局部应力误差已全部消除。仅有15 s半步长证据，没有全周期半步长验收。第三组402帧`particles`已由正式BAT生成。
+
+运行输入/XML、BAT与原检查清单按计算时版本冻结，以保持哈希可追溯；XML内当时的“full-cycle pending”注释不改写为事后状态，当前验收看新review收据与本说明。三组汇总每组取400个目标Tv=.005,.010,...,2的最近唯一真实帧；第三组未保存加载后的精确Tv=0，不拿未加载初态当初始超孔压，也不插值SPH状态。原生保存频率和发布选择频率分别记录在`full_validation_three_metadata.csv`。
+
+## 当前正式图与数据
+
+前两组完整2Tv的新图与配套数据统一从[figures/README.md](figures/README.md)进入：`full_validation_latest_history.png`、两组`full_validation_latest_profiles_k1em*.png`、新增`full_validation_latest_late_profiles.png`及残差诊断图。历史发布数据每组恢复按目标ΔTv=.005整理401个真实原生帧，保留目标/实际Tv、实际时刻和PART编号，未插值或重算。1.5Tv和2Tv原本已有，新晚期图将Tv=1、1.5、2拆成独立面板，避免全尺度下难以分辨。k=1e-5未完成，不混入正式对比。旧`full_validation_q0_*`与冻结验收图保留；旧`k5em4`是5e-4，不能当作本次1e-5。
+
+XML的TimeOut始终以秒为单位。当前三份正式XML使用ΔTv=.005，对应k=1e-3/1e-4/5e-5的TimeOut分别为.0182185714285714/.182185714285714/.36437142857142857 s，CPU/GPU BAT读取同一份XML。前两组积分参数及已有结果不变，不为改变保存间隔重跑；其保留结果仍分别为.001/.01 s密采样，生成XML和图表来源记录不改写。新5e-5的短窗位于tests，正式全程使用根目录入口；原1e-5的1.82185714285714 s设置仅保留为历史。旧401帧对应ΔTv≈.005，上一版发布误写为.01现已修正；旧发布已保存快照，完整定义见上述索引。
+
+单设TimeOut恢复的是间隔，并非将每帧锚定于排水后的Tv=0：默认保存网格从物理t=0起算，而Tv=Cv(t-.01)/H²；实际保存还受积分步长落点影响。没有为此新增special/timeout，比较仍用实际时刻计算Tv，不将帧号当精确Tv。加载/排水初期安全门继续以保留的密采样诊断为依据，不用新的稀疏发行输出替代。
+
+“固定格点排水”指固定时间步网格上的排水开启时刻对齐，只在tD恰落于N*dt且存在累计舍入误差时避免晚开一步，不是空间网格，不改变排水位置/p=0或输出频率。
+
+## 当前正式入口
+
+| 渗透系数 | XML文件末段 | CPU/GPU BAT文件末段 | 固定dt (s) | 2Tv终时 (s) |
+|---|---|---|---:|---:|
+| k=1e-3 m/s | `full_k1em3_Def.xml` | `full_k1em3_win64_CPU.bat` / `full_k1em3_win64_GPU.bat` | 0.000001 | 7.297429 |
+| k=1e-4 m/s | `full_k1em4_Def.xml` | `full_k1em4_win64_CPU.bat` / `full_k1em4_win64_GPU.bat` | 0.00001 | 72.88429 |
+| k=5e-5 m/s | `full_k5em5_Def.xml` | `full_k5em5_win64_CPU.bat` / `full_k5em5_win64_GPU.bat` | 0.00001 | 145.75858 |
+
+XML完整前缀为`CaseTerzaghiConsolidation_q0_PR_`，BAT前缀为`xCaseTerzaghiConsolidation_q0_PR_`，均在本目录。前两组CPU入口仍单线程；新5e-5的CPU入口为八线程。统一粒距后的同物理短测CPU八线程比GPU快，当前延长检查使用CPU，尚未启动新的正式长算。三组终时按各自Cv计算，再向上取整到固定步长；不复制k=1e-4终时到其他k，也不重复添加`special/timeout`。
+
+正式CPU/GPU主循环已补末步保存条件：TimeMax或nsteps结束时，即使不整除TimeOut也保存原生末帧。这只是输出策略修复，不改步长或物理积分。
+
+双击对应BAT：GenCase → 正式CPU/GPU Release求解器 → PartVTK生成`particles` → `support/release_case.py`读取原生double应力/位置和float孔压，正式图/CSV/检查结果保存在`figures/full_validation_release_k1em*_CPU|GPU*`。需要带numpy/pandas/matplotlib的Python，当前优先使用`D:\Anaconda3\python.exe`；只读PART工具为`bin/windows/ReadHydroMechPart_win64.exe`，其源码和构建脚本在本case的`support`。
+
+新输出使用`CaseTerzaghiConsolidation_q0_PR_full_k1em*_release_CPU_out`或`_release_GPU_out`，当前5e-5统一粒距入口使用`full_k5em5_release_GPU_uniform_out`（CPU同理），不会覆盖旧`*_out`。已有新输出也不自动删除、不接受`-force`清除；可用同一BAT的`-postprocess`只做后处理，需新计算时明确选择另一个输出名。HG只支持新鲜启动，没有精确历史重启；长算中途关机不能拿普通PART精确续接本HG。
+
+k=1e-4已复制发布本轮已验完整数据；正式CPU/GPU程序短窗与伴随程序初末态逐位一致，`release_provenance.json`明确记录来源，不谎称又通过BAT重算过一轮。k=1e-3已由根目录GPU BAT完成新计算：实际7.297429000666115 s、7297429步、7299帧，末期剖面RMSE 2.42883 Pa、顶部材料沉降3.657380 mm（解析误差-0.45405%）。k=1e-4相应为0.88109 Pa、3.658754 mm（-0.41667%）。两组正式`particles`及`figures/full_validation_release_k1em3_GPU*`、`k1em4_GPU*`均已生成并审阅；残余Q约10 Pa并未消失。去重21950文件哈希和原生抽样复核见`tests/logs/formal_release_k34_r1.review.json`。
+
+## 已退役的k=1e-5开发记录
+
+原计划要求k=1e-5单独完成2Tv，现已由用户明确替换为5e-5，以下保留历史。原`formal_release_k5_r1`采用dt=1e-5、72875286步，曾估计约4天，但已被下述安全门停止，该估计不能用于后续细网格。旧worker及部分输出保持冻结，不擅自从普通PART精确续接HG。旧k=1e-2输入/入口仍保留历史配置，本轮不修改、不代表新组合已验收。
+
+**k=1e-5上述原网格长算已于0.10001 s触发原100 Pa安全门而停止，最后完整保存为0.20000 s，不是2Tv完成，也没有正式完整图。旧worker不重启，根目录部分输出保留。** CPU对照复现了这一早期排水面误差，单独减半dt不能解决；细化到dp=.003125后，已经完成全宽.15 s/1 s的5/2.5微秒检查，以及宽.025 m周期单元的同窗等价检查。缩窄单元只适用于一维均匀周期场，主循环短测实测快约2.4倍，尚不能直接替代长程验收。
+
+2026-10-20进一步尝试8/4微秒：5 ms采样的1 s孔压半步最大差4.65046 Pa曾通过，但1 ms加密短窗在约.011 s发现9.66059 Pa差异，超过原5 Pa限值，因此拒绝该候选，不放宽门、不再搜dt。2026-10-21原5/2.5微秒的`k5_long5_r1`已完成15 s并审阅三图：15001对最大孔压半步差3.79523 Pa、沉降差.00023918 mm；两条各201个1 s共同前缀0 ULP，末时剖面RMSE6.760/7.290 Pa，材料沉降解析误差+.909%/+.880%。30448个记录哈希核对一致，底层材料仍有约.000025 mm额外偏差。15 s仅Tv=.041，不是晚期2Tv验收。
+
+据此曾准入`tests/configs/k5_full_r1_Def.xml`及GPU BAT完整周期，输出在`tests/outputs/k5_full_r1`；dp=.003125、宽.025、固定5微秒、145750572步，原参数/安全门保持。该GPU运行已于2026-10-21为用户授权的加速试验主动结束：最后可读PART6056、实际6.055999999855318 s，不是2Tv，也非物理失败；原始输出全保留，审计为`tests/logs/k5_full_r1_acceleration_stop.json`，旧通知器已退役，不重启。
+
+用户随后明确停止后端/步长比较，指定用CPU从头重跑1e-5。新入口为`tests/configs/k5_cpu_full_r1_Def.xml`和`xk5_cpu_full_r1_win64_CPU.bat`，输出`tests/outputs/k5_cpu_full_r1`，采用8线程、同一细网格/宽度和5微秒，不增大dt。该验证计算沿用前15 s原生1 ms、之后.1 s诊断采样，读取既有GPU15 s数据作5 Pa/.005 mm同物理前缀检查，不启动新GPU对照求解器；根目录发行XML的ΔTv=.005设置不变，正式图仍按实际Tv选帧。仅末帧生成particles；常规PART不能精确续接HG，必须新鲜启动。
+
+CPU仅补齐已有加载加速度的原生输出`HydroMechLoadAce`，不改力/积分；.03 s、31帧旧物理字段逐位一致，总外力诊断误差最大6.12e-5 N/m（等效.1 m宽）。CPU Debug/Release构建通过。新CPU短测主循环37.076771 s/6000步，长程耗时仍为天级外推，不是完成承诺。具体改动、控制与自动终态接续见`tests/notes/k5_cpu_full_r1.md`及`tests/logs/k5_cpu_full_r1.status.json`。未启动的6.25微秒候选已撤出活动目录，归档于`tests/outputs/k5_dt625_notrun_r1`，不是验证通过的配置。
+
+单元缩窄仍只具均匀一维短窗等价证据，不推广为一般滑坡/长横向波长验证。只有完整复核通过后才另行发布新k5，根目录原失败输出不覆盖。原准入证据见`tests/notes/formal_release_r1.md`及`logs/k5_full_admission_r1.json`，原短窗图在`tests/figures/k5_long5_r1_{history,profiles,half}.png`。
+
+根目录历史XML和所有`*_out`保持原位，包括网格细化、precision和double历史输出。用户于2026-10-21授权清理后，仅将旧k1e-2、precision、double三个退役CPU BAT原样移至`tests/outputs/retired_root_inputs_r1`，避免根目录误点；不是删除结果。三个旧XML有历史生成脚本/恢复依赖或配对记录，暂不移动。归档BAT相对路径仍按原case根设计，不应在归档目录双击；用途与恢复说明见该目录README。当前三组正式XML及六份CPU/GPU BAT仍在根目录。更新前的两组正式XML/CPU BAT及本索引已另存`tests/outputs/formal_inputs_base_r1`；历史数据以各自`Run.out`、生成XML和版本记录确定来源，不能用当前更新后的根目录XML解释旧结果。
+
+**当前三组CPU/GPU BAT没有删除路径。含覆盖确认/`-force`的旧k=1e-2 BAT已移出根目录原样归档，不要用它试跑或覆盖保留结果。临时验证仍放在`tests`分类目录。**
+
+## 原位退役的精度试验
+
+| 分组 | 状态及处理 |
+|---|---|
+| `full_k1em4_precision` | 高低位孔压累计补偿的历史完整2Tv结果；已退役。XML/out仍在根目录，BAT原样归档至`tests/outputs/retired_root_inputs_r1` |
+| `full_k1em4_double` | double状态历史部分结果；停止于Part84、15.303610 s、1,530,361步，不是完整2Tv。XML/out仍在根目录，BAT同上归档 |
+| `tests` 中 `pore_double_stage1` / `pore_double_vel0` | 历史短程迁移和步长敏感性检查，不能证明完整固结精度提高；严格压力审查曾有未通过项 |
+| `tests` 中 `upw_float_restore` | 当前 float 回退验收证据，保留为基线，不归为 double 退役输出 |
+
+precision完整结果仍有晚期孔压平台，详见[对比报告](figures/precision_q0_k1em4_report.md)。double未完成，不能据此宣称完整过程改善或有效加速。归档double BAT自带冻结程序/源码检查；当前float程序不满足它的运行条件。本次仅移动BAT、不改其字节，也不把double/补偿检查点交给float续算。归档BAT不能在新目录直接运行，恢复说明见归档README。
+
+历史 [precision 运行说明](support/precision_q0_k1em4.md) 保留原文，其中“正式入口”等表述对应当时版本；当前状态以本索引为准。回退范围及验收见 [upw_float_restore.md](tests/notes/upw_float_restore.md)。
+
+## 文件位置和依赖
+
+- 根目录：正式 XML/BAT 和正式 `_out`；`figures`：正式图表；`support`：正式后处理及运行来源记录。沿用现有 `figures` 名称，不另外建立 `figure`。
+- `tests`：临时配置、运行、日志、图和结论，见 [tests/README.md](tests/README.md)。
+- `support/compare_double_q0.py`、`run_double_q0.py` 依赖 `tests/outputs/pore_double_vel0/reader/export_state.exe`、对应 build 日志及 `tests/outputs/pore_double_2tv/baseline_native`。这些支持链原位保留，不单独搬走。
+- 历史自重迁移测试跨算例读取 01 的 `tests/outputs/CaseSWSc2_MLSDirect_Tv2_from_p0056_GPU_out` 输入和 `CaseSWSt1_MLSDirect_GPU_out/data` 的 Part56。整理 01 时必须保留这些依赖。
+- `tests/notes/upw_float_restore_before.zip`、`pore_double_stage1_baseline_sources.zip` 是历史源码/程序恢复档案，不是待清理的缓存。
+
+今后的正式版本只有通过验收后才在根目录增加或更新对应 XML/BAT；测试文件不占根目录，原始输出和历史正式图不得被自动覆盖。
+
+## u-pl 完整CPU基线与GPU对接候选（2026-11-05）
+
+`upl_bigstep_2tv_CPU1_r1` 已完成2Tv，实际终点72.88428689946836 s、1682个原生状态；1040 IDs、22数组、时钟、ledger、排水及HG检查通过。图表与数据入口为 [full_validation_upl_CPU1_r1](figures/full_validation_upl_CPU1_r1.README.md)。孔压和顶部沉降接近参考，但底层总应力误差110.576 Pa高于旧100 Pa标准，不作无条件物理验收。与旧u-pw比较使用相同经典参考、各自实际时刻和材料位置；中前期孔压误差仍较大，后期孔压与终点顶部沉降较好，不能称为全面优于旧版。
+
+下一项GPU候选只同步当前恒定k、零重力、X周期、单一向上固定FreeSlip底壁弹性列体的SPR/人工粘性/HG组合。复用动态边界的同阶段镜像速度，AV按当前J计算密度与邻粒子惯性，HG按当前体积及惯性加入参考质量历史；不改变边界几何或时间积分，也不处理本轮底层应力偏差。默认关闭动态渗流时仍沿用原u-pw。构建和针对性实现检查完成前，不替换正式发行程序或服务器计算包。当前状态见 [GPU对接记录](tests/notes/upl_gpu_stabilizers_r1.json)；已完成的CPU及旧正式输出保持原位。
