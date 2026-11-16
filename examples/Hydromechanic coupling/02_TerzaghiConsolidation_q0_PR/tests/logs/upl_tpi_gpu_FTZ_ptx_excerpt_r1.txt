@@ -1,0 +1,44 @@
+Read-only excerpt of the actual retained Release_r3 cuobjdump PTX. Original log kept locally; no new GPU execution.
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\logs\upl_tpi_gpu_Release_r3.raw_write_ptx_r1.log
+1483289: bra.uni $L__BB437_28;
+1483290: 
+1483291: 
+1483292: 
+1483293: $L__BB437_33:
+1483294: 
+1483295: atom.global.or.b32 %r46, [%rd1], 32768;
+1483296: 
+1483297: add.s64 %rd112, %rd1, 4;
+1483298: 
+1483299: atom.global.min.u32 %r47, [%rd112], %r1;
+1483300: 
+1483301: bra.uni $L__BB437_34;
+1483302: 
+1483303: 
+1483304: 
+1483305: $L__BB437_31:
+1483306: 
+1483307: cvt.rn.ftz.f32.f64 %f3, %fd9;
+1483308: 
+1483309: st.global.f32 [%rd16+-76], %f3;
+1483310: 
+1483311: bra.uni $L__BB437_34;
+1483312: 
+1483313: 
+1483314: 
+1483315: $L__BB437_28:
+1483316: 
+1483317: cvt.ftz.f64.f32 %fd6, %f1;
+1483318: 
+1483319: div.rn.f64 %fd7, %fd2, %fd1;
+1483320: 
+1483321: add.rn.f64 %fd9, %fd6, %fd7;
+1483322: 
+1483323: bra.uni $L__BB437_29;
+1483324: 
+1483325: 
+1483326: 
+1483327: }
+1483328: 
+1483329: 
+1483330: 

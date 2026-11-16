@@ -1,0 +1,2224 @@
+{
+  "stage": "upl_tpi_gpu_native_r5.review",
+  "passed": true,
+  "root_admission": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_gpu_Release_C_startup015_r1.native_review_admission_r5.json",
+    "bytes": 125291,
+    "mtime_ns": 1794860632664918700
+  },
+  "job": {
+    "configuration": "Release",
+    "scheme": "C",
+    "window": "startup015",
+    "tag": "upl_tpi_gpu_Release_C_startup015_r1",
+    "run_receipt": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_gpu_Release_C_startup015_r1.run.json",
+      "bytes": 118944,
+      "mtime_ns": 1794860342977426000
+    },
+    "call": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_gpu_Release_C_startup015_r1.call.json",
+      "bytes": 5168,
+      "mtime_ns": 1794860342892096000
+    },
+    "program": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_gpu_Release_r3\\out\\DualSPHysics5.2_GEO_win64.exe",
+      "bytes": 22753280,
+      "mtime_ns": 1794857895400727700
+    },
+    "plan": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_gpu_Release_C_startup015_r1.clock.csv",
+      "bytes": 26826,
+      "mtime_ns": 1794860047625692400
+    },
+    "run_out": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_gpu_Release_C_startup015_r1\\Run.out",
+      "bytes": 40574,
+      "mtime_ns": 1794860342875488100
+    },
+    "output_directory": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_gpu_Release_C_startup015_r1",
+    "data": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_gpu_Release_C_startup015_r1\\data",
+    "native_output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_gpu_Release_C_startup015_r1_native_r4"
+  },
+  "actual_common_reader_build_helper": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_tpi_cpu_build_r2.py",
+    "bytes": 23707,
+    "mtime_ns": 1794848068876255800
+  },
+  "physical_acceptance": false,
+  "reader_implementation_r1": "upl_tpi_gpu_native_r1",
+  "reviewer_r5": "upl_tpi_gpu_native_r5",
+  "cross_model_5Pa_or_half_equivalence_gate": false,
+  "solver_reader_or_build_invocations": 0,
+  "preserved_r4_diagnostic": {
+    "prior_failed_r4_review": null
+  },
+  "actual_pressure_cast_PTX": {
+    "actual_binding": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_gpu_Release_r3.raw_write_ptx_r1.binding.json",
+      "bytes": 923,
+      "mtime_ns": 1794859261637878800
+    },
+    "actual_call": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_gpu_Release_r3.raw_write_ptx_r1.call.json",
+      "bytes": 1637,
+      "mtime_ns": 1794859261633879400
+    },
+    "actual_PTX": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_gpu_Release_r3.raw_write_ptx_r1.log",
+      "bytes": 30589270,
+      "mtime_ns": 1794859261626875500
+    },
+    "entry_instructions": {
+      "BeginRowsKernel": {
+        "entry_line": 1481439,
+        "pressure_cast_line": 1481827,
+        "float_input_FTZ_lines": [
+          1481741,
+          1481749
+        ]
+      },
+      "GuessKernel": {
+        "entry_line": 1482315,
+        "pressure_cast_line": 1482569,
+        "float_input_FTZ_lines": []
+      },
+      "PrepareKernel": {
+        "entry_line": 1482781,
+        "pressure_cast_line": 1483307,
+        "float_input_FTZ_lines": [
+          1483317
+        ],
+        "double_divide_line": 1483319,
+        "double_add_line": 1483321
+      }
+    },
+    "model": "RN_f32_then_sign_preserving_result_FTZ",
+    "pressure_added_ULP_tolerance": 0,
+    "double_prediction_and_J_arithmetic_changed": false,
+    "solver_reader_or_tool_invocations": 0
+  },
+  "HG_original_guards": {
+    "forcecalls": 48000,
+    "predictorupdates": 24000,
+    "correctorupdates": 24000,
+    "ratecalls": 48000,
+    "ratecalculations": 24001,
+    "cachehits": 23999,
+    "max_reference_net": 2.35367e-14,
+    "max_actual_float_net": 3.1715e-05,
+    "max_dt_tau": 0.00497589,
+    "spinbound": 1.76113e-07
+  },
+  "sidecar": {
+    "rows": 344000,
+    "expected_rows": 344000,
+    "actual_ID_owned_history": true,
+    "actual_M0_alpha": 0.0,
+    "beta": 0,
+    "max_actual_pressure_float_writeback_rounding_Pa": 0.0004882784669462126,
+    "per_saved_row_formula_and_J_corrector_checked": true,
+    "J_noninitial_rows_checked": 343000,
+    "J_nonfused_path_matches": 343000,
+    "J_fused_path_matches": 343000,
+    "J_both_paths_match": 343000,
+    "J_added_ULP_tolerance": 0,
+    "original_CUDA_fast_math_and_fmad_preserved": true,
+    "actual_pressure_cast_RN_f32_signed_FTZ": true,
+    "actual_float_input_to_double_signed_FTZ": true,
+    "observed_nonzero_subnormal_pressure_inputs": {
+      "pn": 0,
+      "previous": 0,
+      "endpoint_q": 0
+    },
+    "input_subnormal_count_is_descriptive_not_a_physical_limit": true,
+    "pressure_added_ULP_tolerance": 0,
+    "unsaved_history_values_independently_observed": false,
+    "PorePressRate_is_legacy_scaled_endpoint_residual_not_actual_dpdt": true,
+    "no_finite_Kw_or_half_equivalence_claim": true
+  },
+  "same_scheme_CPU_GPU": {
+    "passed": true,
+    "scheme": "C",
+    "samples": 344,
+    "max_pressure_RMS_Pa": 0.0070074186182485015,
+    "max_material_XYZ_displacement_mm": 1.1704507858232253e-06,
+    "all_sample_metrics": [
+      {
+        "part": 0,
+        "time_s": 0.0,
+        "pressure_RMS_Pa": 0.0,
+        "material_XYZ_displacement_max_mm": 0.0
+      },
+      {
+        "part": 1,
+        "time_s": 0.00012500286102294915,
+        "pressure_RMS_Pa": 1.7424793148068226e-06,
+        "material_XYZ_displacement_max_mm": 8.168484795226689e-13
+      },
+      {
+        "part": 2,
+        "time_s": 0.0002500057220458985,
+        "pressure_RMS_Pa": 3.852781510076881e-06,
+        "material_XYZ_displacement_max_mm": 4.489223043140368e-12
+      },
+      {
+        "part": 3,
+        "time_s": 0.0003687584400176999,
+        "pressure_RMS_Pa": 9.690334202204477e-06,
+        "material_XYZ_displacement_max_mm": 1.1886776904778715e-11
+      },
+      {
+        "part": 4,
+        "time_s": 0.0004937613010406488,
+        "pressure_RMS_Pa": 1.5490223033385528e-05,
+        "material_XYZ_displacement_max_mm": 2.589999756219737e-11
+      },
+      {
+        "part": 5,
+        "time_s": 0.0006125140190124512,
+        "pressure_RMS_Pa": 3.809763713906719e-05,
+        "material_XYZ_displacement_max_mm": 4.749691884383062e-11
+      },
+      {
+        "part": 6,
+        "time_s": 0.0007375168800354011,
+        "pressure_RMS_Pa": 3.826714020986917e-05,
+        "material_XYZ_displacement_max_mm": 8.651773992572523e-11
+      },
+      {
+        "part": 7,
+        "time_s": 0.0008562695980072035,
+        "pressure_RMS_Pa": 5.032162870512182e-05,
+        "material_XYZ_displacement_max_mm": 1.4438902883526792e-10
+      },
+      {
+        "part": 8,
+        "time_s": 0.0009812724590301533,
+        "pressure_RMS_Pa": 7.594595065548499e-05,
+        "material_XYZ_displacement_max_mm": 2.2253412470906342e-10
+      },
+      {
+        "part": 9,
+        "time_s": 0.0011000251770019558,
+        "pressure_RMS_Pa": 7.460459494321658e-05,
+        "material_XYZ_displacement_max_mm": 3.0813970041688687e-10
+      },
+      {
+        "part": 10,
+        "time_s": 0.0012250280380249057,
+        "pressure_RMS_Pa": 0.00011382210276636802,
+        "material_XYZ_displacement_max_mm": 4.089197974511895e-10
+      },
+      {
+        "part": 11,
+        "time_s": 0.001343780755996708,
+        "pressure_RMS_Pa": 0.00011143819255608514,
+        "material_XYZ_displacement_max_mm": 5.175080388675876e-10
+      },
+      {
+        "part": 12,
+        "time_s": 0.001468783617019658,
+        "pressure_RMS_Pa": 0.00014341232480914802,
+        "material_XYZ_displacement_max_mm": 6.457792276257571e-10
+      },
+      {
+        "part": 13,
+        "time_s": 0.0015875363349914604,
+        "pressure_RMS_Pa": 0.00015081751910994123,
+        "material_XYZ_displacement_max_mm": 7.845997844815167e-10
+      },
+      {
+        "part": 14,
+        "time_s": 0.0017125391960144103,
+        "pressure_RMS_Pa": 0.00014886823699349007,
+        "material_XYZ_displacement_max_mm": 9.507910848225513e-10
+      },
+      {
+        "part": 15,
+        "time_s": 0.0018312919139862128,
+        "pressure_RMS_Pa": 0.00018256552878443056,
+        "material_XYZ_displacement_max_mm": 1.1579477749745218e-09
+      },
+      {
+        "part": 16,
+        "time_s": 0.0019562947750091627,
+        "pressure_RMS_Pa": 0.00019679460852068602,
+        "material_XYZ_displacement_max_mm": 1.4427759268540486e-09
+      },
+      {
+        "part": 17,
+        "time_s": 0.0020812976360321126,
+        "pressure_RMS_Pa": 0.0002271295226365357,
+        "material_XYZ_displacement_max_mm": 1.7257663457212964e-09
+      },
+      {
+        "part": 18,
+        "time_s": 0.002200050354003915,
+        "pressure_RMS_Pa": 0.00027806856247133635,
+        "material_XYZ_displacement_max_mm": 2.027873567540945e-09
+      },
+      {
+        "part": 19,
+        "time_s": 0.002325053215026865,
+        "pressure_RMS_Pa": 0.00034429455019947396,
+        "material_XYZ_displacement_max_mm": 2.3538005159149873e-09
+      },
+      {
+        "part": 20,
+        "time_s": 0.0024438059329986673,
+        "pressure_RMS_Pa": 0.00030495597552893306,
+        "material_XYZ_displacement_max_mm": 2.7016631901086724e-09
+      },
+      {
+        "part": 21,
+        "time_s": 0.0025688087940216172,
+        "pressure_RMS_Pa": 0.0002801241061508305,
+        "material_XYZ_displacement_max_mm": 3.0908158578668042e-09
+      },
+      {
+        "part": 22,
+        "time_s": 0.0026875615119934197,
+        "pressure_RMS_Pa": 0.0003359928529070073,
+        "material_XYZ_displacement_max_mm": 3.4403496723509126e-09
+      },
+      {
+        "part": 23,
+        "time_s": 0.0028125643730163696,
+        "pressure_RMS_Pa": 0.00037154321054192965,
+        "material_XYZ_displacement_max_mm": 3.842753620846616e-09
+      },
+      {
+        "part": 24,
+        "time_s": 0.002931317090988172,
+        "pressure_RMS_Pa": 0.00031813312752464694,
+        "material_XYZ_displacement_max_mm": 4.2405159589031154e-09
+      },
+      {
+        "part": 25,
+        "time_s": 0.003056319952011122,
+        "pressure_RMS_Pa": 0.0003394344978796794,
+        "material_XYZ_displacement_max_mm": 4.63875210096326e-09
+      },
+      {
+        "part": 26,
+        "time_s": 0.0031750726699829243,
+        "pressure_RMS_Pa": 0.0003525275653855872,
+        "material_XYZ_displacement_max_mm": 5.018110309706123e-09
+      },
+      {
+        "part": 27,
+        "time_s": 0.0033000755310058742,
+        "pressure_RMS_Pa": 0.00033305291460517493,
+        "material_XYZ_displacement_max_mm": 5.40172226691356e-09
+      },
+      {
+        "part": 28,
+        "time_s": 0.0034188282489776766,
+        "pressure_RMS_Pa": 0.0003808906737940702,
+        "material_XYZ_displacement_max_mm": 5.688195674125112e-09
+      },
+      {
+        "part": 29,
+        "time_s": 0.0035438311100006266,
+        "pressure_RMS_Pa": 0.00042665276882266094,
+        "material_XYZ_displacement_max_mm": 5.926294449004291e-09
+      },
+      {
+        "part": 30,
+        "time_s": 0.003662583827972429,
+        "pressure_RMS_Pa": 0.00045043779905268793,
+        "material_XYZ_displacement_max_mm": 6.217085074335965e-09
+      },
+      {
+        "part": 31,
+        "time_s": 0.003787586688995379,
+        "pressure_RMS_Pa": 0.000567173930864936,
+        "material_XYZ_displacement_max_mm": 6.759528121868956e-09
+      },
+      {
+        "part": 32,
+        "time_s": 0.003906339406967181,
+        "pressure_RMS_Pa": 0.0004965726688368893,
+        "material_XYZ_displacement_max_mm": 7.344125311334044e-09
+      },
+      {
+        "part": 33,
+        "time_s": 0.004031342267990131,
+        "pressure_RMS_Pa": 0.0006476402437190139,
+        "material_XYZ_displacement_max_mm": 8.016250492467752e-09
+      },
+      {
+        "part": 34,
+        "time_s": 0.004156345129013081,
+        "pressure_RMS_Pa": 0.0005577958817771417,
+        "material_XYZ_displacement_max_mm": 8.7886507872638e-09
+      },
+      {
+        "part": 35,
+        "time_s": 0.0042750978469848835,
+        "pressure_RMS_Pa": 0.0006614363859445345,
+        "material_XYZ_displacement_max_mm": 9.605983595680233e-09
+      },
+      {
+        "part": 36,
+        "time_s": 0.0044001007080078335,
+        "pressure_RMS_Pa": 0.0007700305229181412,
+        "material_XYZ_displacement_max_mm": 1.04106409789609e-08
+      },
+      {
+        "part": 37,
+        "time_s": 0.004518853425979636,
+        "pressure_RMS_Pa": 0.0008036640658796017,
+        "material_XYZ_displacement_max_mm": 1.1065452620852354e-08
+      },
+      {
+        "part": 38,
+        "time_s": 0.004643856287002586,
+        "pressure_RMS_Pa": 0.0008057380411111012,
+        "material_XYZ_displacement_max_mm": 1.1739940708857187e-08
+      },
+      {
+        "part": 39,
+        "time_s": 0.004762609004974388,
+        "pressure_RMS_Pa": 0.000770494816311499,
+        "material_XYZ_displacement_max_mm": 1.2396684023845933e-08
+      },
+      {
+        "part": 40,
+        "time_s": 0.004887611865997338,
+        "pressure_RMS_Pa": 0.0006572780730649938,
+        "material_XYZ_displacement_max_mm": 1.3258395013336592e-08
+      },
+      {
+        "part": 41,
+        "time_s": 0.0050063645839691405,
+        "pressure_RMS_Pa": 0.0007701853184816544,
+        "material_XYZ_displacement_max_mm": 1.398796630057377e-08
+      },
+      {
+        "part": 42,
+        "time_s": 0.0051313674449920904,
+        "pressure_RMS_Pa": 0.0008297908510253126,
+        "material_XYZ_displacement_max_mm": 1.4721292606008176e-08
+      },
+      {
+        "part": 43,
+        "time_s": 0.005250120162963893,
+        "pressure_RMS_Pa": 0.0007124557213660555,
+        "material_XYZ_displacement_max_mm": 1.5392701134717465e-08
+      },
+      {
+        "part": 44,
+        "time_s": 0.005375123023986843,
+        "pressure_RMS_Pa": 0.0008312262280729165,
+        "material_XYZ_displacement_max_mm": 1.6136594841028884e-08
+      },
+      {
+        "part": 45,
+        "time_s": 0.005493875741958645,
+        "pressure_RMS_Pa": 0.0007666171127005655,
+        "material_XYZ_displacement_max_mm": 1.6848873741588496e-08
+      },
+      {
+        "part": 46,
+        "time_s": 0.005618878602981595,
+        "pressure_RMS_Pa": 0.0008879472062509501,
+        "material_XYZ_displacement_max_mm": 1.7844083523859806e-08
+      },
+      {
+        "part": 47,
+        "time_s": 0.0057376313209533975,
+        "pressure_RMS_Pa": 0.0008931677141913652,
+        "material_XYZ_displacement_max_mm": 1.9223341496617745e-08
+      },
+      {
+        "part": 48,
+        "time_s": 0.005862634181976347,
+        "pressure_RMS_Pa": 0.0007493168580675198,
+        "material_XYZ_displacement_max_mm": 2.0702327552722526e-08
+      },
+      {
+        "part": 49,
+        "time_s": 0.005987637042999297,
+        "pressure_RMS_Pa": 0.0007774259437544267,
+        "material_XYZ_displacement_max_mm": 2.227307881229793e-08
+      },
+      {
+        "part": 50,
+        "time_s": 0.0061063897609711,
+        "pressure_RMS_Pa": 0.0007548644938349759,
+        "material_XYZ_displacement_max_mm": 2.3790623453859192e-08
+      },
+      {
+        "part": 51,
+        "time_s": 0.00623139262199405,
+        "pressure_RMS_Pa": 0.0008120749902533151,
+        "material_XYZ_displacement_max_mm": 2.5359373055696783e-08
+      },
+      {
+        "part": 52,
+        "time_s": 0.006350145339965852,
+        "pressure_RMS_Pa": 0.0009727709599150776,
+        "material_XYZ_displacement_max_mm": 2.6715783333919313e-08
+      },
+      {
+        "part": 53,
+        "time_s": 0.006475148200988802,
+        "pressure_RMS_Pa": 0.0007400320778157451,
+        "material_XYZ_displacement_max_mm": 2.784869210149821e-08
+      },
+      {
+        "part": 54,
+        "time_s": 0.006593900918960604,
+        "pressure_RMS_Pa": 0.0007953140828354829,
+        "material_XYZ_displacement_max_mm": 2.8591464759762173e-08
+      },
+      {
+        "part": 55,
+        "time_s": 0.006718903779983554,
+        "pressure_RMS_Pa": 0.0010067360030120817,
+        "material_XYZ_displacement_max_mm": 2.986097625384465e-08
+      },
+      {
+        "part": 56,
+        "time_s": 0.006837656497955357,
+        "pressure_RMS_Pa": 0.001153419122169699,
+        "material_XYZ_displacement_max_mm": 3.387420822822987e-08
+      },
+      {
+        "part": 57,
+        "time_s": 0.006962659358978307,
+        "pressure_RMS_Pa": 0.0012150258605465461,
+        "material_XYZ_displacement_max_mm": 3.8143338625670344e-08
+      },
+      {
+        "part": 58,
+        "time_s": 0.007081412076950109,
+        "pressure_RMS_Pa": 0.0010225966399022898,
+        "material_XYZ_displacement_max_mm": 4.2112926472790125e-08
+      },
+      {
+        "part": 59,
+        "time_s": 0.007206414937973059,
+        "pressure_RMS_Pa": 0.001171468028291252,
+        "material_XYZ_displacement_max_mm": 4.549092411852095e-08
+      },
+      {
+        "part": 60,
+        "time_s": 0.007325167655944861,
+        "pressure_RMS_Pa": 0.0012923320574087936,
+        "material_XYZ_displacement_max_mm": 4.7791529022096146e-08
+      },
+      {
+        "part": 61,
+        "time_s": 0.007450170516967811,
+        "pressure_RMS_Pa": 0.0013763989354620323,
+        "material_XYZ_displacement_max_mm": 4.936726427826987e-08
+      },
+      {
+        "part": 62,
+        "time_s": 0.007568923234939614,
+        "pressure_RMS_Pa": 0.0014281704884970376,
+        "material_XYZ_displacement_max_mm": 5.094603974125739e-08
+      },
+      {
+        "part": 63,
+        "time_s": 0.007693926095962564,
+        "pressure_RMS_Pa": 0.001418959090500038,
+        "material_XYZ_displacement_max_mm": 5.263840190070426e-08
+      },
+      {
+        "part": 64,
+        "time_s": 0.007812678813934366,
+        "pressure_RMS_Pa": 0.001313013612070872,
+        "material_XYZ_displacement_max_mm": 5.409699213739471e-08
+      },
+      {
+        "part": 65,
+        "time_s": 0.007937681674957299,
+        "pressure_RMS_Pa": 0.0013697137653357343,
+        "material_XYZ_displacement_max_mm": 5.515291679271553e-08
+      },
+      {
+        "part": 66,
+        "time_s": 0.008062684535980231,
+        "pressure_RMS_Pa": 0.0015045877869268166,
+        "material_XYZ_displacement_max_mm": 5.5766211160765665e-08
+      },
+      {
+        "part": 67,
+        "time_s": 0.008181437253952017,
+        "pressure_RMS_Pa": 0.0013823620768449283,
+        "material_XYZ_displacement_max_mm": 5.579719718810859e-08
+      },
+      {
+        "part": 68,
+        "time_s": 0.00830644011497495,
+        "pressure_RMS_Pa": 0.0014180346597113126,
+        "material_XYZ_displacement_max_mm": 5.500591584797819e-08
+      },
+      {
+        "part": 69,
+        "time_s": 0.008425192832946736,
+        "pressure_RMS_Pa": 0.001298497667077708,
+        "material_XYZ_displacement_max_mm": 5.411435159819866e-08
+      },
+      {
+        "part": 70,
+        "time_s": 0.008550195693969668,
+        "pressure_RMS_Pa": 0.0014054529262328374,
+        "material_XYZ_displacement_max_mm": 5.315659705066618e-08
+      },
+      {
+        "part": 71,
+        "time_s": 0.008668948411941454,
+        "pressure_RMS_Pa": 0.0015040330709514419,
+        "material_XYZ_displacement_max_mm": 5.212279285628369e-08
+      },
+      {
+        "part": 72,
+        "time_s": 0.008793951272964387,
+        "pressure_RMS_Pa": 0.001408756988426821,
+        "material_XYZ_displacement_max_mm": 5.098423319068266e-08
+      },
+      {
+        "part": 73,
+        "time_s": 0.008912703990936173,
+        "pressure_RMS_Pa": 0.0016188567019611018,
+        "material_XYZ_displacement_max_mm": 5.0172990324158125e-08
+      },
+      {
+        "part": 74,
+        "time_s": 0.009037706851959105,
+        "pressure_RMS_Pa": 0.0015569971458884206,
+        "material_XYZ_displacement_max_mm": 4.9903062127712174e-08
+      },
+      {
+        "part": 75,
+        "time_s": 0.009156459569930891,
+        "pressure_RMS_Pa": 0.0014810303601663184,
+        "material_XYZ_displacement_max_mm": 4.997708731759681e-08
+      },
+      {
+        "part": 76,
+        "time_s": 0.009281462430953824,
+        "pressure_RMS_Pa": 0.0016238563621402238,
+        "material_XYZ_displacement_max_mm": 5.057811406175423e-08
+      },
+      {
+        "part": 77,
+        "time_s": 0.00940021514892561,
+        "pressure_RMS_Pa": 0.0016953980033161645,
+        "material_XYZ_displacement_max_mm": 5.123355376385618e-08
+      },
+      {
+        "part": 78,
+        "time_s": 0.009525218009948542,
+        "pressure_RMS_Pa": 0.001369278534869618,
+        "material_XYZ_displacement_max_mm": 5.158368109381402e-08
+      },
+      {
+        "part": 79,
+        "time_s": 0.009643970727920328,
+        "pressure_RMS_Pa": 0.0013028968812623372,
+        "material_XYZ_displacement_max_mm": 5.104301654711787e-08
+      },
+      {
+        "part": 80,
+        "time_s": 0.00976897358894326,
+        "pressure_RMS_Pa": 0.0011920464468489944,
+        "material_XYZ_displacement_max_mm": 5.051505756472856e-08
+      },
+      {
+        "part": 81,
+        "time_s": 0.009775223731994407,
+        "pressure_RMS_Pa": 0.0011952422875620501,
+        "material_XYZ_displacement_max_mm": 5.052995846852959e-08
+      },
+      {
+        "part": 82,
+        "time_s": 0.009781473875045554,
+        "pressure_RMS_Pa": 0.0012027983779454815,
+        "material_XYZ_displacement_max_mm": 5.0543502730877743e-08
+      },
+      {
+        "part": 83,
+        "time_s": 0.0097877240180967,
+        "pressure_RMS_Pa": 0.001179984958358845,
+        "material_XYZ_displacement_max_mm": 5.055667324742004e-08
+      },
+      {
+        "part": 84,
+        "time_s": 0.009793974161147847,
+        "pressure_RMS_Pa": 0.0012290728689493963,
+        "material_XYZ_displacement_max_mm": 5.056963903244409e-08
+      },
+      {
+        "part": 85,
+        "time_s": 0.009800224304198994,
+        "pressure_RMS_Pa": 0.0012684039466105991,
+        "material_XYZ_displacement_max_mm": 5.0582663589907347e-08
+      },
+      {
+        "part": 86,
+        "time_s": 0.00980647444725014,
+        "pressure_RMS_Pa": 0.001277394518295383,
+        "material_XYZ_displacement_max_mm": 5.0595348611802715e-08
+      },
+      {
+        "part": 87,
+        "time_s": 0.009812724590301287,
+        "pressure_RMS_Pa": 0.0012684039466105991,
+        "material_XYZ_displacement_max_mm": 5.0607026396598646e-08
+      },
+      {
+        "part": 88,
+        "time_s": 0.009818974733352434,
+        "pressure_RMS_Pa": 0.0012826099156800486,
+        "material_XYZ_displacement_max_mm": 5.0619073823816355e-08
+      },
+      {
+        "part": 89,
+        "time_s": 0.00982522487640358,
+        "pressure_RMS_Pa": 0.0012788868021199995,
+        "material_XYZ_displacement_max_mm": 5.06323523812215e-08
+      },
+      {
+        "part": 90,
+        "time_s": 0.009831475019454727,
+        "pressure_RMS_Pa": 0.001215418247400162,
+        "material_XYZ_displacement_max_mm": 5.064687970871304e-08
+      },
+      {
+        "part": 91,
+        "time_s": 0.009837725162505874,
+        "pressure_RMS_Pa": 0.001198031654920439,
+        "material_XYZ_displacement_max_mm": 5.0662702061466454e-08
+      },
+      {
+        "part": 92,
+        "time_s": 0.00984397530555702,
+        "pressure_RMS_Pa": 0.0011409493599167893,
+        "material_XYZ_displacement_max_mm": 5.067941371598786e-08
+      },
+      {
+        "part": 93,
+        "time_s": 0.009850225448608167,
+        "pressure_RMS_Pa": 0.0010878923782526267,
+        "material_XYZ_displacement_max_mm": 5.069594527757995e-08
+      },
+      {
+        "part": 94,
+        "time_s": 0.009856475591659314,
+        "pressure_RMS_Pa": 0.0011563093840324752,
+        "material_XYZ_displacement_max_mm": 5.0712161687179254e-08
+      },
+      {
+        "part": 95,
+        "time_s": 0.00986272573471046,
+        "pressure_RMS_Pa": 0.0011442879167525022,
+        "material_XYZ_displacement_max_mm": 5.073462962823051e-08
+      },
+      {
+        "part": 96,
+        "time_s": 0.009868975877761607,
+        "pressure_RMS_Pa": 0.0011751256997258846,
+        "material_XYZ_displacement_max_mm": 5.0765647137114526e-08
+      },
+      {
+        "part": 97,
+        "time_s": 0.009875226020812753,
+        "pressure_RMS_Pa": 0.0011645277488878001,
+        "material_XYZ_displacement_max_mm": 5.079715443595288e-08
+      },
+      {
+        "part": 98,
+        "time_s": 0.0098814761638639,
+        "pressure_RMS_Pa": 0.0012302362131463693,
+        "material_XYZ_displacement_max_mm": 5.0828518608518796e-08
+      },
+      {
+        "part": 99,
+        "time_s": 0.009887726306915047,
+        "pressure_RMS_Pa": 0.0011952422875620501,
+        "material_XYZ_displacement_max_mm": 5.08594320752711e-08
+      },
+      {
+        "part": 100,
+        "time_s": 0.009893976449966193,
+        "pressure_RMS_Pa": 0.0012244084389576157,
+        "material_XYZ_displacement_max_mm": 5.088888988413496e-08
+      },
+      {
+        "part": 101,
+        "time_s": 0.00990022659301734,
+        "pressure_RMS_Pa": 0.0011775578355455358,
+        "material_XYZ_displacement_max_mm": 5.091699660806897e-08
+      },
+      {
+        "part": 102,
+        "time_s": 0.009906476736068487,
+        "pressure_RMS_Pa": 0.001155071585942769,
+        "material_XYZ_displacement_max_mm": 5.094421644152585e-08
+      },
+      {
+        "part": 103,
+        "time_s": 0.009912726879119633,
+        "pressure_RMS_Pa": 0.0012063610598970515,
+        "material_XYZ_displacement_max_mm": 5.0970255987708124e-08
+      },
+      {
+        "part": 104,
+        "time_s": 0.00991897702217078,
+        "pressure_RMS_Pa": 0.00120477894635087,
+        "material_XYZ_displacement_max_mm": 5.099492412329668e-08
+      },
+      {
+        "part": 105,
+        "time_s": 0.009925227165221926,
+        "pressure_RMS_Pa": 0.0012185527935401614,
+        "material_XYZ_displacement_max_mm": 5.1018004801180084e-08
+      },
+      {
+        "part": 106,
+        "time_s": 0.009931477308273073,
+        "pressure_RMS_Pa": 0.0012228496751951975,
+        "material_XYZ_displacement_max_mm": 5.103992147202692e-08
+      },
+      {
+        "part": 107,
+        "time_s": 0.00993772745132422,
+        "pressure_RMS_Pa": 0.0012456436540170582,
+        "material_XYZ_displacement_max_mm": 5.106140160647466e-08
+      },
+      {
+        "part": 108,
+        "time_s": 0.009943977594375366,
+        "pressure_RMS_Pa": 0.0012490841371343344,
+        "material_XYZ_displacement_max_mm": 5.108429231215567e-08
+      },
+      {
+        "part": 109,
+        "time_s": 0.009950227737426513,
+        "pressure_RMS_Pa": 0.0012302362131463693,
+        "material_XYZ_displacement_max_mm": 5.11094003562796e-08
+      },
+      {
+        "part": 110,
+        "time_s": 0.00995647788047766,
+        "pressure_RMS_Pa": 0.001255936829357248,
+        "material_XYZ_displacement_max_mm": 5.113482217543346e-08
+      },
+      {
+        "part": 111,
+        "time_s": 0.009962728023528806,
+        "pressure_RMS_Pa": 0.001272907170053739,
+        "material_XYZ_displacement_max_mm": 5.1159094788330366e-08
+      },
+      {
+        "part": 112,
+        "time_s": 0.009968978166579953,
+        "pressure_RMS_Pa": 0.0012616189734155202,
+        "material_XYZ_displacement_max_mm": 5.118218219689118e-08
+      },
+      {
+        "part": 113,
+        "time_s": 0.0099752283096311,
+        "pressure_RMS_Pa": 0.00128000487326648,
+        "material_XYZ_displacement_max_mm": 5.1203836311296355e-08
+      },
+      {
+        "part": 114,
+        "time_s": 0.009981478452682246,
+        "pressure_RMS_Pa": 0.001313104399529032,
+        "material_XYZ_displacement_max_mm": 5.122457125348068e-08
+      },
+      {
+        "part": 115,
+        "time_s": 0.009987728595733393,
+        "pressure_RMS_Pa": 0.001354925481006993,
+        "material_XYZ_displacement_max_mm": 5.1245948710398543e-08
+      },
+      {
+        "part": 116,
+        "time_s": 0.00999397873878454,
+        "pressure_RMS_Pa": 0.0013948102399497753,
+        "material_XYZ_displacement_max_mm": 5.1267838689572256e-08
+      },
+      {
+        "part": 117,
+        "time_s": 0.010000228881835686,
+        "pressure_RMS_Pa": 0.0014726355270425241,
+        "material_XYZ_displacement_max_mm": 5.128900734457209e-08
+      },
+      {
+        "part": 118,
+        "time_s": 0.010006479024886833,
+        "pressure_RMS_Pa": 0.0014278365697437017,
+        "material_XYZ_displacement_max_mm": 5.1309303620673994e-08
+      },
+      {
+        "part": 119,
+        "time_s": 0.01001272916793798,
+        "pressure_RMS_Pa": 0.0014288380918937877,
+        "material_XYZ_displacement_max_mm": 5.1328943230648614e-08
+      },
+      {
+        "part": 120,
+        "time_s": 0.010018979310989126,
+        "pressure_RMS_Pa": 0.0013698878188042984,
+        "material_XYZ_displacement_max_mm": 5.134871042970046e-08
+      },
+      {
+        "part": 121,
+        "time_s": 0.010025229454040272,
+        "pressure_RMS_Pa": 0.0013425514731315938,
+        "material_XYZ_displacement_max_mm": 5.13695859864951e-08
+      },
+      {
+        "part": 122,
+        "time_s": 0.010031479597091419,
+        "pressure_RMS_Pa": 0.0012222646262779557,
+        "material_XYZ_displacement_max_mm": 5.139180410001183e-08
+      },
+      {
+        "part": 123,
+        "time_s": 0.010037729740142566,
+        "pressure_RMS_Pa": 0.0012161046197457653,
+        "material_XYZ_displacement_max_mm": 5.14142259168328e-08
+      },
+      {
+        "part": 124,
+        "time_s": 0.010043979883193712,
+        "pressure_RMS_Pa": 0.0012489886961304028,
+        "material_XYZ_displacement_max_mm": 5.1435912767898924e-08
+      },
+      {
+        "part": 125,
+        "time_s": 0.010050230026244859,
+        "pressure_RMS_Pa": 0.0012244084389576157,
+        "material_XYZ_displacement_max_mm": 5.1458673782944075e-08
+      },
+      {
+        "part": 126,
+        "time_s": 0.010056480169296006,
+        "pressure_RMS_Pa": 0.001182507913897689,
+        "material_XYZ_displacement_max_mm": 5.1483607958633505e-08
+      },
+      {
+        "part": 127,
+        "time_s": 0.010062730312347152,
+        "pressure_RMS_Pa": 0.0012208007773440626,
+        "material_XYZ_displacement_max_mm": 5.1509343280064914e-08
+      },
+      {
+        "part": 128,
+        "time_s": 0.010068980455398299,
+        "pressure_RMS_Pa": 0.0012355541922503053,
+        "material_XYZ_displacement_max_mm": 5.153603123552355e-08
+      },
+      {
+        "part": 129,
+        "time_s": 0.010075230598449446,
+        "pressure_RMS_Pa": 0.0012693434356266075,
+        "material_XYZ_displacement_max_mm": 5.15629228134051e-08
+      },
+      {
+        "part": 130,
+        "time_s": 0.010081480741500592,
+        "pressure_RMS_Pa": 0.0013320326819090543,
+        "material_XYZ_displacement_max_mm": 5.1589430678308164e-08
+      },
+      {
+        "part": 131,
+        "time_s": 0.010087730884551739,
+        "pressure_RMS_Pa": 0.001329434814829175,
+        "material_XYZ_displacement_max_mm": 5.161810459883511e-08
+      },
+      {
+        "part": 132,
+        "time_s": 0.010093981027602885,
+        "pressure_RMS_Pa": 0.0014027360882664975,
+        "material_XYZ_displacement_max_mm": 5.1650140345943384e-08
+      },
+      {
+        "part": 133,
+        "time_s": 0.010100231170654032,
+        "pressure_RMS_Pa": 0.0014706103940304086,
+        "material_XYZ_displacement_max_mm": 5.168455407337091e-08
+      },
+      {
+        "part": 134,
+        "time_s": 0.010106481313705179,
+        "pressure_RMS_Pa": 0.0014749811979485562,
+        "material_XYZ_displacement_max_mm": 5.171999521290339e-08
+      },
+      {
+        "part": 135,
+        "time_s": 0.010112731456756325,
+        "pressure_RMS_Pa": 0.001512568902582158,
+        "material_XYZ_displacement_max_mm": 5.175520516618248e-08
+      },
+      {
+        "part": 136,
+        "time_s": 0.010118981599807472,
+        "pressure_RMS_Pa": 0.0014731211447068506,
+        "material_XYZ_displacement_max_mm": 5.178952277817634e-08
+      },
+      {
+        "part": 137,
+        "time_s": 0.010125231742858619,
+        "pressure_RMS_Pa": 0.0015009387575549724,
+        "material_XYZ_displacement_max_mm": 5.1823821305010874e-08
+      },
+      {
+        "part": 138,
+        "time_s": 0.010131481885909765,
+        "pressure_RMS_Pa": 0.0014776458802473985,
+        "material_XYZ_displacement_max_mm": 5.185837538558935e-08
+      },
+      {
+        "part": 139,
+        "time_s": 0.010137732028960912,
+        "pressure_RMS_Pa": 0.0014876960945703274,
+        "material_XYZ_displacement_max_mm": 5.1893216255663425e-08
+      },
+      {
+        "part": 140,
+        "time_s": 0.010143982172012058,
+        "pressure_RMS_Pa": 0.001456682997087529,
+        "material_XYZ_displacement_max_mm": 5.192945040546185e-08
+      },
+      {
+        "part": 141,
+        "time_s": 0.010150232315063205,
+        "pressure_RMS_Pa": 0.0014458402752595115,
+        "material_XYZ_displacement_max_mm": 5.1966690894086936e-08
+      },
+      {
+        "part": 142,
+        "time_s": 0.010156482458114352,
+        "pressure_RMS_Pa": 0.0014345001764466904,
+        "material_XYZ_displacement_max_mm": 5.200456209739211e-08
+      },
+      {
+        "part": 143,
+        "time_s": 0.010162732601165498,
+        "pressure_RMS_Pa": 0.001412559764576698,
+        "material_XYZ_displacement_max_mm": 5.204406443713142e-08
+      },
+      {
+        "part": 144,
+        "time_s": 0.010168982744216645,
+        "pressure_RMS_Pa": 0.0014285877771804487,
+        "material_XYZ_displacement_max_mm": 5.208264364427607e-08
+      },
+      {
+        "part": 145,
+        "time_s": 0.010175232887267792,
+        "pressure_RMS_Pa": 0.0014566011586652004,
+        "material_XYZ_displacement_max_mm": 5.212005567392805e-08
+      },
+      {
+        "part": 146,
+        "time_s": 0.010181483030318938,
+        "pressure_RMS_Pa": 0.0014545537016374698,
+        "material_XYZ_displacement_max_mm": 5.2158019484982206e-08
+      },
+      {
+        "part": 147,
+        "time_s": 0.010187733173370085,
+        "pressure_RMS_Pa": 0.0014638668617619718,
+        "material_XYZ_displacement_max_mm": 5.2196302993466094e-08
+      },
+      {
+        "part": 148,
+        "time_s": 0.010193983316421231,
+        "pressure_RMS_Pa": 0.0014713397630194691,
+        "material_XYZ_displacement_max_mm": 5.2234896480767335e-08
+      },
+      {
+        "part": 149,
+        "time_s": 0.010200233459472378,
+        "pressure_RMS_Pa": 0.001450696659446589,
+        "material_XYZ_displacement_max_mm": 5.227332314075767e-08
+      },
+      {
+        "part": 150,
+        "time_s": 0.010206483602523525,
+        "pressure_RMS_Pa": 0.0014006098917427566,
+        "material_XYZ_displacement_max_mm": 5.231269836418544e-08
+      },
+      {
+        "part": 151,
+        "time_s": 0.010212733745574671,
+        "pressure_RMS_Pa": 0.0014035856650437162,
+        "material_XYZ_displacement_max_mm": 5.235323248246266e-08
+      },
+      {
+        "part": 152,
+        "time_s": 0.010218983888625818,
+        "pressure_RMS_Pa": 0.0014714207817009004,
+        "material_XYZ_displacement_max_mm": 5.2394566801254285e-08
+      },
+      {
+        "part": 153,
+        "time_s": 0.010225234031676965,
+        "pressure_RMS_Pa": 0.0014778878858524465,
+        "material_XYZ_displacement_max_mm": 5.2435916484763335e-08
+      },
+      {
+        "part": 154,
+        "time_s": 0.010231484174728111,
+        "pressure_RMS_Pa": 0.0015094131117406298,
+        "material_XYZ_displacement_max_mm": 5.247726964879359e-08
+      },
+      {
+        "part": 155,
+        "time_s": 0.010237734317779258,
+        "pressure_RMS_Pa": 0.001476435257207571,
+        "material_XYZ_displacement_max_mm": 5.2520477841123794e-08
+      },
+      {
+        "part": 156,
+        "time_s": 0.010243984460830404,
+        "pressure_RMS_Pa": 0.001490258052932798,
+        "material_XYZ_displacement_max_mm": 5.256565793202493e-08
+      },
+      {
+        "part": 157,
+        "time_s": 0.010250234603881551,
+        "pressure_RMS_Pa": 0.0015353320460334138,
+        "material_XYZ_displacement_max_mm": 5.2612176440713795e-08
+      },
+      {
+        "part": 158,
+        "time_s": 0.010256484746932698,
+        "pressure_RMS_Pa": 0.0015622711013978002,
+        "material_XYZ_displacement_max_mm": 5.266040273747337e-08
+      },
+      {
+        "part": 159,
+        "time_s": 0.01038148760795563,
+        "pressure_RMS_Pa": 0.0014107864113110263,
+        "material_XYZ_displacement_max_mm": 5.385049195384233e-08
+      },
+      {
+        "part": 160,
+        "time_s": 0.010500240325927416,
+        "pressure_RMS_Pa": 0.0013883854695422785,
+        "material_XYZ_displacement_max_mm": 5.520515026376154e-08
+      },
+      {
+        "part": 161,
+        "time_s": 0.010625243186950349,
+        "pressure_RMS_Pa": 0.0012800980017815195,
+        "material_XYZ_displacement_max_mm": 5.650332843848807e-08
+      },
+      {
+        "part": 162,
+        "time_s": 0.010743995904922135,
+        "pressure_RMS_Pa": 0.0015471659685307479,
+        "material_XYZ_displacement_max_mm": 5.755019419901467e-08
+      },
+      {
+        "part": 163,
+        "time_s": 0.010868998765945067,
+        "pressure_RMS_Pa": 0.0014182027828560982,
+        "material_XYZ_displacement_max_mm": 5.874567469747001e-08
+      },
+      {
+        "part": 164,
+        "time_s": 0.010987751483916853,
+        "pressure_RMS_Pa": 0.0014121377396010167,
+        "material_XYZ_displacement_max_mm": 5.985617612858224e-08
+      },
+      {
+        "part": 165,
+        "time_s": 0.011112754344939786,
+        "pressure_RMS_Pa": 0.0014737683860143135,
+        "material_XYZ_displacement_max_mm": 6.095474986288695e-08
+      },
+      {
+        "part": 166,
+        "time_s": 0.011231507062911572,
+        "pressure_RMS_Pa": 0.0014678517293449024,
+        "material_XYZ_displacement_max_mm": 6.186015393554146e-08
+      },
+      {
+        "part": 167,
+        "time_s": 0.011356509923934504,
+        "pressure_RMS_Pa": 0.0017014342148467486,
+        "material_XYZ_displacement_max_mm": 6.271505750067339e-08
+      },
+      {
+        "part": 168,
+        "time_s": 0.01147526264190629,
+        "pressure_RMS_Pa": 0.0017533308754868679,
+        "material_XYZ_displacement_max_mm": 6.34137967617827e-08
+      },
+      {
+        "part": 169,
+        "time_s": 0.011600265502929223,
+        "pressure_RMS_Pa": 0.0016847472167076287,
+        "material_XYZ_displacement_max_mm": 6.428428803659935e-08
+      },
+      {
+        "part": 170,
+        "time_s": 0.011719018220901009,
+        "pressure_RMS_Pa": 0.0014050287665955232,
+        "material_XYZ_displacement_max_mm": 6.54977912395627e-08
+      },
+      {
+        "part": 171,
+        "time_s": 0.011844021081923941,
+        "pressure_RMS_Pa": 0.001372409113530781,
+        "material_XYZ_displacement_max_mm": 6.728006505717811e-08
+      },
+      {
+        "part": 172,
+        "time_s": 0.011969023942946874,
+        "pressure_RMS_Pa": 0.0015151674818873805,
+        "material_XYZ_displacement_max_mm": 7.014321206304991e-08
+      },
+      {
+        "part": 173,
+        "time_s": 0.01208777666091866,
+        "pressure_RMS_Pa": 0.0018077620041767437,
+        "material_XYZ_displacement_max_mm": 7.319508926455322e-08
+      },
+      {
+        "part": 174,
+        "time_s": 0.012212779521941592,
+        "pressure_RMS_Pa": 0.001460034422795254,
+        "material_XYZ_displacement_max_mm": 7.621802698083088e-08
+      },
+      {
+        "part": 175,
+        "time_s": 0.012331532239913378,
+        "pressure_RMS_Pa": 0.001515403495411783,
+        "material_XYZ_displacement_max_mm": 7.888126461698929e-08
+      },
+      {
+        "part": 176,
+        "time_s": 0.012456535100936311,
+        "pressure_RMS_Pa": 0.0015213702921767498,
+        "material_XYZ_displacement_max_mm": 8.169375076880678e-08
+      },
+      {
+        "part": 177,
+        "time_s": 0.012575287818908097,
+        "pressure_RMS_Pa": 0.0014041800629441801,
+        "material_XYZ_displacement_max_mm": 8.417518390909779e-08
+      },
+      {
+        "part": 178,
+        "time_s": 0.01270029067993103,
+        "pressure_RMS_Pa": 0.0016079213512412054,
+        "material_XYZ_displacement_max_mm": 8.630766102718073e-08
+      },
+      {
+        "part": 179,
+        "time_s": 0.012819043397902815,
+        "pressure_RMS_Pa": 0.0013590543522242974,
+        "material_XYZ_displacement_max_mm": 8.812939587526715e-08
+      },
+      {
+        "part": 180,
+        "time_s": 0.012944046258925748,
+        "pressure_RMS_Pa": 0.001304359988833125,
+        "material_XYZ_displacement_max_mm": 8.98598977871239e-08
+      },
+      {
+        "part": 181,
+        "time_s": 0.013062798976897534,
+        "pressure_RMS_Pa": 0.0016707497491010117,
+        "material_XYZ_displacement_max_mm": 9.145979270763085e-08
+      },
+      {
+        "part": 182,
+        "time_s": 0.013187801837920466,
+        "pressure_RMS_Pa": 0.0012863222531562003,
+        "material_XYZ_displacement_max_mm": 9.286048412391596e-08
+      },
+      {
+        "part": 183,
+        "time_s": 0.013306554555892252,
+        "pressure_RMS_Pa": 0.0014321714408585106,
+        "material_XYZ_displacement_max_mm": 9.377635104027138e-08
+      },
+      {
+        "part": 184,
+        "time_s": 0.013431557416915185,
+        "pressure_RMS_Pa": 0.0013065515781503566,
+        "material_XYZ_displacement_max_mm": 9.444994596246995e-08
+      },
+      {
+        "part": 185,
+        "time_s": 0.01355031013488697,
+        "pressure_RMS_Pa": 0.0012410415065565268,
+        "material_XYZ_displacement_max_mm": 9.532878692955301e-08
+      },
+      {
+        "part": 186,
+        "time_s": 0.013675312995909903,
+        "pressure_RMS_Pa": 0.0011425155231247646,
+        "material_XYZ_displacement_max_mm": 9.795128675903326e-08
+      },
+      {
+        "part": 187,
+        "time_s": 0.01379406571388169,
+        "pressure_RMS_Pa": 0.0012970279465534368,
+        "material_XYZ_displacement_max_mm": 1.0030311074108511e-07
+      },
+      {
+        "part": 188,
+        "time_s": 0.013919068574904622,
+        "pressure_RMS_Pa": 0.0012688737780696911,
+        "material_XYZ_displacement_max_mm": 1.0261558920568233e-07
+      },
+      {
+        "part": 189,
+        "time_s": 0.014044071435927554,
+        "pressure_RMS_Pa": 0.001434749459648928,
+        "material_XYZ_displacement_max_mm": 1.047599112980262e-07
+      },
+      {
+        "part": 190,
+        "time_s": 0.01416282415389934,
+        "pressure_RMS_Pa": 0.0013928431276168233,
+        "material_XYZ_displacement_max_mm": 1.0662092452037869e-07
+      },
+      {
+        "part": 191,
+        "time_s": 0.014287827014922273,
+        "pressure_RMS_Pa": 0.001832323778950708,
+        "material_XYZ_displacement_max_mm": 1.0838897370149531e-07
+      },
+      {
+        "part": 192,
+        "time_s": 0.014406579732894059,
+        "pressure_RMS_Pa": 0.0014749811979485562,
+        "material_XYZ_displacement_max_mm": 1.0984122220638177e-07
+      },
+      {
+        "part": 193,
+        "time_s": 0.014531582593916991,
+        "pressure_RMS_Pa": 0.0015201944899358914,
+        "material_XYZ_displacement_max_mm": 1.1123031726107024e-07
+      },
+      {
+        "part": 194,
+        "time_s": 0.014650335311888777,
+        "pressure_RMS_Pa": 0.001870681239390602,
+        "material_XYZ_displacement_max_mm": 1.1227860609546131e-07
+      },
+      {
+        "part": 195,
+        "time_s": 0.01477533817291171,
+        "pressure_RMS_Pa": 0.0018835730065398517,
+        "material_XYZ_displacement_max_mm": 1.1340015974783969e-07
+      },
+      {
+        "part": 196,
+        "time_s": 0.014894090890883496,
+        "pressure_RMS_Pa": 0.0017408784472930645,
+        "material_XYZ_displacement_max_mm": 1.1455022110694455e-07
+      },
+      {
+        "part": 197,
+        "time_s": 0.015019093751906428,
+        "pressure_RMS_Pa": 0.0020032329655204732,
+        "material_XYZ_displacement_max_mm": 1.1571944798473528e-07
+      },
+      {
+        "part": 198,
+        "time_s": 0.015137846469878214,
+        "pressure_RMS_Pa": 0.0015673561925796334,
+        "material_XYZ_displacement_max_mm": 1.1642460977014453e-07
+      },
+      {
+        "part": 199,
+        "time_s": 0.015262849330901147,
+        "pressure_RMS_Pa": 0.0018480493881347184,
+        "material_XYZ_displacement_max_mm": 1.1700187332648671e-07
+      },
+      {
+        "part": 200,
+        "time_s": 0.015381602048872933,
+        "pressure_RMS_Pa": 0.0017814906442949537,
+        "material_XYZ_displacement_max_mm": 1.1741472741449377e-07
+      },
+      {
+        "part": 201,
+        "time_s": 0.015506604909895865,
+        "pressure_RMS_Pa": 0.0013846884895653484,
+        "material_XYZ_displacement_max_mm": 1.1765930623344439e-07
+      },
+      {
+        "part": 202,
+        "time_s": 0.015625357627867653,
+        "pressure_RMS_Pa": 0.0012342026988626637,
+        "material_XYZ_displacement_max_mm": 1.1769879511983932e-07
+      },
+      {
+        "part": 203,
+        "time_s": 0.015750360488890586,
+        "pressure_RMS_Pa": 0.0012964763718116947,
+        "material_XYZ_displacement_max_mm": 1.1763262960862506e-07
+      },
+      {
+        "part": 204,
+        "time_s": 0.01587536334991352,
+        "pressure_RMS_Pa": 0.0016635277117114208,
+        "material_XYZ_displacement_max_mm": 1.1735477918167573e-07
+      },
+      {
+        "part": 205,
+        "time_s": 0.015994116067885304,
+        "pressure_RMS_Pa": 0.0016753099752534137,
+        "material_XYZ_displacement_max_mm": 1.1690744760464372e-07
+      },
+      {
+        "part": 206,
+        "time_s": 0.016119118928908237,
+        "pressure_RMS_Pa": 0.0015524733221983866,
+        "material_XYZ_displacement_max_mm": 1.1804347853897209e-07
+      },
+      {
+        "part": 207,
+        "time_s": 0.016237871646880023,
+        "pressure_RMS_Pa": 0.0013405076764750274,
+        "material_XYZ_displacement_max_mm": 1.1994119231315481e-07
+      },
+      {
+        "part": 208,
+        "time_s": 0.016362874507902955,
+        "pressure_RMS_Pa": 0.0014995084592981914,
+        "material_XYZ_displacement_max_mm": 1.2183469345057402e-07
+      },
+      {
+        "part": 209,
+        "time_s": 0.01648162722587474,
+        "pressure_RMS_Pa": 0.0012388302521640154,
+        "material_XYZ_displacement_max_mm": 1.2359905487367206e-07
+      },
+      {
+        "part": 210,
+        "time_s": 0.016606630086897674,
+        "pressure_RMS_Pa": 0.0014354970495179726,
+        "material_XYZ_displacement_max_mm": 1.2511364034562841e-07
+      },
+      {
+        "part": 211,
+        "time_s": 0.01672538280486946,
+        "pressure_RMS_Pa": 0.0016979976080887733,
+        "material_XYZ_displacement_max_mm": 1.2694469027851207e-07
+      },
+      {
+        "part": 212,
+        "time_s": 0.016850385665892392,
+        "pressure_RMS_Pa": 0.0015200376475841782,
+        "material_XYZ_displacement_max_mm": 1.2951202651759332e-07
+      },
+      {
+        "part": 213,
+        "time_s": 0.016969138383864178,
+        "pressure_RMS_Pa": 0.0014914574559864516,
+        "material_XYZ_displacement_max_mm": 1.3196515803741815e-07
+      },
+      {
+        "part": 214,
+        "time_s": 0.01709414124488711,
+        "pressure_RMS_Pa": 0.0018129475797301381,
+        "material_XYZ_displacement_max_mm": 1.3550750568647958e-07
+      },
+      {
+        "part": 215,
+        "time_s": 0.017212893962858897,
+        "pressure_RMS_Pa": 0.0014573988872546339,
+        "material_XYZ_displacement_max_mm": 1.3928459695430079e-07
+      },
+      {
+        "part": 216,
+        "time_s": 0.01733789682388183,
+        "pressure_RMS_Pa": 0.0011275491444097158,
+        "material_XYZ_displacement_max_mm": 1.4311002369883034e-07
+      },
+      {
+        "part": 217,
+        "time_s": 0.017456649541853615,
+        "pressure_RMS_Pa": 0.001422399403211299,
+        "material_XYZ_displacement_max_mm": 1.465548506479936e-07
+      },
+      {
+        "part": 218,
+        "time_s": 0.017581652402876548,
+        "pressure_RMS_Pa": 0.0014645181929896455,
+        "material_XYZ_displacement_max_mm": 1.4984687262188488e-07
+      },
+      {
+        "part": 219,
+        "time_s": 0.017700405120848334,
+        "pressure_RMS_Pa": 0.001474294060348679,
+        "material_XYZ_displacement_max_mm": 1.5295390725331318e-07
+      },
+      {
+        "part": 220,
+        "time_s": 0.017825407981871266,
+        "pressure_RMS_Pa": 0.0017738458776604216,
+        "material_XYZ_displacement_max_mm": 1.5617620542275588e-07
+      },
+      {
+        "part": 221,
+        "time_s": 0.0179504108428942,
+        "pressure_RMS_Pa": 0.0015844707753503858,
+        "material_XYZ_displacement_max_mm": 1.5905724822662112e-07
+      },
+      {
+        "part": 222,
+        "time_s": 0.018069163560865985,
+        "pressure_RMS_Pa": 0.0019101254201324023,
+        "material_XYZ_displacement_max_mm": 1.6142651218015116e-07
+      },
+      {
+        "part": 223,
+        "time_s": 0.018194166421888917,
+        "pressure_RMS_Pa": 0.0018590951917386589,
+        "material_XYZ_displacement_max_mm": 1.637519107885859e-07
+      },
+      {
+        "part": 224,
+        "time_s": 0.018312919139860703,
+        "pressure_RMS_Pa": 0.0009796399264671506,
+        "material_XYZ_displacement_max_mm": 1.6563876702309128e-07
+      },
+      {
+        "part": 225,
+        "time_s": 0.018437922000883636,
+        "pressure_RMS_Pa": 0.001997183724239996,
+        "material_XYZ_displacement_max_mm": 1.675242855698752e-07
+      },
+      {
+        "part": 226,
+        "time_s": 0.018556674718855422,
+        "pressure_RMS_Pa": 0.001652761708599088,
+        "material_XYZ_displacement_max_mm": 1.6921700843109133e-07
+      },
+      {
+        "part": 227,
+        "time_s": 0.018681677579878354,
+        "pressure_RMS_Pa": 0.0013664243475542696,
+        "material_XYZ_displacement_max_mm": 1.7105072871587504e-07
+      },
+      {
+        "part": 228,
+        "time_s": 0.01880043029785014,
+        "pressure_RMS_Pa": 0.0017135993770014096,
+        "material_XYZ_displacement_max_mm": 1.7276606456777295e-07
+      },
+      {
+        "part": 229,
+        "time_s": 0.018925433158873073,
+        "pressure_RMS_Pa": 0.0018479687545413831,
+        "material_XYZ_displacement_max_mm": 1.7440209555225588e-07
+      },
+      {
+        "part": 230,
+        "time_s": 0.01904418587684486,
+        "pressure_RMS_Pa": 0.0015189196770471587,
+        "material_XYZ_displacement_max_mm": 1.7578294534791285e-07
+      },
+      {
+        "part": 231,
+        "time_s": 0.01916918873786779,
+        "pressure_RMS_Pa": 0.0015177223402156753,
+        "material_XYZ_displacement_max_mm": 1.7693380864079523e-07
+      },
+      {
+        "part": 232,
+        "time_s": 0.019287941455839577,
+        "pressure_RMS_Pa": 0.0015053600863964662,
+        "material_XYZ_displacement_max_mm": 1.7776557818304386e-07
+      },
+      {
+        "part": 233,
+        "time_s": 0.01941294431686251,
+        "pressure_RMS_Pa": 0.0011954168137055753,
+        "material_XYZ_displacement_max_mm": 1.7860663149472012e-07
+      },
+      {
+        "part": 234,
+        "time_s": 0.019531697034834296,
+        "pressure_RMS_Pa": 0.001231809823814991,
+        "material_XYZ_displacement_max_mm": 1.795806324392535e-07
+      },
+      {
+        "part": 235,
+        "time_s": 0.01965669989585723,
+        "pressure_RMS_Pa": 0.0019068148667197881,
+        "material_XYZ_displacement_max_mm": 1.8075197070571122e-07
+      },
+      {
+        "part": 236,
+        "time_s": 0.019775452613829014,
+        "pressure_RMS_Pa": 0.002037089829611711,
+        "material_XYZ_displacement_max_mm": 1.8193988860009565e-07
+      },
+      {
+        "part": 237,
+        "time_s": 0.019900455474851947,
+        "pressure_RMS_Pa": 0.00204900755701119,
+        "material_XYZ_displacement_max_mm": 1.8320305982734486e-07
+      },
+      {
+        "part": 238,
+        "time_s": 0.02002545833587488,
+        "pressure_RMS_Pa": 0.0019229387270349796,
+        "material_XYZ_displacement_max_mm": 1.8467013838887272e-07
+      },
+      {
+        "part": 239,
+        "time_s": 0.020144211053846665,
+        "pressure_RMS_Pa": 0.0019174289293310573,
+        "material_XYZ_displacement_max_mm": 1.8708207644201304e-07
+      },
+      {
+        "part": 240,
+        "time_s": 0.020269213914869598,
+        "pressure_RMS_Pa": 0.0018551956778909823,
+        "material_XYZ_displacement_max_mm": 1.8986602942375538e-07
+      },
+      {
+        "part": 241,
+        "time_s": 0.020387966632841384,
+        "pressure_RMS_Pa": 0.0016431770457502198,
+        "material_XYZ_displacement_max_mm": 1.9211165281214345e-07
+      },
+      {
+        "part": 242,
+        "time_s": 0.020512969493864316,
+        "pressure_RMS_Pa": 0.0013999714031023615,
+        "material_XYZ_displacement_max_mm": 1.9390291592092571e-07
+      },
+      {
+        "part": 243,
+        "time_s": 0.020631722211836102,
+        "pressure_RMS_Pa": 0.0015235040112183775,
+        "material_XYZ_displacement_max_mm": 1.9533430727982524e-07
+      },
+      {
+        "part": 244,
+        "time_s": 0.020756725072859035,
+        "pressure_RMS_Pa": 0.001616037595736479,
+        "material_XYZ_displacement_max_mm": 1.9635157439635162e-07
+      },
+      {
+        "part": 245,
+        "time_s": 0.02087547779083082,
+        "pressure_RMS_Pa": 0.0016912972853451197,
+        "material_XYZ_displacement_max_mm": 1.9794302024062237e-07
+      },
+      {
+        "part": 246,
+        "time_s": 0.021000480651853753,
+        "pressure_RMS_Pa": 0.0019650211443746238,
+        "material_XYZ_displacement_max_mm": 1.9932686787215382e-07
+      },
+      {
+        "part": 247,
+        "time_s": 0.02111923336982554,
+        "pressure_RMS_Pa": 0.0019791057644224118,
+        "material_XYZ_displacement_max_mm": 2.0027514349148825e-07
+      },
+      {
+        "part": 248,
+        "time_s": 0.021244236230848472,
+        "pressure_RMS_Pa": 0.0017793648096508974,
+        "material_XYZ_displacement_max_mm": 2.0076594554468332e-07
+      },
+      {
+        "part": 249,
+        "time_s": 0.021362988948820258,
+        "pressure_RMS_Pa": 0.0017515792532807877,
+        "material_XYZ_displacement_max_mm": 2.0091577249291117e-07
+      },
+      {
+        "part": 250,
+        "time_s": 0.02148799180984319,
+        "pressure_RMS_Pa": 0.0015851101525956538,
+        "material_XYZ_displacement_max_mm": 2.0084677866836507e-07
+      },
+      {
+        "part": 251,
+        "time_s": 0.021606744527814976,
+        "pressure_RMS_Pa": 0.0013808521232792257,
+        "material_XYZ_displacement_max_mm": 2.007647991090293e-07
+      },
+      {
+        "part": 252,
+        "time_s": 0.02173174738883791,
+        "pressure_RMS_Pa": 0.001197857509755638,
+        "material_XYZ_displacement_max_mm": 2.0056334527126286e-07
+      },
+      {
+        "part": 253,
+        "time_s": 0.02185675024986084,
+        "pressure_RMS_Pa": 0.0015323009387819965,
+        "material_XYZ_displacement_max_mm": 2.008514033501994e-07
+      },
+      {
+        "part": 254,
+        "time_s": 0.021975502967832627,
+        "pressure_RMS_Pa": 0.0018069045415341667,
+        "material_XYZ_displacement_max_mm": 2.017647940283062e-07
+      },
+      {
+        "part": 255,
+        "time_s": 0.02210050582885556,
+        "pressure_RMS_Pa": 0.0021124160885369198,
+        "material_XYZ_displacement_max_mm": 2.0278642617573468e-07
+      },
+      {
+        "part": 256,
+        "time_s": 0.022219258546827346,
+        "pressure_RMS_Pa": 0.002206631514546824,
+        "material_XYZ_displacement_max_mm": 2.0371329982519918e-07
+      },
+      {
+        "part": 257,
+        "time_s": 0.02234426140785028,
+        "pressure_RMS_Pa": 0.0018300615796427245,
+        "material_XYZ_displacement_max_mm": 2.049591185714435e-07
+      },
+      {
+        "part": 258,
+        "time_s": 0.022463014125822064,
+        "pressure_RMS_Pa": 0.0014715017959215648,
+        "material_XYZ_displacement_max_mm": 2.062573958889955e-07
+      },
+      {
+        "part": 259,
+        "time_s": 0.022588016986844997,
+        "pressure_RMS_Pa": 0.0015647300065630238,
+        "material_XYZ_displacement_max_mm": 2.075628358355041e-07
+      },
+      {
+        "part": 260,
+        "time_s": 0.022706769704816783,
+        "pressure_RMS_Pa": 0.00145974862586687,
+        "material_XYZ_displacement_max_mm": 2.0833124753510797e-07
+      },
+      {
+        "part": 261,
+        "time_s": 0.022831772565839716,
+        "pressure_RMS_Pa": 0.001861161984116865,
+        "material_XYZ_displacement_max_mm": 2.0862836799147836e-07
+      },
+      {
+        "part": 262,
+        "time_s": 0.0229505252838115,
+        "pressure_RMS_Pa": 0.0019698532888321164,
+        "material_XYZ_displacement_max_mm": 2.1007065336047865e-07
+      },
+      {
+        "part": 263,
+        "time_s": 0.023075528144834434,
+        "pressure_RMS_Pa": 0.002046984837038415,
+        "material_XYZ_displacement_max_mm": 2.1179222799302966e-07
+      },
+      {
+        "part": 264,
+        "time_s": 0.02319428086280622,
+        "pressure_RMS_Pa": 0.0021255522739584256,
+        "material_XYZ_displacement_max_mm": 2.143686838179276e-07
+      },
+      {
+        "part": 265,
+        "time_s": 0.023319283723829153,
+        "pressure_RMS_Pa": 0.001834436980310036,
+        "material_XYZ_displacement_max_mm": 2.1940588369723925e-07
+      },
+      {
+        "part": 266,
+        "time_s": 0.02343803644180094,
+        "pressure_RMS_Pa": 0.00154866771661069,
+        "material_XYZ_displacement_max_mm": 2.2420770434344566e-07
+      },
+      {
+        "part": 267,
+        "time_s": 0.02356303930282387,
+        "pressure_RMS_Pa": 0.0013478243073428953,
+        "material_XYZ_displacement_max_mm": 2.2903325815001662e-07
+      },
+      {
+        "part": 268,
+        "time_s": 0.023681792020795657,
+        "pressure_RMS_Pa": 0.001484387046363537,
+        "material_XYZ_displacement_max_mm": 2.3335267686858777e-07
+      },
+      {
+        "part": 269,
+        "time_s": 0.02380679488181859,
+        "pressure_RMS_Pa": 0.0016932168832421584,
+        "material_XYZ_displacement_max_mm": 2.3762932830322616e-07
+      },
+      {
+        "part": 270,
+        "time_s": 0.023931797742841522,
+        "pressure_RMS_Pa": 0.0018369533893567332,
+        "material_XYZ_displacement_max_mm": 2.415474021819512e-07
+      },
+      {
+        "part": 271,
+        "time_s": 0.024050550460813308,
+        "pressure_RMS_Pa": 0.0016666062661988294,
+        "material_XYZ_displacement_max_mm": 2.449227472095411e-07
+      },
+      {
+        "part": 272,
+        "time_s": 0.02417555332183624,
+        "pressure_RMS_Pa": 0.0016141369930776864,
+        "material_XYZ_displacement_max_mm": 2.4819781601962007e-07
+      },
+      {
+        "part": 273,
+        "time_s": 0.024294306039808027,
+        "pressure_RMS_Pa": 0.0013657044132283983,
+        "material_XYZ_displacement_max_mm": 2.511293568422374e-07
+      },
+      {
+        "part": 274,
+        "time_s": 0.02441930890083096,
+        "pressure_RMS_Pa": 0.0014962255355122423,
+        "material_XYZ_displacement_max_mm": 2.5398363620786915e-07
+      },
+      {
+        "part": 275,
+        "time_s": 0.024538061618802745,
+        "pressure_RMS_Pa": 0.001571495862857666,
+        "material_XYZ_displacement_max_mm": 2.5660923461125613e-07
+      },
+      {
+        "part": 276,
+        "time_s": 0.024663064479825678,
+        "pressure_RMS_Pa": 0.0019060488735469531,
+        "material_XYZ_displacement_max_mm": 2.5921144016468865e-07
+      },
+      {
+        "part": 277,
+        "time_s": 0.024781817197797464,
+        "pressure_RMS_Pa": 0.0018752956157344425,
+        "material_XYZ_displacement_max_mm": 2.615132184489822e-07
+      },
+      {
+        "part": 278,
+        "time_s": 0.024906820058820396,
+        "pressure_RMS_Pa": 0.0019565095187003656,
+        "material_XYZ_displacement_max_mm": 2.6357422592393623e-07
+      },
+      {
+        "part": 279,
+        "time_s": 0.025025572776792182,
+        "pressure_RMS_Pa": 0.001962425974038961,
+        "material_XYZ_displacement_max_mm": 2.652424229791704e-07
+      },
+      {
+        "part": 280,
+        "time_s": 0.026981867551801077,
+        "pressure_RMS_Pa": 0.0016867626133242628,
+        "material_XYZ_displacement_max_mm": 2.7165621096911554e-07
+      },
+      {
+        "part": 281,
+        "time_s": 0.028931912183758825,
+        "pressure_RMS_Pa": 0.002305752782799089,
+        "material_XYZ_displacement_max_mm": 2.7838798847585284e-07
+      },
+      {
+        "part": 282,
+        "time_s": 0.03088820695876772,
+        "pressure_RMS_Pa": 0.0018499674304466496,
+        "material_XYZ_displacement_max_mm": 2.594017469865275e-07
+      },
+      {
+        "part": 283,
+        "time_s": 0.03283825159072547,
+        "pressure_RMS_Pa": 0.0019033106671045366,
+        "material_XYZ_displacement_max_mm": 2.567098148894357e-07
+      },
+      {
+        "part": 284,
+        "time_s": 0.03479454636573436,
+        "pressure_RMS_Pa": 0.003489144520664626,
+        "material_XYZ_displacement_max_mm": 2.3726551041781787e-07
+      },
+      {
+        "part": 285,
+        "time_s": 0.03674459099769211,
+        "pressure_RMS_Pa": 0.0021295619969601237,
+        "material_XYZ_displacement_max_mm": 2.405134752004038e-07
+      },
+      {
+        "part": 286,
+        "time_s": 0.038700885772701005,
+        "pressure_RMS_Pa": 0.0021510888126061983,
+        "material_XYZ_displacement_max_mm": 2.6881612244976265e-07
+      },
+      {
+        "part": 287,
+        "time_s": 0.04065093040465875,
+        "pressure_RMS_Pa": 0.002929155937290935,
+        "material_XYZ_displacement_max_mm": 2.3451837929067387e-07
+      },
+      {
+        "part": 288,
+        "time_s": 0.04260722517966765,
+        "pressure_RMS_Pa": 0.0010936164774456357,
+        "material_XYZ_displacement_max_mm": 2.2715078069267235e-07
+      },
+      {
+        "part": 289,
+        "time_s": 0.044557269811625395,
+        "pressure_RMS_Pa": 0.0037633428028878433,
+        "material_XYZ_displacement_max_mm": 2.2527481788258706e-07
+      },
+      {
+        "part": 290,
+        "time_s": 0.04651356458663429,
+        "pressure_RMS_Pa": 0.0023961317180639066,
+        "material_XYZ_displacement_max_mm": 2.3262462252124545e-07
+      },
+      {
+        "part": 291,
+        "time_s": 0.04846360921859204,
+        "pressure_RMS_Pa": 0.0033927664081372638,
+        "material_XYZ_displacement_max_mm": 1.99649921607436e-07
+      },
+      {
+        "part": 292,
+        "time_s": 0.05041990399360093,
+        "pressure_RMS_Pa": 0.004195769911965135,
+        "material_XYZ_displacement_max_mm": 2.1490529752357e-07
+      },
+      {
+        "part": 293,
+        "time_s": 0.05236994862555868,
+        "pressure_RMS_Pa": 0.0033807835297696514,
+        "material_XYZ_displacement_max_mm": 2.675989927308659e-07
+      },
+      {
+        "part": 294,
+        "time_s": 0.054326243400567575,
+        "pressure_RMS_Pa": 0.005169284990292885,
+        "material_XYZ_displacement_max_mm": 2.352990360883756e-07
+      },
+      {
+        "part": 295,
+        "time_s": 0.05627628803252532,
+        "pressure_RMS_Pa": 0.004331876210223684,
+        "material_XYZ_displacement_max_mm": 2.482538673760787e-07
+      },
+      {
+        "part": 296,
+        "time_s": 0.05823258280753422,
+        "pressure_RMS_Pa": 0.004046567338125594,
+        "material_XYZ_displacement_max_mm": 2.7966812893669493e-07
+      },
+      {
+        "part": 297,
+        "time_s": 0.060182627439491966,
+        "pressure_RMS_Pa": 0.004852492226481906,
+        "material_XYZ_displacement_max_mm": 2.9862102832642234e-07
+      },
+      {
+        "part": 298,
+        "time_s": 0.06213892221450086,
+        "pressure_RMS_Pa": 0.003440865256559536,
+        "material_XYZ_displacement_max_mm": 2.9444387443807994e-07
+      },
+      {
+        "part": 299,
+        "time_s": 0.06408896684646037,
+        "pressure_RMS_Pa": 0.00196813537449554,
+        "material_XYZ_displacement_max_mm": 2.796615799200457e-07
+      },
+      {
+        "part": 300,
+        "time_s": 0.06604526162147144,
+        "pressure_RMS_Pa": 0.001791541435241625,
+        "material_XYZ_displacement_max_mm": 2.822003617221236e-07
+      },
+      {
+        "part": 301,
+        "time_s": 0.06799530625343135,
+        "pressure_RMS_Pa": 0.003013134496199514,
+        "material_XYZ_displacement_max_mm": 2.8422178620743345e-07
+      },
+      {
+        "part": 302,
+        "time_s": 0.06995160102844242,
+        "pressure_RMS_Pa": 0.0016576186589018413,
+        "material_XYZ_displacement_max_mm": 2.870807370106586e-07
+      },
+      {
+        "part": 303,
+        "time_s": 0.07190164566040233,
+        "pressure_RMS_Pa": 0.0036649850363120163,
+        "material_XYZ_displacement_max_mm": 2.957244442587783e-07
+      },
+      {
+        "part": 304,
+        "time_s": 0.0738579404354134,
+        "pressure_RMS_Pa": 0.003765725700329901,
+        "material_XYZ_displacement_max_mm": 2.75555233798337e-07
+      },
+      {
+        "part": 305,
+        "time_s": 0.07580798506737331,
+        "pressure_RMS_Pa": 0.0019273854783469339,
+        "material_XYZ_displacement_max_mm": 3.3159215174747824e-07
+      },
+      {
+        "part": 306,
+        "time_s": 0.07776427984238438,
+        "pressure_RMS_Pa": 0.0037274805053876597,
+        "material_XYZ_displacement_max_mm": 3.228428739842277e-07
+      },
+      {
+        "part": 307,
+        "time_s": 0.07971432447434429,
+        "pressure_RMS_Pa": 0.003711031862364208,
+        "material_XYZ_displacement_max_mm": 2.70789016911091e-07
+      },
+      {
+        "part": 308,
+        "time_s": 0.08167061924935536,
+        "pressure_RMS_Pa": 0.001484853767683166,
+        "material_XYZ_displacement_max_mm": 3.1247905926370045e-07
+      },
+      {
+        "part": 309,
+        "time_s": 0.08362066388131527,
+        "pressure_RMS_Pa": 0.00473146641335836,
+        "material_XYZ_displacement_max_mm": 3.2833532877699225e-07
+      },
+      {
+        "part": 310,
+        "time_s": 0.08557695865632634,
+        "pressure_RMS_Pa": 0.004797412978829733,
+        "material_XYZ_displacement_max_mm": 3.3262090709476904e-07
+      },
+      {
+        "part": 311,
+        "time_s": 0.08752700328828625,
+        "pressure_RMS_Pa": 0.0022985551359257462,
+        "material_XYZ_displacement_max_mm": 3.659864585518157e-07
+      },
+      {
+        "part": 312,
+        "time_s": 0.08948329806329731,
+        "pressure_RMS_Pa": 0.0070074186182485015,
+        "material_XYZ_displacement_max_mm": 3.73684418674004e-07
+      },
+      {
+        "part": 313,
+        "time_s": 0.09143334269525723,
+        "pressure_RMS_Pa": 0.0048983365281207005,
+        "material_XYZ_displacement_max_mm": 3.6574709507233074e-07
+      },
+      {
+        "part": 314,
+        "time_s": 0.0933896374702683,
+        "pressure_RMS_Pa": 0.0024321418460118037,
+        "material_XYZ_displacement_max_mm": 3.6491808833113553e-07
+      },
+      {
+        "part": 315,
+        "time_s": 0.09533968210222821,
+        "pressure_RMS_Pa": 0.00464572089819001,
+        "material_XYZ_displacement_max_mm": 4.04716159175422e-07
+      },
+      {
+        "part": 316,
+        "time_s": 0.09729597687723927,
+        "pressure_RMS_Pa": 0.0031108919210270747,
+        "material_XYZ_displacement_max_mm": 4.104629176374137e-07
+      },
+      {
+        "part": 317,
+        "time_s": 0.09924602150919919,
+        "pressure_RMS_Pa": 0.0025301645329844605,
+        "material_XYZ_displacement_max_mm": 4.399160779102555e-07
+      },
+      {
+        "part": 318,
+        "time_s": 0.10120231628421025,
+        "pressure_RMS_Pa": 0.0045278740507290775,
+        "material_XYZ_displacement_max_mm": 4.656963882327308e-07
+      },
+      {
+        "part": 319,
+        "time_s": 0.10315236091617017,
+        "pressure_RMS_Pa": 0.0033972871960203715,
+        "material_XYZ_displacement_max_mm": 4.7575362881310757e-07
+      },
+      {
+        "part": 320,
+        "time_s": 0.10510865569118123,
+        "pressure_RMS_Pa": 0.0026006878823193443,
+        "material_XYZ_displacement_max_mm": 4.889778812297336e-07
+      },
+      {
+        "part": 321,
+        "time_s": 0.10705870032314115,
+        "pressure_RMS_Pa": 0.004623402409808734,
+        "material_XYZ_displacement_max_mm": 4.857610910666233e-07
+      },
+      {
+        "part": 322,
+        "time_s": 0.10901499509815221,
+        "pressure_RMS_Pa": 0.0027498596979243757,
+        "material_XYZ_displacement_max_mm": 4.745295577417435e-07
+      },
+      {
+        "part": 323,
+        "time_s": 0.11096503973011212,
+        "pressure_RMS_Pa": 0.001992769343360644,
+        "material_XYZ_displacement_max_mm": 4.783245433320161e-07
+      },
+      {
+        "part": 324,
+        "time_s": 0.11291508436207204,
+        "pressure_RMS_Pa": 0.004905999632843539,
+        "material_XYZ_displacement_max_mm": 5.32571690572076e-07
+      },
+      {
+        "part": 325,
+        "time_s": 0.1148713791370831,
+        "pressure_RMS_Pa": 0.0026012092327569415,
+        "material_XYZ_displacement_max_mm": 5.889156757658058e-07
+      },
+      {
+        "part": 326,
+        "time_s": 0.11682142376904302,
+        "pressure_RMS_Pa": 0.0029885968808303176,
+        "material_XYZ_displacement_max_mm": 6.082172992237599e-07
+      },
+      {
+        "part": 327,
+        "time_s": 0.11877771854405408,
+        "pressure_RMS_Pa": 0.00621833888089517,
+        "material_XYZ_displacement_max_mm": 6.919953617052845e-07
+      },
+      {
+        "part": 328,
+        "time_s": 0.120727763176014,
+        "pressure_RMS_Pa": 0.0026913375845732937,
+        "material_XYZ_displacement_max_mm": 7.109173523061097e-07
+      },
+      {
+        "part": 329,
+        "time_s": 0.12268405795102506,
+        "pressure_RMS_Pa": 0.003174801017127824,
+        "material_XYZ_displacement_max_mm": 7.358944695877208e-07
+      },
+      {
+        "part": 330,
+        "time_s": 0.12463410258298498,
+        "pressure_RMS_Pa": 0.003820327875773374,
+        "material_XYZ_displacement_max_mm": 7.881077249444516e-07
+      },
+      {
+        "part": 331,
+        "time_s": 0.12659039735799252,
+        "pressure_RMS_Pa": 0.0037795263412956563,
+        "material_XYZ_displacement_max_mm": 8.027688098017357e-07
+      },
+      {
+        "part": 332,
+        "time_s": 0.1285404419899481,
+        "pressure_RMS_Pa": 0.0030366907107170398,
+        "material_XYZ_displacement_max_mm": 8.35312033350614e-07
+      },
+      {
+        "part": 333,
+        "time_s": 0.13049673676495482,
+        "pressure_RMS_Pa": 0.0016123554538287606,
+        "material_XYZ_displacement_max_mm": 9.070617642916137e-07
+      },
+      {
+        "part": 334,
+        "time_s": 0.1324467813969104,
+        "pressure_RMS_Pa": 0.005425308231637507,
+        "material_XYZ_displacement_max_mm": 9.655132810266126e-07
+      },
+      {
+        "part": 335,
+        "time_s": 0.13440307617191713,
+        "pressure_RMS_Pa": 0.0015442196085401676,
+        "material_XYZ_displacement_max_mm": 1.0162795897560323e-06
+      },
+      {
+        "part": 336,
+        "time_s": 0.1363531208038727,
+        "pressure_RMS_Pa": 0.0015378885293858605,
+        "material_XYZ_displacement_max_mm": 1.043409988380306e-06
+      },
+      {
+        "part": 337,
+        "time_s": 0.13830941557887944,
+        "pressure_RMS_Pa": 0.0028867377098606814,
+        "material_XYZ_displacement_max_mm": 1.0672554663888825e-06
+      },
+      {
+        "part": 338,
+        "time_s": 0.14025946021083502,
+        "pressure_RMS_Pa": 0.00393273245844058,
+        "material_XYZ_displacement_max_mm": 1.0812083189775023e-06
+      },
+      {
+        "part": 339,
+        "time_s": 0.14221575498584174,
+        "pressure_RMS_Pa": 0.003802245302103484,
+        "material_XYZ_displacement_max_mm": 1.0999544038352481e-06
+      },
+      {
+        "part": 340,
+        "time_s": 0.14416579961779732,
+        "pressure_RMS_Pa": 0.003425424890023805,
+        "material_XYZ_displacement_max_mm": 1.1044519997292882e-06
+      },
+      {
+        "part": 341,
+        "time_s": 0.14612209439280405,
+        "pressure_RMS_Pa": 0.00251074478701231,
+        "material_XYZ_displacement_max_mm": 1.1168566961793155e-06
+      },
+      {
+        "part": 342,
+        "time_s": 0.14807213902475963,
+        "pressure_RMS_Pa": 0.002863866832020039,
+        "material_XYZ_displacement_max_mm": 1.159164932252679e-06
+      },
+      {
+        "part": 343,
+        "time_s": 0.1500034332275618,
+        "pressure_RMS_Pa": 0.0019537219089092073,
+        "material_XYZ_displacement_max_mm": 1.1704507858232253e-06
+      }
+    ],
+    "pressure_RMS_limit_Pa": 5.0,
+    "material_displacement_limit_mm": 0.005,
+    "minimum_image_x_period_m": 0.1,
+    "Y_Z_displacements_direct": true,
+    "interpolation": false,
+    "native_22_array_cross_backend_bit_equality_claimed": false,
+    "cross_scheme_or_half_comparison": false
+  },
+  "original_native_guards_not_relaxed": true,
+  "no_interpolation_or_header_clock_rewrite": true,
+  "full_cycle_theory_restart_or_physical_acceptance": false,
+  "later_pressure_settlement_stress_comparison_required": true
+}

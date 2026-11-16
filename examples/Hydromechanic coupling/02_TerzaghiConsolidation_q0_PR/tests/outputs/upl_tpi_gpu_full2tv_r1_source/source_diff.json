@@ -1,0 +1,17 @@
+{
+  "stage": "upl_tpi_gpu_full2tv_r1.source_diff",
+  "passed": true,
+  "only_changed_source": "JSphGpuSingle.cpp",
+  "before": "TimeMax<=.15",
+  "after": "(TimeMax<=.15 || (TimeMax==72.88428690075874 && NstepsBreak==11661219))",
+  "occurrences": 1,
+  "unified_diff": "--- r2/JSphGpuSingle.cpp\n+++ full2tv/JSphGpuSingle.cpp\n@@ -1153,7 +1153,7 @@\n     upl_tpi_gpu_r1::Require(Simulate2D && TStep==STEP_Symplectic && CaseNp==1040 && CaseNfixed==40\n       && CaseNfluid==1000 && CaseNpb==40 && !CaseNmoving && !CaseNfloat && !NpDynamic && !InOut\n       && !Shifting && !Damping && !RelaxZones && !UseDEM && !Symmetry && !PartBegin && PartBeginDir.empty()\n-      && TimeStep==0. && Nstep==0 && TimeMax>0. && TimeMax<=.15\n+      && TimeStep==0. && Nstep==0 && TimeMax>0. && (TimeMax<=.15 || (TimeMax==72.88428690075874 && NstepsBreak==11661219))\n       && (!GaugeSystem || GaugeSystem->GetCount()==0),\"Private GPU P1 requires fresh bounded C02 owners/topology\");\n     upl_tpi_gpu_r1::Require(FixedDt && FixedDt->GetFixedValue()==6.2501430511474609e-6\n       && SymplecticDtPre==6.2501430511474609e-6 && HydroMech && HydroMechDynamicSeepage\n",
+  "other268_files_byte_identical": true,
+  "helper_h_and_cuh_byte_identical": true,
+  "class_or_header_ABI_changed": false,
+  "old_kernel_external_signatures_changed": false,
+  "physics_math_kernel_or_threshold_changed": false,
+  "no_new_XML_or_BAT": true,
+  "full_clock_and_runner_not_prepared_here": true,
+  "physical_acceptance": false
+}
