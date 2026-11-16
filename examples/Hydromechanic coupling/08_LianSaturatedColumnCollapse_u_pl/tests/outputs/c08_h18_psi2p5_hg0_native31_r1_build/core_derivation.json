@@ -1,0 +1,134 @@
+{
+  "stage": "c08_h18_psi2p5_hg0_native31_r1.derive",
+  "baseline_build": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_h18_as255_native_r1.build.json",
+    "bytes": 61268,
+    "mtime_ns": 1794617960067125000
+  },
+  "baseline_generated": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\h18_as255_entry_r1.cpp",
+      "bytes": 10696,
+      "mtime_ns": 1794617918065237000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\h18_headers_r1.h",
+      "bytes": 455,
+      "mtime_ns": 1794617918071236800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\public22_core_r1.h",
+      "bytes": 4781,
+      "mtime_ns": 1794617918169383100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\h18_source_core_r1.cpp",
+      "bytes": 21487,
+      "mtime_ns": 1794617918194195700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\h18_receiver_core_r1.cpp",
+      "bytes": 25303,
+      "mtime_ns": 1794617918207430900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_as255_native_r1_build\\h18_profiles_r1.h",
+      "bytes": 188,
+      "mtime_ns": 1794617918218451100
+    }
+  ],
+  "replacements": [
+    {
+      "label": "close source CLI",
+      "before": " if(argc==7&&std::wstring(argv[1])==L\"--source\"){\n  const std::wstring mode=argv[2];H18Need(mode==L\"partial\"||mode==L\"full\",\"Source mode must be partial or full\");H18ReadPlan(argv[5],true,H18Event,H18SourceSamples);return h18source::wmain(argc,argv);\n }",
+      "after": " // Only the window31/psi2p5 receiver CLI is exposed; no source/formal/window91 command.",
+      "count": 1
+    },
+    {
+      "label": "closed CLI help",
+      "before": "Use --source partial|full DATA MATERIAL_CSV PLAN FRESHOUT; or --receiver window|formal GROUP DATA PRE PLAN PROFILE_CSV FRESHOUT",
+      "after": "Use --receiver window31 psi2p5 DATA PRE PLAN PROFILE_CSV FRESHOUT",
+      "count": 1
+    },
+    {
+      "label": "exact extent and group",
+      "before": "const bool window=profile==\"window\";H18Need(window||profile==\"formal\",\"Only .90-window or full3 receiver profiles\");const unsigned end=window?H18WindowEnd:H18FormalEnd,samples=window?H18WindowSamples:H18FormalSamples;",
+      "after": "H18Need(profile==\"window31\"&&group==\"psi2p5\",\"Only window31/psi2p5 is exposed\");const unsigned end=2060000u,samples=31u;",
+      "count": 1
+    },
+    {
+      "label": "exact actual saves and AS03",
+      "before": "H18ReadPlan(argv[6],false,end,samples);H18ReadReceiverProfile(argv[7],group);",
+      "after": "H18ReadPlan(argv[6],false,end,samples);for(unsigned part=0;part<31u;part++)H18Need(H18Rows[part].completed==(part<30u?2000001u+2000u*part:2060000u),\"Only actual first-post31 saves with forced final2060000 are admitted\");H18ReadReceiverProfile(argv[7],group);H18Need(H18Bits(H18AS,.3f)&&H18Bits(H18Exp,2.55f),\"Only AS.3/exponent2.55 is admitted\");",
+      "count": 1
+    },
+    {
+      "label": "actual HG sidecars absent",
+      "before": "for(unsigned part=0;part<samples;part++){\n  headerPart=part;",
+      "after": "H18Need(!std::filesystem::exists(data.parent_path()/\"C08OptPlasticHG.csv\")&&!std::filesystem::exists(data.parent_path()/\"C08OptPlasticHGPolicy.json\"),\"HG0 output must not contain private optimized HG sidecars\");\n for(unsigned part=0;part<samples;part++){\n  headerPart=part;",
+      "count": 1
+    },
+    {
+      "label": "metadata stage only",
+      "before": "c08_h18_wend_native_r1.metadata",
+      "after": "c08_h18_psi2p5_hg0_native31_r1.metadata",
+      "count": 1
+    },
+    {
+      "label": "explicit missing-sidecar scope",
+      "before": "\\\"metadata_header_scans\\\":",
+      "after": "\\\"HG_expected\\\":false,\\\"HG_sidecars_absent\\\":true,\\\"HG_kernel_correctness_claimed\\\":false,\\\"metadata_header_scans\\\":",
+      "count": 1
+    }
+  ],
+  "exact_inverse_original_entry_bytes": true,
+  "source_and_receiver_numeric_cores_byte_identical": true,
+  "original_field_and_numerical_guards_changed": false,
+  "profiles": [
+    "window31"
+  ],
+  "allowed_group": "psi2p5",
+  "samples": 31,
+  "end": 2060000,
+  "new_updates": 60000,
+  "fixed_dt_s": 5e-06,
+  "first30_completed_steps": [
+    2000001,
+    2002001,
+    2004001,
+    2006001,
+    2008001,
+    2010001,
+    2012001,
+    2014001,
+    2016001,
+    2018001,
+    2020001,
+    2022001,
+    2024001,
+    2026001,
+    2028001,
+    2030001,
+    2032001,
+    2034001,
+    2036001,
+    2038001,
+    2040001,
+    2042001,
+    2044001,
+    2046001,
+    2048001,
+    2050001,
+    2052001,
+    2054001,
+    2056001,
+    2058001
+  ],
+  "forced_final_completed_step": 2060000,
+  "scalar_plus_equal_dt": true,
+  "HG_expected": false,
+  "HG_sidecars_absence_checked": true,
+  "HG602_gate_added": false,
+  "solver_internal_wall_threshold_not_claimed_native_checked": true,
+  "old_files_changed": false
+}
