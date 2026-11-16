@@ -1,0 +1,1140 @@
+{
+  "stage": "upl_tpi_cryer_gpu_startup_root_r1",
+  "passed": true,
+  "draft": false,
+  "root_final_approval_pending": false,
+  "physical_acceptance": false,
+  "scope": "C04 source267/full111 Debug+Release/DebugB2 memcheck+native/ReleaseABC128 implementation only",
+  "timestamp_utc": "2026-11-16T21:24:16.882960+00:00",
+  "source_prepare": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_r2.prepare.json",
+    "bytes": 233585,
+    "mtime_ns": 1794861937828012000
+  },
+  "prior_prepare_failure": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_r1.prepare.json",
+    "bytes": 740,
+    "mtime_ns": 1794860519660127500
+  },
+  "source_count": 265,
+  "private_helper_count": 2,
+  "total_source_text_members": 267,
+  "changed_TUs": [
+    "JSphGpu.cpp",
+    "JSphGpuSingle.cpp",
+    "JSphGpu_ker.cu"
+  ],
+  "public_source_changed": false,
+  "old_objects_reused": false,
+  "build_reviews": {
+    "Debug": {
+      "receipt": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_r1.build.json",
+        "bytes": 532572,
+        "mtime_ns": 1794862507176889600
+      },
+      "object_count": 111,
+      "CL": 97,
+      "CUDA": 14,
+      "runtime_count": 5,
+      "numerical_flags_match_original": true
+    },
+    "Release": {
+      "receipt": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_r1.build.json",
+        "bytes": 531602,
+        "mtime_ns": 1794863212323192300
+      },
+      "object_count": 111,
+      "CL": 97,
+      "CUDA": 14,
+      "runtime_count": 4,
+      "numerical_flags_match_original": true
+    }
+  },
+  "debug_B2": {
+    "run": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.run.json",
+      "bytes": 19161,
+      "mtime_ns": 1794862636842055300
+    },
+    "native_review": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.native_review_r1.json",
+      "bytes": 14674,
+      "mtime_ns": 1794862896317131200
+    },
+    "memcheck_zero_errors": true,
+    "actual_fixture_count": 1,
+    "actual_fixture_cases": 16,
+    "updates": 2,
+    "saved_states": 2,
+    "end_s": 1.9073486328125e-06,
+    "core_checks": 520422,
+    "HG_checks": 0,
+    "sidecar_rows": 74346,
+    "actual_end_formula_checks": 37173,
+    "CPU_2dt_reference_claimed": false
+  },
+  "schemes": [
+    {
+      "scheme": "A",
+      "tag": "upl_tpi_cryer_gpu_Release_A_startup128_r1",
+      "actual_solver_exits": {
+        "Popen": 0,
+        "Win32": 0,
+        "targetWin32": 0
+      },
+      "solver_invocations": 1,
+      "reader_invocations": 1,
+      "reported_steps": 128,
+      "saved_states": 2,
+      "actual_clock": {
+        "actual_scalar_end_s": 0.0001220703125,
+        "actual_fixed_dt_s": 9.5367431640625e-07,
+        "completed_updates": 128,
+        "frames": 2,
+        "forced_final": false,
+        "post_open_frames": 0,
+        "event_sample_present": false,
+        "initial_and_noninitial_native_review_pending": true
+      },
+      "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+      "observed_simulation_runtime_s": 27.598143,
+      "observed_total_runtime_s": 27.656263,
+      "actual_device_fixture_cases": 0,
+      "actual_device_fixture_count": 0,
+      "native_completion": {
+        "stage": "upl_cryer_public_native_r1",
+        "passed": true,
+        "declared_backend": "GPU",
+        "backend_proven_by_reader": false,
+        "window": "prefix_completed_plan",
+        "samples": 2,
+        "completed_steps": 128,
+        "actual_end_s": 0.0001220703125,
+        "dt_s": 9.5367431640625e-07,
+        "ramp_s": 0.00390625,
+        "drainage_s": 0.0078125,
+        "total_native_ids": 37181,
+        "soil_ids": 37173,
+        "fixed_ids": 8,
+        "center_material_ids": 18,
+        "native_typed_arrays": 22,
+        "common26_all_native_ids": true,
+        "common26_col21_actual_ExcessPorePress": true,
+        "native_auxiliary_arrays_preserved_in_raw_BI4": true,
+        "soil_ledger_checks": 74346,
+        "fixed_marker_checks": 16,
+        "post_open_frames": 0,
+        "post_open_FS23_zero_pressure_checks": 0,
+        "noninitial_signed_dterror_intervals": 1,
+        "initial_empty_dterror": false,
+        "min_noninitial_signed_dterror_s": -6.404499390309602e-07,
+        "max_noninitial_signed_dterror_s": -6.404499390309602e-07,
+        "max_ledger_relative_error": 0,
+        "max_radius_m": 0.05000000000000002,
+        "center_statistic": "fixed18_arithmetic_mean_at_initial_r_over_a_0.05_not_exact_origin",
+        "FSNormal_finite_not_cross_backend_identity_gate": true,
+        "saved_J_load_is_proxy_not_force_stage_budget": true,
+        "signed_dterror_is_original_necessary_step_guard": true,
+        "raw_BI4_modified": false,
+        "source_or_runtime_or_owned_exit_proven_by_reader": false,
+        "theory_or_cross_model_accuracy_tested": false,
+        "physical_acceptance": false
+      },
+      "history": {
+        "private_branch_entered": false,
+        "HG_snapshot_checks": 0
+      },
+      "comparison": {
+        "old_GPU128_common26_IDs_and_entire_signed_clock_bit_equal": true,
+        "raw22_all_array_bit_proof": false,
+        "normal_exit_not_physical_acceptance": true
+      },
+      "final_center18_pressure_Pa": 382.64535013834643,
+      "final_all_soil_mean_pressure_Pa": 345.48123401277235,
+      "final_material_displacement_max_mm": 8.67502444482427e-06,
+      "program": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_r1\\out\\DualSPHysics5.2_GEO_win64.exe",
+        "bytes": 22806016,
+        "mtime_ns": 1794863206140119700
+      },
+      "source_build": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_r1.build.json",
+        "bytes": 531602,
+        "mtime_ns": 1794863212323192300
+      },
+      "prepared": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_r2.prepare.json",
+        "bytes": 233585,
+        "mtime_ns": 1794861937828012000
+      }
+    },
+    {
+      "scheme": "B",
+      "tag": "upl_tpi_cryer_gpu_Release_B_startup128_r1",
+      "actual_solver_exits": {
+        "Popen": 0,
+        "Win32": 0,
+        "targetWin32": 0
+      },
+      "solver_invocations": 1,
+      "reader_invocations": 1,
+      "reported_steps": 128,
+      "saved_states": 2,
+      "actual_clock": {
+        "actual_scalar_end_s": 0.0001220703125,
+        "actual_fixed_dt_s": 9.5367431640625e-07,
+        "completed_updates": 128,
+        "frames": 2,
+        "forced_final": false,
+        "post_open_frames": 0,
+        "event_sample_present": false,
+        "initial_and_noninitial_native_review_pending": true
+      },
+      "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+      "observed_simulation_runtime_s": 42.07262,
+      "observed_total_runtime_s": 42.511326,
+      "actual_device_fixture_cases": 16,
+      "actual_device_fixture_count": 1,
+      "native_completion": {
+        "stage": "upl_cryer_public_native_r1",
+        "passed": true,
+        "declared_backend": "GPU",
+        "backend_proven_by_reader": false,
+        "window": "prefix_completed_plan",
+        "samples": 2,
+        "completed_steps": 128,
+        "actual_end_s": 0.0001220703125,
+        "dt_s": 9.5367431640625e-07,
+        "ramp_s": 0.00390625,
+        "drainage_s": 0.0078125,
+        "total_native_ids": 37181,
+        "soil_ids": 37173,
+        "fixed_ids": 8,
+        "center_material_ids": 18,
+        "native_typed_arrays": 22,
+        "common26_all_native_ids": true,
+        "common26_col21_actual_ExcessPorePress": true,
+        "native_auxiliary_arrays_preserved_in_raw_BI4": true,
+        "soil_ledger_checks": 74346,
+        "fixed_marker_checks": 16,
+        "post_open_frames": 0,
+        "post_open_FS23_zero_pressure_checks": 0,
+        "noninitial_signed_dterror_intervals": 1,
+        "initial_empty_dterror": false,
+        "min_noninitial_signed_dterror_s": -6.404513776629343e-07,
+        "max_noninitial_signed_dterror_s": -6.404513776629343e-07,
+        "max_ledger_relative_error": 0,
+        "max_radius_m": 0.05000000000000002,
+        "center_statistic": "fixed18_arithmetic_mean_at_initial_r_over_a_0.05_not_exact_origin",
+        "FSNormal_finite_not_cross_backend_identity_gate": true,
+        "saved_J_load_is_proxy_not_force_stage_budget": true,
+        "signed_dterror_is_original_necessary_step_guard": true,
+        "raw_BI4_modified": false,
+        "source_or_runtime_or_owned_exit_proven_by_reader": false,
+        "theory_or_cross_model_accuracy_tested": false,
+        "physical_acceptance": false
+      },
+      "history": {
+        "private_branch_entered": true,
+        "sidecar_rows": 74346,
+        "actual_end_pressure_row_checks": 37173,
+        "core_field_bit_checks": 33307008,
+        "HG_snapshot_checks": 0,
+        "J_nonfused_matches": 37173,
+        "J_fused_matches": 37173,
+        "ULP_or_absolute_tolerance_added": 0,
+        "all_unsaved_rows_independently_observed": false
+      },
+      "comparison": {
+        "cpu_reference_review": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_cpu_DebugCPU_B_startup128_r1.native_review_r2.json",
+          "bytes": 15410,
+          "mtime_ns": 1794859357616274200
+        },
+        "actual_matched_samples": 2,
+        "pressure_RMS_Pa_by_frame": [
+          0.0,
+          1.5862366883711e-05
+        ],
+        "material_XYZ_displacement_max_mm_by_frame": [
+          0.0,
+          3.086061849959357e-12
+        ],
+        "effective_saved_stress_Frobenius_RMS_Pa_by_frame": [
+          0.0,
+          8.418282406744254e-08
+        ],
+        "max_saved_J_difference_by_frame": [
+          0.0,
+          1.0547118733938987e-13
+        ],
+        "original_5Pa_0p005mm_bound_passed": true,
+        "FSNormal_cross_backend_bit_gate": false,
+        "signed_dterror_each_original_guard_only": true
+      },
+      "final_center18_pressure_Pa": 297.7132347954645,
+      "final_all_soil_mean_pressure_Pa": 302.3394565479142,
+      "final_material_displacement_max_mm": 7.826475433630452e-07,
+      "program": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_r1\\out\\DualSPHysics5.2_GEO_win64.exe",
+        "bytes": 22806016,
+        "mtime_ns": 1794863206140119700
+      },
+      "source_build": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_r1.build.json",
+        "bytes": 531602,
+        "mtime_ns": 1794863212323192300
+      },
+      "prepared": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_r2.prepare.json",
+        "bytes": 233585,
+        "mtime_ns": 1794861937828012000
+      }
+    },
+    {
+      "scheme": "C",
+      "tag": "upl_tpi_cryer_gpu_Release_C_startup128_r1",
+      "actual_solver_exits": {
+        "Popen": 0,
+        "Win32": 0,
+        "targetWin32": 0
+      },
+      "solver_invocations": 1,
+      "reader_invocations": 1,
+      "reported_steps": 128,
+      "saved_states": 2,
+      "actual_clock": {
+        "actual_scalar_end_s": 0.0001220703125,
+        "actual_fixed_dt_s": 9.5367431640625e-07,
+        "completed_updates": 128,
+        "frames": 2,
+        "forced_final": false,
+        "post_open_frames": 0,
+        "event_sample_present": false,
+        "initial_and_noninitial_native_review_pending": true
+      },
+      "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+      "observed_simulation_runtime_s": 41.887569,
+      "observed_total_runtime_s": 42.317455,
+      "actual_device_fixture_cases": 16,
+      "actual_device_fixture_count": 1,
+      "native_completion": {
+        "stage": "upl_cryer_public_native_r1",
+        "passed": true,
+        "declared_backend": "GPU",
+        "backend_proven_by_reader": false,
+        "window": "prefix_completed_plan",
+        "samples": 2,
+        "completed_steps": 128,
+        "actual_end_s": 0.0001220703125,
+        "dt_s": 9.5367431640625e-07,
+        "ramp_s": 0.00390625,
+        "drainage_s": 0.0078125,
+        "total_native_ids": 37181,
+        "soil_ids": 37173,
+        "fixed_ids": 8,
+        "center_material_ids": 18,
+        "native_typed_arrays": 22,
+        "common26_all_native_ids": true,
+        "common26_col21_actual_ExcessPorePress": true,
+        "native_auxiliary_arrays_preserved_in_raw_BI4": true,
+        "soil_ledger_checks": 74346,
+        "fixed_marker_checks": 16,
+        "post_open_frames": 0,
+        "post_open_FS23_zero_pressure_checks": 0,
+        "noninitial_signed_dterror_intervals": 1,
+        "initial_empty_dterror": false,
+        "min_noninitial_signed_dterror_s": -6.404512098568532e-07,
+        "max_noninitial_signed_dterror_s": -6.404512098568532e-07,
+        "max_ledger_relative_error": 0,
+        "max_radius_m": 0.05000000000000002,
+        "center_statistic": "fixed18_arithmetic_mean_at_initial_r_over_a_0.05_not_exact_origin",
+        "FSNormal_finite_not_cross_backend_identity_gate": true,
+        "saved_J_load_is_proxy_not_force_stage_budget": true,
+        "signed_dterror_is_original_necessary_step_guard": true,
+        "raw_BI4_modified": false,
+        "source_or_runtime_or_owned_exit_proven_by_reader": false,
+        "theory_or_cross_model_accuracy_tested": false,
+        "physical_acceptance": false
+      },
+      "history": {
+        "private_branch_entered": true,
+        "sidecar_rows": 74346,
+        "actual_end_pressure_row_checks": 37173,
+        "core_field_bit_checks": 33307008,
+        "HG_snapshot_checks": 0,
+        "J_nonfused_matches": 37173,
+        "J_fused_matches": 37173,
+        "ULP_or_absolute_tolerance_added": 0,
+        "all_unsaved_rows_independently_observed": false
+      },
+      "comparison": {
+        "cpu_reference_review": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_cpu_DebugCPU_C_startup128_r1.native_review_r2.json",
+          "bytes": 15412,
+          "mtime_ns": 1794860261132965100
+        },
+        "actual_matched_samples": 2,
+        "pressure_RMS_Pa_by_frame": [
+          0.0,
+          1.751450709640772e-05
+        ],
+        "material_XYZ_displacement_max_mm_by_frame": [
+          0.0,
+          5.15228731904838e-12
+        ],
+        "effective_saved_stress_Frobenius_RMS_Pa_by_frame": [
+          0.0,
+          1.2100327770687884e-07
+        ],
+        "max_saved_J_difference_by_frame": [
+          0.0,
+          1.5876189252139739e-13
+        ],
+        "original_5Pa_0p005mm_bound_passed": true,
+        "FSNormal_cross_backend_bit_gate": false,
+        "signed_dterror_each_original_guard_only": true
+      },
+      "final_center18_pressure_Pa": 321.2503696017795,
+      "final_all_soil_mean_pressure_Pa": 314.88742983181834,
+      "final_material_displacement_max_mm": 1.6173109667457826e-06,
+      "program": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_r1\\out\\DualSPHysics5.2_GEO_win64.exe",
+        "bytes": 22806016,
+        "mtime_ns": 1794863206140119700
+      },
+      "source_build": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_r1.build.json",
+        "bytes": 531602,
+        "mtime_ns": 1794863212323192300
+      },
+      "prepared": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_r2.prepare.json",
+        "bytes": 233585,
+        "mtime_ns": 1794861937828012000
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_A_startup128_r1.run.json",
+      "bytes": 18384,
+      "mtime_ns": 1794863330536725800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_A_startup128_r1.start.json",
+      "bytes": 11290,
+      "mtime_ns": 1794863302613139800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_A_startup128_r1.tool.start.json",
+      "bytes": 2053,
+      "mtime_ns": 1794863302609139900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_A_startup128_r1.call.json",
+      "bytes": 4710,
+      "mtime_ns": 1794863330520709700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_A_startup128_r1.clock.csv",
+      "bytes": 122,
+      "mtime_ns": 1794863297161919800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_A_startup128_r1.native_r1.json",
+      "bytes": 14154,
+      "mtime_ns": 1794863524891733600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_A_startup128_r1.native_r1.call.json",
+      "bytes": 3146,
+      "mtime_ns": 1794863524876212900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_A_startup128_r1.native_review_r1.json",
+      "bytes": 15686,
+      "mtime_ns": 1794863553936487400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_A_startup128_r1_native_r1\\completion.json",
+      "bytes": 1284,
+      "mtime_ns": 1794863524852541000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_A_startup128_r1_native_r1\\summary.csv",
+      "bytes": 2295,
+      "mtime_ns": 1794863524852541000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_A_startup128_r1_native_r1\\center18.csv",
+      "bytes": 21494,
+      "mtime_ns": 1794863524852541000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_A_startup128_r1_native_r1\\columns.csv",
+      "bytes": 312,
+      "mtime_ns": 1794863524852541000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_A_startup128_r1\\Run.csv",
+      "bytes": 1039,
+      "mtime_ns": 1794863330478401200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_B_startup128_r1.run.json",
+      "bytes": 19781,
+      "mtime_ns": 1794863628180460900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_B_startup128_r1.start.json",
+      "bytes": 11582,
+      "mtime_ns": 1794863585424878700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_B_startup128_r1.tool.start.json",
+      "bytes": 2054,
+      "mtime_ns": 1794863585420875900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_B_startup128_r1.call.json",
+      "bytes": 4712,
+      "mtime_ns": 1794863628154025300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_B_startup128_r1.clock.csv",
+      "bytes": 122,
+      "mtime_ns": 1794863580026568000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_B_startup128_r1.native_r1.json",
+      "bytes": 14153,
+      "mtime_ns": 1794863685499994800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_B_startup128_r1.native_r1.call.json",
+      "bytes": 3146,
+      "mtime_ns": 1794863685462464800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_B_startup128_r1.native_review_r1.json",
+      "bytes": 17543,
+      "mtime_ns": 1794863727438895500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_B_startup128_r1_native_r1\\completion.json",
+      "bytes": 1284,
+      "mtime_ns": 1794863685398715500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_B_startup128_r1_native_r1\\summary.csv",
+      "bytes": 2299,
+      "mtime_ns": 1794863685395714900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_B_startup128_r1_native_r1\\center18.csv",
+      "bytes": 21674,
+      "mtime_ns": 1794863685395714900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_B_startup128_r1_native_r1\\columns.csv",
+      "bytes": 312,
+      "mtime_ns": 1794863685395714900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_B_startup128_r1\\Run.csv",
+      "bytes": 1037,
+      "mtime_ns": 1794863628104258300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_C_startup128_r1.run.json",
+      "bytes": 20321,
+      "mtime_ns": 1794863801655521300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_C_startup128_r1.start.json",
+      "bytes": 11851,
+      "mtime_ns": 1794863759136096700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_C_startup128_r1.tool.start.json",
+      "bytes": 2054,
+      "mtime_ns": 1794863759128582000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_C_startup128_r1.call.json",
+      "bytes": 4710,
+      "mtime_ns": 1794863801636381100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_C_startup128_r1.clock.csv",
+      "bytes": 122,
+      "mtime_ns": 1794863753813033600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_C_startup128_r1.native_r1.json",
+      "bytes": 14154,
+      "mtime_ns": 1794863868413130200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_C_startup128_r1.native_r1.call.json",
+      "bytes": 3144,
+      "mtime_ns": 1794863868398111800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_C_startup128_r1.native_review_r1.json",
+      "bytes": 17546,
+      "mtime_ns": 1794863896732000500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_C_startup128_r1_native_r1\\completion.json",
+      "bytes": 1284,
+      "mtime_ns": 1794863868375047100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_C_startup128_r1_native_r1\\summary.csv",
+      "bytes": 2299,
+      "mtime_ns": 1794863868375047100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_C_startup128_r1_native_r1\\center18.csv",
+      "bytes": 21585,
+      "mtime_ns": 1794863868375047100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_C_startup128_r1_native_r1\\columns.csv",
+      "bytes": 312,
+      "mtime_ns": 1794863868375047100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Release_C_startup128_r1\\Run.csv",
+      "bytes": 1037,
+      "mtime_ns": 1794863801594298000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.run.json",
+      "bytes": 19161,
+      "mtime_ns": 1794862636842055300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.start.json",
+      "bytes": 11283,
+      "mtime_ns": 1794862582754258600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.tool.start.json",
+      "bytes": 2341,
+      "mtime_ns": 1794862582555827000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.call.json",
+      "bytes": 5510,
+      "mtime_ns": 1794862636823528900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.memcheck.log",
+      "bytes": 121,
+      "mtime_ns": 1794862636812504500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.clock.csv",
+      "bytes": 122,
+      "mtime_ns": 1794862576537577100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.native_r1.json",
+      "bytes": 14605,
+      "mtime_ns": 1794862849871239600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.native_r1.call.json",
+      "bytes": 3135,
+      "mtime_ns": 1794862849851436300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.native_review_r1.json",
+      "bytes": 14674,
+      "mtime_ns": 1794862896317131200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_r1.build.json",
+      "bytes": 532572,
+      "mtime_ns": 1794862507176889600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_r1.environment.call.json",
+      "bytes": 1581,
+      "mtime_ns": 1794862015903135400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_r1.msbuild.call.json",
+      "bytes": 3846,
+      "mtime_ns": 1794862502390446900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_r1.build.json",
+      "bytes": 531602,
+      "mtime_ns": 1794863212323192300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_r1.environment.call.json",
+      "bytes": 1603,
+      "mtime_ns": 1794862916379708100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Release_r1.msbuild.call.json",
+      "bytes": 3886,
+      "mtime_ns": 1794863206608124000
+    }
+  ],
+  "essential_C04_receipt_program_input_stats_checked": 45,
+  "readonly_summary_actions": {
+    "solver_invocations": 0,
+    "native_invocations": 0,
+    "build_invocations": 0,
+    "queue_invocations": 0,
+    "Git_invocations": 0,
+    "hash_scans": 0,
+    "active_C02_fullB_dependencies_modified": false,
+    "paused_C08_touched": false,
+    "new_binary_comparison_performed": false
+  },
+  "limitations": {
+    "post_open_frames": 0,
+    "peak_or_decay_tested": false,
+    "physical_accuracy_1percent_tested": false,
+    "raw22_all_arrays_bit_comparison_claimed": false,
+    "all128_unsaved_material_states_independently_observed": false,
+    "controlled_runtime_benchmark": false,
+    "saved_J_load_proxy_is_not_force_stage_budget": true,
+    "PorePressRate_is_legacy_scaled_residual_not_actual_BC_dpdt": true,
+    "full_restart_supported": false,
+    "automatic_new_solver": false
+  },
+  "selective_git_candidates": {
+    "full_frozen267_source_text": [
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/DSPHChronoLib.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/DSphMoorDyn.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/DSphMoorDynUndef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/DualSphDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/Functions.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/Functions.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/FunctionsBasic_iker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/FunctionsCuda.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/FunctionsCuda.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/FunctionsGeo3d_iker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/FunctionsMath.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/FunctionsMath_iker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/FunGeo3d.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/FunGeo3d.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/FunSphEos.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/FunSphEos_iker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/FunSphKernel.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/FunSphKernel_iker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/FunSphKernelDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/FunSphKernelsCfg.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/FunSphKernelsCfg.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JAppInfo.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JAppInfo.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JAppInfoDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JArraysCpu.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JArraysCpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JArraysGpu.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JArraysGpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JBinaryData.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JBinaryData.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCaseCtes.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCaseCtes.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCaseEParms.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCaseEParms.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCaseParts.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCaseParts.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCasePartsDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCaseProperties.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCaseProperties.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCaseUserVars.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCaseUserVars.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCaseVtkOut.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCaseVtkOut.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCellDivCpu.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCellDivCpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCellDivCpuSingle.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCellDivCpuSingle.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCellDivDataCpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCellDivDataGpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCellDivGpu.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCellDivGpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCellDivGpu_ker.cu",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCellDivGpu_ker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCellDivGpuSingle.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCellDivGpuSingle.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCellDivGpuSingle_ker.cu",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCellDivGpuSingle_ker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCellSearch_iker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCellSearch_inline.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCfgRunBase.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCfgRunBase.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JCfgRunBaseDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JChronoData.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JChronoObjects.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JChronoObjects.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JChronoObjectsUndef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JComputeMotionRef.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JComputeMotionRef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDataArrays.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDataArrays.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDebugSphGpu.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDebugSphGpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsAccInput.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsAccInput.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsAccInput_ker.cu",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsAccInput_ker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsDamping.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsDamping.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsDcell.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsDcell.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsDcellDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsExtraData.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsExtraData.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsFixedDt.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsFixedDt.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsFtForcePoints.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsFtForcePoints.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsGauge_ker.cu",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsGauge_ker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsGaugeItem.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsGaugeItem.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsGaugeSystem.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsGaugeSystem.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsGpuInfo.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsGpuInfo.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsInitialize.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsInitialize.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsMooredFloatings.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsMooredFloatings.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsMotion.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsMotion.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsMotionDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsOutputTime.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsOutputTime.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsPartsInit.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsPartsInit.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsPartsOut.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsPartsOut.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsphConfig.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsphConfig.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsPips.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsPips.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsPips_ker.cu",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsPips_ker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsSaveDt.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsSaveDt.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsTimers.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsTimers.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsTimersCpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsTimersGpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsViscoInput.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JDsViscoInput.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JException.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JException.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JFtMotionSave.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JFtMotionSave.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JLinearValue.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JLinearValue.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JLinearValueDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JLog2.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JLog2.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JMatrix4.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JMeanValues.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JMLPistons.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JMLPistonsGpu.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JMLPistonsGpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JMotion.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JMotion.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JMotionEvent.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JMotionList.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JMotionList.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JMotionMov.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JMotionMov.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JMotionObj.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JMotionObj.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JMotionPos.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JMotionPos.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JNumexLib.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JNumexLibDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JNumexLibUndef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JObject.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JObject.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JObjectGpu.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JObjectGpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JOutputCsv.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JOutputCsv.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JPartDataBi4.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JPartDataBi4.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JPartDataHead.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JPartDataHead.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JPartFloatBi4.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JPartFloatBi4.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JParticlesDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JPartMotionDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JPartNormalData.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JPartNormalData.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JPartOutBi4Save.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JPartOutBi4Save.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JPartsLoad4.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JPartsLoad4.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JPeriodicDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JRadixSort.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JRadixSort.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JRangeFilter.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JRangeFilter.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JReadDatafile.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JReadDatafile.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JReduSum_ker.cu",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JReduSum_ker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JRelaxZone_ker.cu",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JRelaxZone_ker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JRelaxZones.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JRelaxZonesGpu.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JRelaxZonesGpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSaveCsv2.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSaveCsv2.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSimpleNeigs.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSimpleNeigs.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSph.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSph.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphCfgRun.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphCfgRun.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphCpu.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphCpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphCpu_InOut.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphCpuSingle.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphCpuSingle.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphCpuSingle_InOut.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphGpu.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphGpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphGpu_InOut_iker.cu",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphGpu_InOut_iker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphGpu_ker.cu",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphGpu_ker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphGpuSimple_ker.cu",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphGpuSimple_ker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphGpuSingle.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphGpuSingle.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphGpuSingle_InOut.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphHourglassCpu.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphHourglassCpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphHourglassGpu.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphHourglassGpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphHourglassGpu_ker.cu",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphHourglassGpu_ker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphInOut.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphInOut.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphInOutDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphInOutGridData.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphInOutGridData.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphInOutPoints.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphInOutPoints.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphInOutVel.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphInOutVel.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphInOutVelAwas.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphInOutVelAwas.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphInOutZone.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphInOutZone.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphInOutZsurf.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphInOutZsurf.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphMk.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphMk.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphShifting.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphShifting.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphShifting_ker.cu",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphShifting_ker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JTimeControl.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JTimeControl.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JTimer.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JTimerClock.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JTimerCuda.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JVtkLib.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JVtkLibDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JVtkLibUndef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JWaveGen.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JWaveGenUndef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JWaveOrder2_ker.cu",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JWaveOrder2_ker.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JWaveSpectrumGpu.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JWaveSpectrumGpu.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JXml.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JXml.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/main.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/OmpDefs.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/randomc.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/randomc.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/RunExceptionDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/RunExceptionGpuDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/tinystr.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/tinystr.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/tinyxml.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/tinyxml.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/tinyxmlerror.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/tinyxmlparser.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/TypesDef.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/upl_tpi_cryer_gpu_r1.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/upl_tpi_cryer_gpu_r1.cuh"
+    ],
+    "minimum_overlay_subset": [
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphGpu.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphGpuSingle.cpp",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/JSphGpu_ker.cu",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/upl_tpi_cryer_gpu_r1.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source/upl_tpi_cryer_gpu_r1.cuh"
+    ],
+    "source_projects_manifest_and_original_seed_XML": [
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/source_diff.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/VS/DualSPHysics5Re.sln",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_r2_source/VS/DualSPHysics5Re.vcxproj",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_cryer_freebody_short_r1_seed/upl_cryer_freebody_short_r1.xml"
+    ],
+    "authors_and_notes": [
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/support/upl_tpi_cryer_gpu_build_r1.py",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/support/upl_tpi_cryer_gpu_debug2_native_r1.py",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/support/upl_tpi_cryer_gpu_debug2_run_r1.py",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/support/upl_tpi_cryer_gpu_r1.cuh",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/support/upl_tpi_cryer_gpu_r1.h",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/support/upl_tpi_cryer_gpu_r1_prepare.py",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/support/upl_tpi_cryer_gpu_r2_prepare.py",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/support/upl_tpi_cryer_gpu_release_build_r1.py",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/support/upl_tpi_cryer_gpu_release_native_r1.py",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/support/upl_tpi_cryer_gpu_release_run_r1.py",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/notes/upl_tpi_cryer_gpu_build_r1.md",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/notes/upl_tpi_cryer_gpu_debug2_native_r1.md",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/notes/upl_tpi_cryer_gpu_debug2_run_r1.md",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/notes/upl_tpi_cryer_gpu_r1.md",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/notes/upl_tpi_cryer_gpu_r2.md",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/notes/upl_tpi_cryer_gpu_release_build_r1.md",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/notes/upl_tpi_cryer_gpu_release_native_r1.md",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/notes/upl_tpi_cryer_gpu_release_run_r1.md",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/notes/upl_tpi_cryer_gpu_startup_root_r1.md"
+    ],
+    "completed_receipts_admissions_small_clocks": [
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.run_admission.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.start.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.tool.start.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.call.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.run.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.status.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.clock.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.native_admission_r1.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.native_r1.call.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.native_r1.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.native_review_admission_r1.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.native_review_r1.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_A_startup128_r1.run_admission.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_A_startup128_r1.start.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_A_startup128_r1.tool.start.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_A_startup128_r1.call.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_A_startup128_r1.run.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_A_startup128_r1.status.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_A_startup128_r1.clock.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_A_startup128_r1.native_admission_r1.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_A_startup128_r1.native_r1.call.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_A_startup128_r1.native_r1.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_A_startup128_r1.native_review_admission_r1.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_A_startup128_r1.native_review_r1.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_B_startup128_r1.run_admission.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_B_startup128_r1.start.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_B_startup128_r1.tool.start.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_B_startup128_r1.call.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_B_startup128_r1.run.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_B_startup128_r1.status.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_B_startup128_r1.clock.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_B_startup128_r1.native_admission_r1.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_B_startup128_r1.native_r1.call.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_B_startup128_r1.native_r1.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_B_startup128_r1.native_review_admission_r1.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_B_startup128_r1.native_review_r1.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_C_startup128_r1.run_admission.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_C_startup128_r1.start.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_C_startup128_r1.tool.start.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_C_startup128_r1.call.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_C_startup128_r1.run.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_C_startup128_r1.status.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_C_startup128_r1.clock.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_C_startup128_r1.native_admission_r1.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_C_startup128_r1.native_r1.call.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_C_startup128_r1.native_r1.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_C_startup128_r1.native_review_admission_r1.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_C_startup128_r1.native_review_r1.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_r1.prepare.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_r1.prepare_admission.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_r2.prepare.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_r2.prepare_admission.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_build_r1.build_admission.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_release_build_r1.build_admission.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_r1.build.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_r1.environment.call.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_r1.msbuild.call.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_r1.build.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_r1.environment.call.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_r1.msbuild.call.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_startup_root_r1.review.json"
+    ],
+    "small_native_tables_and_sidecar_metadata": [
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1/Run.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1_native_r1/completion.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1_native_r1/summary.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1_native_r1/center18.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1_native_r1/columns.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1/UplTpiCryerGpuR1.policy.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1/UplTpiCryerGpuR1.summary.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_A_startup128_r1/Run.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_A_startup128_r1_native_r1/completion.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_A_startup128_r1_native_r1/summary.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_A_startup128_r1_native_r1/center18.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_A_startup128_r1_native_r1/columns.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_B_startup128_r1/Run.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_B_startup128_r1_native_r1/completion.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_B_startup128_r1_native_r1/summary.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_B_startup128_r1_native_r1/center18.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_B_startup128_r1_native_r1/columns.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_B_startup128_r1/UplTpiCryerGpuR1.policy.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_B_startup128_r1/UplTpiCryerGpuR1.summary.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_C_startup128_r1/Run.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_C_startup128_r1_native_r1/completion.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_C_startup128_r1_native_r1/summary.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_C_startup128_r1_native_r1/center18.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_C_startup128_r1_native_r1/columns.csv",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_C_startup128_r1/UplTpiCryerGpuR1.policy.json",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_tpi_cryer_gpu_Release_C_startup128_r1/UplTpiCryerGpuR1.summary.json"
+    ],
+    "genuine_small_text_build_memcheck_console_logs": [
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.memcheck.log",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.log",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_A_startup128_r1.log",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_B_startup128_r1.log",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_C_startup128_r1.log",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Debug_r1.msbuild.log",
+      "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/upl_tpi_cryer_gpu_Release_r1.msbuild.log"
+    ],
+    "Git_status_and_ignore_rules_not_checked": true,
+    "requires_root_selection": true,
+    "exclude": [
+      "EXE/DLL/LIB/OBJ/PDB/ILK/iobj/binlog",
+      "BI4/NBI4/restart states",
+      "VTK",
+      "common26.bin",
+      "clock.bin",
+      "complete native_ids.csv",
+      "large UplTpiCryerGpuR1.csv"
+    ],
+    "original_large_evidence_retained_locally": true
+  },
+  "note": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\notes\\upl_tpi_cryer_gpu_startup_root_r1.md",
+    "bytes": 6498,
+    "mtime_ns": 1794864380595068300
+  },
+  "root_review_complete": true,
+  "root_review": "Root read complete summary/note and all actual run/native results during execution; adopt implementation-only scope. Original source/failure/build/runtime/receipts untouched; no physical/peak acceptance."
+}

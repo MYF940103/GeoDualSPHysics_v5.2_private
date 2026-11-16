@@ -1,0 +1,59 @@
+{
+  "stage": "upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.tool.start",
+  "owner": {
+    "pid": 37744,
+    "created": 1794862576.372385,
+    "exe": "D:\\Anaconda3\\python.exe",
+    "argv": [
+      "D:\\anaconda3\\python.exe",
+      "-X",
+      "utf8",
+      "-B",
+      "tests/support/upl_tpi_cryer_gpu_debug2_run_r1.py",
+      "--execution-authorized",
+      "--admission",
+      "tests/logs/upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.run_admission.json"
+    ],
+    "parent": 16332,
+    "status": "running"
+  },
+  "child": {
+    "pid": 34116,
+    "created": 1794862582.52521,
+    "exe": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\compute-sanitizer\\compute-sanitizer.exe",
+    "argv": [
+      "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\compute-sanitizer\\compute-sanitizer.exe",
+      "--tool",
+      "memcheck",
+      "--error-exitcode",
+      "86",
+      "--leak-check",
+      "full",
+      "--target-processes",
+      "all",
+      "--log-file",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.memcheck.log",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Debug_r1\\out\\DualSPHysics5.2_win64_debug.exe",
+      "-gpu",
+      "-stable",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_cryer_freebody_short_r1_seed\\upl_cryer_freebody_short_r1",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_tpi_cryer_gpu_Debug_B_debug2steps_r1",
+      "-dirdataout",
+      "data",
+      "-svres",
+      "-nsteps:2"
+    ],
+    "parent": 37744,
+    "status": "running"
+  },
+  "program": {
+    "path": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\compute-sanitizer\\compute-sanitizer.exe",
+    "bytes": 3827200,
+    "mtime_ns": 1649210963000000000
+  },
+  "root_admission": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_B_debug2steps_r1.run_admission.json",
+    "bytes": 8984,
+    "mtime_ns": 1794862570201808700
+  }
+}
