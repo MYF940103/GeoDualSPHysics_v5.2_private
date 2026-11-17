@@ -1,0 +1,9 @@
+# P3 bounded implementation gate
+
+Four private configurations built successfully from the actual P2 recipe. CPU Debug200updates/18frames passed all native and three-row/five-phase checks. GPU Debug2updates/2frames passed actual memcheck (zero errors/leaks), unique native read and every three-row check. GPU Release default A320updates/18frames matches the genuine retained A control across all18records of five binary exports, including signed clocks and forced final320. These are not all22-array cross-program bit certificates or a physical P3 acceptance.
+
+P2's remaining early top increment exceeds the original budget by.00011719263693589152mm. Its second defect removed roughly half of the original extra signed top error; pressure-integral bias dominates that change. The decomposition is diagnostic, not exact mass/energy/causation proof. P3's finite-h120nominal+4illustrative modes have no10us radius>1, but20us has70/120+2/4 counterexamples; this is not an SPH stability proof or timestep admission.
+
+Root now admits exactly one new P3 GPU2s physical diagnostic, using the unchanged actual10us step, immutable source seed and1263-state clock plan. Three complete endpoint residuals use successive actual float pressures; material/J/HG memory/history/global clock still advance once. Original geometry, load, drainage, all22 arrays/1040IDs, signed limits and pressure/top/bottom/100Pa budgets stay mandatory. No coefficient, damping, space operator, half/reference chain or larger step changes.
+
+The sole direct owner may queue its terminal notice once to the verified root thread. No native decoder or later solver follows automatically. Final physical/precision review remains necessary, with the old finite-Kw and M0 reference limitations unchanged. C08 remains paused and protected. Public source/formal data are unchanged.

@@ -1,0 +1,307 @@
+{
+  "stage": "upl_tpi_p3_short_root_r1",
+  "passed": true,
+  "scope": "Actual implementation/native shorts plus admission of exactly one bounded P3 B10us 2s window",
+  "build_review": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_p3_build_root_r1.review.json",
+    "bytes": 14319,
+    "mtime_ns": 1794917595321944400
+  },
+  "native_reviews": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_p3_cpu_debug2ms_r1.native_review_p3_r1.json",
+      "bytes": 26993,
+      "mtime_ns": 1794917885238179000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_p3_gpu_debug2_r1.native_review_p3_r1.json",
+      "bytes": 27604,
+      "mtime_ns": 1794918077017749900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_p3_Acontrol_gpu_r1.native_review_p3_r1.json",
+      "bytes": 27765,
+      "mtime_ns": 1794918251553925000
+    }
+  ],
+  "details": [
+    {
+      "tag": "upl_tpi_p3_cpu_debug2ms_r1",
+      "pressure": {
+        "actual_records": 52000,
+        "triplet_saved_IDs": 18000,
+        "endpoint_rounds": 3,
+        "actual_q2_is_validated_p1": true,
+        "actual_q3_is_validated_p2": true,
+        "single_J_rows": 17000,
+        "provisional_stale_finalP_checks": 17000,
+        "non_drained_prior_final_equals_pn_checks": 17000,
+        "source_drained_prior_final_not_forced_equal_pn": true,
+        "J_plain_matches": 17000,
+        "J_fused_matches": 0,
+        "J_both_matches": 0,
+        "actual_GPU_pressure_RN_signed_FTZ": false,
+        "max_actual_rounding_Pa": 0.00012197944124636706,
+        "observed_GPU_nonzero_subnormal_inputs": {
+          "pn": 0,
+          "previous": 0,
+          "q1": 0,
+          "q2": 0,
+          "q3": 0
+        },
+        "provisional_BC_GPU_is_device_validated_rule_not_independent_native_save": false,
+        "provisional_lap_or_rate_claimed": false,
+        "last_native_rate_is_R3_at_actual_p2_not_R_at_p3_or_dpdt": true,
+        "unsaved_history_independently_observed": false,
+        "added_ULP_or_Pa_tolerance": 0,
+        "R_over_S_RMS_Pa": [
+          2.258528686625865,
+          2.2577593256487596,
+          2.2579200545428204
+        ],
+        "residual_shrink_or_physical_acceptance_required": false
+      },
+      "intervals": {
+        "saved_interval_rows": 18,
+        "noninitial_signed_bit_checks": 17,
+        "actual_force_phases": 5,
+        "initial_native_signed_and_sentinels_preserved": true,
+        "HG_reference_unavailable": true,
+        "added_ULP_tolerance": 0
+      },
+      "A18": null
+    },
+    {
+      "tag": "upl_tpi_p3_gpu_debug2_r1",
+      "pressure": {
+        "actual_records": 6000,
+        "triplet_saved_IDs": 2000,
+        "endpoint_rounds": 3,
+        "actual_q2_is_validated_p1": true,
+        "actual_q3_is_validated_p2": true,
+        "single_J_rows": 1000,
+        "provisional_stale_finalP_checks": 1000,
+        "non_drained_prior_final_equals_pn_checks": 1000,
+        "source_drained_prior_final_not_forced_equal_pn": true,
+        "J_plain_matches": 1000,
+        "J_fused_matches": 1000,
+        "J_both_matches": 1000,
+        "actual_GPU_pressure_RN_signed_FTZ": true,
+        "max_actual_rounding_Pa": 1.9686015129138923e-07,
+        "observed_GPU_nonzero_subnormal_inputs": {
+          "pn": 0,
+          "previous": 0,
+          "q1": 0,
+          "q2": 0,
+          "q3": 0
+        },
+        "provisional_BC_GPU_is_device_validated_rule_not_independent_native_save": true,
+        "provisional_lap_or_rate_claimed": false,
+        "last_native_rate_is_R3_at_actual_p2_not_R_at_p3_or_dpdt": true,
+        "unsaved_history_independently_observed": false,
+        "added_ULP_or_Pa_tolerance": 0,
+        "R_over_S_RMS_Pa": [
+          0.2390778683991778,
+          0.14599951566529737,
+          0.129729091274714
+        ],
+        "residual_shrink_or_physical_acceptance_required": false
+      },
+      "intervals": {
+        "saved_interval_rows": 2,
+        "noninitial_signed_bit_checks": 1,
+        "actual_force_phases": 5,
+        "initial_native_signed_and_sentinels_preserved": true,
+        "HG_reference_unavailable": true,
+        "added_ULP_tolerance": 0
+      },
+      "A18": null
+    },
+    {
+      "tag": "upl_tpi_p3_Acontrol_gpu_r1",
+      "pressure": {
+        "expected_absent": true
+      },
+      "intervals": {
+        "expected_absent": true
+      },
+      "A18": {
+        "files": [
+          {
+            "file": "original15.bin",
+            "old_header": [
+              1040,
+              15,
+              18
+            ],
+            "new_header": [
+              1040,
+              15,
+              18
+            ],
+            "actual_shared_records": 18,
+            "all_record_bytes_equal": true
+          },
+          {
+            "file": "physical.bin",
+            "old_header": [
+              1000,
+              26,
+              18
+            ],
+            "new_header": [
+              1000,
+              26,
+              18
+            ],
+            "actual_shared_records": 18,
+            "all_record_bytes_equal": true
+          },
+          {
+            "file": "common_j_theta.bin",
+            "old_header": [
+              1040,
+              2,
+              18
+            ],
+            "new_header": [
+              1040,
+              2,
+              18
+            ],
+            "actual_shared_records": 18,
+            "all_record_bytes_equal": true
+          },
+          {
+            "file": "soil_n.bin",
+            "old_header": [
+              1000,
+              1,
+              18
+            ],
+            "new_header": [
+              1000,
+              1,
+              18
+            ],
+            "actual_shared_records": 18,
+            "all_record_bytes_equal": true
+          },
+          {
+            "file": "clock.bin",
+            "old_header": [
+              18,
+              28
+            ],
+            "new_header": [
+              18,
+              28
+            ],
+            "actual_shared_records": 18,
+            "all_record_bytes_equal": true
+          }
+        ],
+        "actual_shared_indices": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            6,
+            6
+          ],
+          [
+            7,
+            7
+          ],
+          [
+            8,
+            8
+          ],
+          [
+            9,
+            9
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            11,
+            11
+          ],
+          [
+            12,
+            12
+          ],
+          [
+            13,
+            13
+          ],
+          [
+            14,
+            14
+          ],
+          [
+            15,
+            15
+          ],
+          [
+            16,
+            16
+          ],
+          [
+            17,
+            17
+          ]
+        ],
+        "forced_final320_compared": true,
+        "signed_clock_included": true,
+        "headers_rewritten": false,
+        "all22_raw_array_bit_proof": false
+      }
+    }
+  ],
+  "P2_failed_physics_preserved": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_p2_window_root_r1.review.json",
+    "bytes": 8788,
+    "mtime_ns": 1794916123210194400
+  },
+  "offline_error_decomposition": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_p2_error_sources_r1.check.json",
+    "bytes": 49252,
+    "mtime_ns": 1794916338532002800
+  },
+  "P3_algebra_only": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_p3_time_options_r1.check.json",
+    "bytes": 8654,
+    "mtime_ns": 1794916548549593500
+  },
+  "all_original_accuracy_budgets_unchanged": true,
+  "defaultA_five_exports18_records_byte_equal": true,
+  "physical_acceptance": false,
+  "full_cycle_admitted": false,
+  "new_reference_or_half_or_dt_trial": false,
+  "C08_stays_paused": true,
+  "SHA_scans": 0
+}
