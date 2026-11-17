@@ -1,0 +1,540 @@
+--- frozen_M0_r2/JSphGpu.cpp
++++ private_P2/JSphGpu.cpp
+@@ -1972,7 +1972,7 @@
+   }
+   //-dt new value of time step.
+   double dt=CFLnumber*min(dt1,dt2);
+-  if(m0dt)dt=upl_tpi_m0_dt_r2::Record(this,final?1u:(upl_tpi_gpu_r1::EndpointActive()?2u:0u),TimeStep,Nstep,SymplecticDtPre,
++  if(m0dt)dt=upl_tpi_m0_dt_r2::Record(this,final?1u:(upl_tpi_gpu_r1::EndpointActive()?upl_tpi_gpu_r1::EndpointPhase():0u),TimeStep,Nstep,SymplecticDtPre,
+     CFLnumber*dt1,CFLnumber*dt2,dtw,CFLnumber*legacyWave,DBL_MAX /* HG reference unavailable in base; original derived guard retained. */);
+   if(PorosityFeedback){
+     //-Reject the already locked step before either Pre or Corr; never clip it.
+--- frozen_M0_r2/JSphGpuSingle.cpp
++++ private_P2/JSphGpuSingle.cpp
+@@ -1175,7 +1175,7 @@
+       "Private GPU P1 retains actual source-clock ramp/drainage and normalized load");
+     upl_tpi_gpu_r1::Init(UPL_TPI_GPU_OWNER,DirOut,UPL_TPI_GPU_VIEW,TimeStep,Nstep,SymplecticDtPre);
+     if(upl_tpi_m0_dt_r2::Enabled(upl_tpi_gpu_r1::Enabled()))upl_tpi_m0_dt_r2::Init(static_cast<JSphGpu*>(this),DirOut,"GPU",std::getenv("UPL_TPI_GPU_R1"),TimeStep,Nstep,SymplecticDtPre,HydroMechDrainageStartTime);
+-    Log->Print("UplTpiGpuR1: private Symplectic TPI-neighbour prediction/single leading-LP M0 beta0 variant; not paper LF/implicit/second-order/restart acceptance.");
++    Log->Print("UplTpiP2GPUR1: private two complete endpoint defects, one solid/J/HG/history commit; old source clock; not LF/implicit/second-order/restart/physics acceptance.");
+   }
+   RunGaugeSystem(TimeStep,true);
+   if(InOut)InOutInit(TimeStepIni);
+@@ -1209,15 +1209,19 @@
+     if(upl_tpi_gpu_r1::Enabled()){
+       bool scratch=false;
+       try{
+-        upl_tpi_gpu_r1::StartEndpoint(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW,TimeStep,Nstep,stepdt,HourglassGpu);
+-        scratch=true;Interaction_Forces(INTERSTEP_SymCorrector);
+-        const double endpointdt=DtVariable(false);
+-        upl_tpi_gpu_r1::Require(endpointdt==stepdt,"Private GPU endpoint fixed dt changed");
+-        upl_tpi_gpu_r1::PrepareFinal(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW,HourglassGpu);
+-        PosInteraction_Forces();scratch=false;
+-        upl_tpi_gpu_r1::WriteFinal(UPL_TPI_GPU_VIEW);
+-        ApplyPorePressureBoundaries();
+-        upl_tpi_gpu_r1::Commit(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW,IsHydroMechDrainageActive(),unsigned(HydroMechTopLoadMode));
++        for(unsigned round=0;round<2;round++){
++          if(!round)upl_tpi_gpu_r1::StartEndpoint(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW,TimeStep,Nstep,stepdt,HourglassGpu);
++          else upl_tpi_gpu_r1::SecondEndpoint(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW,TimeStep,Nstep,stepdt,HourglassGpu);
++          scratch=true;Interaction_Forces(INTERSTEP_SymCorrector);
++          const double endpointdt=DtVariable(false);
++          upl_tpi_gpu_r1::Require(endpointdt==stepdt,"P2 endpoint fixed dt changed");
++          upl_tpi_gpu_r1::PrepareFinal(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW,HourglassGpu);
++          PosInteraction_Forces();scratch=false;
++          upl_tpi_gpu_r1::WriteFinal(UPL_TPI_GPU_VIEW);
++          ApplyPorePressureBoundaries();
++          if(!round)upl_tpi_gpu_r1::ValidateFirstEndpoint(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW,IsHydroMechDrainageActive(),unsigned(HydroMechTopLoadMode));
++          else upl_tpi_gpu_r1::Commit(UPL_TPI_GPU_OWNER,UPL_TPI_GPU_VIEW,IsHydroMechDrainageActive(),unsigned(HydroMechTopLoadMode));
++        }
+       }catch(...){upl_tpi_gpu_r1::AbortEndpoint();if(scratch){try{PosInteraction_Forces();}catch(...){}}throw;}
+     }
+     TimeStep+=stepdt;
+--- frozen_M0_r2/upl_tpi_gpu_r1.h
++++ private_P2/upl_tpi_gpu_r1.h
+@@ -85,148 +85,200 @@
+ #define UPL_TPI_GPU_VIEW upl_tpi_gpu_r1::View{Np,Npb,Idpg,FSTypeg,Codeg,Posxyg,Poszg,Velrhopg,Sigmag,Kplasticg,PorePress0g,PorePressg,PoroJg,PoroThetag}
+ #endif
+ 
+-#ifdef UPL_TPI_GPU_R1_IMPLEMENTATION
+-#include "upl_tpi_m0_dt_r2.h"
+-#include "JSphHourglassGpu.h"
+-#include <climits>
+-#include <cmath>
+-#include <cstdlib>
+-#include <cstring>
+-#include <fstream>
+-#include <iomanip>
+-#include <iostream>
+-#include <stdexcept>
+-#include <string>
+-#include <vector>
+-namespace upl_tpi_gpu_r1 {
+-static void Need(bool q,const char* s){if(!q)throw std::runtime_error(s);}
+-void Require(bool q,const char* s){Need(q,s);}
+-static void Cuda(cudaError_t e){if(e!=cudaSuccess)throw std::runtime_error(cudaGetErrorString(e));}
+-template<class T> static bool Bits(const T& a,const T& b){return !std::memcmp(&a,&b,sizeof(T));}
+-static unsigned Scheme(){static const unsigned s=[](){const char* p=std::getenv("UPL_TPI_GPU_R1");
+-  if(!p||!*p||!std::strcmp(p,"A"))return 0u;if(!std::strcmp(p,"B"))return 1u;
+-  Need(!std::strcmp(p,"C"),"UPL_TPI_GPU_R1 must be absent or A/B/C");return 2u;}();return s;}
+-bool Enabled(){return Scheme()!=0;}
+-static double Alpha(){return Scheme()==1?.5:0.;}
+-static const char* Name(){return Scheme()==1?"B_TPI_alpha_0p5_beta0":"C_PPE_t_alpha0_beta0";}
+-struct State {
+-  const void* owner=nullptr; bool ready=false,pending=false,endpoint=false,prepared=false;
+-  DeviceState d={}; std::vector<void*> allocations;
+-  unsigned *hgSlots=nullptr,*hgError=nullptr; cuhg::StReduce *hgPartial=nullptr,*hgResult=nullptr;
+-  Observation* collected=nullptr;
+-  unsigned long long commits=0,pre=0,cor=0,j=0,endpointCalls=0,coreChecks=0,hgChecks=0,sourceStep=0;
+-  double sourceTime=0,lastEnd=0,dt=0; std::string directory;
+-  std::vector<double> stats,rateInfo; std::ofstream* csv=nullptr;
+-  ~State(){delete csv;} // Host cleanup ONLY. CUDA is freed before JSphGpu::cudaDeviceReset.
+-};
+-static State state;
+-bool EndpointActive(){return state.endpoint;}
+-template<class T> static T* Take(unsigned n){T* p=nullptr;Cuda(cudaMalloc(reinterpret_cast<void**>(&p),sizeof(T)*n));
+-  try{state.allocations.push_back(p);}catch(...){cudaFree(p);throw;}
+-  Cuda(cudaMemset(p,0,sizeof(T)*n));return p;}
+-static void HostRoleFixtures(){
+-  Need(OwnerRole(0,1,2,true,false,true,false)&&OwnerRole(1,1,2,true,false,false,true)
+-    &&OwnerRole(0,1,2,false,true,true,false)&&OwnerRole(1,1,2,false,true,false,true)
+-    &&!OwnerRole(0,1,2,false,true,false,true)&&!OwnerRole(1,1,2,false,true,true,false)
+-    &&!OwnerRole(0,1,2,false,false,true,false)&&!OwnerRole(1,1,2,false,false,false,true),
+-    "Private normal/periodic dual-owner role fixtures failed");
+-}
+-static void Check(){const Error e=GetError(state.d);if(e.bits)throw std::runtime_error(
+-  "Private GPU TPI rejected native_id="+std::to_string(e.firstId)+" bits="+std::to_string(e.bits));}
+-static void MapCheck(View v){ResetError(state.d);Map(v,state.d);Check();}
+-static std::vector<double> Stats(const JSphHourglassGpu& hg){const auto& x=hg.GetStats();return {
+-  double(x.forcecalls),double(x.predictorupdates),double(x.correctorupdates),double(x.ratecalls),double(x.predictorrates),double(x.endpointrates),double(x.firstpairs),double(x.minpairs),double(x.maxpairs),x.maxnetforce,x.maxactualnetforce,x.maxnetrate,x.maxrelativeforce,x.maxrelativerate,x.maxhistory,x.maxcondition,x.maxpoweridentityerror,x.maxskew,x.spinbound,x.maxtauratio,x.mintau,x.maxlambda,double(x.ratecalculations),double(x.ratecachehits)};}
+-static std::vector<double> RateInfo(const JSphHourglassGpu& hg){const auto& x=hg.GetRateInfo();return {
+-  x.netx,x.netz,x.condition,x.skew,x.form,x.lambda,x.tau,x.ratepower,x.workerror,x.rmax,x.sumrate,x.meandxx,x.rmsdxx,x.meandiv,x.rmsdiv};}
+-void FreeOwner(const void* owner) noexcept {
+-  State& s=state;if(s.owner!=owner||!s.owner)return;
+-  // No HG dereference: the derived destructor may already have deleted it.
+-  try{PublishEndpoint(DeviceState{},nullptr,false);}catch(...){}
+-  for(void* p:s.allocations)if(p)cudaFree(p);
+-  s.allocations.clear();s.d=DeviceState{};s.hgSlots=s.hgError=nullptr;
+-  s.hgPartial=s.hgResult=nullptr;s.collected=nullptr;
+-  delete s.csv;s.csv=nullptr;s.owner=nullptr;s.ready=s.pending=s.endpoint=s.prepared=false;
+-}
+-void Init(const void* owner,const std::string& directory,View v,double time,unsigned long long step,double dt){
+-  State& s=state;Need(Enabled()&&!s.owner&&owner&&time==0.&&step==0&&(upl_tpi_m0_dt_r2::Enabled(Enabled())?upl_tpi_m0_dt_r2::AllowedDt(dt,.0100002288818359375):dt==6.2501430511474609e-6),
+-    "GPU P1 requires a fresh fixed-dt owner");
+-  HostRoleFixtures(); // Pure shared-predicate fixtures; not an additional GPU/solver phase.
+-  s.owner=owner; // Set before allocations, so the original destructor cleans partial initialization.
+-  s.directory=directory;s.sourceTime=s.lastEnd=time;s.sourceStep=step;s.dt=dt;
+-  s.d.total=1040;s.d.fixed=40;s.d.slots=Take<unsigned>(1040);s.d.seen=Take<unsigned>(1040);
+-  s.d.previous=Take<float>(1040);s.d.rows=Take<Observation>(1040);s.d.core=Take<Core>(1040);s.d.error=Take<Error>(1);
+-  s.d.hgHistory=Take<double2>(1000);s.d.hgRate=Take<double2>(1000);
+-  s.hgSlots=Take<unsigned>(1000);s.hgError=Take<unsigned>(1);
+-  s.hgPartial=Take<cuhg::StReduce>(cuhg::PartialCount(1000));s.hgResult=Take<cuhg::StReduce>(1);
+-  s.collected=Take<Observation>(1000);MapCheck(v);Initialize(v,s.d);Check();
+-  const std::string policy=directory+"UplTpiGpuR1.policy.json",csv=directory+"UplTpiGpuR1.csv";
+-  Need(!std::ifstream(policy).good()&&!std::ifstream(csv).good(),"GPU TPI sidecar exists");
+-  s.csv=new std::ofstream(csv);Need(bool(*s.csv),"GPU TPI sidecar open failed");
+-  *s.csv<<std::setprecision(17)<<"part,native_id,source_step_zero_based,completed_step,source_time_s,actual_save_time_s,dt_s,pn_Pa,previous_Pa,prediction_double_Pa,half_actual_float_Pa,endpoint_q_actual_float_Pa,S_1_per_m_s,Rgamma_Pa_per_m_s,raw_final_float_Pa,final_float_Pa,theta_half_for_J_1_per_s,theta_endpoint_1_per_s,Jn,Jhalf,Jfull,source_drained,endpoint_drained,commit_drained,commits,endpoint_calls,core_field_bit_checks,hg_snapshot_checks\n";
+-  std::ofstream p(policy);p<<"{\"stage\":\"upl_tpi_gpu_r1\",\"scheme\":\""<<Name()<<"\",\"alpha\":"<<Alpha()
+-    <<",\"beta\":0,\"M0\":true,\"native_count\":1040,\"soil_count\":1000,\"history_ID_owned\":true,\"history_cold_start\":true,\"full_restart_supported\":false,\"half_equals_endpoint_history_guess\":true,\"endpoint_source_clock_is_original_n\":true,\"paper_literal_LF\":false,\"second_order_claimed\":false,\"true_implicit_solution\":false,\"physical_acceptance\":false}\n";
+-  p.flush();Need(bool(p),"GPU policy write failed");s.ready=true;
+-}
+-void Begin(const void* owner,View v,const float* pn,const double2* sourcexy,float* out,double time,unsigned long long step,double dt,bool drain,unsigned loadmode){
+-  State& s=state;Need(s.ready&&s.owner==owner&&!s.pending&&!s.endpoint&&step==s.commits&&dt==s.dt&&Bits(time,s.lastEnd),"GPU predictor lifecycle/clock differs");
+-  MapCheck(v);s.sourceTime=time;s.sourceStep=step;s.prepared=false;
+-  BeginDevice(v,pn,sourcexy,out,s.d,drain,loadmode,Alpha());Check();s.pending=true;s.pre++;
+-}
+-void Corr(const void* owner,View v){State& s=state;Need(s.owner==owner&&s.pending&&!s.endpoint&&s.cor+1==s.pre,"GPU half capture lifecycle differs");
+-  MapCheck(v);CorrDevice(v,s.d);Check();s.cor++;}
+-void CaptureJ(const void* owner,View v){State& s=state;Need(s.owner==owner&&s.j+1==s.cor,"GPU J lifecycle differs");
+-  MapCheck(v);CaptureJDevice(v,s.d);Check();s.j++;}
+-void Guess(View v,const float* pn,bool drain,unsigned loadmode){ResetError(state.d);GuessDevice(v,pn,state.d,drain,loadmode);Check();}
+-void StartEndpoint(const void* owner,View v,double time,unsigned long long step,double dt,const JSphHourglassGpu* hg){
+-  State& s=state;Need(s.owner==owner&&s.pending&&!s.endpoint&&s.j==s.pre&&Bits(time,s.sourceTime)&&step==s.sourceStep&&dt==s.dt,
+-    "GPU endpoint lifecycle/clock differs");Need(hg&&hg->GetFirstId()==40&&hg->GetCount()==1000,"GPU P1 requires original elastic HG owners");
+-  MapCheck(v);SnapshotCoreDevice(v,s.d);Check();s.stats=Stats(*hg);s.rateInfo=RateInfo(*hg);
+-  Cuda(cudaMemcpy(s.d.hgHistory,hg->GetHistoryDeviceReadonly(),sizeof(double2)*1000,cudaMemcpyDeviceToDevice));
+-  Cuda(cudaMemcpy(s.d.hgRate,hg->GetRateDeviceReadonly(),sizeof(double2)*1000,cudaMemcpyDeviceToDevice));
+-  PublishEndpoint(s.d,v.id,true);s.endpoint=true;s.endpointCalls++;
+-}
+-void AddReadonlyHG(View v,float3* ace,const JSphHourglassGpu* hg,double mass,double rho0,double rhow){
+-  State& s=state;Need(s.endpoint&&hg&&hg->GetFirstId()==40&&hg->GetCount()==1000,"GPU readonly HG owners differ");
+-  cuhg::MapNative(v.np,v.npb,40,1000,v.id,v.code,s.hgSlots,s.hgError);
+-  Cuda(cudaGetLastError());
+-  cuhg::AddHistory(1000,mass,s.hgSlots,s.hgError,hg->GetHistoryDeviceReadonly(),ace,s.hgPartial,v.J,rho0,rhow);
+-  Cuda(cudaGetLastError());
+-  cuhg::Reduce(cuhg::PartialCount(1000),s.hgPartial,s.hgResult);Cuda(cudaGetLastError());cuhg::StReduce r;
+-  Cuda(cudaMemcpy(&r,s.hgResult,sizeof(r),cudaMemcpyDeviceToHost));
+-  Need(!r.errors&&std::isfinite(r.netx)&&std::isfinite(r.netz)&&std::isfinite(r.actualx)&&std::isfinite(r.actualz)
+-    &&std::isfinite(r.sumforce)&&r.sumforce>=0&&std::isfinite(r.hmax),"GPU original readonly HG force validation failed");
+-}
+-void PrepareFinal(const void* owner,View v,const JSphHourglassGpu* hg){
+-  State& s=state;Need(s.owner==owner&&s.endpoint&&s.pending&&!s.prepared&&hg,"GPU final preparation lifecycle differs");
+-  const auto a=Stats(*hg),r=RateInfo(*hg);Need(a.size()==24&&r.size()==15&&s.stats.size()==24&&s.rateInfo.size()==15,"HG observation layout differs");
+-  for(unsigned n=0;n<24;n++)Need(Bits(a[n],s.stats[n]),"GPU extra endpoint mutated HG statistics");
+-  for(unsigned n=0;n<15;n++)Need(Bits(r[n],s.rateInfo[n]),"GPU extra endpoint mutated HG rate info");
+-  PrepareDevice(v,s.d,hg->GetHistoryDeviceReadonly(),hg->GetRateDeviceReadonly());Check();
+-  s.coreChecks+=7000;s.hgChecks+=2000;s.prepared=true;
+-}
+-void WriteFinal(View v){Need(state.endpoint&&state.prepared,"GPU pressure was not completely prepared");WriteDevice(v,state.d);Check();
+-  PublishEndpoint(DeviceState{},nullptr,false);state.endpoint=false;}
+-void Commit(const void* owner,View v,bool drain,unsigned loadmode){State& s=state;Need(s.owner==owner&&s.pending&&s.prepared&&!s.endpoint,"GPU commit lifecycle differs");
+-  MapCheck(v);ValidateCommitDevice(v,s.d,drain,loadmode);Check();CommitDevice(v,s.d);Check();
+-  s.lastEnd=s.sourceTime+s.dt;s.commits++;s.pending=false;}
+-void AbortEndpoint() noexcept {try{PublishEndpoint(DeviceState{},nullptr,false);}catch(...){}state.endpoint=false;}
+-void Saved(const void* owner,unsigned part,double time,unsigned long long savedstep,View v){State& s=state;
+-  Need(s.ready&&s.owner==owner&&!s.pending&&Bits(time,s.lastEnd)&&(s.commits?savedstep+1==s.commits:savedstep==0),"GPU actual saved clock/history differs");
+-  MapCheck(v);CollectDevice(v,s.d,s.collected);Check();std::vector<Observation> rows(1000);
+-  Cuda(cudaMemcpy(rows.data(),s.collected,sizeof(Observation)*1000,cudaMemcpyDeviceToHost));
+-  for(unsigned n=0;n<1000;n++){const auto& r=rows[n];*s.csv<<part<<','<<40+n<<','<<s.sourceStep<<','<<s.commits<<','<<s.sourceTime<<','<<time<<','<<s.dt<<','<<r.pn<<','<<r.previous<<','<<r.prediction<<','<<r.half<<','<<r.q<<','<<r.S<<','<<r.R<<','<<r.raw<<','<<r.finalP<<','<<r.thetaH<<','<<r.thetaEnd<<','<<r.Jn<<','<<r.Jhalf<<','<<r.Jfull<<','<<r.sourceDrained<<','<<r.drained<<','<<r.commitDrained<<','<<s.commits<<','<<s.endpointCalls<<','<<s.coreChecks<<','<<s.hgChecks<<'\n';}
+-  s.csv->flush();Need(bool(*s.csv),"GPU saved sidecar write failed");
+-}
+-void Finish(const void* owner,unsigned long long completed,double time){State& s=state;
+-  Need(s.ready&&s.owner==owner&&!s.pending&&completed==s.commits&&Bits(time,s.lastEnd)
+-    &&s.pre==s.commits&&s.cor==s.commits&&s.j==s.commits&&s.endpointCalls==s.commits
+-    &&s.coreChecks==7000*s.commits&&s.hgChecks==2000*s.commits,"GPU complete lifecycle differs");
+-  const std::string path=s.directory+"UplTpiGpuR1.summary.json";Need(!std::ifstream(path).good(),"GPU summary already exists");
+-  std::ofstream f(path);f<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_gpu_r1\",\"completed\":true,\"scheme\":\""<<Name()<<"\",\"alpha\":"<<Alpha()
+-    <<",\"beta\":0,\"commits\":"<<s.commits<<",\"endpoint_calls\":"<<s.endpointCalls<<",\"core_field_bit_checks\":"<<s.coreChecks<<",\"HG_readonly_snapshot_checks\":"<<s.hgChecks<<",\"actual_end\":"<<time
+-    <<",\"history_cold_start\":true,\"full_restart_supported\":false,\"theta_endpoint_is_not_J_integration_theta\":true,\"PorePressRate_is_legacy_scaled_residual_not_dpdt\":true,\"paper_literal_LF\":false,\"second_order_claimed\":false,\"true_implicit_solution\":false,\"physical_acceptance\":false}\n";
+-  f.flush();Need(bool(f),"GPU summary write failed");
+-}
+-}
+-#endif
+-#endif
++// P2_HOST_API_R1_BEGIN
++#ifndef __CUDACC__
++namespace upl_tpi_gpu_r1 {
++void ValidateFirstEndpoint(const void* owner,View v,bool drain,unsigned loadmode);
++void SecondEndpoint(const void* owner,View v,double time,unsigned long long step,
++  double dt,const JSphHourglassGpu* hg);
++unsigned EndpointPhase();
++}
++#endif
++// P2_HOST_API_R1_END
++#ifdef UPL_TPI_GPU_R1_IMPLEMENTATION
++#include "upl_tpi_m0_dt_r2.h"
++#include "JSphHourglassGpu.h"
++#include <climits>
++#include <cmath>
++#include <cstdlib>
++#include <cstring>
++#include <fstream>
++#include <iomanip>
++#include <iostream>
++#include <stdexcept>
++#include <string>
++#include <vector>
++namespace upl_tpi_gpu_r1 {
++static void Need(bool q,const char* s){if(!q)throw std::runtime_error(s);}
++void Require(bool q,const char* s){Need(q,s);}
++static void Cuda(cudaError_t e){if(e!=cudaSuccess)throw std::runtime_error(cudaGetErrorString(e));}
++template<class T> static bool Bits(const T& a,const T& b){return !std::memcmp(&a,&b,sizeof(T));}
++static unsigned Scheme(){static const unsigned s=[](){const char* p=std::getenv("UPL_TPI_GPU_R1");
++  if(!p||!*p||!std::strcmp(p,"A"))return 0u;
++  Need(!std::strcmp(p,"B"),"GPU P2 supports only default A or admitted B");
++  const char* q=std::getenv("UPL_TPI_P2_ROWS_R1");Need(q&&!std::strcmp(q,"2"),"GPU P2 B requires exact UPL_TPI_P2_ROWS_R1=2");return 1u;}();return s;}
++bool Enabled(){return Scheme()!=0;}
++static double Alpha(){return Scheme()==1?.5:0.;}
++static const char* Name(){return "B_TPI_alpha_0p5_beta0_two_complete_endpoint_defects";}
++struct State {
++  const void* owner=nullptr; bool ready=false,pending=false,endpoint=false,prepared=false;
++  DeviceState d={}; std::vector<void*> allocations;
++  unsigned *hgSlots=nullptr,*hgError=nullptr; cuhg::StReduce *hgPartial=nullptr,*hgResult=nullptr;
++  Observation* collected=nullptr; Observation* firstRows=nullptr;
++  unsigned endpointRound=0;bool firstValidated=false,secondTransitionReady=false,roundWritten=false;
++  unsigned long long firstValidations=0,firstRowCopies=0,initialFirstRowCopies=0,secondTransitions=0,saves=0,endpointWrites=0;
++  unsigned long long commits=0,pre=0,cor=0,j=0,endpointCalls=0,coreChecks=0,hgChecks=0,sourceStep=0;
++  double sourceTime=0,lastEnd=0,dt=0; std::string directory;
++  std::vector<double> stats,rateInfo; std::ofstream* csv=nullptr;std::ofstream* csvFirst=nullptr;
++  ~State(){delete csv;delete csvFirst;} // Host cleanup ONLY. CUDA is freed before JSphGpu::cudaDeviceReset.
++};
++static State state;
++bool EndpointActive(){return state.endpoint;}
++unsigned EndpointPhase(){Need(state.endpoint&&(state.endpointRound==1||state.endpointRound==2),"GPU P2 endpoint phase queried outside a real force");return state.endpointRound+1;}
++template<class T> static T* Take(unsigned n){T* p=nullptr;Cuda(cudaMalloc(reinterpret_cast<void**>(&p),sizeof(T)*n));
++  try{state.allocations.push_back(p);}catch(...){cudaFree(p);throw;}
++  Cuda(cudaMemset(p,0,sizeof(T)*n));return p;}
++static void HostRoleFixtures(){
++  Need(OwnerRole(0,1,2,true,false,true,false)&&OwnerRole(1,1,2,true,false,false,true)
++    &&OwnerRole(0,1,2,false,true,true,false)&&OwnerRole(1,1,2,false,true,false,true)
++    &&!OwnerRole(0,1,2,false,true,false,true)&&!OwnerRole(1,1,2,false,true,true,false)
++    &&!OwnerRole(0,1,2,false,false,true,false)&&!OwnerRole(1,1,2,false,false,false,true),
++    "Private normal/periodic dual-owner role fixtures failed");
++}
++static void Check(){const Error e=GetError(state.d);if(e.bits)throw std::runtime_error(
++  "Private GPU TPI rejected native_id="+std::to_string(e.firstId)+" bits="+std::to_string(e.bits));}
++static void MapCheck(View v){ResetError(state.d);Map(v,state.d);Check();}
++static std::vector<double> Stats(const JSphHourglassGpu& hg){const auto& x=hg.GetStats();return {
++  double(x.forcecalls),double(x.predictorupdates),double(x.correctorupdates),double(x.ratecalls),double(x.predictorrates),double(x.endpointrates),double(x.firstpairs),double(x.minpairs),double(x.maxpairs),x.maxnetforce,x.maxactualnetforce,x.maxnetrate,x.maxrelativeforce,x.maxrelativerate,x.maxhistory,x.maxcondition,x.maxpoweridentityerror,x.maxskew,x.spinbound,x.maxtauratio,x.mintau,x.maxlambda,double(x.ratecalculations),double(x.ratecachehits)};}
++static std::vector<double> RateInfo(const JSphHourglassGpu& hg){const auto& x=hg.GetRateInfo();return {
++  x.netx,x.netz,x.condition,x.skew,x.form,x.lambda,x.tau,x.ratepower,x.workerror,x.rmax,x.sumrate,x.meandxx,x.rmsdxx,x.meandiv,x.rmsdiv};}
++void FreeOwner(const void* owner) noexcept {
++  State& s=state;if(s.owner!=owner||!s.owner)return;
++  // No HG dereference: the derived destructor may already have deleted it.
++  try{PublishEndpoint(DeviceState{},nullptr,false);}catch(...){}
++  for(void* p:s.allocations)if(p)cudaFree(p);
++  s.allocations.clear();s.d=DeviceState{};s.hgSlots=s.hgError=nullptr;
++  s.hgPartial=s.hgResult=nullptr;s.collected=s.firstRows=nullptr;
++  delete s.csv;delete s.csvFirst;s.csv=s.csvFirst=nullptr;s.owner=nullptr;s.ready=s.pending=s.endpoint=s.prepared=false;
++  s.firstValidated=s.secondTransitionReady=s.roundWritten=false;s.endpointRound=0;
++}
++void Init(const void* owner,const std::string& directory,View v,double time,unsigned long long step,double dt){
++  State& s=state;Need(Enabled()&&!s.owner&&owner&&time==0.&&step==0&&(upl_tpi_m0_dt_r2::Enabled(Enabled())?upl_tpi_m0_dt_r2::AllowedDt(dt,.0100002288818359375):dt==6.2501430511474609e-6),
++    "GPU P2 requires a fresh fixed-dt owner");
++  Need(Scheme()==1&&upl_tpi_m0_dt_r2::Enabled(Enabled())&&Bits(dt,.0100002288818359375/1000.),"GPU P2 requires original-source-clock B10us with its four-phase M0 policy");
++  HostRoleFixtures(); // Pure shared-predicate fixtures; not an additional GPU/solver phase.
++  s.owner=owner; // Set before allocations, so the original destructor cleans partial initialization.
++  s.directory=directory;s.sourceTime=s.lastEnd=time;s.sourceStep=step;s.dt=dt;
++  s.d.total=1040;s.d.fixed=40;s.d.slots=Take<unsigned>(1040);s.d.seen=Take<unsigned>(1040);
++  s.d.previous=Take<float>(1040);s.d.rows=Take<Observation>(1040);s.d.core=Take<Core>(1040);s.d.error=Take<Error>(1);
++  s.d.hgHistory=Take<double2>(1000);s.d.hgRate=Take<double2>(1000);
++  s.hgSlots=Take<unsigned>(1000);s.hgError=Take<unsigned>(1);
++  s.hgPartial=Take<cuhg::StReduce>(cuhg::PartialCount(1000));s.hgResult=Take<cuhg::StReduce>(1);
++  s.collected=Take<Observation>(1000);s.firstRows=Take<Observation>(1040);MapCheck(v);Initialize(v,s.d);Check();
++  Cuda(cudaMemcpy(s.firstRows,s.d.rows,sizeof(Observation)*1040,cudaMemcpyDeviceToDevice));s.initialFirstRowCopies=1;
++  const std::string policy=directory+"UplTpiP2GpuR1.policy.json",csv1=directory+"UplTpiP2GpuR1.round1.csv",csv2=directory+"UplTpiP2GpuR1.round2.csv";
++  Need(!std::ifstream(policy).good()&&!std::ifstream(csv1).good()&&!std::ifstream(csv2).good(),"GPU P2 sidecar exists");
++  s.csvFirst=new std::ofstream(csv1);s.csv=new std::ofstream(csv2);Need(bool(*s.csvFirst)&&bool(*s.csv),"GPU P2 sidecar open failed");
++  const char* columns="part,native_id,source_step_zero_based,completed_step,source_time_s,actual_save_time_s,dt_s,pn_Pa,previous_Pa,prediction_double_Pa,half_actual_float_Pa,endpoint_q_actual_float_Pa,S_1_per_m_s,Rgamma_Pa_per_m_s,raw_final_float_Pa,final_field_float_Pa,theta_half_for_J_1_per_s,theta_endpoint_1_per_s,Jn,Jhalf,Jfull,source_drained,endpoint_drained,commit_drained,commits,endpoint_calls,core_field_bit_checks,hg_snapshot_checks,round,has_endpoint_observation,final_field_is_previous_step,validated_BC_value_float_Pa\n";
++  *s.csvFirst<<std::setprecision(17)<<columns;*s.csv<<std::setprecision(17)<<columns;
++  std::ofstream p(policy);p<<"{\"stage\":\"upl_tpi_p2_gpu_r1\",\"scheme\":\""<<Name()<<"\",\"alpha\":0.5,\"beta\":0,\"M0\":true,\"endpoint_defect_rounds\":2,\"native_count\":1040,\"soil_count\":1000,\"history_ID_owned\":true,\"history_cold_start\":true,\"full_restart_supported\":false,\"endpoint_source_clock_is_original_n\":true,\"staged_load_clock\":false,\"first_commit_rotates_history\":false,\"first_finalP_is_stale_previous_step\":true,\"first_BC_value_is_validated_rule_not_extra_native_save\":true,\"second_q_is_actual_first_BC_float\":true,\"first_rows_D2D_before_second_overwrite\":true,\"new_per_ID_D2H_in_step\":false,\"first_lap_observed\":false,\"first_legacy_rate_observed\":false,\"paper_literal_LF\":false,\"second_order_claimed\":false,\"true_implicit_solution\":false,\"physical_acceptance\":false}\n";
++  p.flush();Need(bool(p),"GPU P2 policy write failed");s.ready=true;
++}
++
++void Begin(const void* owner,View v,const float* pn,const double2* sourcexy,float* out,double time,unsigned long long step,double dt,bool drain,unsigned loadmode){
++  State& s=state;Need(s.ready&&s.owner==owner&&!s.pending&&!s.endpoint&&step==s.commits&&dt==s.dt&&Bits(time,s.lastEnd),"GPU predictor lifecycle/clock differs");
++  Check();MapCheck(v);s.sourceTime=time;s.sourceStep=step;s.prepared=false;
++  s.endpointRound=0;s.firstValidated=s.secondTransitionReady=s.roundWritten=false;
++  BeginDevice(v,pn,sourcexy,out,s.d,drain,loadmode,Alpha());Check();s.pending=true;s.pre++;
++}
++void Corr(const void* owner,View v){State& s=state;Need(s.owner==owner&&s.pending&&!s.endpoint&&s.cor+1==s.pre,"GPU half capture lifecycle differs");
++  MapCheck(v);CorrDevice(v,s.d);Check();s.cor++;}
++void CaptureJ(const void* owner,View v){State& s=state;Need(s.owner==owner&&s.j+1==s.cor,"GPU J lifecycle differs");
++  MapCheck(v);CaptureJDevice(v,s.d);Check();s.j++;}
++void Guess(View v,const float* pn,bool drain,unsigned loadmode){ResetError(state.d);GuessDevice(v,pn,state.d,drain,loadmode);Check();}
++void StartEndpoint(const void* owner,View v,double time,unsigned long long step,double dt,const JSphHourglassGpu* hg){
++  State& s=state;Need(s.owner==owner&&s.pending&&!s.endpoint&&!s.prepared&&s.j==s.pre&&Bits(time,s.sourceTime)&&step==s.sourceStep&&dt==s.dt,
++    "GPU P2 endpoint lifecycle/clock differs");Need(hg&&hg->GetFirstId()==40&&hg->GetCount()==1000,"GPU P2 requires original elastic HG owners");
++  if(s.endpointRound==0){Need(!s.firstValidated&&s.endpointCalls==2*s.commits,"GPU P2 first round duplicated or incomplete");s.endpointRound=1;}
++  else Need(s.endpointRound==2&&s.firstValidated&&s.secondTransitionReady&&s.endpointCalls==2*s.commits+1,"GPU P2 second round requires its validated transition");
++  s.roundWritten=false;s.secondTransitionReady=false;Check();MapCheck(v);SnapshotCoreDevice(v,s.d);Check();s.stats=Stats(*hg);s.rateInfo=RateInfo(*hg);
++  Cuda(cudaMemcpy(s.d.hgHistory,hg->GetHistoryDeviceReadonly(),sizeof(double2)*1000,cudaMemcpyDeviceToDevice));
++  Cuda(cudaMemcpy(s.d.hgRate,hg->GetRateDeviceReadonly(),sizeof(double2)*1000,cudaMemcpyDeviceToDevice));
++  PublishEndpoint(s.d,v.id,true);s.endpoint=true;s.endpointCalls++;
++}
++void AddReadonlyHG(View v,float3* ace,const JSphHourglassGpu* hg,double mass,double rho0,double rhow){
++  State& s=state;Need(s.endpoint&&hg&&hg->GetFirstId()==40&&hg->GetCount()==1000,"GPU readonly HG owners differ");
++  cuhg::MapNative(v.np,v.npb,40,1000,v.id,v.code,s.hgSlots,s.hgError);
++  Cuda(cudaGetLastError());
++  cuhg::AddHistory(1000,mass,s.hgSlots,s.hgError,hg->GetHistoryDeviceReadonly(),ace,s.hgPartial,v.J,rho0,rhow);
++  Cuda(cudaGetLastError());
++  cuhg::Reduce(cuhg::PartialCount(1000),s.hgPartial,s.hgResult);Cuda(cudaGetLastError());cuhg::StReduce r;
++  Cuda(cudaMemcpy(&r,s.hgResult,sizeof(r),cudaMemcpyDeviceToHost));
++  Need(!r.errors&&std::isfinite(r.netx)&&std::isfinite(r.netz)&&std::isfinite(r.actualx)&&std::isfinite(r.actualz)
++    &&std::isfinite(r.sumforce)&&r.sumforce>=0&&std::isfinite(r.hmax),"GPU original readonly HG force validation failed");
++}
++void PrepareFinal(const void* owner,View v,const JSphHourglassGpu* hg){
++  State& s=state;Need(s.owner==owner&&s.endpoint&&s.pending&&!s.prepared&&hg&&(s.endpointRound==1||s.endpointRound==2)
++    &&(s.endpointRound==1||s.firstValidated),"GPU P2 preparation lifecycle differs");
++  const auto a=Stats(*hg),r=RateInfo(*hg);Need(a.size()==24&&r.size()==15&&s.stats.size()==24&&s.rateInfo.size()==15,"HG observation layout differs");
++  for(unsigned n=0;n<24;n++)Need(Bits(a[n],s.stats[n]),"GPU extra endpoint mutated HG statistics");
++  for(unsigned n=0;n<15;n++)Need(Bits(r[n],s.rateInfo[n]),"GPU extra endpoint mutated HG rate info");
++  PrepareDevice(v,s.d,hg->GetHistoryDeviceReadonly(),hg->GetRateDeviceReadonly());Check();
++  s.coreChecks+=7000;s.hgChecks+=2000;s.prepared=true;
++}
++void WriteFinal(View v){State& s=state;Need(s.pending&&s.endpoint&&s.prepared&&!s.roundWritten&&(s.endpointRound==1||s.endpointRound==2)
++    &&s.endpointWrites==2*s.commits+s.endpointRound-1,"GPU P2 pressure was not prepared for one actual round write");
++  WriteDevice(v,s.d);Check();s.roundWritten=true;s.endpointWrites++;
++  PublishEndpoint(DeviceState{},nullptr,false);s.endpoint=false;}
++void ValidateFirstEndpoint(const void* owner,View v,bool drain,unsigned loadmode){State& s=state;
++  Need(s.owner==owner&&s.ready&&s.pending&&s.prepared&&!s.endpoint&&s.endpointRound==1&&!s.firstValidated
++    &&s.roundWritten&&s.endpointWrites==2*s.commits+1&&s.firstValidations==s.commits&&s.endpointCalls==2*s.commits+1,"GPU P2 first validation lifecycle differs");
++  Check();MapCheck(v);ValidateCommitDevice(v,s.d,drain,loadmode);Check(); // Validates real p1/J/P0 but does NOT rotate history.
++  Cuda(cudaMemcpy(s.firstRows,s.d.rows,sizeof(Observation)*1040,cudaMemcpyDeviceToDevice));
++  s.firstValidations++;s.firstRowCopies++;s.firstValidated=true; // Observe success before a later Map resets errors.
++}
++void SecondEndpoint(const void* owner,View v,double time,unsigned long long step,double dt,const JSphHourglassGpu* hg){State& s=state;
++  Need(s.owner==owner&&s.pending&&s.prepared&&!s.endpoint&&s.endpointRound==1&&s.firstValidated
++    &&s.roundWritten&&s.endpointWrites==2*s.commits+1&&s.firstValidations==s.commits+1&&s.secondTransitions==s.commits,"GPU P2 second transition duplicated or first round invalid");
++  Check();s.prepared=false;s.endpointRound=2;s.secondTransitionReady=true;
++  StartEndpoint(owner,v,time,step,dt,hg);s.secondTransitions++;
++}
++void Commit(const void* owner,View v,bool drain,unsigned loadmode){State& s=state;Need(s.owner==owner&&s.pending&&s.prepared&&!s.endpoint
++    &&s.endpointRound==2&&s.firstValidated&&s.roundWritten&&s.endpointWrites==2*(s.commits+1)&&s.secondTransitions==s.commits+1&&s.endpointCalls==2*(s.commits+1),"GPU P2 final commit requires two complete rounds");
++  Check();MapCheck(v);ValidateCommitDevice(v,s.d,drain,loadmode);Check();CommitDevice(v,s.d);Check();
++  s.lastEnd=s.sourceTime+s.dt;s.commits++;s.pending=false;
++}
++void AbortEndpoint() noexcept {try{PublishEndpoint(DeviceState{},nullptr,false);}catch(...){}state.endpoint=false;}
++static void WriteObservation(std::ofstream& csv,const Observation& r,unsigned part,unsigned id,double time,unsigned round,float bc){const State& s=state;
++  const bool observed=s.commits!=0;
++  csv<<part<<','<<id<<','<<s.sourceStep<<','<<s.commits<<','<<s.sourceTime<<','<<time<<','<<s.dt<<','<<r.pn<<','<<r.previous<<','<<r.prediction<<','<<r.half<<','<<r.q<<','<<r.S<<','<<r.R<<','<<r.raw<<','<<r.finalP<<','<<r.thetaH<<','<<r.thetaEnd<<','<<r.Jn<<','<<r.Jhalf<<','<<r.Jfull<<','<<r.sourceDrained<<','<<r.drained<<','<<r.commitDrained<<','<<s.commits<<','<<s.endpointCalls<<','<<s.coreChecks<<','<<s.hgChecks<<','<<round<<','<<unsigned(observed)<<','<<unsigned(observed&&round==1)<<','<<bc<<'\n';
++}
++void Saved(const void* owner,unsigned part,double time,unsigned long long savedstep,View v){State& s=state;
++  Need(s.ready&&s.owner==owner&&!s.pending&&!s.endpoint&&Bits(time,s.lastEnd)&&(s.commits?savedstep+1==s.commits:savedstep==0),"GPU P2 actual saved clock/history differs");
++  Need(!s.commits||(s.endpointRound==2&&s.firstValidated&&s.firstRowCopies==s.commits&&s.secondTransitions==s.commits),"GPU P2 saved step lacks two validated rounds");
++  Check();MapCheck(v);CollectDevice(v,s.d,s.collected);Check();std::vector<Observation> rows(1000),first(1040);
++  Cuda(cudaMemcpy(rows.data(),s.collected,sizeof(Observation)*1000,cudaMemcpyDeviceToHost));
++  Cuda(cudaMemcpy(first.data(),s.firstRows,sizeof(Observation)*1040,cudaMemcpyDeviceToHost)); // New row data leaves device only at SaveData.
++  for(unsigned n=0;n<1000;n++){const auto& r=rows[n];const auto& f=first[n+40];const float p1=f.commitDrained?0.f:f.raw;
++    if(s.commits){Need(Bits(r.q,p1),"GPU P2 actual second q differs from validated first BC float");
++      Need(Bits(r.pn,f.pn)&&Bits(r.previous,f.previous)&&Bits(r.prediction,f.prediction)&&Bits(r.half,f.half)
++        &&Bits(r.Jn,f.Jn)&&Bits(r.Jhalf,f.Jhalf)&&Bits(r.Jfull,f.Jfull)&&Bits(r.thetaH,f.thetaH)&&r.sourceDrained==f.sourceDrained,"GPU P2 source/J history changed between endpoint rounds");}
++    WriteObservation(*s.csvFirst,f,part,n+40,time,1,p1);WriteObservation(*s.csv,r,part,n+40,time,2,r.finalP);
++  }
++  s.csvFirst->flush();s.csv->flush();Need(bool(*s.csvFirst)&&bool(*s.csv),"GPU P2 saved sidecar write failed");s.saves++;
++}
++void Finish(const void* owner,unsigned long long completed,double time){State& s=state;
++  Need(s.ready&&s.owner==owner&&!s.pending&&!s.endpoint&&completed==s.commits&&Bits(time,s.lastEnd)
++    &&s.pre==s.commits&&s.cor==s.commits&&s.j==s.commits&&s.endpointCalls==2*s.commits
++    &&s.endpointWrites==2*s.commits&&s.coreChecks==14000*s.commits&&s.hgChecks==4000*s.commits&&s.firstValidations==s.commits
++    &&s.firstRowCopies==s.commits&&s.initialFirstRowCopies==1&&s.secondTransitions==s.commits,"GPU P2 complete lifecycle differs");
++  const std::string path=s.directory+"UplTpiP2GpuR1.summary.json";Need(!std::ifstream(path).good(),"GPU P2 summary already exists");
++  std::ofstream f(path);f<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_p2_gpu_r1\",\"completed\":true,\"scheme\":\""<<Name()<<"\",\"alpha\":0.5,\"beta\":0,\"endpoint_defect_rounds\":2,\"commits\":"<<s.commits
++    <<",\"pre_calls\":"<<s.pre<<",\"cor_calls\":"<<s.cor<<",\"J_calls\":"<<s.j<<",\"endpoint_calls\":"<<s.endpointCalls<<",\"endpoint_writes\":"<<s.endpointWrites<<",\"first_validations\":"<<s.firstValidations<<",\"first_row_D2D_copies\":"<<s.firstRowCopies<<",\"initial_first_row_D2D_copies\":"<<s.initialFirstRowCopies<<",\"second_transitions\":"<<s.secondTransitions
++    <<",\"core_field_bit_checks\":"<<s.coreChecks<<",\"HG_readonly_snapshot_checks\":"<<s.hgChecks<<",\"saved_records_per_round\":"<<1000*s.saves<<",\"actual_end\":"<<time
++    <<",\"history_cold_start\":true,\"history_rotates_once_per_step\":true,\"first_finalP_is_stale_previous_step\":true,\"first_BC_value_is_validated_rule_not_extra_native_save\":true,\"first_lap_observed\":false,\"first_legacy_rate_observed\":false,\"full_restart_supported\":false,\"PorePressRate_is_last_round_scaled_residual_not_dpdt\":true,\"paper_literal_LF\":false,\"second_order_claimed\":false,\"true_implicit_solution\":false,\"physical_acceptance\":false}\n";
++  f.flush();Need(bool(f),"GPU P2 summary write failed");
++}
++}
++#endif
++#endif
+--- frozen_M0_r2/upl_tpi_m0_dt_r2.h
++++ private_P2/upl_tpi_m0_dt_r2.h
+@@ -1,7 +1,7 @@
+-// Private, host-only Eq40 necessary timestep policy; no public XML or ABI.
++// Private, host-only P2 Eq40 necessary timestep audit; no public XML or ABI.
+ #pragma once
+ #ifdef __CUDACC__
+-#error The M0 timestep policy is host-only and must not change a CUDA closure.
++#error The P2 timestep policy is host-only and must not change a CUDA closure.
+ #endif
+ #include <algorithm>
+ #include <cfloat>
+@@ -13,22 +13,24 @@
+ #include <stdexcept>
+ #include <string>
+ 
++// Intentional source substitution for the original M0 dt header, never co-include it.
+ namespace upl_tpi_m0_dt_r2 {
+ inline void Need(bool q,const char* m){if(!q)throw std::runtime_error(m);}
+ inline bool Bits(double a,double b){return !std::memcmp(&a,&b,sizeof(a));}
+ inline bool Enabled(bool pressureBC){
+-  if(!pressureBC)return false; // A does not inspect or initialise this policy.
+-  static const bool yes=[](){const char* p=std::getenv("UPL_TPI_M0_DT_R1");
+-    if(!p||!*p)return false;
+-    Need(!std::strcmp(p,"EQ40_RH1"),"Private M0 dt policy must be absent or EQ40_RH1");return true;}();
++  if(!pressureBC)return false; // A does not inspect or initialise either private policy.
++  static const bool yes=[](){const char* rows=std::getenv("UPL_TPI_P2_ROWS_R1");
++    if(!rows||!*rows)return false;
++    Need(!std::strcmp(rows,"2"),"Private P2 rows must be absent or exactly 2");
++    const char* p=std::getenv("UPL_TPI_M0_DT_R1");
++    Need(p&&!std::strcmp(p,"EQ40_RH1"),"Private P2 dt requires EQ40_RH1");return true;}();
+   return yes;
+ }
+ inline bool AllowedDt(double dt,double event){
+-  return std::isfinite(dt)&&dt>0.&&event==.0100002288818359375
+-    &&(Bits(dt,event/1000.)||Bits(dt,event/500.));
++  return std::isfinite(dt)&&dt>0.&&event==.0100002288818359375&&Bits(dt,event/1000.);
+ }
+ struct Extrema {
+-  unsigned long long pre=0,cor=0,endpoint=0;
++  unsigned long long pre=0,cor=0,endpoint1=0,endpoint2=0;
+   double force=DBL_MAX,wave=DBL_MAX,hydro=DBL_MAX,legacyWave=DBL_MAX,hg=DBL_MAX,bound=DBL_MAX,error=-DBL_MAX;
+ };
+ struct State {
+@@ -39,60 +41,68 @@
+ inline State& Get(){static State s;return s;}
+ inline void Init(const void* owner,const std::string& directory,const char* backend,const char* scheme,
+   double time,unsigned long long step,double dt,double event){
+-  State& s=Get();Need(owner&&!s.owner&&time==0.&&step==0&&AllowedDt(dt,event),"M0 dt requires a fresh admitted fixed grid");
+-  Need(backend&&scheme&&(!std::strcmp(backend,"CPU")||!std::strcmp(backend,"GPU")),"M0 dt backend absent");
++  // Check B before reading private environment; the default A path never calls Init.
++  Need(scheme&&!std::strcmp(scheme,"B"),"Private P2 dt admits only scheme B");
++  Need(Enabled(true),"Private P2 dt requires explicit rows=2");
++  State& s=Get();Need(owner&&!s.owner&&time==0.&&step==0&&AllowedDt(dt,event),"P2 dt requires a fresh admitted fixed grid");
++  Need(backend&&(!std::strcmp(backend,"CPU")||!std::strcmp(backend,"GPU")),"P2 dt backend absent");
+   s.owner=owner;s.directory=directory;s.backend=backend;s.scheme=scheme;s.dt=dt;
+-  const std::string policy=directory+"UplTpiM0DtR1.policy.json",csv=directory+"UplTpiM0DtR1.csv";
+-  Need(!std::ifstream(policy).good()&&!std::ifstream(csv).good(),"M0 dt sidecar already exists");
+-  s.csv.open(csv);Need(bool(s.csv),"M0 dt interval output failed");s.csv<<std::setprecision(17);
+-  s.csv<<"part,actual_save_time_s,saved_step,completed_updates,dt_s,interval_pre,interval_cor,interval_endpoint,total_pre,total_cor,total_endpoint,interval_empty,min_force_CFL_s,min_skeleton_wave_AV_CFL_s,min_Rh_hydro_s,min_legacy_Kw_wave_CFL_reference_s,min_HG_limit_reference_s,min_selected_bound_s,max_dt_minus_bound_s\n";
+-  std::ofstream p(policy);p<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_m0_dt_r2\",\"backend\":\""<<backend
+-    <<"\",\"pressure_scheme\":\""<<scheme<<"\",\"dt_policy\":\"M0_Eq40_Rh1\",\"R_h\":1,\"fixed_dt_s\":"<<dt
+-    <<",\"drainage_event_s\":"<<event<<",\"force_and_AV_retained\":true,\"hydro_is_true_Kw_explicit_reference\":true,\"legacy_Kw_wave_is_reference_only\":true,\"HG_independent_guard_retained\":true,\"HG_limit_reference_available\":false,\"signed_dterror_is_method_specific\":true,\"initial_dterror_not_rewritten\":true,\"sufficient_stability_claimed\":false,\"physical_acceptance\":false}\n";
+-  p.flush();Need(bool(p),"M0 dt policy write failed");
++  const std::string policy=directory+"UplTpiP2DtR1.policy.json",csv=directory+"UplTpiP2DtR1.csv";
++  Need(!std::ifstream(policy).good()&&!std::ifstream(csv).good(),"P2 dt sidecar already exists");
++  s.csv.open(csv);Need(bool(s.csv),"P2 dt interval output failed");s.csv<<std::setprecision(17);
++  s.csv<<"part,actual_save_time_s,saved_step,completed_updates,dt_s,interval_pre,interval_cor,interval_endpoint1,interval_endpoint2,total_pre,total_cor,total_endpoint1,total_endpoint2,interval_empty,min_force_CFL_s,min_skeleton_wave_AV_CFL_s,min_Rh_hydro_s,min_legacy_Kw_wave_CFL_reference_s,min_HG_limit_reference_s,min_selected_bound_s,max_dt_minus_bound_s\n";
++  std::ofstream p(policy);p<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_p2_dt_r1\",\"backend\":\""<<backend
++    <<"\",\"pressure_scheme\":\""<<scheme<<"\",\"endpoint_defect_rounds\":2,\"force_phases_per_update\":4,\"dt_policy\":\"M0_Eq40_Rh1\",\"R_h\":1,\"fixed_dt_s\":"<<dt
++    <<",\"drainage_event_s\":"<<event<<",\"source_clock_policy\":\"original_TimeStep_all_four_phases\",\"force_and_AV_retained\":true,\"hydro_is_true_Kw_explicit_reference\":true,\"legacy_Kw_wave_is_reference_only\":true,\"HG_independent_guard_retained\":true,\"HG_limit_reference_available\":false,\"signed_dterror_is_method_specific\":true,\"initial_dterror_not_rewritten\":true,\"sufficient_stability_claimed\":false,\"physical_acceptance\":false}\n";
++  p.flush();Need(bool(p),"P2 dt policy write failed");
+ }
+ inline void Add(Extrema& x,unsigned phase,double force,double wave,double hydro,double oldwave,double hg,double bound,double error){
+-  if(phase==0)x.pre++;else if(phase==1)x.cor++;else x.endpoint++;
++  Need(phase<=3,"P2 dt phase outside four-phase audit");
++  if(phase==0)x.pre++;else if(phase==1)x.cor++;else if(phase==2)x.endpoint1++;else x.endpoint2++;
+   x.force=(std::min)(x.force,force);x.wave=(std::min)(x.wave,wave);x.hydro=(std::min)(x.hydro,hydro);
+   x.legacyWave=(std::min)(x.legacyWave,oldwave);x.hg=(std::min)(x.hg,hg);
+   x.bound=(std::min)(x.bound,bound);x.error=(std::max)(x.error,error);
++}
++// Query only: callers pass the backend pressure helper's independent actual round.
++inline unsigned EndpointPhase(){
++  const State& s=Get();Need(s.owner&&(s.phase==2||s.phase==3),"P2 dt is not at an expected endpoint phase");return s.phase;
+ }
+ // Eq40 necessary bound only: R_h is fixed to one in this candidate.
+ // The old true-Kw wave is diagnostic; HG retains its independent original gate.
+ inline double Record(const void* owner,unsigned phase,double time,unsigned long long step,double dt,
+   double forceCFL,double skeletonWaveAVCFL,double hydro,double legacyWaveCFL,double hgLimit){
+-  State& s=Get();Need(s.owner==owner&&phase<=2&&phase==s.phase&&step==s.completed&&Bits(dt,s.dt),"M0 dt phase/owner/step changed");
+-  if(phase==0){Need(Bits(time,s.lastEnd),"M0 dt predictor clock changed");s.sourceTime=time;}
+-  else Need(Bits(time,s.sourceTime),"M0 dt stage source clock changed");
++  State& s=Get();Need(s.owner==owner&&phase<=3&&phase==s.phase&&step==s.completed&&Bits(dt,s.dt),"P2 dt phase/owner/step changed");
++  if(phase==0){Need(Bits(time,s.lastEnd),"P2 dt predictor clock changed");s.sourceTime=time;}
++  else Need(Bits(time,s.sourceTime),"P2 dt stage source clock changed");
+   const double values[]={forceCFL,skeletonWaveAVCFL,hydro,legacyWaveCFL,hgLimit};
+-  for(double x:values)Need(std::isfinite(x)&&x>0.,"M0 dt necessary scale must be finite and positive");
++  for(double x:values)Need(std::isfinite(x)&&x>0.,"P2 dt necessary scale must be finite and positive");
+   const double bound=(std::min)((std::min)(forceCFL,skeletonWaveAVCFL),hydro),error=dt-bound;
+-  Need(std::isfinite(bound)&&bound>0.&&std::isfinite(error),"M0 dt combined necessary bound invalid");
++  Need(std::isfinite(bound)&&bound>0.&&std::isfinite(error),"P2 dt combined necessary bound invalid");
+   Add(s.interval,phase,forceCFL,skeletonWaveAVCFL,hydro,legacyWaveCFL,hgLimit,bound,error);
+   Add(s.total,phase,forceCFL,skeletonWaveAVCFL,hydro,legacyWaveCFL,hgLimit,bound,error);
+-  s.phase=(phase+1)%3;if(phase==2){s.completed++;s.lastEnd=time+dt;}
++  s.phase=(phase+1)%4;if(phase==3){s.completed++;s.lastEnd=time+dt;}
+   return bound; // Original DtVariable still rejects an already locked excess step.
+ }
+ inline void Saved(const void* owner,unsigned part,double time,unsigned long long savedstep){
+   State& s=Get();Need(s.owner==owner&&s.phase==0&&Bits(time,s.lastEnd)
+-    &&(s.completed?savedstep+1==s.completed:savedstep==0),"M0 dt genuine saved clock changed");
+-  Need(s.interval.pre==s.interval.cor&&s.interval.cor==s.interval.endpoint,"M0 dt saved interval has missing stages");
++    &&(s.completed?savedstep+1==s.completed:savedstep==0),"P2 dt genuine saved clock changed");
++  Need(s.interval.pre==s.interval.cor&&s.interval.cor==s.interval.endpoint1&&s.interval.endpoint1==s.interval.endpoint2,"P2 dt saved interval has missing stages");
+   const auto& x=s.interval;const bool empty=x.pre==0;
+-  s.csv<<part<<','<<time<<','<<savedstep<<','<<s.completed<<','<<s.dt<<','<<x.pre<<','<<x.cor<<','<<x.endpoint
+-    <<','<<s.total.pre<<','<<s.total.cor<<','<<s.total.endpoint<<','<<unsigned(empty)<<','<<x.force<<','<<x.wave<<','<<x.hydro
++  s.csv<<part<<','<<time<<','<<savedstep<<','<<s.completed<<','<<s.dt<<','<<x.pre<<','<<x.cor<<','<<x.endpoint1<<','<<x.endpoint2
++    <<','<<s.total.pre<<','<<s.total.cor<<','<<s.total.endpoint1<<','<<s.total.endpoint2<<','<<unsigned(empty)<<','<<x.force<<','<<x.wave<<','<<x.hydro
+     <<','<<x.legacyWave<<','<<x.hg<<','<<x.bound<<','<<x.error<<'\n';
+-  s.csv.flush();Need(bool(s.csv),"M0 dt saved interval write failed");s.interval=Extrema{};s.saves++;s.lastSaved=time;
++  s.csv.flush();Need(bool(s.csv),"P2 dt saved interval write failed");s.interval=Extrema{};s.saves++;s.lastSaved=time;
+ }
+ inline void Finish(const void* owner,unsigned long long completed,double time){
+   State& s=Get();Need(s.owner==owner&&s.phase==0&&s.completed==completed&&Bits(time,s.lastEnd)&&Bits(time,s.lastSaved)
+-    &&s.total.pre==completed&&s.total.cor==completed&&s.total.endpoint==completed,"M0 dt complete stage/save counts differ");
+-  const std::string path=s.directory+"UplTpiM0DtR1.summary.json";Need(!std::ifstream(path).good(),"M0 dt summary exists");
+-  std::ofstream f(path);f<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_m0_dt_r2\",\"completed\":true,\"dt_policy\":\"M0_Eq40_Rh1\",\"R_h\":1,\"updates\":"<<completed
+-    <<",\"pre\":"<<s.total.pre<<",\"cor\":"<<s.total.cor<<",\"endpoint\":"<<s.total.endpoint<<",\"saved_intervals_including_initial\":"<<s.saves
++    &&s.total.pre==completed&&s.total.cor==completed&&s.total.endpoint1==completed&&s.total.endpoint2==completed,"P2 dt complete stage/save counts differ");
++  const std::string path=s.directory+"UplTpiP2DtR1.summary.json";Need(!std::ifstream(path).good(),"P2 dt summary exists");
++  std::ofstream f(path);f<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_p2_dt_r1\",\"completed\":true,\"endpoint_defect_rounds\":2,\"force_phases_per_update\":4,\"dt_policy\":\"M0_Eq40_Rh1\",\"R_h\":1,\"updates\":"<<completed
++    <<",\"pre\":"<<s.total.pre<<",\"cor\":"<<s.total.cor<<",\"endpoint1\":"<<s.total.endpoint1<<",\"endpoint2\":"<<s.total.endpoint2<<",\"saved_intervals_including_initial\":"<<s.saves
+     <<",\"actual_end_s\":"<<time<<",\"fixed_dt_s\":"<<s.dt<<",\"min_selected_bound_s\":"<<s.total.bound<<",\"max_dt_minus_bound_s\":"<<s.total.error
+     <<",\"min_force_CFL_s\":"<<s.total.force<<",\"min_skeleton_wave_AV_CFL_s\":"<<s.total.wave<<",\"min_Rh_hydro_s\":"<<s.total.hydro
+     <<",\"min_legacy_Kw_wave_CFL_reference_s\":"<<s.total.legacyWave<<",\"HG_limit_reference_available\":false,\"min_HG_limit_reference_s\":"<<s.total.hg
+-    <<",\"signed_dterror_is_method_specific\":true,\"sufficient_stability_claimed\":false,\"physical_acceptance\":false}\n";
+-  f.flush();Need(bool(f),"M0 dt summary write failed");
++    <<",\"source_clock_policy\":\"original_TimeStep_all_four_phases\",\"signed_dterror_is_method_specific\":true,\"initial_dterror_not_rewritten\":true,\"sufficient_stability_claimed\":false,\"physical_acceptance\":false}\n";
++  f.flush();Need(bool(f),"P2 dt summary write failed");
+ }
+ } // namespace upl_tpi_m0_dt_r2

@@ -1,0 +1,389 @@
+--- frozen_M0_r2/JSphCpu.cpp
++++ private_P2/JSphCpu.cpp
+@@ -5029,7 +5029,7 @@
+   }
+   //-dt new value of time step.
+   double dt=CFLnumber*min(dt1,dt2);
+-  if(m0dt)dt=upl_tpi_m0_dt_r2::Record(this,final?1u:(upl_tpi_cpu_r1::state.endpoint?2u:0u),TimeStep,Nstep,SymplecticDtPre,
++  if(m0dt)dt=upl_tpi_m0_dt_r2::Record(this,final?1u:(upl_tpi_cpu_r1::state.endpoint?upl_tpi_cpu_r1::EndpointPhase():0u),TimeStep,Nstep,SymplecticDtPre,
+     CFLnumber*dt1,CFLnumber*dt2,dtw,CFLnumber*legacyWave,DBL_MAX /* HG reference unavailable in base; original derived guard retained. */);
+   if(DynamicPorePressure){
+     const double bound=min(dt,dtw);
+--- frozen_M0_r2/JSphCpuSingle.cpp
++++ private_P2/JSphCpuSingle.cpp
+@@ -1368,7 +1368,7 @@
+       "P1 retains original ramp, normalized band load and fixed-grid drainage event");
+     upl_tpi_cpu_r1::Init(this,DirOut,Np,Idpc,Codec,PorePressc,PorePress0c,PoroJc,Kplasticc,TimeStep,Nstep,SymplecticDtPre);
+     if(upl_tpi_m0_dt_r2::Enabled(upl_tpi_cpu_r1::Enabled()))upl_tpi_m0_dt_r2::Init(static_cast<JSphCpu*>(this),DirOut,"CPU",std::getenv("UPL_TPI_CPU_R1"),TimeStep,Nstep,SymplecticDtPre,HydroMechDrainageStartTime);
+-    Log->Print("UplTpiCpuR1: private M0 beta0; B alpha.5 or C alpha0; true ID-owned cold history; endpoint extension, not literal LF/second-order/full-implicit/restart acceptance.");
++    Log->Print("UplTpiP2CPUR1: private two complete endpoint defects, one solid/J/HG/history commit; old source clock; not LF/implicit/second-order/restart/physics acceptance.");
+   }
+   RunGaugeSystem(TimeStep,true);
+   if(InOut)InOutInit(TimeStepIni);
+@@ -1401,29 +1401,34 @@
+     else RunCellDivide(true);
+ 
+     if(upl_tpi_cpu_r1::Enabled()){
+-      upl_tpi_cpu_r1::Endpoint(this,Np,Idpc,Codec,Posc,Velrhopc,Sigmac,Kplasticc,PorePress0c,PorePressc,PoroJc,TimeStep,Nstep,stepdt);
+-      upl_tpi_cpu_r1::CaptureHG(HourglassCpu);
+       bool forceScratch=false;
+       try{
+-        forceScratch=true;
+-        Interaction_Forces(INTERSTEP_SymCorrector); // Extra endpoint evaluation; no solid/J/material update.
+-        const double endpointdt=DtVariable(false); // Existing necessary limits retained for this same-dt P1 prototype.
+-        upl_tpi_cpu_r1::Need(endpointdt==stepdt,"P1 endpoint fixed dt changed");
+-        upl_tpi_cpu_r1::CheckHG(HourglassCpu);
+-        upl_tpi_cpu_r1::PrepareFinal(this,Np,Idpc,Codec,Posc,Velrhopc,Sigmac,Kplasticc,PorePress0c,PorePressc,PoroJc);
+-        PosInteraction_Forces();forceScratch=false;
+-        upl_tpi_cpu_r1::WriteFinal(Np,Npb,Idpc,Codec,PorePressc);
++        upl_tpi_cpu_r1::Endpoint(this,Np,Idpc,Codec,Posc,Velrhopc,Sigmac,Kplasticc,PorePress0c,PorePressc,PoroJc,TimeStep,Nstep,stepdt);
++        upl_tpi_cpu_r1::CaptureHG(HourglassCpu);
++        for(unsigned round=0;round<2;round++){
++          if(round)upl_tpi_cpu_r1::SecondEndpoint(this,Np,Idpc,Codec,Posc,Velrhopc,Sigmac,Kplasticc,PorePress0c,PorePressc,PoroJc,TimeStep,Nstep,stepdt,HourglassCpu);
++          forceScratch=true;Interaction_Forces(INTERSTEP_SymCorrector);
++          const double endpointdt=DtVariable(false);
++          upl_tpi_cpu_r1::Need(endpointdt==stepdt,"P2 endpoint fixed dt changed");
++          upl_tpi_cpu_r1::CheckHG(HourglassCpu);
++          upl_tpi_cpu_r1::PrepareFinal(this,Np,Idpc,Codec,Posc,Velrhopc,Sigmac,Kplasticc,PorePress0c,PorePressc,PoroJc);
++          PosInteraction_Forces();forceScratch=false;
++          upl_tpi_cpu_r1::WriteFinal(Np,Npb,Idpc,Codec,PorePressc);
++          if(round){upl_tpi_cpu_r1::state.endpoint=false;upl_tpi_cpu_r1::state.temporary=false;}
++          ApplyPorePressureBoundaries();
++          const bool drain=IsHydroMechDrainageActive();
++          if(!round)upl_tpi_cpu_r1::ValidateFirstEndpoint(this,Np,Idpc,Codec,PorePressc,PorePress0c,PoroJc,
++            [&](unsigned p){return drain && IsHydroMechDrainedParticle(p,Posc,Codec,FSTypec);});
++          else{
++            for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p]))
++              upl_tpi_cpu_r1::SetCommitDrained(Idpc[p],drain && IsHydroMechDrainedParticle(p,Posc,Codec,FSTypec));
++            upl_tpi_cpu_r1::Commit(this,Np,Idpc,Codec,PorePressc,PorePress0c,PoroJc);
++          }
++        }
++      }catch(...){
+         upl_tpi_cpu_r1::state.endpoint=false;upl_tpi_cpu_r1::state.temporary=false;
+-        ApplyPorePressureBoundaries(); // Original actual-clock FS/drainage/periodic policy.
+-        const bool drain=IsHydroMechDrainageActive();
+-        for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p]))
+-          upl_tpi_cpu_r1::SetCommitDrained(Idpc[p],drain && IsHydroMechDrainedParticle(p,Posc,Codec,FSTypec));
+-        upl_tpi_cpu_r1::Commit(this,Np,Idpc,Codec,PorePressc,PorePress0c,PoroJc);
+-      }
+-      catch(...){
+-        upl_tpi_cpu_r1::state.endpoint=false;upl_tpi_cpu_r1::state.temporary=false;
+-        if(forceScratch)PosInteraction_Forces();
+-        throw; // No history rotation or new native SaveData on a rejected endpoint.
++        if(forceScratch){try{PosInteraction_Forces();}catch(...){}}
++        throw;
+       }
+     }
+     TimeStep+=stepdt;
+--- frozen_M0_r2/upl_tpi_cpu_r1.h
++++ private_P2/upl_tpi_cpu_r1.h
+@@ -1,4 +1,4 @@
+-// Private P1 beta=0 pressure-time prototype. No public XML or restart claim.
++// Private CPU P2 author: two full endpoint defects, one final history commit. No public XML/restart claim.
+ #pragma once
+ #include "DualSphDef.h"
+ #include <algorithm>
+@@ -26,9 +26,14 @@
+     Need(std::strcmp(e,"C")==0,"UPL_TPI_CPU_R1 must be absent or exact A/B/C");return C_PpeT;
+   }();return scheme;
+ }
+-inline bool Enabled(){return RequestedScheme()!=A_FiniteKw;}
++inline bool Enabled(){
++  if(RequestedScheme()==A_FiniteKw)return false; // A must not inspect the P2 selector.
++  Need(RequestedScheme()==B_Tpi,"Private P2 supports only B alpha .5");
++  static const bool admitted=[](){const char* e=std::getenv("UPL_TPI_P2_ROWS_R1");
++    Need(e&&std::strcmp(e,"2")==0,"Private P2 requires explicit UPL_TPI_P2_ROWS_R1=2");return true;}();return admitted;
++}
+ inline double Alpha(){return RequestedScheme()==B_Tpi?.5:0.;}
+-inline const char* Name(){return RequestedScheme()==B_Tpi?"B_TPI_alpha_0p5_beta0":"C_PPE_t_alpha0_beta0";}
++inline const char* Name(){return "B_TPI_alpha_0p5_beta0_P2_rows2";}
+ // The mechanical half and endpoint guess are the same history prediction.
+ // This is a full pressure-prediction ablation, not merely a last-row change.
+ inline double Predict(double pn,double previous,double alpha){
+@@ -51,9 +56,18 @@
+ struct Core{tdouble3 pos;tfloat4 velrhop;tsymatrix3d sigma;float kappa,p0,q;double j;};
+ static_assert(sizeof(tdouble3)==3*sizeof(double)&&sizeof(tfloat4)==4*sizeof(float)&&sizeof(tsymatrix3d)==6*sizeof(double),"Endpoint core ABI differs");
+ struct HgRecord{tdouble3 history,rate;};
++// A deep host record. priorFinalP is the old committed field, NOT the first solution.
++struct FirstEndpointRecord{
++  float pn=0,previous=0,half=0,q=0,raw=0,actualBC=0,priorFinalP=0;
++  double predicted=0,S=0,R=0,Jn=0,Jhalf=0,Jfull=0,thetaH=0,thetaEndpoint=0;
++  unsigned sourceDrained=0,drained=0,commitDrained=0;
++};
+ struct State{
+   const void* owner=nullptr;
+   bool ready=false,pending=false,temporary=false,endpoint=false,prepared=false;
++  bool firstValidated=false,secondStarting=false,roundWritten=false;unsigned endpointRound=0;
++  unsigned long long firstValidations=0,secondStarts=0,endpointWrites=0;
++  std::vector<FirstEndpointRecord> firstRows;
+   unsigned nativeCount=0,fixedCount=0,soilCount=0;
+   unsigned long long initialStep=0,sourceStep=0,commits=0;
+   unsigned long long preCalls=0,corCalls=0,jCalls=0,endpointCalls=0,coreFieldChecks=0,hgSnapshotChecks=0;
+@@ -99,7 +113,7 @@
+   Need(s.nativeCount&&size_t(last)+1<=size_t(UINT_MAX),"Native ID extent invalid");
+   const size_t n=size_t(last)+1;s.role.assign(n,0);s.slot.resize(n);s.seen.resize(n);s.rowError.resize(n);s.sourceDrained.resize(n);s.drained.resize(n);s.commitDrained.resize(n);
+   s.previous.resize(n);s.previousUsed.resize(n);s.pn.resize(n);s.half.resize(n);s.q.resize(n);s.raw.resize(n);s.finalP.resize(n);s.initialP0.resize(n);
+-  s.predicted.resize(n);s.S.resize(n);s.R.resize(n);s.Jn.resize(n);s.Jhalf.resize(n);s.Jfull.resize(n);s.thetaH.resize(n);s.thetaEndpoint.resize(n);s.core.resize(n);s.hg.resize(n);
++  s.predicted.resize(n);s.S.resize(n);s.R.resize(n);s.Jn.resize(n);s.Jhalf.resize(n);s.Jfull.resize(n);s.thetaH.resize(n);s.thetaEndpoint.resize(n);s.core.resize(n);s.hg.resize(n);s.firstRows.resize(n);
+   for(unsigned a=0;a<np;a++)if(CODE_IsNormal(code[a])){
+     const unsigned k=id[a];Need(!s.role[k],"Duplicate initial native ID");s.role[k]=CODE_IsFixed(code[a])?1u:2u;s.nativeIds.push_back(k);
+     if(s.role[k]==1)s.fixedCount++;else{s.soilIds.push_back(k);s.soilCount++;}
+@@ -111,18 +125,19 @@
+     s.previous[k]=s.previousUsed[k]=s.pn[k]=s.half[k]=s.q[k]=s.raw[k]=s.finalP[k]=p[a];
+     s.initialP0[k]=p0[a];s.predicted[k]=double(p[a]);s.Jn[k]=s.Jhalf[k]=s.Jfull[k]=j[a];
+   }
+-  const std::string csv=directory+"UplTpiCpuR1.csv",policy=directory+"UplTpiCpuR1.policy.json";
++  const std::string csv=directory+"UplTpiP2CpuR1.csv",policy=directory+"UplTpiP2CpuR1.policy.json";
+   Need(!std::ifstream(csv).good()&&!std::ifstream(policy).good(),"Private pressure sidecar already exists");
+   s.csv=new std::ofstream(csv,std::ios::out|std::ios::trunc);Need(bool(*s.csv),"Pressure sidecar open failed");
+-  *s.csv<<std::setprecision(17)<<"part,native_id,source_step_zero_based,completed_step,source_time_s,actual_save_time_s,dt_s,pn_Pa,previous_Pa,prediction_double_Pa,half_actual_float_Pa,endpoint_q_actual_float_Pa,S_1_per_m_s,Rgamma_Pa_per_m_s,raw_final_float_Pa,final_float_Pa,theta_half_for_J_1_per_s,theta_endpoint_1_per_s,Jn,Jhalf,Jfull,source_drained,endpoint_drained,commit_drained,commits,endpoint_calls,core_field_bit_checks,hg_snapshot_checks\n";
+-  std::ofstream out(policy);Need(bool(out),"Pressure policy open failed");
+-  out<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_cpu_r1\",\"scheme\":\""<<Name()<<"\",\"alpha\":"<<Alpha()<<",\"beta\":0,\"M0\":true,\"native_count\":"<<s.nativeCount<<",\"soil_count\":"<<s.soilCount<<",\"history_ID_owned\":true,\"history_cold_start\":true,\"full_restart_supported\":false,\"half_equals_endpoint_history_guess\":true,\"endpoint_source_clock_is_original_n\":true,\"paper_literal_LF\":false,\"second_order_claimed\":false,\"true_implicit_solution\":false,\"physical_acceptance\":false}\n";
++  *s.csv<<std::setprecision(17)<<"part,pressure_round,native_id,source_step_zero_based,completed_step,source_time_s,actual_save_time_s,dt_s,pn_Pa,previous_Pa,prediction_double_Pa,mechanical_half_actual_float_Pa,endpoint_q_actual_float_Pa,S_1_per_m_s,Rgamma_Pa_per_m_s,raw_candidate_float_Pa,actual_after_BC_float_Pa,prior_committed_finalP_stale_Pa,theta_half_for_J_1_per_s,theta_endpoint_1_per_s,Jn,Jhalf,Jfull,source_drained,endpoint_drained,provisional_or_final_commit_drained,first_endpoint_validated,commits,endpoint_calls,endpoint_writes,core_field_bit_checks,hg_snapshot_checks\n";
++  std::ofstream out(policy);Need(bool(out),"P2 pressure policy open failed");
++  out<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_p2_cpu_r1\",\"scheme\":\""<<Name()<<"\",\"alpha\":0.5,\"beta\":0,\"M0\":true,\"endpoint_defects_per_step\":2,\"native_count\":"<<s.nativeCount<<",\"soil_count\":"<<s.soilCount<<",\"history_ID_owned\":true,\"history_cold_start\":true,\"full_restart_supported\":false,\"global_source_clock_unchanged\":true,\"staged_load_clock_enabled\":false,\"first_finalP_field_is_prior_commit_not_p1\":true,\"first_actual_BC_is_directly_captured\":true,\"initial_pressure_round0_is_not_endpoint_observation\":true,\"PorePressRate_is_second_endpoint_scaled_residual_not_dpdt\":true,\"scalar_fixture_is_not_spatial_kernel_proof\":true,\"paper_literal_LF\":false,\"second_order_claimed\":false,\"true_implicit_solution\":false,\"physical_acceptance\":false}\n";
+   out.flush();Need(bool(out),"Pressure policy write failed");s.ready=true;
+ }
+ template<class SourceDrained> inline void Begin(const void* owner,unsigned np,const unsigned* id,const typecode* code,const float* pn,const double* j,double time,unsigned long long step,double dt,SourceDrained sourceDrained){
+   State& s=state;Need(s.ready&&s.owner==owner&&!s.pending&&!s.temporary&&!s.endpoint,"Predictor lifecycle invalid");
+   Need(step==s.initialStep+s.commits&&dt==s.dt&&Bits(time,s.lastEnd),"Actual scalar clock, completed step or fixed dt changed");
+   Map(np,id,code);s.sourceTime=time;s.sourceStep=step;s.unexpectedRows.store(0);s.prepared=false;
++  s.firstValidated=false;s.secondStarting=false;s.roundWritten=false;s.endpointRound=0;
+   std::fill(s.seen.begin(),s.seen.end(),0);std::fill(s.rowError.begin(),s.rowError.end(),0);std::fill(s.drained.begin(),s.drained.end(),0);std::fill(s.commitDrained.begin(),s.commitDrained.end(),0);
+   for(unsigned k:s.soilIds){const unsigned a=s.slot[k];Need(std::isfinite(pn[a])&&std::isfinite(j[a])&&j[a]>0.,"Predictor native state invalid");
+     s.sourceDrained[k]=unsigned(sourceDrained(a));
+@@ -148,8 +163,9 @@
+ inline void Endpoint(const void* owner,unsigned np,const unsigned* id,const typecode* code,const tdouble3* pos,const tfloat4* velrhop,
+   const tsymatrix3d* sigma,const float* kappa,const float* p0,const float* q,const double* j,double time,unsigned long long step,double dt){
+   State& s=state;Need(s.owner==owner&&s.pending&&s.temporary&&!s.endpoint&&s.jCalls==s.preCalls&&Bits(time,s.sourceTime)&&step==s.sourceStep&&dt==s.dt,"Endpoint clock or lifecycle invalid");Map(np,id,code);
++  Need(s.endpointRound==0||(s.endpointRound==1&&s.firstValidated&&s.secondStarting&&!s.prepared),"P2 duplicate/unvalidated endpoint round");
+   for(unsigned k:s.soilIds){const unsigned a=s.slot[k];Need(Bits(j[a],s.Jfull[k])&&Bits(p0[a],s.initialP0[k])&&std::isfinite(q[a]),"Endpoint J, P0 or pressure changed");s.core[k]={pos[a],velrhop[a],sigma[a],kappa[a],p0[a],q[a],j[a]};s.q[k]=q[a];}
+-  s.endpoint=true;s.endpointCalls++;
++  s.endpointRound++;s.roundWritten=false;s.endpoint=true;s.endpointCalls++;
+ }
+ // Calls occur in the existing independent receiver loop. Each native ID has one
+ // writer. Errors are latched per ID and thrown only after the OMP region.
+@@ -172,12 +188,31 @@
+   s.prepared=true;
+ }
+ inline void WriteFinal(unsigned np,unsigned npb,const unsigned* id,const typecode* code,float* p){
+-  State& s=state;Need(s.endpoint&&s.pending&&s.prepared,"Final pressure write lifecycle invalid");
++  State& s=state;Need(s.endpoint&&s.pending&&s.prepared&&!s.roundWritten&&(s.endpointRound==1||s.endpointRound==2),"P2 pressure write lifecycle invalid");
+   for(unsigned a=npb;a<np;a++)if(CODE_IsFluid(code[a])){Need(IsSoil(id[a]),"Final pressure owner invalid");p[a]=s.raw[id[a]];}
++  s.roundWritten=true;s.endpointWrites++;
++}
++inline unsigned EndpointPhase(){const State& s=state;Need(s.endpoint&&s.pending&&(s.endpointRound==1||s.endpointRound==2),"P2 timestep is not inside an endpoint");return s.endpointRound+1;}
++template<class Drained> inline void ValidateFirstEndpoint(const void* owner,unsigned np,const unsigned* id,const typecode* code,
++  const float* p,const float* p0,const double* j,Drained drained){
++  State& s=state;Need(s.owner==owner&&s.pending&&s.temporary&&s.prepared&&s.roundWritten&&s.endpointRound==1&&!s.firstValidated&&!s.secondStarting
++    &&s.endpointWrites==2*s.commits+1&&!s.unexpectedRows.load(),"P2 first endpoint seal lifecycle/rows invalid");Map(np,id,code);
++  Need(s.coreFieldChecks==7ull*s.soilCount*(2*s.commits+1)&&s.hgSnapshotChecks==2ull*s.soilCount*(2*s.commits+1),"P2 first readonly checks were skipped");
++  for(unsigned k:s.soilIds){const unsigned a=s.slot[k];s.commitDrained[k]=unsigned(drained(a));
++    Need(std::isfinite(p[a])&&Bits(j[a],s.Jfull[k])&&Bits(p0[a],s.initialP0[k]),"P2 provisional BC changed J/P0 or made p nonfinite");
++    Need(s.commitDrained[k]?Bits(p[a],0.f):Bits(p[a],s.raw[k]),"P2 provisional pressure is neither exact first raw nor true-Dirichlet +0");}
++  // First actual pressure is read directly after successful BC validation, not reconstructed.
++  for(unsigned k:s.soilIds){const unsigned a=s.slot[k];FirstEndpointRecord r;
++    r.pn=s.pn[k];r.previous=s.previousUsed[k];r.half=s.half[k];r.q=s.q[k];r.raw=s.raw[k];r.actualBC=p[a];r.priorFinalP=s.finalP[k];
++    r.predicted=s.predicted[k];r.S=s.S[k];r.R=s.R[k];r.Jn=s.Jn[k];r.Jhalf=s.Jhalf[k];r.Jfull=s.Jfull[k];r.thetaH=s.thetaH[k];r.thetaEndpoint=s.thetaEndpoint[k];
++    r.sourceDrained=s.sourceDrained[k];r.drained=s.drained[k];r.commitDrained=s.commitDrained[k];s.firstRows[k]=r;}
++  s.firstValidated=true;s.firstValidations++;s.endpoint=false; // Keep temporary/prepared and original pn/previous intact.
+ }
+ inline void SetCommitDrained(unsigned id,bool drained){Need(IsSoil(id),"Commit drainage owner invalid");state.commitDrained[id]=unsigned(drained);}
+ inline void Commit(const void* owner,unsigned np,const unsigned* id,const typecode* code,const float* p,const float* p0,const double* j){
+-  State& s=state;Need(s.owner==owner&&s.pending&&s.prepared&&!s.temporary&&!s.endpoint,"History commit lifecycle invalid");Map(np,id,code);
++  State& s=state;Need(s.owner==owner&&s.pending&&s.prepared&&!s.temporary&&!s.endpoint&&s.firstValidated&&s.endpointRound==2&&s.roundWritten
++    &&s.endpointWrites==2*(s.commits+1)&&s.firstValidations==s.commits+1&&s.secondStarts==s.commits+1,"P2 final history commit lifecycle invalid");Map(np,id,code);
++  Need(s.coreFieldChecks==14ull*s.soilCount*(s.commits+1)&&s.hgSnapshotChecks==4ull*s.soilCount*(s.commits+1),"P2 readonly round checks were skipped");
+   for(unsigned k:s.soilIds){const unsigned a=s.slot[k];Need(std::isfinite(p[a])&&Bits(j[a],s.Jfull[k])&&Bits(p0[a],s.initialP0[k]),"Final BC changed J/P0 or made p nonfinite");Need(s.commitDrained[k]?Bits(p[a],0.f):Bits(p[a],s.raw[k]),"Final pressure differs from exact raw row or true-Dirichlet +0");}
+   for(unsigned k:s.soilIds){s.finalP[k]=p[s.slot[k]];s.previous[k]=s.pn[k];}s.lastEnd=s.sourceTime+s.dt;s.commits++;s.pending=false;
+ }
+@@ -214,20 +249,35 @@
+   }
+   Need(count==s.soilCount,"Readonly HG soil set changed");
+ }
+-inline void Saved(const void* owner,unsigned part,double time,unsigned long long step,unsigned np,const unsigned* id,const typecode* code,const float* p,const double* j){
+-  State& s=state;Need(s.owner==owner&&s.ready&&!s.pending&&Bits(time,s.lastEnd),"Saved clock/commit differs");Map(np,id,code);
+-  Need(s.commits?step+1==s.initialStep+s.commits:step==s.initialStep,"Saved native zero-based step differs");
+-  for(unsigned k:s.soilIds){const unsigned a=s.slot[k];Need(Bits(p[a],s.finalP[k])&&Bits(j[a],s.Jfull[k]),"Saved pressure/J differs from actual commit");
+-    *s.csv<<part<<','<<k<<','<<s.sourceStep<<','<<(s.initialStep+s.commits)<<','<<s.sourceTime<<','<<time<<','<<s.dt<<','<<s.pn[k]<<','<<s.previousUsed[k]<<','<<s.predicted[k]<<','<<s.half[k]<<','<<s.q[k]<<','<<s.S[k]<<','<<s.R[k]<<','<<s.raw[k]<<','<<p[a]<<','<<s.thetaH[k]<<','<<s.thetaEndpoint[k]<<','<<s.Jn[k]<<','<<s.Jhalf[k]<<','<<s.Jfull[k]<<','<<s.sourceDrained[k]<<','<<s.drained[k]<<','<<s.commitDrained[k]<<','<<s.commits<<','<<s.endpointCalls<<','<<s.coreFieldChecks<<','<<s.hgSnapshotChecks<<'\n';
+-  }
+-  s.csv->flush();Need(bool(*s.csv),"Saved pressure sidecar failed");
++template<class HG> inline void SecondEndpoint(const void* owner,unsigned np,const unsigned* id,const typecode* code,
++  const tdouble3* pos,const tfloat4* velrhop,const tsymatrix3d* sigma,const float* kappa,const float* p0,const float* q,const double* j,
++  double time,unsigned long long step,double dt,const HG* hg){
++  State& s=state;Need(s.owner==owner&&s.pending&&s.temporary&&!s.endpoint&&s.prepared&&s.roundWritten&&s.firstValidated&&s.endpointRound==1&&!s.secondStarting
++    &&s.firstValidations==s.commits+1&&s.secondStarts==s.commits&&!s.unexpectedRows.load(),"P2 second endpoint transition invalid");Map(np,id,code);
++  for(unsigned k:s.soilIds){const unsigned a=s.slot[k];Need(Bits(q[a],s.firstRows[k].actualBC)&&Bits(j[a],s.firstRows[k].Jfull)&&Bits(p0[a],s.initialP0[k]),"P2 provisional p1/J/P0 changed before second snapshot");}
++  // All first errors were observed and all first records copied above. Only now reset per-round rows.
++  std::fill(s.seen.begin(),s.seen.end(),0);std::fill(s.rowError.begin(),s.rowError.end(),0);std::fill(s.drained.begin(),s.drained.end(),0);std::fill(s.commitDrained.begin(),s.commitDrained.end(),0);
++  s.prepared=false;s.roundWritten=false;s.secondStarting=true;
++  try{Endpoint(owner,np,id,code,pos,velrhop,sigma,kappa,p0,q,j,time,step,dt);CaptureHG(hg);s.secondStarts++;s.secondStarting=false;}
++  catch(...){s.secondStarting=false;throw;} // Preserve first failure; never retry or rotate history.
++}
++inline void Saved(const void* owner,unsigned part,double time,unsigned long long savedstep,unsigned np,const unsigned* id,const typecode* code,const float* p,const double* j){
++  State& s=state;Need(s.ready&&s.owner==owner&&!s.pending&&!s.endpoint&&Bits(time,s.lastEnd)&&(s.commits?savedstep+1==s.initialStep+s.commits:savedstep==s.initialStep),"P2 genuine saved clock/history differs");Map(np,id,code);
++  const auto emit=[&](unsigned k,unsigned round,const FirstEndpointRecord& r){
++    *s.csv<<part<<','<<round<<','<<k<<','<<s.sourceStep<<','<<(s.initialStep+s.commits)<<','<<s.sourceTime<<','<<time<<','<<s.dt<<','<<r.pn<<','<<r.previous<<','<<r.predicted<<','<<r.half<<','<<r.q<<','<<r.S<<','<<r.R<<','<<r.raw<<','<<r.actualBC<<','<<r.priorFinalP<<','<<r.thetaH<<','<<r.thetaEndpoint<<','<<r.Jn<<','<<r.Jhalf<<','<<r.Jfull<<','<<r.sourceDrained<<','<<r.drained<<','<<r.commitDrained<<','<<unsigned(s.firstValidated)<<','<<s.commits<<','<<s.endpointCalls<<','<<s.endpointWrites<<','<<s.coreFieldChecks<<','<<s.hgSnapshotChecks<<'\n';};
++  for(unsigned k:s.soilIds){const unsigned a=s.slot[k];Need(Bits(p[a],s.finalP[k])&&Bits(j[a],s.Jfull[k]),"P2 saved field changed after commit");
++    FirstEndpointRecord r;r.pn=s.pn[k];r.previous=s.previousUsed[k];r.half=s.half[k];r.q=s.q[k];r.raw=s.raw[k];r.actualBC=s.finalP[k];
++    r.priorFinalP=(s.commits?s.firstRows[k].priorFinalP:s.finalP[k]);r.predicted=s.predicted[k];r.S=s.S[k];r.R=s.R[k];r.Jn=s.Jn[k];r.Jhalf=s.Jhalf[k];r.Jfull=s.Jfull[k];r.thetaH=s.thetaH[k];r.thetaEndpoint=s.thetaEndpoint[k];r.sourceDrained=s.sourceDrained[k];r.drained=s.drained[k];r.commitDrained=s.commitDrained[k];
++    if(s.commits){Need(s.firstValidated&&s.endpointRound==2&&Bits(s.q[k],s.firstRows[k].actualBC),"P2 actual second q is not validated p1");emit(k,1,s.firstRows[k]);emit(k,2,r);}else emit(k,0,r);}
++  s.csv->flush();Need(bool(*s.csv),"P2 pressure sidecar write failed");
+ }
+ inline void Finish(const void* owner,unsigned long long step,double time){
+-  State& s=state;Need(s.owner==owner&&s.ready&&!s.pending&&step==s.initialStep+s.commits&&Bits(time,s.lastEnd),"Finish clock/history differs");
+-  Need(s.preCalls==s.commits&&s.corCalls==s.commits&&s.jCalls==s.commits&&s.endpointCalls==s.commits,"Missing or duplicate pressure lifecycle stage");
+-  Need(s.coreFieldChecks==7ull*s.soilCount*s.commits,"Missing endpoint core-field checks");
+-  const std::string path=s.directory+"UplTpiCpuR1.summary.json";Need(!std::ifstream(path).good(),"Pressure summary already exists");std::ofstream out(path);Need(bool(out),"Pressure summary open failed");
+-  out<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_cpu_r1\",\"completed\":true,\"scheme\":\""<<Name()<<"\",\"alpha\":"<<Alpha()<<",\"beta\":0,\"commits\":"<<s.commits<<",\"endpoint_calls\":"<<s.endpointCalls<<",\"core_field_bit_checks\":"<<s.coreFieldChecks<<",\"HG_readonly_snapshot_checks\":"<<s.hgSnapshotChecks<<",\"actual_end\":"<<time<<",\"history_cold_start\":true,\"full_restart_supported\":false,\"theta_endpoint_is_not_J_integration_theta\":true,\"paper_literal_LF\":false,\"second_order_claimed\":false,\"true_implicit_solution\":false,\"physical_acceptance\":false}\n";
+-  out.flush();Need(bool(out),"Pressure summary write failed");
++  State& s=state;Need(s.owner==owner&&s.ready&&!s.pending&&!s.endpoint&&step==s.initialStep+s.commits&&Bits(time,s.lastEnd),"P2 Finish clock/history differs");
++  Need(s.preCalls==s.commits&&s.corCalls==s.commits&&s.jCalls==s.commits&&s.endpointCalls==2*s.commits&&s.endpointWrites==2*s.commits
++    &&s.firstValidations==s.commits&&s.secondStarts==s.commits,"P2 missing or duplicate lifecycle round");
++  Need(s.coreFieldChecks==14ull*s.soilCount*s.commits&&s.hgSnapshotChecks==4ull*s.soilCount*s.commits,"P2 readonly check totals differ");
++  const std::string path=s.directory+"UplTpiP2CpuR1.summary.json";Need(!std::ifstream(path).good(),"P2 summary already exists");std::ofstream out(path);Need(bool(out),"P2 summary open failed");
++  out<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_p2_cpu_r1\",\"completed\":true,\"scheme\":\""<<Name()<<"\",\"alpha\":0.5,\"beta\":0,\"endpoint_defects_per_step\":2,\"commits\":"<<s.commits<<",\"endpoint_calls\":"<<s.endpointCalls<<",\"endpoint_writes\":"<<s.endpointWrites<<",\"first_validations\":"<<s.firstValidations<<",\"second_starts\":"<<s.secondStarts<<",\"core_field_bit_checks\":"<<s.coreFieldChecks<<",\"HG_readonly_snapshot_checks\":"<<s.hgSnapshotChecks<<",\"actual_end\":"<<time<<",\"history_cold_start\":true,\"full_restart_supported\":false,\"PorePressRate_is_second_endpoint_scaled_residual_not_actual_dpdt\":true,\"theta_endpoint_is_not_J_integration_theta\":true,\"first_finalP_field_is_prior_commit_not_p1\":true,\"scalar_fixture_is_not_spatial_kernel_proof\":true,\"paper_literal_LF\":false,\"second_order_claimed\":false,\"true_implicit_solution\":false,\"physical_acceptance\":false}\n";
++  out.flush();Need(bool(out),"P2 summary write failed");
+ }
+ } // namespace upl_tpi_cpu_r1
+--- frozen_M0_r2/upl_tpi_m0_dt_r2.h
++++ private_P2/upl_tpi_m0_dt_r2.h
+@@ -1,7 +1,7 @@
+-// Private, host-only Eq40 necessary timestep policy; no public XML or ABI.
++// Private, host-only P2 Eq40 necessary timestep audit; no public XML or ABI.
+ #pragma once
+ #ifdef __CUDACC__
+-#error The M0 timestep policy is host-only and must not change a CUDA closure.
++#error The P2 timestep policy is host-only and must not change a CUDA closure.
+ #endif
+ #include <algorithm>
+ #include <cfloat>
+@@ -13,22 +13,24 @@
+ #include <stdexcept>
+ #include <string>
+ 
++// Intentional source substitution for the original M0 dt header, never co-include it.
+ namespace upl_tpi_m0_dt_r2 {
+ inline void Need(bool q,const char* m){if(!q)throw std::runtime_error(m);}
+ inline bool Bits(double a,double b){return !std::memcmp(&a,&b,sizeof(a));}
+ inline bool Enabled(bool pressureBC){
+-  if(!pressureBC)return false; // A does not inspect or initialise this policy.
+-  static const bool yes=[](){const char* p=std::getenv("UPL_TPI_M0_DT_R1");
+-    if(!p||!*p)return false;
+-    Need(!std::strcmp(p,"EQ40_RH1"),"Private M0 dt policy must be absent or EQ40_RH1");return true;}();
++  if(!pressureBC)return false; // A does not inspect or initialise either private policy.
++  static const bool yes=[](){const char* rows=std::getenv("UPL_TPI_P2_ROWS_R1");
++    if(!rows||!*rows)return false;
++    Need(!std::strcmp(rows,"2"),"Private P2 rows must be absent or exactly 2");
++    const char* p=std::getenv("UPL_TPI_M0_DT_R1");
++    Need(p&&!std::strcmp(p,"EQ40_RH1"),"Private P2 dt requires EQ40_RH1");return true;}();
+   return yes;
+ }
+ inline bool AllowedDt(double dt,double event){
+-  return std::isfinite(dt)&&dt>0.&&event==.0100002288818359375
+-    &&(Bits(dt,event/1000.)||Bits(dt,event/500.));
++  return std::isfinite(dt)&&dt>0.&&event==.0100002288818359375&&Bits(dt,event/1000.);
+ }
+ struct Extrema {
+-  unsigned long long pre=0,cor=0,endpoint=0;
++  unsigned long long pre=0,cor=0,endpoint1=0,endpoint2=0;
+   double force=DBL_MAX,wave=DBL_MAX,hydro=DBL_MAX,legacyWave=DBL_MAX,hg=DBL_MAX,bound=DBL_MAX,error=-DBL_MAX;
+ };
+ struct State {
+@@ -39,60 +41,68 @@
+ inline State& Get(){static State s;return s;}
+ inline void Init(const void* owner,const std::string& directory,const char* backend,const char* scheme,
+   double time,unsigned long long step,double dt,double event){
+-  State& s=Get();Need(owner&&!s.owner&&time==0.&&step==0&&AllowedDt(dt,event),"M0 dt requires a fresh admitted fixed grid");
+-  Need(backend&&scheme&&(!std::strcmp(backend,"CPU")||!std::strcmp(backend,"GPU")),"M0 dt backend absent");
++  // Check B before reading private environment; the default A path never calls Init.
++  Need(scheme&&!std::strcmp(scheme,"B"),"Private P2 dt admits only scheme B");
++  Need(Enabled(true),"Private P2 dt requires explicit rows=2");
++  State& s=Get();Need(owner&&!s.owner&&time==0.&&step==0&&AllowedDt(dt,event),"P2 dt requires a fresh admitted fixed grid");
++  Need(backend&&(!std::strcmp(backend,"CPU")||!std::strcmp(backend,"GPU")),"P2 dt backend absent");
+   s.owner=owner;s.directory=directory;s.backend=backend;s.scheme=scheme;s.dt=dt;
+-  const std::string policy=directory+"UplTpiM0DtR1.policy.json",csv=directory+"UplTpiM0DtR1.csv";
+-  Need(!std::ifstream(policy).good()&&!std::ifstream(csv).good(),"M0 dt sidecar already exists");
+-  s.csv.open(csv);Need(bool(s.csv),"M0 dt interval output failed");s.csv<<std::setprecision(17);
+-  s.csv<<"part,actual_save_time_s,saved_step,completed_updates,dt_s,interval_pre,interval_cor,interval_endpoint,total_pre,total_cor,total_endpoint,interval_empty,min_force_CFL_s,min_skeleton_wave_AV_CFL_s,min_Rh_hydro_s,min_legacy_Kw_wave_CFL_reference_s,min_HG_limit_reference_s,min_selected_bound_s,max_dt_minus_bound_s\n";
+-  std::ofstream p(policy);p<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_m0_dt_r2\",\"backend\":\""<<backend
+-    <<"\",\"pressure_scheme\":\""<<scheme<<"\",\"dt_policy\":\"M0_Eq40_Rh1\",\"R_h\":1,\"fixed_dt_s\":"<<dt
+-    <<",\"drainage_event_s\":"<<event<<",\"force_and_AV_retained\":true,\"hydro_is_true_Kw_explicit_reference\":true,\"legacy_Kw_wave_is_reference_only\":true,\"HG_independent_guard_retained\":true,\"HG_limit_reference_available\":false,\"signed_dterror_is_method_specific\":true,\"initial_dterror_not_rewritten\":true,\"sufficient_stability_claimed\":false,\"physical_acceptance\":false}\n";
+-  p.flush();Need(bool(p),"M0 dt policy write failed");
++  const std::string policy=directory+"UplTpiP2DtR1.policy.json",csv=directory+"UplTpiP2DtR1.csv";
++  Need(!std::ifstream(policy).good()&&!std::ifstream(csv).good(),"P2 dt sidecar already exists");
++  s.csv.open(csv);Need(bool(s.csv),"P2 dt interval output failed");s.csv<<std::setprecision(17);
++  s.csv<<"part,actual_save_time_s,saved_step,completed_updates,dt_s,interval_pre,interval_cor,interval_endpoint1,interval_endpoint2,total_pre,total_cor,total_endpoint1,total_endpoint2,interval_empty,min_force_CFL_s,min_skeleton_wave_AV_CFL_s,min_Rh_hydro_s,min_legacy_Kw_wave_CFL_reference_s,min_HG_limit_reference_s,min_selected_bound_s,max_dt_minus_bound_s\n";
++  std::ofstream p(policy);p<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_p2_dt_r1\",\"backend\":\""<<backend
++    <<"\",\"pressure_scheme\":\""<<scheme<<"\",\"endpoint_defect_rounds\":2,\"force_phases_per_update\":4,\"dt_policy\":\"M0_Eq40_Rh1\",\"R_h\":1,\"fixed_dt_s\":"<<dt
++    <<",\"drainage_event_s\":"<<event<<",\"source_clock_policy\":\"original_TimeStep_all_four_phases\",\"force_and_AV_retained\":true,\"hydro_is_true_Kw_explicit_reference\":true,\"legacy_Kw_wave_is_reference_only\":true,\"HG_independent_guard_retained\":true,\"HG_limit_reference_available\":false,\"signed_dterror_is_method_specific\":true,\"initial_dterror_not_rewritten\":true,\"sufficient_stability_claimed\":false,\"physical_acceptance\":false}\n";
++  p.flush();Need(bool(p),"P2 dt policy write failed");
+ }
+ inline void Add(Extrema& x,unsigned phase,double force,double wave,double hydro,double oldwave,double hg,double bound,double error){
+-  if(phase==0)x.pre++;else if(phase==1)x.cor++;else x.endpoint++;
++  Need(phase<=3,"P2 dt phase outside four-phase audit");
++  if(phase==0)x.pre++;else if(phase==1)x.cor++;else if(phase==2)x.endpoint1++;else x.endpoint2++;
+   x.force=(std::min)(x.force,force);x.wave=(std::min)(x.wave,wave);x.hydro=(std::min)(x.hydro,hydro);
+   x.legacyWave=(std::min)(x.legacyWave,oldwave);x.hg=(std::min)(x.hg,hg);
+   x.bound=(std::min)(x.bound,bound);x.error=(std::max)(x.error,error);
++}
++// Query only: callers pass the backend pressure helper's independent actual round.
++inline unsigned EndpointPhase(){
++  const State& s=Get();Need(s.owner&&(s.phase==2||s.phase==3),"P2 dt is not at an expected endpoint phase");return s.phase;
+ }
+ // Eq40 necessary bound only: R_h is fixed to one in this candidate.
+ // The old true-Kw wave is diagnostic; HG retains its independent original gate.
+ inline double Record(const void* owner,unsigned phase,double time,unsigned long long step,double dt,
+   double forceCFL,double skeletonWaveAVCFL,double hydro,double legacyWaveCFL,double hgLimit){
+-  State& s=Get();Need(s.owner==owner&&phase<=2&&phase==s.phase&&step==s.completed&&Bits(dt,s.dt),"M0 dt phase/owner/step changed");
+-  if(phase==0){Need(Bits(time,s.lastEnd),"M0 dt predictor clock changed");s.sourceTime=time;}
+-  else Need(Bits(time,s.sourceTime),"M0 dt stage source clock changed");
++  State& s=Get();Need(s.owner==owner&&phase<=3&&phase==s.phase&&step==s.completed&&Bits(dt,s.dt),"P2 dt phase/owner/step changed");
++  if(phase==0){Need(Bits(time,s.lastEnd),"P2 dt predictor clock changed");s.sourceTime=time;}
++  else Need(Bits(time,s.sourceTime),"P2 dt stage source clock changed");
+   const double values[]={forceCFL,skeletonWaveAVCFL,hydro,legacyWaveCFL,hgLimit};
+-  for(double x:values)Need(std::isfinite(x)&&x>0.,"M0 dt necessary scale must be finite and positive");
++  for(double x:values)Need(std::isfinite(x)&&x>0.,"P2 dt necessary scale must be finite and positive");
+   const double bound=(std::min)((std::min)(forceCFL,skeletonWaveAVCFL),hydro),error=dt-bound;
+-  Need(std::isfinite(bound)&&bound>0.&&std::isfinite(error),"M0 dt combined necessary bound invalid");
++  Need(std::isfinite(bound)&&bound>0.&&std::isfinite(error),"P2 dt combined necessary bound invalid");
+   Add(s.interval,phase,forceCFL,skeletonWaveAVCFL,hydro,legacyWaveCFL,hgLimit,bound,error);
+   Add(s.total,phase,forceCFL,skeletonWaveAVCFL,hydro,legacyWaveCFL,hgLimit,bound,error);
+-  s.phase=(phase+1)%3;if(phase==2){s.completed++;s.lastEnd=time+dt;}
++  s.phase=(phase+1)%4;if(phase==3){s.completed++;s.lastEnd=time+dt;}
+   return bound; // Original DtVariable still rejects an already locked excess step.
+ }
+ inline void Saved(const void* owner,unsigned part,double time,unsigned long long savedstep){
+   State& s=Get();Need(s.owner==owner&&s.phase==0&&Bits(time,s.lastEnd)
+-    &&(s.completed?savedstep+1==s.completed:savedstep==0),"M0 dt genuine saved clock changed");
+-  Need(s.interval.pre==s.interval.cor&&s.interval.cor==s.interval.endpoint,"M0 dt saved interval has missing stages");
++    &&(s.completed?savedstep+1==s.completed:savedstep==0),"P2 dt genuine saved clock changed");
++  Need(s.interval.pre==s.interval.cor&&s.interval.cor==s.interval.endpoint1&&s.interval.endpoint1==s.interval.endpoint2,"P2 dt saved interval has missing stages");
+   const auto& x=s.interval;const bool empty=x.pre==0;
+-  s.csv<<part<<','<<time<<','<<savedstep<<','<<s.completed<<','<<s.dt<<','<<x.pre<<','<<x.cor<<','<<x.endpoint
+-    <<','<<s.total.pre<<','<<s.total.cor<<','<<s.total.endpoint<<','<<unsigned(empty)<<','<<x.force<<','<<x.wave<<','<<x.hydro
++  s.csv<<part<<','<<time<<','<<savedstep<<','<<s.completed<<','<<s.dt<<','<<x.pre<<','<<x.cor<<','<<x.endpoint1<<','<<x.endpoint2
++    <<','<<s.total.pre<<','<<s.total.cor<<','<<s.total.endpoint1<<','<<s.total.endpoint2<<','<<unsigned(empty)<<','<<x.force<<','<<x.wave<<','<<x.hydro
+     <<','<<x.legacyWave<<','<<x.hg<<','<<x.bound<<','<<x.error<<'\n';
+-  s.csv.flush();Need(bool(s.csv),"M0 dt saved interval write failed");s.interval=Extrema{};s.saves++;s.lastSaved=time;
++  s.csv.flush();Need(bool(s.csv),"P2 dt saved interval write failed");s.interval=Extrema{};s.saves++;s.lastSaved=time;
+ }
+ inline void Finish(const void* owner,unsigned long long completed,double time){
+   State& s=Get();Need(s.owner==owner&&s.phase==0&&s.completed==completed&&Bits(time,s.lastEnd)&&Bits(time,s.lastSaved)
+-    &&s.total.pre==completed&&s.total.cor==completed&&s.total.endpoint==completed,"M0 dt complete stage/save counts differ");
+-  const std::string path=s.directory+"UplTpiM0DtR1.summary.json";Need(!std::ifstream(path).good(),"M0 dt summary exists");
+-  std::ofstream f(path);f<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_m0_dt_r2\",\"completed\":true,\"dt_policy\":\"M0_Eq40_Rh1\",\"R_h\":1,\"updates\":"<<completed
+-    <<",\"pre\":"<<s.total.pre<<",\"cor\":"<<s.total.cor<<",\"endpoint\":"<<s.total.endpoint<<",\"saved_intervals_including_initial\":"<<s.saves
++    &&s.total.pre==completed&&s.total.cor==completed&&s.total.endpoint1==completed&&s.total.endpoint2==completed,"P2 dt complete stage/save counts differ");
++  const std::string path=s.directory+"UplTpiP2DtR1.summary.json";Need(!std::ifstream(path).good(),"P2 dt summary exists");
++  std::ofstream f(path);f<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_p2_dt_r1\",\"completed\":true,\"endpoint_defect_rounds\":2,\"force_phases_per_update\":4,\"dt_policy\":\"M0_Eq40_Rh1\",\"R_h\":1,\"updates\":"<<completed
++    <<",\"pre\":"<<s.total.pre<<",\"cor\":"<<s.total.cor<<",\"endpoint1\":"<<s.total.endpoint1<<",\"endpoint2\":"<<s.total.endpoint2<<",\"saved_intervals_including_initial\":"<<s.saves
+     <<",\"actual_end_s\":"<<time<<",\"fixed_dt_s\":"<<s.dt<<",\"min_selected_bound_s\":"<<s.total.bound<<",\"max_dt_minus_bound_s\":"<<s.total.error
+     <<",\"min_force_CFL_s\":"<<s.total.force<<",\"min_skeleton_wave_AV_CFL_s\":"<<s.total.wave<<",\"min_Rh_hydro_s\":"<<s.total.hydro
+     <<",\"min_legacy_Kw_wave_CFL_reference_s\":"<<s.total.legacyWave<<",\"HG_limit_reference_available\":false,\"min_HG_limit_reference_s\":"<<s.total.hg
+-    <<",\"signed_dterror_is_method_specific\":true,\"sufficient_stability_claimed\":false,\"physical_acceptance\":false}\n";
+-  f.flush();Need(bool(f),"M0 dt summary write failed");
++    <<",\"source_clock_policy\":\"original_TimeStep_all_four_phases\",\"signed_dterror_is_method_specific\":true,\"initial_dterror_not_rewritten\":true,\"sufficient_stability_claimed\":false,\"physical_acceptance\":false}\n";
++  f.flush();Need(bool(f),"P2 dt summary write failed");
+ }
+ } // namespace upl_tpi_m0_dt_r2
