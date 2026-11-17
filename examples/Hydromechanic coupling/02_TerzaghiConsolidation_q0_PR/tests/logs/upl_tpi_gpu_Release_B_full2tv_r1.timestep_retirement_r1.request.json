@@ -1,0 +1,68 @@
+{
+  "stage": "upl_tpi_gpu_Release_B_full2tv_r1.timestep_retirement_r1.request",
+  "intentional_retirement": true,
+  "reason": "User explicitly challenged conservative TPI timestep; same-dt startup implementation is already qualified. Retire old finite-Kw-gated long diagnostic to implement/test method-consistent larger-step policy first.",
+  "source_start": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_gpu_Release_B_full2tv_r1.start.json",
+    "bytes": 84828,
+    "mtime_ns": 1794863927443824900
+  },
+  "processes": {
+    "owner": {
+      "original": {
+        "pid": 38740,
+        "created": 1794863920.8724418,
+        "exe": "D:\\Anaconda3\\python.exe",
+        "argv": [
+          "D:\\anaconda3\\python.exe",
+          "-X",
+          "utf8",
+          "-B",
+          "tests/support/upl_tpi_gpu_full2tv_run_r1.py",
+          "--execution-authorized",
+          "--admission",
+          "tests/logs/upl_tpi_gpu_Release_B_full2tv_r1.run_admission.json",
+          "--notify",
+          "--notify-admission",
+          "tests/logs/upl_tpi_gpu_Release_B_full2tv_r1.notify_admission.json"
+        ],
+        "parent": 40324,
+        "status": "running"
+      },
+      "native_creation_FILETIME_ticks": 134393375208724418,
+      "initial_actual_Win32_exit": 259
+    },
+    "target": {
+      "original": {
+        "pid": 41920,
+        "created": 1794863926.8675716,
+        "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_gpu_full2tv_Release_r1\\out\\DualSPHysics5.2_GEO_win64.exe",
+        "argv": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_gpu_full2tv_Release_r1\\out\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_bigstep_full_r1_seed\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_gpu_Release_B_full2tv_r1",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:11661219"
+        ],
+        "parent": 38740,
+        "status": "running"
+      },
+      "native_creation_FILETIME_ticks": 134393375268675716,
+      "initial_actual_Win32_exit": 259
+    }
+  },
+  "requested_order": [
+    "owner",
+    "target"
+  ],
+  "requested_TerminateProcess_exit": 3221225786,
+  "requested_exit_is_external_not_original_solver_return": true,
+  "all_outputs_preserved": true,
+  "notifier_rearmed": false,
+  "time_utc": "2026-11-17T04:19:19.375802+00:00"
+}
