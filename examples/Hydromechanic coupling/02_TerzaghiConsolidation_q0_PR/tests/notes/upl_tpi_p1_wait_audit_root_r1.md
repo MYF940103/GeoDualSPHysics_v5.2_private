@@ -1,0 +1,13 @@
+# P1 staged-load pending-window root audit
+
+2026-11-17. Root fully read the scientific reviewer including its three job/native/output binding assertions, and the observer cost/split, full-admission gaps and conditional next time-layer notes. This is offline reasoning, not the current 2s result. The running owner 56156 / GPU44284 and all dependencies remain unchanged. C08 remains paused.
+
+The unique pure-matrix run `upl_tpi_next_time_layer_options_r1.py --execution-authorized` exited 0, creating 1116 four-by-four maps / 4464 roots from 120 retained nominal modes and four illustrative modes. All 10us one/two/converged nominal maps had computed spectral radius below one. At20us, two-row nominal maps had48/120 above one (max1.4071204396958437); converged had120/120 (max2.1028455393404126). These are frozen-symbol mathematical models, not the actual SPH spectrum, GPU float replay, timestep admission or a new reference trajectory. All reported failures remain.
+
+If the current staged-load window passes its unchanged pressure/top/bottom/full-history stress budgets, an extra iteration is unnecessary. Otherwise, one complete extra endpoint Rgamma evaluation is a conditional four-force design, not a selected implementation: mechanical/material/J/HG history commit stays once, acceleration/Taylor/ghost values must refresh, and the remaining O(h) lag is reduced rather than generally eliminated. No H3/reflection,20us,half,reference or full solver is admitted here.
+
+The scientific window author is frozen and not executed: actual normal run, unique native read/review and original22/IDs/clock/signed/ledger/drain/HG plus44-column loadclock validation must precede it. Its analysis-complete and physical-budget results are distinct. It keeps both old failed budgets and correct finite-Kw/M0 references at own actual clocks.
+
+The observer audit is static, without timing or a speedup claim. Its smallest proposed output-only split retains all numerical calls, Reset/Check/MapCheck, core/HG readonly checks and original physical gates; it only reduces successful saved text output. No code optimization has been performed. Broader synchronization changes need separate safety/numerical decisions. The full-period note is conditional: no seed/input/admission/build/reader/full job has been prepared from it.
+
+No public production source/XML, raw BI4/NBI4, program/object/runtime archive, formal figure/CSV, original failure, C08 dependency or active mutable run file was edited, staged or deleted. SHA scans=0. This checkpoint deliberately excludes the active2s log/output/admissions/owner state.
