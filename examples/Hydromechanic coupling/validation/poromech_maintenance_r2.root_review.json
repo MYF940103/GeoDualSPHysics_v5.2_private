@@ -1,0 +1,112 @@
+{
+  "stage": "poromech_maintenance_r2.root_review",
+  "passed": true,
+  "apply_check": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\poromech_maintenance_r2.apply.check.json",
+    "bytes": 28911,
+    "mtime_ns": 1794934718612601300
+  },
+  "journal": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\poromech_maintenance_r2.apply.journal.jsonl",
+    "bytes": 1796196,
+    "mtime_ns": 1794934718418427600
+  },
+  "actions": {
+    "fixture": 1,
+    "delete_begin": 10,
+    "delete_done": 10,
+    "compact_begin": 9,
+    "compact_file": 2479,
+    "compact_done": 9
+  },
+  "all_2479_journal_rows_validated": true,
+  "current_VTK_samples_checked": 27,
+  "all_10_deletions_absent": true,
+  "all_28_retained_artifact_stats_unchanged": true,
+  "all_active_full_admitted_input_stats_unchanged": 85,
+  "protected_processes": {
+    "full_owner": {
+      "pid": 51340,
+      "created": 1794930029.7328744,
+      "exe": "D:\\Anaconda3\\python.exe",
+      "argv": [
+        "D:\\anaconda3\\python.exe",
+        "-X",
+        "utf8",
+        "-B",
+        "tests/support/upl_tpi_p3_full_run_r1.py",
+        "--admission",
+        "tests/logs/upl_tpi_p3_B10us_full2tv_GPU_r1.run_admission.json",
+        "--notify-admission",
+        "tests/logs/upl_tpi_p3_B10us_full2tv_GPU_r1.notify_admission.json",
+        "--execution-authorized"
+      ],
+      "parent": 36816,
+      "status": "running"
+    },
+    "full_solver": {
+      "pid": 35020,
+      "created": 1794930036.8290727,
+      "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_full_Release_r1\\out\\DualSPHysics5.2_GEO_win64.exe",
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_full_Release_r1\\out\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu",
+        "-stable",
+        "-mdbc_freeslip",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_full_r1_seed\\upl_bigstep_2tv_CPU1_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_B10us_full2tv_GPU_r1",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-nsteps:7288262"
+      ],
+      "parent": 51340,
+      "status": "running"
+    },
+    "C08_owner": {
+      "pid": 36608,
+      "created": 1794823078.8537855,
+      "exe": "D:\\Anaconda3\\python.exe",
+      "argv": [
+        "D:\\anaconda3\\python.exe",
+        "-X",
+        "utf8",
+        "-B",
+        "tests/support/c08_h18_wend_branches_pre_r1.py",
+        "run",
+        "--group",
+        "psim5",
+        "--execution-authorized",
+        "--notify"
+      ],
+      "parent": 50308,
+      "status": "stopped"
+    },
+    "C08_solver": {
+      "pid": 43828,
+      "created": 1794823085.1984117,
+      "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_Release_r1\\DualSPHysics5.2_GEO_win64.exe",
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_Release_r1\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu:0",
+        "-stable",
+        "-mdbc_freeslip",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wend_branches_psim5_pre_r1\\c08_h18_wend_branches_psim5_pre_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_h18_wend_branches_psim5_pre_r1",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-nsteps:2000000"
+      ],
+      "parent": 36608,
+      "status": "stopped"
+    }
+  },
+  "NTFS_reported_reduction_bytes": 773998605,
+  "NTFS_reported_reduction_GiB": 0.7208423735573888,
+  "volume_free_change_not_attributed": true,
+  "raw_data_SHA_scans": 0,
+  "full_VTK_byteproof_claimed": false,
+  "solver_invocations": 0,
+  "physical_acceptance": false
+}

@@ -5,14 +5,14 @@
 		<special>
 			<soils>
 				<!-- Elasticity and strength; angles are in degrees. K and G are derived from E and nu. -->
+				<!-- E>=0; E>0 requires -1<nu<0.5. 0<=phi_r<=phi<90; |dlt|<90; coh>=coh_r>=0. Decay coefficients are finite and >=0. -->
 				<ModulusE value="1.0e6" comment="Young modulus; parser default=0; specify a positive material value" units_comment="Pa" />
 				<PRvs value="0.3" comment="Poisson ratio; default=0" />
 				<phi value="30" comment="Peak friction angle; default=0" units_comment="degrees" />
 				<coh value="0" comment="Peak cohesion; default=0" units_comment="Pa" />
 				<dlt value="0" comment="Initial dilation angle; default=0" units_comment="degrees" />
 
-				<!-- Unified DP return supports all three DPCtes fits, phi=0, softening and the existing cone-tip tension policy. -->
-				<!-- Deprecated MaterialReturn=0/1 is accepted as an identical alias; omit it in new files. Material-law PART restart is unsupported. -->
+				<!-- MaterialReturn is deprecated: 0/1 both use the unified DP law; omit this key. -->
 
 				<!-- Softening: residual strength must be supplied when its decay coefficient is positive. -->
 				<phi_r value="30" comment="Residual friction angle; default=phi" units_comment="degrees" />
@@ -24,15 +24,14 @@
 			</soils>
 
 			<hydromechanics>
-				<!-- Move the whole hydromechanical configuration here when migrating it from legacy soils XML. -->
 				<HydroMech value="1" comment="Enable hydromechanical coupling; default=0" />
-				<!-- Hydraulic wall reconstruction requires mDBC. cDBC is rejected; an explicitly checked no-wall free body skips cDBC. -->
+				<!-- Hydraulic walls require mDBC; checked wall-free configurations are exempt. -->
 				<HydroMechDynamicSeepage value="0" comment="0=original u-pw, 1=experimental dynamic seepage with evolving J/n; default=0" />
-				<!-- Dynamic plasticity remains restricted to fresh 2D plane-strain fixed-phi container/periodic fixtures; generic PART restart is unsupported. -->
+				<!-- Dynamic plasticity: fresh 2D fixed-phi plane strain only; generic PART restart unsupported. -->
 				<HydroMechConductivityModel value="0" comment="Dynamic seepage: 0=constant k0, 1=void-ratio exponential k(J); default=0" />
-				<!-- Model1 requires dynamic seepage and explicit Ck>0: k=k0*exp((e-e0)/Ck), e-e0=(J-1)/(1-n0). -->
-				<!-- Model1: bounded 2D gravity/startup-release CPU/GPU checks only; full collapse pending. HG/loaded-column/3D combinations remain constant-k. -->
-				<!-- <HydroMechConductivityCk value="0.01" comment="Example only; natural-log conductivity index; default=0, no calibrated universal value" /> -->
+				<!-- Model1: k=k0*exp((J-1)/((1-n0)*Ck)); requires dynamic seepage and explicit Ck>0. -->
+				<!-- HG, loaded-column and 3D dynamic configurations require Model0. -->
+				<!-- <HydroMechConductivityCk value="0.01" comment="Natural-log conductivity index; default=0; Model1 requires >0; material-dependent" /> -->
 
 				<PoreWaterRho value="1000" comment="Reference water density; default=1000" units_comment="kg/m^3" />
 				<PoreWaterBulkModulus value="2.0e6" comment="Water bulk modulus; default=0; must be >0 when HydroMech=1" units_comment="Pa" />
@@ -40,40 +39,36 @@
 				<HydraulicConductivity value="1.0e-4" comment="Initial hydraulic conductivity k0; default=0; must be >=0" units_comment="m/s" />
 
 				<PoreDtSafety value="0.1" comment="Pore-diffusion step safety factor; default=0.1; must be >0" />
-				<!-- Legacy DtFixed bypasses automatic pore-step limiting; dynamic seepage checks its necessary coupled limits. -->
+				<!-- DtFixed bypasses legacy automatic pore limiting; dynamic necessary-step checks remain active. -->
 				<PoreShepardRegularization value="0" comment="Excess-pressure Shepard regularization 0=off, 1=on; default=0" />
 				<PoreShepardInterval value="30" comment="Regularization interval in steps; default=30; positive when enabled" />
-				<!-- Experimental dynamic Shepard: fixed gravity preload with mode2 hydrostatic baseline; J-volume weights. -->
+				<!-- Dynamic Shepard requires the fixed gravity container with mode2 initialization. -->
 				<PoreMdbcInterpolationMode value="0" comment="Legacy pore-boundary interpolation 0=zero order, 1=direct MLS; default=0" />
 				<PoreDarcySymmetricCorr value="0" comment="Legacy Darcy correction 0=receiver C, 1=mean pair C; default=0; dynamic seepage uses its own pair operator" />
+				<!-- Dynamic seepage requires PoreMdbcInterpolationMode=0 and PoreDarcySymmetricCorr=0. -->
 
 				<HydroMechInitMode value="0" comment="0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; default=0" />
 				<!-- <HydroMechInitZ value="1.0" comment="Required in mode2; parser default=0; otherwise unused" units_comment="m" /> -->
-				<!-- Dynamic mode2 is restricted to the fully saturated flat-top gravity container; initializes pore pressure only, with zero initial effective stress. -->
+				<!-- Dynamic mode2: saturated flat-top gravity container; initializes p, not effective stress. -->
 
 				<HydroMechTopLoadMode value="0" comment="0=None, 1=TopVertical, 2=FlexibleConfinement, 3=TopStripVertical, 4=LianFlexibleStrip, 5=TopKernelBand; default=0" />
-				<!-- Modes3/4 use case-specific strip geometry; mode5 spreads the top load over a horizontal kernel band. -->
+				<!-- Modes3/4 have fixed strip geometry; mode5 uses a horizontal kernel band. -->
 				<HydroMechTopLoadQ0 value="0" comment="Compressive load; default=0; must be >0 when loading is enabled" units_comment="Pa" />
 				<HydroMechTopLoadRampTime value="0" comment="Load ramp duration; default=0; must be >=0" units_comment="s" />
 
 				<HydroMechDrainage value="1" comment="Zero pore pressure at tracked drained free-surface soil; default=1" />
 				<HydroMechDrainageStartTime value="0" comment="Drainage opening time; default=0; must be >=0" units_comment="s" />
 				<HydroMechDrainageFixedGrid value="0" comment="Align drainage event to the fixed-step count; default=0; requires a fresh constant-DtFixed run" />
-				<!-- With fixed-grid drainage, opening time must be an integer multiple of DtFixed. -->
+				<!-- Fixed-grid opening time must be an integer multiple of DtFixed. -->
 				<HydroMechFreeSeepage value="0" comment="Experimental dynamic free-seepage surface; default=0; requires HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0" />
 				<!-- FreeSeepage projects positive surface pressure to zero at completed steps; negative pressure is retained. -->
 			</hydromechanics>
-			<!-- Optional fresh 2D fixed-phi plane-strain gravity preload; omitted=disabled. -->
-			<!-- time is in seconds; both attributes are required. The entire right FreeSlip MK is retired before the next predictor. -->
+			<!-- Optional fixed-phi 2D gravity preload/release, DPCtes=3; absent=disabled. Required: time [s], release_mkbound (right FreeSlip MK). -->
 			<!-- <gravitypreload time="10" release_mkbound="2" /> -->
-			<!-- Configured soil damping/Shepard apply before release and are disabled afterward; material histories are retained. -->
-			<!-- Shared PRE defaults: elastic_source=false and statefile="". Schema2 same-material plastic support is an unvalidated candidate pending CPU/GPU continuity checks. -->
-			<!-- elastic_source="true" retains schema1: every preload material trial must stay elastic; its original shared-source contract is unchanged. -->
-			<!-- A fresh elastic_source="false" source can retain actual plastic history; it does not assign stress or reset kappa/J/p. -->
-			<!-- statefile="relative/Part_####.bi4" selects the typed schema: schema2 requires unified law2 and exactly the same full material/DP/trigger/tension policies, including cohesion and dilation/decay. -->
-			<!-- Schema2 is written only for fresh Model1 with damping/Shepard, stable double-position binary/info output and complete PRE. Otherwise ordinary continuous warmup is unchanged and emits no certificate. -->
-			<!-- Schema1 requirements remain unchanged. Plastic PRE cannot be shared across different materials; ordinary PART restart remains unsupported. -->
-			<!-- keep_bed_overlap="false" by default. Only certified statefile + fixed-plane dynamic NoPen may preserve the half-dp shallow bed row as NoSlip at release; bounded validation pending. -->
+			<!-- elastic_source default=false (plastic history allowed); true requires elastic trials throughout preload. -->
+			<!-- statefile default=""; a certified PRE path enables handoff. Plastic PRE requires the same material; not generic PART restart. -->
+			<!-- Certified PRE: Model1, damping/Shepard, stable double-position binary/info output. Damping/Shepard end at release. -->
+			<!-- keep_bed_overlap default=false; true requires certified statefile and fixed-plane NoPen. -->
 
 			<!-- Optional mechanical wall-slip overrides; requires Boundary=2 and existing, unique mkbound values. -->
 			<mdbcslip>
@@ -89,10 +84,10 @@
 			<parameter key="ArtificialStress" value="0" comment="Artificial stress 0=off, 1=on; default=0" />
 			<parameter key="ArtificialStressCoef" value="0.2" comment="Artificial-stress coefficient; default=0.2; range [0,1]" />
 			<parameter key="ArtificialStressExp" value="2.55" comment="Artificial-stress kernel-ratio exponent; default=2.55; >0; choose with kernel and h/dp" />
-			<!-- u-pl gravitypreload candidate: total-stress artificial stress starts after release; bounded validation pending. -->
+			<!-- Dynamic gravity preload: total-stress artificial stress is release-only. -->
 			<parameter key="SoilStressRateGradCorr" value="0" comment="Stress-rate velocity-gradient correction 0=off, 1=on; default=0" />
 			<parameter key="SoilBoundaryDerivativeSPR" value="0" comment="Reconstructed wall velocity for soil derivatives 0=off, 1=on; default=0" />
-			<!-- Independent SPR requires Wendland, fixed elastic planar walls and no AS; per-mk modes require separate faces. Inclined NoPen and curved/moving walls are unsupported. -->
+			<!-- SPR: Wendland, fixed elastic planar faces, AS=0; no curved/moving walls or inclined NoPen. -->
 			<parameter key="SoilHourglassXi" value="0" comment="Elastic GNOG hourglass strength; default=0 (off); must be >=0" />
 			<!-- HG: 2D Wendland/Symplectic, small-rotation elastic soil; no plasticity or history restart. -->
 			<parameter key="SoilDamping" value="0" comment="Bui-Fukagawa soil damping 0=off, 1=on; default=0" />
@@ -106,17 +101,14 @@
 			<parameter key="MDBCCorrector" value="1" comment="mDBC in Symplectic corrector 0=off, 1=on; default=1" />
 			<parameter key="MDBCFastSingle" value="1" comment="Fast single-precision mDBC; default=1; CPU and hydromechanics force the double path" />
 			<!-- <parameter key="NoPenetration" value="1" comment="mDBC NoSlip/FreeSlip penetration correction; default=0" /> -->
-			<!-- u-pl: qualified PRE receivers only, fixed axis-aligned gravity container; schema2 continuity validation is pending. -->
-			<!-- Candidate: predictor/corrector unilateral position/normal-velocity projection at validated fixed X/Z planes. -->
-			<!-- PRE uses NoPen=0; same-stage Darcy reaction is not included. Full collapse validation pending. -->
-			<!-- Optional existing ReleaseOnly artificial stress may be combined after PRE; combination validation pending. -->
+			<!-- Dynamic NoPen: certified PRE handoff only; release-only fixed X/Z plane projection, without same-stage Darcy reaction. -->
 
 			<!-- Existing DualSPHysics viscosity and shifting controls. -->
 			<parameter key="ViscoTreatment" value="1" comment="1=artificial viscosity, 2=laminar+SPS; default=1" />
 			<parameter key="Visco" value="0.01" comment="Viscosity coefficient; required, no XML default" />
 			<parameter key="Shifting" value="0" comment="0=off, 1=ignore boundaries, 2=ignore fixed, 3=full; default=0; dynamic seepage requires0" />
 			<parameter key="ShiftCoef" value="-2" comment="Shifting coefficient when enabled; default=-2" />
-			<parameter key="ShiftTFS" value="0" comment="Scalar free-surface attenuation; default=0 disables it; not a tangential projection; typical 2D/3D values 1.5/2.75" />
+			<parameter key="ShiftTFS" value="0" comment="Scalar free-surface attenuation threshold; default=0 (off); not a tangential projection" />
 		</parameters>
 	</execution>
 </case>

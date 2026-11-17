@@ -1,5 +1,11 @@
 # Cryer 测试文件
 
+## 当前入口（2026-11-18）
+
+- [当前任务、文件分类与维护范围](../../validation/poromech_maintenance_index_r2.md)。
+- 旧四泊松比正式结果与图表保留在根目录 `figures/formal_validation/`；新 TPI 仍处于启动实施验证之后、峰值物理验收之前。
+- [TPI 总计划](../../validation/upl_tpi_three_scheme_plan_r1.md)。下方是按日期保留的历史阶段，不据其旧“下一步”文字重启任务。
+
 此处保存临时计算与工具核验，不替代 case 根目录正式 XML/BAT 和正式输出。既有目录原位保留；新配置、支持脚本、输出、日志和图分别使用 `configs / support / outputs / logs / figures / notes` 中适用的浅层分类。
 
 ## VTK 再生检查（2026-10-08）

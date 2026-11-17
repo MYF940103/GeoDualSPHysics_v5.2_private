@@ -1,5 +1,13 @@
 # 02 测试文件索引
 
+## 当前入口（2026-11-18）
+
+- [当前任务、文件分类与维护范围](../../validation/poromech_maintenance_index_r2.md)。
+- [P3 全程启动依据](notes/upl_tpi_p3_full_root_r1.md)：`upl_tpi_p3_B10us_full2tv_GPU_r1` 正在运行，尚未完成全程原生/物理验收。
+- 正式三组 1D 结果保留；当前测试不覆盖根目录的正式图和 CSV。
+
+下方按日期保留历史记录；其中“运行中”“下一步”等文字以当时状态为准，不能作为重新启动旧任务的依据。
+
 ## 2026-10-25 根目录旧结果归档
 
 旧k1em2／k1em3／细网格对照／孔压precision／孔压double五个根输出，已完整归档为`outputs/root_legacy_r1.zip`并移出根目录。旧k1em4基线及所有release结果、正式XML/BAT保留。[精确清单和恢复说明](notes/root_retire_r1.md)；旧分析需要这些结果时，先从ZIP恢复对应原目录。下方此前CSV清理的空间数值为该轮完成时统计，不含本轮新增ZIP。
