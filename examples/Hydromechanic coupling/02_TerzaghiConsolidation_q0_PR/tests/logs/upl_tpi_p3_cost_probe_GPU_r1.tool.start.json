@@ -1,0 +1,64 @@
+{
+  "stage": "upl_tpi_p3_cost_probe_r1.tool.start",
+  "owner": {
+    "pid": 50888,
+    "created": 1794924489.928197,
+    "exe": "D:\\Anaconda3\\python.exe",
+    "argv": [
+      "D:\\anaconda3\\python.exe",
+      "-X",
+      "utf8",
+      "-B",
+      "tests/support/upl_tpi_p3_cost_probe_r1.py",
+      "--admission",
+      "tests/logs/upl_tpi_p3_cost_probe_GPU_r1.run_admission.json",
+      "--execution-authorized"
+    ],
+    "parent": 45956,
+    "status": "running"
+  },
+  "child": {
+    "pid": 51136,
+    "created": 1794924497.0059855,
+    "exe": "C:\\Program Files\\NVIDIA Corporation\\Nsight Systems 2023.3.3\\target-windows-x64\\nsys.exe",
+    "argv": [
+      "C:\\Program Files\\NVIDIA Corporation\\Nsight Systems 2023.3.3\\target-windows-x64\\nsys.exe",
+      "profile",
+      "--trace=cuda",
+      "--sample=none",
+      "--cpuctxsw=none",
+      "--system-wide=false",
+      "--kill=false",
+      "--wait=all",
+      "--stop-on-exit=true",
+      "--force-overwrite=false",
+      "--stats=true",
+      "--show-output=true",
+      "--output",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_cost_probe_GPU_r1_nsys\\trace",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_Release_r1\\out\\DualSPHysics5.2_GEO_win64.exe",
+      "-gpu",
+      "-stable",
+      "-mdbc_freeslip",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_m0_dt_B10us_window2s_GPU_r1_seed\\upl_bigstep_2tv_CPU1_r1",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_cost_probe_GPU_r1",
+      "-dirdataout",
+      "data",
+      "-svres",
+      "-nsteps:2000"
+    ],
+    "parent": 50888,
+    "status": "running"
+  },
+  "program": {
+    "path": "C:\\Program Files\\NVIDIA Corporation\\Nsight Systems 2023.3.3\\target-windows-x64\\nsys.exe",
+    "bytes": 30820400,
+    "mtime_ns": 1693915336000000000
+  },
+  "root_admission": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_p3_cost_probe_GPU_r1.run_admission.json",
+    "bytes": 10002,
+    "mtime_ns": 1794924453196796000
+  },
+  "performance_only": true
+}

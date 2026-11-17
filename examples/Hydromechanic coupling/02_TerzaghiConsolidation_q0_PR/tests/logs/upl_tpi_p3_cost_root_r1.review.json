@@ -1,0 +1,59 @@
+{
+  "stage": "upl_tpi_p3_cost_root_r1.review",
+  "passed": true,
+  "scope": "actual short trace and source-attributed development decision only",
+  "review": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_p3_cost_review_r1.check.json",
+    "bytes": 12399,
+    "mtime_ns": 1794926498825803600
+  },
+  "metrics": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_cost_review_r1\\metrics.json",
+    "bytes": 10765,
+    "mtime_ns": 1794926498812525700
+  },
+  "original_probe_failed_unmodified": true,
+  "target_fixture_observed_in_GPU_capture_once": true,
+  "stdout_unavailable_not_fabricated": true,
+  "source_and_exit_guard_evidence_separate": true,
+  "device_kernel_time_sum_s": 22.484548197,
+  "cudaMemcpy_API_time_sum_s": 33.779186856,
+  "API_and_GPU_durations_overlap": true,
+  "total_wall_or_speedup_claimed": false,
+  "teardown": {
+    "CUDA_header": {
+      "path": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\include\\cuda.h",
+      "bytes": 839368,
+      "mtime_ns": 1650681787000000000
+    },
+    "CUDA_ERROR_CONTEXT_IS_DESTROYED": 709,
+    "cudaDeviceReset_event_ns": [
+      55467378005,
+      55496146071
+    ],
+    "cuCtxSynchronize_after_reset_ns": [
+      55700105155,
+      55700111173
+    ],
+    "cuCtxSynchronize_return": 709,
+    "caller_stack_not_captured": true,
+    "not_classified_as_numerical_solver_failure": true
+  },
+  "source_attribution": {
+    "D2H_24B_10000": "top band load totals; 5 force calls/update, physical not observer",
+    "D2H_8B_100637": {
+      "private_GetError": 70632,
+      "M0_skeleton_wave": 10000,
+      "cell_domain_limits": 16004,
+      "CellSize": 4001
+    },
+    "D2H_4B_total": 152638,
+    "D2H_4B_source_identified": 142635,
+    "D2H_4B_not_yet_source_attributed": 10003,
+    "unattributed_counts_not_invented": true
+  },
+  "next_scope": "prepare exact full2Tv host admission/native profile; no numerical optimization or full solver admitted by this record",
+  "physical_acceptance": false,
+  "native_acceptance": false,
+  "SHA_scans": 0
+}

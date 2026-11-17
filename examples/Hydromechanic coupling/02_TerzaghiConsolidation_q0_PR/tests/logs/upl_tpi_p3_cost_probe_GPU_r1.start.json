@@ -1,0 +1,215 @@
+{
+  "stage": "upl_tpi_p3_cost_probe_r1.start",
+  "owner": {
+    "pid": 50888,
+    "created": 1794924489.928197,
+    "exe": "D:\\Anaconda3\\python.exe",
+    "argv": [
+      "D:\\anaconda3\\python.exe",
+      "-X",
+      "utf8",
+      "-B",
+      "tests/support/upl_tpi_p3_cost_probe_r1.py",
+      "--admission",
+      "tests/logs/upl_tpi_p3_cost_probe_GPU_r1.run_admission.json",
+      "--execution-authorized"
+    ],
+    "parent": 45956,
+    "status": "running"
+  },
+  "tool": {
+    "pid": 51136,
+    "created": 1794924497.0059855,
+    "exe": "C:\\Program Files\\NVIDIA Corporation\\Nsight Systems 2023.3.3\\target-windows-x64\\nsys.exe",
+    "argv": [
+      "C:\\Program Files\\NVIDIA Corporation\\Nsight Systems 2023.3.3\\target-windows-x64\\nsys.exe",
+      "profile",
+      "--trace=cuda",
+      "--sample=none",
+      "--cpuctxsw=none",
+      "--system-wide=false",
+      "--kill=false",
+      "--wait=all",
+      "--stop-on-exit=true",
+      "--force-overwrite=false",
+      "--stats=true",
+      "--show-output=true",
+      "--output",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_cost_probe_GPU_r1_nsys\\trace",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_Release_r1\\out\\DualSPHysics5.2_GEO_win64.exe",
+      "-gpu",
+      "-stable",
+      "-mdbc_freeslip",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_m0_dt_B10us_window2s_GPU_r1_seed\\upl_bigstep_2tv_CPU1_r1",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_cost_probe_GPU_r1",
+      "-dirdataout",
+      "data",
+      "-svres",
+      "-nsteps:2000"
+    ],
+    "parent": 50888,
+    "status": "running"
+  },
+  "target": {
+    "pid": 31932,
+    "created": 1794924498.4060805,
+    "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_Release_r1\\out\\DualSPHysics5.2_GEO_win64.exe",
+    "argv": [
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_Release_r1\\out\\DualSPHysics5.2_GEO_win64.exe",
+      "-gpu",
+      "-stable",
+      "-mdbc_freeslip",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_m0_dt_B10us_window2s_GPU_r1_seed\\upl_bigstep_2tv_CPU1_r1",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_cost_probe_GPU_r1",
+      "-dirdataout",
+      "data",
+      "-svres",
+      "-nsteps:2000"
+    ],
+    "parent": 29272,
+    "status": "running"
+  },
+  "target_ancestry": [
+    {
+      "pid": 31932,
+      "created": 1794924498.4060805,
+      "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_Release_r1\\out\\DualSPHysics5.2_GEO_win64.exe",
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_Release_r1\\out\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu",
+        "-stable",
+        "-mdbc_freeslip",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_m0_dt_B10us_window2s_GPU_r1_seed\\upl_bigstep_2tv_CPU1_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_cost_probe_GPU_r1",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-nsteps:2000"
+      ],
+      "parent": 29272,
+      "status": "running"
+    },
+    {
+      "pid": 29272,
+      "created": 1794924497.5009437,
+      "exe": "C:\\Program Files\\NVIDIA Corporation\\Nsight Systems 2023.3.3\\target-windows-x64\\nsys.exe",
+      "argv": [
+        "C:\\Program Files\\NVIDIA Corporation\\Nsight Systems 2023.3.3\\target-windows-x64\\nsys.exe",
+        "--start-agent",
+        "--session-name=profile-51136",
+        "--shm-name=quadd-create-agent-31e5b64a-4509-4d9e-a254-0c1eaf989214"
+      ],
+      "parent": 51136,
+      "status": "running"
+    },
+    {
+      "pid": 51136,
+      "created": 1794924497.0059855,
+      "exe": "C:\\Program Files\\NVIDIA Corporation\\Nsight Systems 2023.3.3\\target-windows-x64\\nsys.exe",
+      "argv": [
+        "C:\\Program Files\\NVIDIA Corporation\\Nsight Systems 2023.3.3\\target-windows-x64\\nsys.exe",
+        "profile",
+        "--trace=cuda",
+        "--sample=none",
+        "--cpuctxsw=none",
+        "--system-wide=false",
+        "--kill=false",
+        "--wait=all",
+        "--stop-on-exit=true",
+        "--force-overwrite=false",
+        "--stats=true",
+        "--show-output=true",
+        "--output",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_cost_probe_GPU_r1_nsys\\trace",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_Release_r1\\out\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu",
+        "-stable",
+        "-mdbc_freeslip",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_m0_dt_B10us_window2s_GPU_r1_seed\\upl_bigstep_2tv_CPU1_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_cost_probe_GPU_r1",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-nsteps:2000"
+      ],
+      "parent": 50888,
+      "status": "running"
+    }
+  ],
+  "program": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_Release_r1\\out\\DualSPHysics5.2_GEO_win64.exe",
+    "bytes": 22774784,
+    "mtime_ns": 1794917500987708900
+  },
+  "source_build": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_p3_Release_r1.build.json",
+    "bytes": 307982,
+    "mtime_ns": 1794917501750041800
+  },
+  "source_run": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_p3_B10us_window2s_GPU_r1.run.json",
+    "bytes": 21723,
+    "mtime_ns": 1794922191952885100
+  },
+  "arguments": [
+    "-gpu",
+    "-stable",
+    "-mdbc_freeslip",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_m0_dt_B10us_window2s_GPU_r1_seed\\upl_bigstep_2tv_CPU1_r1",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_cost_probe_GPU_r1",
+    "-dirdataout",
+    "data",
+    "-svres",
+    "-nsteps:2000"
+  ],
+  "input_prefix": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_m0_dt_B10us_window2s_GPU_r1_seed\\upl_bigstep_2tv_CPU1_r1",
+  "output_directory": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_tpi_p3_cost_probe_GPU_r1",
+  "plan": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_p3_cost_probe_GPU_r1.clock.csv",
+    "bytes": 16392,
+    "mtime_ns": 1794924491178325900
+  },
+  "clock": {
+    "method": "binary64 scalar +=dt;209 original states plus one genuine forced final",
+    "actual_fixed_dt_s": 1.0000228881835938e-05,
+    "actual_scalar_end_s": 0.02000045776367273,
+    "completed_updates": 2000,
+    "native_frames": 210,
+    "runtime_TimeMax_s": 2.0,
+    "nsteps_upper_cap": 2000,
+    "event_completed_step": 1000,
+    "event_step_is_preopen": true,
+    "first_post_open_completed_step": 1001,
+    "post_open_frames": 106,
+    "shared_original_states": 209,
+    "new_forced_final_not_shared": true,
+    "n_times_dt_clock_used": false,
+    "physical_or_native_acceptance": false
+  },
+  "actual_environment": {
+    "UPL_TPI_CPU_R1": null,
+    "UPL_TPI_GPU_R1": "B",
+    "UPL_TPI_M0_DT_R1": "EQ40_RH1",
+    "UPL_TPI_P1_LOADCLOCK_R1": null,
+    "UPL_TPI_P2_ROWS_R1": null,
+    "UPL_TPI_P3_ROWS_R1": "3",
+    "OMP_NUM_THREADS": null,
+    "OMP_DYNAMIC": null
+  },
+  "actual_target_environment": {
+    "UPL_TPI_CPU_R1": null,
+    "UPL_TPI_GPU_R1": "B",
+    "UPL_TPI_M0_DT_R1": "EQ40_RH1",
+    "UPL_TPI_P1_LOADCLOCK_R1": null,
+    "UPL_TPI_P2_ROWS_R1": null,
+    "UPL_TPI_P3_ROWS_R1": "3",
+    "OMP_NUM_THREADS": null,
+    "OMP_DYNAMIC": null
+  },
+  "root_admission": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_tpi_p3_cost_probe_GPU_r1.run_admission.json",
+    "bytes": 10002,
+    "mtime_ns": 1794924453196796000
+  },
+  "performance_only": true
+}

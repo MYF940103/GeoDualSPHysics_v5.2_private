@@ -1,0 +1,11 @@
+--- frozen_P3/JSphCpuSingle.cpp
++++ private_P3_full/JSphCpuSingle.cpp
+@@ -1346,7 +1346,7 @@
+     upl_tpi_cpu_r1::Need(Simulate2D && TStep==STEP_Symplectic && OmpThreads>=1
+       && CaseNp==1040 && CaseNfixed==40 && CaseNfluid==1000 && CaseNpb==40
+       && !CaseNmoving && !CaseNfloat && !NpDynamic && !InOut && !Shifting && !Damping && !RelaxZones && !UseDEM && !Symmetry
+-      && !PartBegin && PartBeginDir.empty() && TimeStep==0. && Nstep==0 && TimeMax>0. && (upl_tpi_m0_dt_r2::Enabled(upl_tpi_cpu_r1::Enabled())?TimeMax<=2.:TimeMax<=.15)
++      && !PartBegin && PartBeginDir.empty() && TimeStep==0. && Nstep==0 && TimeMax>0. && (upl_tpi_m0_dt_r2::Enabled(upl_tpi_cpu_r1::Enabled())?(TimeMax<=2. || (TimeMax==72.88428690075874 && NstepsBreak==7288262)):TimeMax<=.15)
+       && (!GaugeSystem || GaugeSystem->GetCount()==0),"P1 requires the fresh bounded C02 native set, no restart or dynamic topology");
+     upl_tpi_cpu_r1::Need(FixedDt && (upl_tpi_m0_dt_r2::Enabled(upl_tpi_cpu_r1::Enabled())?upl_tpi_m0_dt_r2::AllowedDt(FixedDt->GetFixedValue(),HydroMechDrainageStartTime):FixedDt->GetFixedValue()==6.2501430511474609e-06) && SymplecticDtPre==FixedDt->GetFixedValue(),
+       "P1 retains the actual complete finite-Kw baseline fixed dt");

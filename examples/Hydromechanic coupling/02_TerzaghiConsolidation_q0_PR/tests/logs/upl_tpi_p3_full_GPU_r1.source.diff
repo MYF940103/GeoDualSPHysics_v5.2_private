@@ -1,0 +1,11 @@
+--- frozen_P3/JSphGpuSingle.cpp
++++ private_P3_full/JSphGpuSingle.cpp
+@@ -1154,7 +1154,7 @@
+     upl_tpi_gpu_r1::Require(Simulate2D && TStep==STEP_Symplectic && CaseNp==1040 && CaseNfixed==40
+       && CaseNfluid==1000 && CaseNpb==40 && !CaseNmoving && !CaseNfloat && !NpDynamic && !InOut
+       && !Shifting && !Damping && !RelaxZones && !UseDEM && !Symmetry && !PartBegin && PartBeginDir.empty()
+-      && TimeStep==0. && Nstep==0 && TimeMax>0. && (upl_tpi_m0_dt_r2::Enabled(upl_tpi_gpu_r1::Enabled())?TimeMax<=2.:(TimeMax<=.15 || (TimeMax==72.88428690075874 && NstepsBreak==11661219)))
++      && TimeStep==0. && Nstep==0 && TimeMax>0. && (upl_tpi_m0_dt_r2::Enabled(upl_tpi_gpu_r1::Enabled())?(TimeMax<=2. || (TimeMax==72.88428690075874 && NstepsBreak==7288262)):(TimeMax<=.15 || (TimeMax==72.88428690075874 && NstepsBreak==11661219)))
+       && (!GaugeSystem || GaugeSystem->GetCount()==0),"Private GPU P1 requires fresh bounded C02 owners/topology");
+     upl_tpi_gpu_r1::Require(FixedDt && (upl_tpi_m0_dt_r2::Enabled(upl_tpi_gpu_r1::Enabled())?upl_tpi_m0_dt_r2::AllowedDt(FixedDt->GetFixedValue(),HydroMechDrainageStartTime):FixedDt->GetFixedValue()==6.2501430511474609e-6)
+       && SymplecticDtPre==FixedDt->GetFixedValue() && HydroMech && HydroMechDynamicSeepage
