@@ -1,0 +1,134 @@
+{
+  "scope": "Historical CPU Debug Cryer confinement process 44204 only",
+  "source_dump_local": "C:\\Users\\syosh\\AppData\\Local\\CrashDumps\\DualSPHysics5.2CPU_win64_debug.exe.44204.dmp",
+  "source_dump_bytes": 2744024,
+  "archive_executable": "examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\hydro_public_xml_r1_old\\DualSPHysics5.2CPU_win64_debug.exe",
+  "event_record": 311474,
+  "exception_thread_id": 54468,
+  "exception_code": "0x80000003",
+  "exception_module_rva": "0x81ba84",
+  "console": "Finished execution (code=0).",
+  "actual_numeric_os_exit": null,
+  "identity": {
+    "cv_guid": "803de17e-f17f-440d-8e9c-1372246f5ff0",
+    "dump_module_and_archived_PE_age": 9,
+    "timestamp_u32": 1795088023,
+    "image_size": 13103104,
+    "current_public_pdb_age": 10,
+    "exact_match_in_64_workspace_same_basename_pdbs": false
+  },
+  "offline_unwind": {
+    "method": "local Windows DbgEng .ecxr/GetStackTrace with local-only image/symbol paths and exact-symbol option; evidence for private addresses comes from the matching PE itself",
+    "image_relative_frames": [
+      "0x81ba84",
+      "0x81b6ea",
+      "0x81a172",
+      "0x667aee",
+      "0x81c169",
+      "0x81c04e",
+      "0x81bf0e",
+      "0x81c1fe"
+    ],
+    "main_entry_rva": "0x667520",
+    "main_function_identity": "CRT argc/argv/environ call at 0x81c164 via thunk 0xc725; local RTC variable names corroborate source/main.cpp",
+    "detected_at": "main stack verification call at RVA 0x667ae9; next instruction RVA 0x667aee",
+    "message_in_dump": "Stack around the variable 'e' was corrupted."
+  },
+  "main_rtc": {
+    "descriptor_rva": "0xae0b98",
+    "expected_guard_hex": "cccccccc",
+    "locals_in_descriptor_order": [
+      {
+        "var": "e",
+        "offset_from_main_rsp": "0x1208",
+        "size": 8,
+        "leading_guard_bytes": "cccccccc",
+        "trailing_guard_bytes": "cccccccc"
+      },
+      {
+        "var": "e",
+        "offset_from_main_rsp": "0x11c8",
+        "size": 8,
+        "leading_guard_bytes": "00000000",
+        "trailing_guard_bytes": "00000000"
+      },
+      {
+        "var": "e",
+        "offset_from_main_rsp": "0x1188",
+        "size": 8,
+        "leading_guard_bytes": "970d9840",
+        "trailing_guard_bytes": "00000000"
+      },
+      {
+        "var": "cad",
+        "offset_from_main_rsp": "0x1118",
+        "size": 8,
+        "leading_guard_bytes": "00000000",
+        "trailing_guard_bytes": "00000000"
+      },
+      {
+        "var": "sph",
+        "offset_from_main_rsp": "0x420",
+        "size": 3288,
+        "leading_guard_bytes": "cccccccc",
+        "trailing_guard_bytes": "00000000"
+      },
+      {
+        "var": "cfg",
+        "offset_from_main_rsp": "0x160",
+        "size": 584,
+        "leading_guard_bytes": "cccccccc",
+        "trailing_guard_bytes": "cccccccc"
+      },
+      {
+        "var": "appnamesub",
+        "offset_from_main_rsp": "0xe8",
+        "size": 40,
+        "leading_guard_bytes": "cccccccc",
+        "trailing_guard_bytes": "cccccccc"
+      },
+      {
+        "var": "appname",
+        "offset_from_main_rsp": "0xa8",
+        "size": 40,
+        "leading_guard_bytes": "cccccccc",
+        "trailing_guard_bytes": "cccccccc"
+      },
+      {
+        "var": "license",
+        "offset_from_main_rsp": "0x48",
+        "size": 40,
+        "leading_guard_bytes": "cccccccc",
+        "trailing_guard_bytes": "cccccccc"
+      }
+    ]
+  },
+  "out_of_bounds_write_proof": {
+    "main_source": "src/source/main.cpp:183",
+    "allocation": 3288,
+    "actual_main_this": "rsp+0x420",
+    "constructor_call_rva": "0x667990",
+    "constructor_entry_rva": "0x20aad0",
+    "constructor_class_string_rva": "0xa3eb60",
+    "constructor_class_name": "JSphCpuSingle",
+    "stores": [
+      {
+        "rva": "0x20aafd",
+        "this_offset": "0xdb0",
+        "bytes": 8,
+        "value": 0
+      },
+      {
+        "rva": "0x20ab0d",
+        "this_offset": "0xdb8",
+        "bytes": 8,
+        "value": 0
+      }
+    ],
+    "minimum_required_extent": 3520,
+    "minimum_excess_bytes": 232
+  },
+  "conclusion": "The archived executable has incompatible compiled layouts for the stack-allocated JSphCpuSingle and its constructor. The RTC detected overwritten guards after work in main. This binary cannot supply a valid CPU control.",
+  "attribution_limit": "The evidence establishes the intra-binary layout mismatch. It does not establish the precise project/build operation or stale object chronology or identify the first out-of-bounds write. PID 37916 is separate.",
+  "remediation": "Use a complete clean build with consistent headers and compile definitions and verify actual process exit with the same Cryer fixture. No source-level catch or physical-equation change is indicated."
+}
