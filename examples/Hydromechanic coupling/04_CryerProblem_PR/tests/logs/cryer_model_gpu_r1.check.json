@@ -1,0 +1,116 @@
+{
+  "passed": true,
+  "static_reference": "cryer_model_gpu_r1_static_ref",
+  "profiles": {
+    "missing": {
+      "exit": 0,
+      "model": 0,
+      "saves": 2,
+      "ids": 37181,
+      "exact_fields": 15,
+      "exact_clock_fields": [
+        "TimeStep",
+        "SymplecticDtPre",
+        "dterror"
+      ],
+      "exact_ledgers": 0
+    },
+    "model0": {
+      "exit": 0,
+      "model": 0,
+      "saves": 2,
+      "ids": 37181,
+      "exact_fields": 15,
+      "exact_clock_fields": [
+        "TimeStep",
+        "SymplecticDtPre",
+        "dterror"
+      ],
+      "exact_ledgers": 0
+    },
+    "legacy1": {
+      "exit": 0,
+      "model": 1,
+      "saves": 2,
+      "ids": 37181,
+      "exact_fields": 22,
+      "exact_clock_fields": [
+        "TimeStep",
+        "SymplecticDtPre",
+        "dterror"
+      ],
+      "exact_ledgers": 0
+    },
+    "model1": {
+      "exit": 0,
+      "model": 1,
+      "saves": 2,
+      "ids": 37181,
+      "exact_fields": 22,
+      "exact_clock_fields": [
+        "TimeStep",
+        "SymplecticDtPre",
+        "dterror"
+      ],
+      "exact_ledgers": 0
+    },
+    "legacy_pair": {
+      "exit": 0,
+      "model": 2,
+      "saves": 2,
+      "ids": 37181,
+      "exact_fields": 22,
+      "exact_clock_fields": [
+        "TimeStep",
+        "SymplecticDtPre",
+        "dterror"
+      ],
+      "exact_ledgers": 9
+    },
+    "model2": {
+      "exit": 0,
+      "model": 2,
+      "saves": 2,
+      "ids": 37181,
+      "exact_fields": 22,
+      "exact_clock_fields": [
+        "TimeStep",
+        "SymplecticDtPre",
+        "dterror"
+      ],
+      "exact_ledgers": 9
+    },
+    "range": {
+      "exit": 1,
+      "rejection": "Text: HydroMechModel requires 0, 1 or 2."
+    },
+    "mixed": {
+      "exit": 1,
+      "rejection": "Text: HydroMechModel cannot be combined with HydroMechDynamicSeepage or HydroMechPressureIntegrator."
+    },
+    "mixed_integrator": {
+      "exit": 1,
+      "rejection": "Text: HydroMechModel cannot be combined with HydroMechDynamicSeepage or HydroMechPressureIntegrator."
+    },
+    "duplicate": {
+      "exit": 1,
+      "rejection": "Text: Duplicate HydroMechModel element."
+    },
+    "hydro_off": {
+      "exit": 1,
+      "rejection": "Text: Dynamic HydroMechModel requires HydroMech=1."
+    },
+    "misplaced": {
+      "exit": 1,
+      "rejection": "Text: Place HydroMechModel and the old HydroMechPressureIntegrator inside special/hydromechanics."
+    },
+    "restart": {
+      "exit": 1,
+      "rejection": "Text: HydroMechModel=2 requires a fresh start; pressure-history restart is not qualified."
+    },
+    "stale_env": {
+      "exit": 1,
+      "rejection": "Text: Select HydroMechModel in XML; clear the old private environment switches."
+    }
+  }
+}

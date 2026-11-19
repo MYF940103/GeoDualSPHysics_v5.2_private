@@ -43,3 +43,15 @@ C02 在日本时间 17:59 完成。全程 1,653 帧的原生状态、三轮端�
 ν=0.30 的私有 CPU/GPU B 已接入三维三轮修正和五相步长检查。1.90735 µs 步长通过本机启动、默认 A 回归和首次排水检查。根目录已有 Windows x64／RTX A6000 验证包。先运行峰窗，原始输出回传后核幅值与相位，再决定 1 Tv 计算。正式公共 XML 接入仍取决于 benchmark 精度。参见 [本机量化结果](../04_CryerProblem_PR/tests/notes/cryer_p3_local_r1.md) 与 [服务器包说明](../04_CryerProblem_PR/README_Cryer_TPI_P3_nu030_r1.md)。
 
 等待数据期间，CPU/CUDA 共享压力行已回放 226,038 条真实三轮记录。C08 的两个冻结状态用于检查式（47）的总负孔压判号与 β/Δt 量级。性能检查已分开统计力计算次数与诊断写出，融合时间步归约原型保留为独立候选。[压力行验证](../04_CryerProblem_PR/tests/notes/cryer_p3_cpu_and_shared_row_r1.md) · [负孔压核验](../08_LianSaturatedColumnCollapse_u_pl/tests/notes/c08_tpi_eq47_state_r1.md) · [开销分解](../04_CryerProblem_PR/tests/notes/cryer_p3_cost_r1.md)
+
+## 模型选择与外载接口的交付顺序
+
+任务 3 采用一个 XML 模型选择器。现有 `HydroMech` 管理耦合总开关，启用时 `HydroMechModel` 缺省或取 0 表示 u-pw，1 表示有限 Kw 显式 u-pl，2 表示采用 TPI 的 u-pl。旧输入保留原来的解释，包括历史私有候选的两键写法。新旧写法同时出现时报告输入冲突。公共示例只需说明一种写法。渗透率演化仍是独立的材料选项。模式 2 的本轮参数为 α=0.5、三轮端点校正、β=0、水力步长放大量 R=1。服务器回传后按原标准复核峰值、相位和衰减，再决定公共合入和格式模板更新。[步长数据](upl_tpi_r_selection_r1.md)
+
+任务 4 沿用同一个模型选择器做式（47）的独立对照，先固定 β=0 的材料和边界基线。[C08 三轮负压对照](../08_LianSaturatedColumnCollapse_u_pl/tests/notes/c08_tpi_eq47_rounds_r1.md)
+
+外载整理列入任务 5，独立于压力积分提交。新 XML 拟在 `execution/special` 下设与 `hydromechanics` 同级的 `externalload`，集中放置 `mode`、`q0`（Pa）和 `ramptime`（s），缺省分别为 0、0、0。保留原数值模式和文本别名、旧 XML 的读取路径；两处同时指定外载时明确报错。先集中读取与参数校验，再归并 CPU/GPU 公用的加载时刻、幅值和受荷区域判断。排水保留在水力模块；条带荷载与排水共用受荷区域判定。重力预载、撤墙及材料软化触发各有独立生命周期。
+
+在模型回归和任务 4 对照基线固定后可开展外载整理。以等价新旧输入做短程回归：C02 顶面与核带合力、P3 各力学阶段加载时刻；Cryer 球面围压及 ramp/hold/排水事件；Lian、Yao 的加载条带边缘和排水粒子；无外载自重或塌陷的默认路径。比较实际受荷 ID、力和保存状态，复核解算顺序，再迁移维护中的正式模板和算例。已交付的服务器包及历史输入作为原版本复现资料。
+
+Cryer 围压的拟定写法是 `<externalload mode="FlexibleConfinement" q0="10000" ramptime="0.00390625" />`。交付时，BAT 携带能识别该 XML 的对应版本，运行日志输出所选模型及实际外载，避免旧程序忽略新键后按缺省模型计算。
