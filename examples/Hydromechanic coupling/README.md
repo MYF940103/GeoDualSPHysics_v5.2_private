@@ -2,7 +2,13 @@
 
 当前公共源码在 `execution/special/hydromechanics` 中读取 `HydroMechModel`。打开 `HydroMech` 后，缺省或 0 使用 u-pw，1 使用显式 u-pl。旧配置中的 `HydroMechDynamicSeepage` 需要迁移，false/0 对应模型 0，true/1 对应模型 1。2 为 TPI u-pl，当前由 Cryer 验证程序执行，公共程序请求该值时会报错。运行既有算例请使用其 BAT 配套的程序和 XML。
 
-新程序可在 `execution/special` 中单独指定外载，例如 `<externalload mode="FlexibleConfinement" q0="10000" ramptime="0.00390625" />` 表示在 0.00390625 s 内将球面围压加至 10 kPa。省略该节点表示无外载。旧配置的 `HydroMechTopLoadMode`、`HydroMechTopLoadQ0`、`HydroMechTopLoadRampTime` 分别迁至 `mode`、`q0`、`ramptime`。孔压排水和开放时刻仍在 `hydromechanics` 中配置。[XML 格式](../../doc/xml_format/_FmtXML_ElastoplasticSoil.xml) · [TPI 验证包说明](04_CryerProblem_PR/README_Cryer_TPI_P3_nu030_r1.md)
+新程序可在 `execution/special` 中单独指定外载，例如 `<externalload mode="FlexibleConfinement" q0="10000" ramptime="0.00390625" />` 表示在 0.00390625 s 内将球面围压加至 10 kPa。省略该节点表示无外载。旧配置的 `HydroMechTopLoadMode`、`HydroMechTopLoadQ0`、`HydroMechTopLoadRampTime` 分别迁至 `mode`、`q0`、`ramptime`。
+
+排水边界也单独置于 `execution/special`。省略 `<drainage>` 等同于 `<drainage mode="drained" start="0" clock="time" />`。常规排水将符合算例边界条件的自由表面粒子孔压置零。延迟排水可写 `<drainage start="0.01" clock="fixedStep" />`，时间单位为秒。固定步数时钟要求从头计算、步长固定且开放时刻落在整步上；它只校正开排水时刻的累计舍入误差，输出频率仍由 `TimeOut` 决定。
+
+`<drainage mode="off" />` 关闭上述规定孔压边界。`<drainage mode="freeSeepage" />` 用于当前支持的二维动态渗流重力容器，采用相应的表面渗流离散，完整步末将表面正孔压置零并保留负孔压。这两种模式均不填写 `start` 或 `clock`。复现历史结果时请成套使用对应的输入、BAT 和可执行程序。
+
+[排水迁移与逐算例验证](validation/drainage_xml_review.md) · [XML 格式](../../doc/xml_format/_FmtXML_ElastoplasticSoil.xml) · [TPI 验证包说明](04_CryerProblem_PR/README_Cryer_TPI_P3_nu030_r1.md)
 
 ## 算例
 

@@ -605,6 +605,8 @@ protected:
   StSoilCte SoilCte;       ///<Contains constants of soils.
 
   void InitSoilParameters(const JXml *sxml,std::string xmlpath);
+  bool IsHydroMechDrainageActive()const;
+  void ReadDrainage(const JXml *xml,const TiXmlElement *special);
   void ReadExternalLoad(const JXml *xml,const TiXmlElement *special);
   void ConfigConstantsSoil();
   float GetDynamicSoilDampingRate()const;

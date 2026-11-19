@@ -11,6 +11,7 @@ when other solver changes occurred between the two executable builds.
 
 from pathlib import Path
 import argparse
+from copy import deepcopy
 import csv
 from decimal import Decimal, InvalidOperation
 import hashlib
@@ -65,6 +66,25 @@ def load_value(tree, attr, default=None):
     return xml_value(tree, ".//" + legacy_name)
 
 
+def drainage_start(tree):
+    drainage = tree.find("./execution/special/drainage")
+    if drainage is not None:
+        if drainage.get("mode", "drained") != "drained":
+            raise ValueError("The Terzaghi drainage reference requires a drained surface")
+        return float(drainage.get("start", 0))
+    # Existing outputs retain the XML used for their run.
+    hydro = tree.find("./execution/special/hydromechanics")
+    if hydro is None:
+        hydro = tree.find("./execution/special/soils")
+    if hydro is None:
+        raise ValueError("Missing hydromechanical settings for the Terzaghi reference")
+    enabled = hydro.find("HydroMechDrainage")
+    if enabled is not None and enabled.attrib["value"].lower() in ("0", "false"):
+        raise ValueError("The Terzaghi drainage reference requires a drained surface")
+    start = hydro.find("HydroMechDrainageStartTime")
+    return float(start.attrib["value"]) if start is not None else 0.0
+
+
 def xml_value(tree, xpath):
     element = tree.find(xpath)
     if element is None or "value" not in element.attrib:
@@ -108,7 +128,7 @@ def read_run(folder, partial):
         "rho_w": xml_value(tree, hydro + "PoreWaterRho"),
         "q0": load_value(tree, "q0"),
         "tL": load_value(tree, "ramptime"),
-        "tD": xml_value(tree, hydro + "HydroMechDrainageStartTime"),
+        "tD": drainage_start(tree),
         "H": xml_value(tree, "./execution/uservars/varnum[@name='sizefz']"),
         "dp": xml_value(tree, "./execution/constants/dp"),
         "dt": xml_value(tree, parameters.format("DtFixed")),
@@ -197,6 +217,43 @@ def read_run(folder, partial):
             "xml_sha256": hashlib.sha256(xmlpath.read_bytes()).hexdigest()}
 
 
+def special_settings(tree):
+    # The retained reference and a fresh run may encode the same options with different XML names.
+    special = deepcopy(tree.find("./execution/special"))
+    hydro = special.find("hydromechanics")
+    if hydro is None:
+        hydro = special.find("soils")
+
+    def section(name, old_keys, defaults):
+        config = special.find(name)
+        if config is not None:
+            special.remove(config)
+        else:
+            config = ET.Element(name)
+        for key, attr in old_keys:
+            old = hydro.find(key)
+            if old is not None:
+                if attr in config.attrib:
+                    raise ValueError(f"Both archived and public XML supply {name}.{attr}")
+                val = old.attrib["value"]
+                if key == "HydroMechDrainage":
+                    val = "drained" if val.lower() in ("1", "true") else "off"
+                if key == "HydroMechDrainageFixedGrid":
+                    val = "fixedStep" if val.lower() in ("1", "true") else "time"
+                config.set(attr, val)
+                hydro.remove(old)
+        for attr,val in defaults.items():
+            config.attrib.setdefault(attr, val)
+        return signature(config)
+
+    drainage = section("drainage", (("HydroMechDrainage","mode"), ("HydroMechDrainageStartTime","start"),
+                       ("HydroMechDrainageFixedGrid","clock")), {"mode":"drained","start":"0","clock":"time"})
+    load = section("externalload", (("HydroMechTopLoadMode","mode"), ("HydroMechTopLoadQ0","q0"),
+                   ("HydroMechTopLoadRampTime","ramptime")), {"mode":"0","q0":"0","ramptime":"0"})
+    other = tuple(signature(child) for child in special if child.tag != "timeout")
+    return other, drainage, load
+
+
 def check_settings(baseline, current):
     for xpath in ("./execution/parameters", "./execution/constants",
                   "./casedef/geometry", "./casedef/constantsdef"):
@@ -204,8 +261,7 @@ def check_settings(baseline, current):
             raise ValueError(f"Generated case settings differ at {xpath}; refusing a misleading comparison")
     # A terminal TimeOut segment only schedules an exact-final snapshot. It does
     # not change the physical equations; every other special setting must match.
-    specials = [tuple(signature(child) for child in run["tree"].find("./execution/special")
-                      if child.tag != "timeout") for run in (baseline, current)]
+    specials = [special_settings(run["tree"]) for run in (baseline, current)]
     if specials[0] != specials[1]:
         raise ValueError("Generated special settings differ beyond output-only timeout scheduling")
     if baseline["initial_count"] != current["initial_count"]:

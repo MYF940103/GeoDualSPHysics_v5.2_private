@@ -65,7 +65,9 @@ def parse_xml(case_name):
     radius_node = root.find(".//newvarcte[@radius]")
     dp_node = root.find(".//newvarcte[@Dp]")
     ramp_time = float(load.attrib["ramptime"]) if load is not None else value("HydroMechTopLoadRampTime", 0.0)
-    drainage_start = value("HydroMechDrainageStartTime", ramp_time)
+    drainage = root.find("./execution/special/drainage")
+    drainage_start = (float(drainage.get("start", 0)) if drainage is not None
+                      else value("HydroMechDrainageStartTime", 0))
     return {
         "radius": float(radius_node.attrib["radius"]),
         "dp": float(dp_node.attrib["Dp"]),

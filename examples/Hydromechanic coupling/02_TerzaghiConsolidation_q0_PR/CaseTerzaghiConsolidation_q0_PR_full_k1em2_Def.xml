@@ -112,9 +112,8 @@
         <PoreShepardRegularization value="0" comment="Disabled for the first q0 verification" />
         <PoreShepardInterval value="30" comment="Unused when regularization is disabled" />
         <HydroMechInitMode value="0" comment="HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; current 0=None" />
-        <HydroMechDrainage value="1" comment="Enable drained top free-surface pore pressure after the loading stage" />
-        <HydroMechDrainageStartTime value="0.0001" comment="Drainage starts when q0 reaches its target value" units_comment="seconds" />
       </hydromechanics>
+      <drainage mode="drained" start="0.0001" />
       <externalload mode="TopVertical" q0="10000" ramptime="0.0001" />
     </special>
     <parameters>

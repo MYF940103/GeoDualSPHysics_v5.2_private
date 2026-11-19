@@ -51,15 +51,6 @@ def ensure_soil_value(root, name, value, comment=None):
         node.set("comment", comment)
 
 
-def remove_soil_value(root, name):
-    soils = root.find(".//soils")
-    if soils is None:
-        raise RuntimeError("XML soils node not found")
-    node = soils.find(name)
-    if node is not None:
-        soils.remove(node)
-
-
 def set_newvar(root, name, value):
     for node in root.findall(".//newvarcte"):
         if node.get("name") == name:
@@ -76,15 +67,10 @@ def write_variant_xml(dst, cfg):
     root = tree.getroot()
     set_newvar(root, "Dp", cfg["dp"])
     ensure_soil_value(root, "HydroMechInitMode", cfg["init_mode"])
-    ensure_soil_value(root, "HydroMechDrainageMode", cfg["drainage_mode"])
-    if str(cfg["drainage_mode"]).lower() == "freesurface":
-        remove_soil_value(root, "HydroMechDrainageRadius")
-        remove_soil_value(root, "HydroMechDrainageThickness")
-    else:
-        ensure_soil_value(root, "HydroMechDrainageRadius", cfg["radius"])
-        ensure_soil_value(root, "HydroMechDrainageThickness", cfg.get("drainage_thickness", cfg["dp"]))
+    if cfg["drainage_mode"].lower() != "freesurface":
+        raise ValueError("The current Cryer solver drains tracked exterior surface particles")
     root.find("./execution/special/externalload").set("ramptime", str(cfg["load_ramp"]))
-    set_value(root, ".//HydroMechDrainageStartTime", cfg["drain_start"])
+    root.find("./execution/special/drainage").set("start", str(cfg["drain_start"]))
     set_value(root, ".//PoreDtSafety", cfg["pore_dt"])
     set_value(root, ".//PoreShepardRegularization", cfg["shepard"])
     set_value(root, ".//PoreShepardInterval", cfg["shepard_interval"])

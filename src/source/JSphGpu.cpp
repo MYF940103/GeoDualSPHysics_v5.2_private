@@ -1342,20 +1342,6 @@ void JSphGpu::ComputeFreeSurfaceTracking(){
 }
 
 //==============================================================================
-/// Returns true when the drained pore-pressure boundary is active.
-//==============================================================================
-bool JSphGpu::IsHydroMechDrainageActive()const{
-  if(!HydroMech || !HydroMechDrainage)return(false);
-  if(TimeStep>=HydroMechDrainageStartTime)return(true);
-  if(!HydroMechDrainageFixedGrid)return(false);
-  //-Match CPU at the nominal event step, correcting accumulated-time roundoff only.
-  const double event=HydroMechDrainageStartTime;
-  const double eps=std::numeric_limits<double>::epsilon();
-  const double grid=double(Nstep)*FixedDt->GetFixedValue();
-  return(fabs(grid-event)<=4*eps*event && event-TimeStep<=8*eps*double(Nstep)*event);
-}
-
-//==============================================================================
 /// Enforces drained pore pressure on selected boundary particles.
 //==============================================================================
 void JSphGpu::ApplyFreeSurfacePorePressure(){

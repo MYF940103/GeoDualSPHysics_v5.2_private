@@ -5,6 +5,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 
 CASE = Path(__file__).resolve().parents[2]
+BASE_COMMIT = "7965df7d7cabb1d1ba42f131c4873ea01a242f46"
 SOURCE = CASE / "CaseCryer_TPI_P3_nu030_peak_r1_Def.xml"
 SEED = CASE / "support/upl_seed_nu030_r1/CaseCryerProblem_u_pl_nu030_r1.xml"
 PROGRAM = CASE.parents[2] / "bin/windows/GenCase_win64.exe"
@@ -67,12 +68,15 @@ def check_model(model, source, seed):
 
 def main():
     require(not CHECK.exists() and not OUT.exists(), "The stage already exists")
-    raw = SOURCE.read_bytes()
-    seed = ET.parse(SEED)
+    repo = CASE.parents[2]
+    def archived(path):
+        return subprocess.check_output(["git", "show", BASE_COMMIT + ":" + path.relative_to(repo).as_posix()], cwd=repo)
+    raw = archived(SOURCE)
+    seed = ET.ElementTree(ET.fromstring(archived(SEED)))
     OUT.mkdir()
     results = [check_model(model, raw, seed) for model in (0, 1, 2)]
     with CHECK.open("x", encoding="utf-8") as writer:
-        json.dump(dict(source=SOURCE.name, program=str(PROGRAM), values=results, solver_launches=0), writer, indent=2)
+        json.dump(dict(source=SOURCE.name, source_commit=BASE_COMMIT, program=str(PROGRAM), values=results, solver_launches=0), writer, indent=2)
         writer.write("\n")
 
 

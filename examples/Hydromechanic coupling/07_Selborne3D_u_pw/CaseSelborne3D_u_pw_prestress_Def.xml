@@ -213,8 +213,6 @@
             <hydromechanics>
                 <HydroMech value="1" />
                 <HydroMechInitMode value="FreeSurface" />
-                <HydroMechDrainage value="1" />
-                <HydroMechDrainageStartTime value="0" />
                 <PoreWaterRho value="1000" />
                 <PoreWaterBulkModulus value="2e8" comment="Provisional numerical Kw from case03, NOT a Table 5 material parameter; sensitivity check required" />
                 <Porosity value="0.38" />
@@ -225,6 +223,7 @@
                 <PoreMdbcInterpolationMode value="0" />
                 <!-- Failure requires basal DELTA p=110000*min(t_stage/10,1) Pa on x=[0,24], y=[0,25], z=0. NOT implemented by externalload. See specification; no fake XML option is used. -->
             </hydromechanics>
+            <drainage mode="drained" />
             <mdbcslip>
                 <bound mkbound="0" slipmode="2" comment="Fixed no-slip base" />
                 <bound mkbound="1" slipmode="3" comment="Undrained mechanical roller approximation" />

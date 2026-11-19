@@ -24,7 +24,6 @@ set initdir=%initcase%_out\data
 set dirbin=../../../bin/windows
 set gencase="%dirbin%/GenCase_win64.exe"
 set dualsphysicsgpu="%dirbin%/DualSPHysics5.2_GEO_win64.exe"
-if not exist %dualsphysicsgpu% set dualsphysicsgpu="%dirbin%/DualSPHysics5.2_win64_debug.exe"
 set partvtk="%dirbin%/PartVTK_win64.exe"
 set vars=+Idp,+Mk,+Vel,+Rhop,+Press,+Sigma_kk,+Sigma_ij,+Kplastic,+FSType,+FSNormal,+PorePress,+PorePress0,+ExcessPorePress,+HydroMechLoadAce
 
@@ -49,6 +48,10 @@ if exist "%dirout2%" (
 )
 
 :run
+if not exist %dualsphysicsgpu% (
+  echo Required public GPU Release with drainage XML support was not found: %dualsphysicsgpu%
+  goto fail
+)
 if exist "%dirout2%" rd /s /q "%dirout2%"
 if not "%ERRORLEVEL%" == "0" goto fail
 

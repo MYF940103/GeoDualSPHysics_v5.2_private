@@ -281,7 +281,6 @@ protected:
   void PrepareArtificialStress();
   void PosInteraction_Forces();
   void ComputeFreeSurfaceTracking();
-  bool IsHydroMechDrainageActive()const;
   bool IsFreeSurfaceParticle(unsigned p,const typecode *code,const unsigned *fstype)const;
   bool IsHydroMechDrainedParticle(unsigned p,const tdouble3 *pos,const typecode *code,const unsigned *fstype)const;
   bool IsUpwardFreeSurface(unsigned p,const typecode *code,const unsigned *fstype,const tfloat3 *fsnormal)const;

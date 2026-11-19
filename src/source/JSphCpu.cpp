@@ -1191,21 +1191,6 @@ void JSphCpu::ComputeFreeSurfaceTracking(){
 }
 
 //==============================================================================
-/// Returns true when the drained pore-pressure boundary is active.
-//==============================================================================
-bool JSphCpu::IsHydroMechDrainageActive()const{
-  if(!HydroMech || !HydroMechDrainage)return(false);
-  if(TimeStep>=HydroMechDrainageStartTime)return(true);
-  if(!HydroMechDrainageFixedGrid)return(false);
-  //-Only correct accumulated-time roundoff at the nominal event step.
-  //-Nstep is unchanged throughout both stages and the outer cell division.
-  const double event=HydroMechDrainageStartTime;
-  const double eps=std::numeric_limits<double>::epsilon();
-  const double grid=double(Nstep)*FixedDt->GetFixedValue();
-  return(fabs(grid-event)<=4*eps*event && event-TimeStep<=8*eps*double(Nstep)*event);
-}
-
-//==============================================================================
 /// Returns true when an FSType particle is a tracked free surface.
 //==============================================================================
 bool JSphCpu::IsFreeSurfaceParticle(unsigned p,const typecode *code,const unsigned *fstype)const{

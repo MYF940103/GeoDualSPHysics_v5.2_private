@@ -50,14 +50,9 @@
 				<HydroMechInitMode value="0" comment="0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; default=0" />
 				<!-- <HydroMechInitZ value="1.0" comment="Required in mode2; parser default=0; otherwise unused" units_comment="m" /> -->
 				<!-- Dynamic mode2: saturated flat-top gravity container; initializes p, not effective stress. -->
-
-				<HydroMechDrainage value="1" comment="Zero pore pressure at tracked drained free-surface soil; default=1" />
-				<HydroMechDrainageStartTime value="0" comment="Drainage opening time; default=0; must be >=0" units_comment="s" />
-				<HydroMechDrainageFixedGrid value="0" comment="Align drainage event to the fixed-step count; default=0; requires a fresh constant-DtFixed run" />
-				<!-- Fixed-grid opening time must be an integer multiple of DtFixed. -->
-				<HydroMechFreeSeepage value="0" comment="Experimental dynamic free-seepage surface; default=0; requires HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0" />
-				<!-- FreeSeepage projects positive surface pressure to zero at completed steps; negative pressure is retained. -->
 			</hydromechanics>
+			<!-- Defaults shown. fixedStep requires a fresh constant-step run with start on its step grid. -->
+			<drainage mode="drained" start="0" clock="time" comment="drained imposes zero pore pressure from start [s]. off disables that boundary; freeSeepage retains suction in the supported dynamic 2D container. Use start/clock only with drained." />
 			<!-- mode: 0=None, 1=TopVertical, 2=FlexibleConfinement, 3=TopStripVertical, 4=LianFlexibleStrip, 5=TopKernelBand. -->
 			<externalload mode="0" q0="0" ramptime="0" comment="All default to zero. Active loads require HydroMech=1, q0>0 [Pa], ramptime>=0 [s]." />
 			<!-- Optional fixed-phi 2D gravity preload/release, DPCtes=3; absent=disabled. Required: time [s], release_mkbound (right FreeSlip MK). -->

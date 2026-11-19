@@ -21,13 +21,6 @@ def set_value(root, xpath, value):
     node.set("value", str(value))
 
 
-def set_comment(root, xpath, text):
-    node = root.find(xpath)
-    if node is None:
-        raise RuntimeError(f"XML node not found: {xpath}")
-    node.set("comment", text)
-
-
 def ensure_soil_value(root, name, value, comment=None):
     soils = root.find(".//soils")
     if soils is None:
@@ -52,15 +45,6 @@ def ensure_soil_double3(root, name, xyz, comment=None):
     node.set("z", str(xyz[2]))
     if comment is not None:
         node.set("comment", comment)
-
-
-def remove_soil_value(root, name):
-    soils = root.find(".//soils")
-    if soils is None:
-        raise RuntimeError("XML soils node not found")
-    node = soils.find(name)
-    if node is not None:
-        soils.remove(node)
 
 
 def set_newvar(root, name, value):
@@ -91,9 +75,7 @@ def write_stage_xml(dst, cfg, stage):
     load.set("mode", "2")
     load.set("q0", str(cfg["q0"]))
     load.set("ramptime", str(cfg["load_ramp"]))
-    ensure_soil_value(root, "HydroMechDrainageMode", "FreeSurface", "Drain tracked free-surface particles on Cryer's exterior")
-    remove_soil_value(root, "HydroMechDrainageRadius")
-    remove_soil_value(root, "HydroMechDrainageThickness")
+    drainage = root.find("./execution/special/drainage")
     set_value(root, ".//PoreDtSafety", cfg["pore_dt"])
     set_value(root, ".//PoreShepardRegularization", cfg["shepard"])
     set_value(root, ".//PoreShepardInterval", cfg["shepard_interval"])
@@ -109,14 +91,11 @@ def write_stage_xml(dst, cfg, stage):
 
     if stage == 1:
         ensure_soil_value(root, "HydraulicConductivity", 0.0, "Stage 1 is undrained: no pore-water diffusion before drainage opens")
-        ensure_soil_value(root, "HydroMechDrainage", 1, "Stage 1 keeps the spherical surface undrained by delaying the drainage start time")
-        set_value(root, ".//HydroMechDrainageStartTime", cfg["stage1_time"] + cfg["drain_duration"])
+        drainage.set("start", str(cfg["stage1_time"] + cfg["drain_duration"]))
         set_value(root, ".//parameter[@key='TimeMax']", cfg["stage1_time"])
     elif stage == 2:
         ensure_soil_value(root, "HydraulicConductivity", cfg["khyd"], "Stage 2 restores hydraulic conductivity for Cryer drainage")
-        ensure_soil_value(root, "HydroMechDrainage", 1, "Stage 2 opens the spherical drained boundary")
-        set_value(root, ".//HydroMechDrainageStartTime", cfg["stage1_time"])
-        set_comment(root, ".//HydroMechDrainageStartTime", "Drainage starts at the restart time; this is the analytical time origin")
+        drainage.set("start", str(cfg["stage1_time"]))
         set_value(root, ".//parameter[@key='TimeMax']", cfg["stage1_time"] + cfg["drain_duration"])
     else:
         raise RuntimeError(f"Unknown stage: {stage}")

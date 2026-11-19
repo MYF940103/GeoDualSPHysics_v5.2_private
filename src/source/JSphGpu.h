@@ -306,7 +306,6 @@ protected:
   void PrepareArtificialStress();
   void PosInteraction_Forces();
   void ComputeFreeSurfaceTracking();
-  bool IsHydroMechDrainageActive()const;
   void ApplyFreeSurfacePorePressure();
   void ApplyHydroMechTopLoadAcceleration();
   void NormalizeHydroMechTopBandLoad();

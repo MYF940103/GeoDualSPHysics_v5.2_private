@@ -15,7 +15,7 @@ Selfcheck compares the SAME baseline twice and is not a migration experiment.
 Final PNG/PDF/CSV/JSON/Markdown files are exclusive-create, never overwritten.
 """
 
-from compare_precision_q0 import load_value
+from compare_precision_q0 import drainage_start, load_value
 import argparse
 import csv
 from datetime import datetime, timezone
@@ -176,13 +176,13 @@ def model_and_completion(run):
         "E": special + "soils/ModulusE", "nu": special + "soils/PRvs",
         "k": hydro + "HydraulicConductivity", "n": hydro + "Porosity",
         "Kw": hydro + "PoreWaterBulkModulus", "rho_w": hydro + "PoreWaterRho",
-        "tD": hydro + "HydroMechDrainageStartTime",
         "H": "./execution/uservars/varnum[@name='sizefz']", "dp": "./execution/constants/dp",
         "dt": "./execution/parameters/parameter[@key='DtFixed']",
         "dt_ini": "./execution/parameters/parameter[@key='DtIni']",
         "time_max": "./execution/parameters/parameter[@key='TimeMax']",
         "time_out": "./execution/parameters/parameter[@key='TimeOut']",
     }.items()}
+    model["tD"] = drainage_start(tree)
     model["q0"] = load_value(tree, "q0")
     model["tL"] = load_value(tree, "ramptime")
     for name, expected in {"k": 1e-4, "H": 1, "dp": .01, "q0": 1e4, "tD": .01,

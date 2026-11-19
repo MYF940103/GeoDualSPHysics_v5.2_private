@@ -5,6 +5,7 @@ import filecmp
 import os
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 import xml.etree.ElementTree as ET
@@ -18,6 +19,7 @@ from cryer_xml_prepare_r1 import edit, replace
 
 OUT, LOG = cpu.OUT, cpu.LOG
 PUBLIC = OUT.parents[4] / "src/source"
+PARSER_COMMIT = "7965df7d7cabb1d1ba42f131c4873ea01a242f46"
 SEED_NAME = "upl_cryer_freebody_short_r1"
 REFERENCES = {
     "cpu": ("missing", "zero", "one", "two"),
@@ -71,12 +73,18 @@ def configure(previous, public):
     return previous
 
 
+def archived_public(name):
+    data = subprocess.check_output(["git", "show", PARSER_COMMIT + ":src/source/" + name],
+                                   cwd=PUBLIC.parents[1])
+    return data.decode("latin1").replace("\r\n", "\n")
+
+
 def prepare(backend):
     original = OUT / ("cryer_model_" + backend + "_r1_source")
     destination = source_root(backend)
     units = Path("source") if backend == "cpu" else Path()
-    public = (PUBLIC/"JSph.cpp").read_text(encoding="latin1")
-    public_h = (PUBLIC/"JSph.h").read_text(encoding="latin1")
+    public = archived_public("JSph.cpp")
+    public_h = archived_public("JSph.h")
     signature = next(line for line in public_h.splitlines() if "void ReadExternalLoad(" in line)
     def header(old):
         old = replace(old, "class JXml;", "class JXml;\nclass TiXmlElement;")
@@ -89,16 +97,17 @@ def prepare(backend):
     print(destination,flush=True)
 
 
-def build(backend):
-    name = tag(backend)
+def build(backend, name=None, source=None):
+    name = name or tag(backend)
+    source = source or source_root(backend)
     if backend == "cpu":
-        cpu.legacy.SOURCE = source_root(backend)
+        cpu.legacy.SOURCE = source
         cpu.legacy.BUILD = name + "_DebugCPU"
         cpu.legacy.PROGRAM = OUT / cpu.legacy.BUILD / "out/DualSPHysics5.2CPU_win64_debug.exe"
         cpu.legacy.build()
     else:
         gpu.TAG = name
-        gpu.build(source_root(backend))
+        gpu.build(source)
 
 
 def make_seed(backend, profile, output):
@@ -134,18 +143,19 @@ def make_seed(backend, profile, output):
     return prefix, reference
 
 
-def run(backend, profile):
-    label = tag(backend) + "_" + profile
+def run(backend, profile, *, build_name=None, prepare_seed=make_seed):
+    name = build_name or tag(backend)
+    label = name + "_" + profile
     receipt = LOG / (label + ".check.json")
     output = OUT / label
     need(not receipt.exists() and not output.exists(), "Fresh output required: " + label)
     suffix = "_DebugCPU" if backend == "cpu" else "_Release"
-    product = load(LOG / (tag(backend) + suffix + ".build.json"))
+    product = load(LOG / (name + suffix + ".build.json"))
     need(product["passed"], "Build failed")
     exe = Path(product["program"]["path"])
     need(exe.is_file() and exe.stat().st_size == product["program"]["bytes"],
          "Missing or changed private executable")
-    prefix, ref = make_seed(backend, profile, output)
+    prefix, ref = prepare_seed(backend, profile, output)
     env = {key: value for key, value in os.environ.items() if not key.upper().startswith("UPL_TPI")}
     args = [str(exe), "-" + backend]
     if backend == "cpu":

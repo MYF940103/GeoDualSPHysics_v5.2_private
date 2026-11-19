@@ -1,0 +1,106 @@
+{
+  "backend": "cpu",
+  "phase": "negative",
+  "checks": [
+    {
+      "profile": "old_0",
+      "exit": 1,
+      "diagnostic": "Error reading xml - Element 'HydroMechDrainage' is invalid."
+    },
+    {
+      "profile": "old_1",
+      "exit": 1,
+      "diagnostic": "Error reading xml - Element 'HydroMechDrainageStartTime' is invalid."
+    },
+    {
+      "profile": "old_2",
+      "exit": 1,
+      "diagnostic": "Error reading xml - Element 'HydroMechDrainageFixedGrid' is invalid."
+    },
+    {
+      "profile": "old_3",
+      "exit": 1,
+      "diagnostic": "Error reading xml - Element 'HydroMechFreeSeepage' is invalid."
+    },
+    {
+      "profile": "mixed",
+      "exit": 1,
+      "diagnostic": "Error reading xml - Element 'HydroMechDrainage' is invalid."
+    },
+    {
+      "profile": "retired_soils",
+      "exit": 1,
+      "diagnostic": "Invalid setting under soils: HydroMechFreeSeepage. Use the documented special/hydromechanics, special/externalload or special/drainage setting."
+    },
+    {
+      "profile": "alias_soils",
+      "exit": 1,
+      "diagnostic": "Invalid setting under soils: HydroMechFreeSurfaceDrainage. Use the documented special/hydromechanics, special/externalload or special/drainage setting."
+    },
+    {
+      "profile": "alias_hydro",
+      "exit": 1,
+      "diagnostic": "Error reading xml - Element 'HydroMechFreeSurfaceDrainageStartTime' is invalid."
+    },
+    {
+      "profile": "typo",
+      "exit": 1,
+      "diagnostic": "Unknown drainage mode. Use drained, off or freeSeepage."
+    },
+    {
+      "profile": "bad_clock",
+      "exit": 1,
+      "diagnostic": "Unknown drainage clock. Use time or fixedStep."
+    },
+    {
+      "profile": "off_start",
+      "exit": 1,
+      "diagnostic": "Drainage start and clock apply only to mode=drained."
+    },
+    {
+      "profile": "free_clock",
+      "exit": 1,
+      "diagnostic": "Drainage start and clock apply only to mode=drained."
+    },
+    {
+      "profile": "negative",
+      "exit": 1,
+      "diagnostic": "Drainage start must be finite and nonnegative (seconds)."
+    },
+    {
+      "profile": "not_number",
+      "exit": 1,
+      "diagnostic": "Error reading xml - Value of 'start' invalid. It is not a valid real number."
+    },
+    {
+      "profile": "bad_attr",
+      "exit": 1,
+      "diagnostic": "Error reading xml - Attribute 'clok' is unknown."
+    },
+    {
+      "profile": "off_grid",
+      "exit": 1,
+      "diagnostic": "Drainage clock=fixedStep requires start on the constant-DtFixed grid."
+    },
+    {
+      "profile": "duplicate",
+      "exit": 1,
+      "diagnostic": "Duplicate drainage element."
+    },
+    {
+      "profile": "wrong_hydro",
+      "exit": 1,
+      "diagnostic": "Error reading xml - Element 'drainage' is invalid."
+    },
+    {
+      "profile": "wrong_soils",
+      "exit": 1,
+      "diagnostic": "Invalid setting under soils: drainage. Use the documented special/hydromechanics, special/externalload or special/drainage setting."
+    },
+    {
+      "profile": "static_free",
+      "exit": 1,
+      "diagnostic": "Drainage mode=freeSeepage requires the supported fresh dynamic gravity container."
+    }
+  ]
+}

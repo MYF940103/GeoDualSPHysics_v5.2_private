@@ -42,8 +42,17 @@ def parameters(folder,stem,nu):
         assert a is not None,k
         return float(a.get('value'))
     assert value('PRvs')==nu and value('ModulusE')==2e6 and value('Porosity')==.3 and value('PoreWaterBulkModulus')==2e8
-    assert value('HydraulicConductivity')==1e-5 and value('PoreWaterRho')==1000 and value('HydroMechTopLoadQ0')==Q
-    assert value('HydroMechTopLoadRampTime')==2.**-8 and value('HydroMechDrainageStartTime')==TD and value('HydroMechDrainageFixedGrid')==1
+    assert value('HydraulicConductivity')==1e-5 and value('PoreWaterRho')==1000
+    load=root.find('./execution/special/externalload')
+    if load is None:
+        assert value('HydroMechTopLoadQ0')==Q and value('HydroMechTopLoadRampTime')==2.**-8
+    else:
+        assert float(load.attrib['q0'])==Q and float(load.attrib['ramptime'])==2.**-8
+    drainage=root.find('./execution/special/drainage')
+    if drainage is None:
+        assert value('HydroMechDrainage')==1 and value('HydroMechDrainageStartTime')==TD and value('HydroMechDrainageFixedGrid')==1
+    else:
+        assert drainage.get('mode','drained')=='drained' and float(drainage.get('start',0))==TD and drainage.get('clock')=='fixedStep'
     assert value('DtFixed')==DT and value('SavePosDouble')==1 and value('SoilStressRateGradCorr')==1 and value('PoreDarcySymmetricCorr')==1
     assert value('SoilBoundaryDerivativeSPR')==value('SoilHourglassXi')==value('Shifting')==0 and value('SoilDampingCoef')==.00004
     h=root.find('./execution/special/hydromechanics');assert h is not None

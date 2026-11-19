@@ -1,0 +1,74 @@
+{
+  "column_model_and_signature": {
+    "CaseTerzaghiConsolidation_q0_PR_full_k1em2_Def": 0.0001,
+    "CaseTerzaghiConsolidation_q0_PR_full_k1em3_Def": 0.01,
+    "CaseTerzaghiConsolidation_q0_PR_full_k1em4_Def": 0.01,
+    "CaseTerzaghiConsolidation_q0_PR_full_k1em4_double_Def": 0.01,
+    "CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_Def": 0.01,
+    "CaseTerzaghiConsolidation_q0_PR_full_k1em5_Def": 0.01,
+    "CaseTerzaghiConsolidation_q0_PR_full_k5em5_Def": 0.01
+  },
+  "retained_column_outputs": {
+    "CaseTerzaghiConsolidation_q0_PR_full_k1em3_release_GPU_out": {
+      "xml": "CaseTerzaghiConsolidation_q0_PR_full_k1em3.xml",
+      "drainage_start": 0.01,
+      "q0": 10000.0
+    },
+    "CaseTerzaghiConsolidation_q0_PR_full_k1em4_release_GPU_out": {
+      "xml": "published_case.xml",
+      "drainage_start": 0.01,
+      "q0": 10000.0
+    },
+    "CaseTerzaghiConsolidation_q0_PR_full_k5em5_release_CPU_uniform_out": {
+      "xml": "CaseTerzaghiConsolidation_q0_PR_full_k5em5.xml",
+      "drainage_start": 0.01,
+      "q0": 10000.0
+    }
+  },
+  "missing_release_bats": {
+    "xCaseSelfWeightConsolidation_Stage1_win64_GPU.bat": "exit 1 before modifying prior output",
+    "xCaseSelfWeightConsolidation_Scenario2_win64_GPU.bat": "exit 1 before modifying prior output"
+  },
+  "server_xml_and_public_copies": {
+    "CaseCryerProblem_PR_release_nu010_r1": {
+      "nu": 0.1,
+      "drainage_start": 0.0078125,
+      "clock": "fixedStep"
+    },
+    "CaseCryerProblem_PR_release_nu020_r1": {
+      "nu": 0.2,
+      "drainage_start": 0.0078125,
+      "clock": "fixedStep"
+    },
+    "CaseCryerProblem_PR_symc_nu030": {
+      "nu": 0.3,
+      "drainage_start": 0.0078125,
+      "clock": "fixedStep"
+    },
+    "CaseCryerProblem_PR_release_nu045_r1": {
+      "nu": 0.45,
+      "drainage_start": 0.0078125,
+      "clock": "fixedStep"
+    }
+  },
+  "cryer_ramp_profiles": {
+    "CaseCryerProblem_PR_dp002_rampclosed_nu010_Def": 0.0025,
+    "CaseCryerProblem_PR_dp002_rampclosed_nu020_Def": 0.0025,
+    "CaseCryerProblem_PR_dp002_rampclosed_nu030_Def": 0.0025,
+    "CaseCryerProblem_PR_dp002_rampclosed_nu045_Def": 0.0025
+  },
+  "generated_variants": {
+    "run_damping_sweep_20260622": 0,
+    "run_k1e5_convergence_20260622": 0,
+    "run_ramp_drain_closed_sweep_20260624": 0.0025,
+    "run_cryer_refinement": 0.0025,
+    "run_cryer_undrained_then_drained_stage1": 0.12000000000000001,
+    "run_cryer_undrained_then_drained_stage2": 0.02
+  },
+  "selborne_regenerated": [
+    "prestress",
+    "failure"
+  ],
+  "intentionally_changed_clock_detected": true,
+  "solver_launches": 0
+}

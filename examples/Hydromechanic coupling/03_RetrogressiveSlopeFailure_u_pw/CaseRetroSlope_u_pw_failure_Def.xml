@@ -78,8 +78,6 @@
             <soils>
                 <HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation in the failure stage" />
                 <HydroMechInitMode value="None" comment="Inherit Sigma, PorePress and PorePress0 from the coupled prestress PART" />
-                <HydroMechFreeSurfaceDrainage value="1" comment="Keep FSType 2/3 particles drained during failure" />
-                <HydroMechFreeSurfaceDrainageStartTime value="0" units_comment="seconds" />
                 <PoreWaterRho value="1000" comment="Pore-water density" units_comment="kg/m^3" />
                 <PoreWaterBulkModulus value="2e8" comment="Bulk modulus of water Kw = 0.2 GPa" units_comment="Pa" />
                 <Porosity value="0.4" comment="Porosity n" />
@@ -98,6 +96,7 @@
                 <n_coh value="5" comment="Exponential cohesion softening coefficient eta = 5" />
                 <SoilTriggerFos value="1.65" comment="Peak strength reduction factor applied on restart" />
             </soils>
+            <drainage mode="drained" />
         </special>
         <parameters>
             <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />

@@ -273,7 +273,7 @@ the old/new comparison a precision-only test.
 
 This case validates the u-pw pore-pressure-rate formulation on Cryer's problem: a saturated poroelastic sphere with a drained exterior surface and a uniform inward normal pressure.
 
-The active verification path uses `HydroMechInitMode=0` (`None`), `HydroMechTopLoadMode=2` (`FlexibleConfinement`) for the sustained confining pressure, and `HydroMechDrainage=1` to drain tracked exterior free-surface particles. The direct uniform pore-pressure initialization path is not used because it was not paired with a consistent 3D effective-stress and displacement initialization.
+The active verification path uses `HydroMechInitMode=0` (`None`), `externalload mode="2"` (`FlexibleConfinement`) for the sustained confining pressure, and `<drainage mode="drained" />` to drain tracked exterior free-surface particles. The direct uniform pore-pressure initialization path is not used because it was not paired with a consistent 3D effective-stress and displacement initialization.
 
 The formal release case is now a one-stage drained calculation. The older undrained-then-drained restart path was abandoned for the release configuration. The case applies `FlexibleConfinement` from `t=0`, keeps the exterior free surface drained from `t=0`, and compares the center pore-pressure history directly against Cryer's analytical sequence.
 
@@ -281,10 +281,8 @@ The retained validation record for the selected release settings is `refinement/
 
 - `dp=0.0025`
 - `k=1e-5 m/s`
-- `HydroMechTopLoadMode=2` (`FlexibleConfinement`)
-- `HydroMechTopLoadRampTime=0`
-- `HydroMechDrainage=1`
-- `HydroMechDrainageStartTime=0`
+- `externalload mode="2" ramptime="0"` (flexible confinement)
+- `<drainage mode="drained" />`
 - `TimeMax=0.910928571429 s`, corresponding to `T_v=1`
 - `TimeOut=0.000910928571429 s`, corresponding to `Delta T_v=0.001`
 
@@ -310,9 +308,8 @@ Poisson-ratio groups. These files keep the same `k=1e-5` and damping settings
 as the retained validation runs, but use:
 
 - `dp=0.002`
-- `HydroMechTopLoadRampTime=0.0025 s`
-- `HydroMechDrainage=1`
-- `HydroMechDrainageStartTime=0.0025 s`
+- `externalload ramptime="0.0025"` (s)
+- `<drainage mode="drained" start="0.0025" />` (s)
 - postprocess time origin `CRYER_TL=0.0025 s`
 - center sampling radius `r <= 1dp = 0.002 m`
 

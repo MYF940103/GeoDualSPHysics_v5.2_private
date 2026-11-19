@@ -119,8 +119,7 @@ def write_xml(path, cfg):
     load.set("mode", "2")
     load.set("q0", str(Q0))
     load.set("ramptime", str(ramp))
-    set_hydro_value(root, "HydroMechDrainage", 1, "Drainage enabled; start time controls whether drainage is open during ramp")
-    set_hydro_value(root, "HydroMechDrainageStartTime", drainage_start, "0=open during ramp; rampTime=closed during ramp")
+    root.find("./execution/special/drainage").set("start", str(drainage_start))
     set_hydro_value(root, "PoreShepardRegularization", 0)
 
     set_parameter(root, "SoilDamping", 1)

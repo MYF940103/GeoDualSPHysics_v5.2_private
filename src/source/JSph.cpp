@@ -616,7 +616,7 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
     Run_Exceptioon("Hydromechanical wall boundaries require mDBC; cDBC does not reconstruct the hydraulic wall state.");
   const bool gravitycontainer=IsDynamicPoreContainerConfig();
   if(HydroMechFreeSeepage && !gravitycontainer)
-    Run_Exceptioon("HydroMechFreeSeepage requires the fresh bounded dynamic gravity container, HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0.");
+    Run_Exceptioon("Drainage mode=freeSeepage requires the supported fresh dynamic gravity container.");
   if(GravityPreload){
     if(!gravitycontainer || !IsDynamicPorePlasticMaterialConfig() || HydroMechInitMode!=HMINIT_ConstantZ
       || !HydroMechFreeSeepage || !FixedDt
@@ -685,11 +685,11 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
     Run_Exceptioon("TopKernelBand loading requires a 2-D hydromechanical case with a horizontal top surface.");
   if(HydroMechDrainageFixedGrid){
     if(!HydroMech || !HydroMechDrainage || PartBegin || !FixedDt || FixedDt->GetFixedValue()<=0)
-      Run_Exceptioon("HydroMechDrainageFixedGrid requires a fresh hydromechanical run with drainage and constant DtFixed.");
+      Run_Exceptioon("Drainage clock=fixedStep requires a fresh hydromechanical run with constant DtFixed.");
     const double dt=FixedDt->GetFixedValue();
     const double grid=std::round(HydroMechDrainageStartTime/dt)*dt;
     if(!std::isfinite(HydroMechDrainageStartTime) || fabs(grid-HydroMechDrainageStartTime)>4*std::numeric_limits<double>::epsilon()*HydroMechDrainageStartTime)
-      Run_Exceptioon("HydroMechDrainageFixedGrid requires DrainageStartTime on the constant-dt grid.");
+      Run_Exceptioon("Drainage clock=fixedStep requires start on the constant-DtFixed grid.");
   }
 
   //-PIPS configuration.
@@ -4060,6 +4060,45 @@ float JSph::GetDynamicSoilDampingRate()const{
 }
 
 //==============================================================================
+/// Returns true when the drained pore-pressure boundary is active.
+//==============================================================================
+bool JSph::IsHydroMechDrainageActive()const{
+  if(!HydroMech || !HydroMechDrainage)return(false);
+  if(TimeStep>=HydroMechDrainageStartTime)return(true);
+  if(!HydroMechDrainageFixedGrid)return(false);
+  //-Only correct accumulated-time roundoff at the nominal event step.
+  //-Nstep is unchanged throughout both stages and the outer cell division.
+  const double event=HydroMechDrainageStartTime;
+  const double eps=std::numeric_limits<double>::epsilon();
+  const double grid=double(Nstep)*FixedDt->GetFixedValue();
+  return(fabs(grid-event)<=4*eps*event && event-TimeStep<=8*eps*double(Nstep)*event);
+}
+
+//==============================================================================
+// Read the hydraulic free-surface boundary for both backends.
+//==============================================================================
+void JSph::ReadDrainage(const JXml *xml,const TiXmlElement *special){
+  const TiXmlElement* node=special->FirstChildElement("drainage");
+  if(!node)return;
+  if(node->NextSiblingElement("drainage"))Run_Exceptioon("Duplicate drainage element.");
+  xml->CheckAttributeNames(node,"mode start clock comment units_comment");
+  xml->CheckElementNames(node,true,"");
+  const string mode=fun::StrLower(xml->GetAttributeStr(node,"mode",true,"drained"));
+  if(mode!="drained" && mode!="off" && mode!="freeseepage")
+    Run_Exceptioon("Unknown drainage mode. Use drained, off or freeSeepage.");
+  HydroMechDrainage=(mode=="drained");
+  HydroMechFreeSeepage=(mode=="freeseepage");
+  if(!HydroMechDrainage && (node->Attribute("start") || node->Attribute("clock")))
+    Run_Exceptioon("Drainage start and clock apply only to mode=drained.");
+  HydroMechDrainageStartTime=xml->GetAttributeDouble(node,"start",true,0.);
+  if(!std::isfinite(HydroMechDrainageStartTime) || HydroMechDrainageStartTime<0.)
+    Run_Exceptioon("Drainage start must be finite and nonnegative (seconds).");
+  const string clock=fun::StrLower(xml->GetAttributeStr(node,"clock",true,"time"));
+  if(clock!="time" && clock!="fixedstep")Run_Exceptioon("Unknown drainage clock. Use time or fixedStep.");
+  HydroMechDrainageFixedGrid=(clock=="fixedstep");
+}
+
+//==============================================================================
 // Read external mechanical loads for both backends.
 //==============================================================================
 void JSph::ReadExternalLoad(const JXml *xml,const TiXmlElement *special){
@@ -4102,15 +4141,16 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
 
   if(hydroNode)sxml->CheckElementNames(hydroEle,true,
     "HydroMech HydroMechModel HydroMechConductivityModel HydroMechConductivityCk HydroMechInitMode HydroMechInitZ "
-    "HydroMechDrainage HydroMechDrainageStartTime HydroMechDrainageFixedGrid HydroMechFreeSeepage "
     "PoreWaterRho PoreWaterBulkModulus Porosity HydraulicConductivity PoreDtSafety "
     "PoreShepardRegularization PoreShepardInterval PoreMdbcInterpolationMode PoreCompressionSourceMode "
     "PoreCompressionGradCorr PoreDarcySymmetricCorr");
   //-Some older dry and slope inputs keep pore material properties under soils.
   // New model and load choices have only one location, including in such cases.
   for(const char* key:{"HydroMechModel","HydroMechDynamicSeepage","HydroMechPressureIntegrator","PorePressureIntegrationMode",
-    "PoreTpiAlpha","HydroMechTopLoadMode","HydroMechTopLoadQ0","HydroMechTopLoadRampTime","externalload"}){
-    if(solidEle->FirstChildElement(key))Run_Exceptioon(string("Invalid setting under soils: ")+key+". Use hydromechanics/HydroMechModel or special/externalload.");
+    "PoreTpiAlpha","HydroMechTopLoadMode","HydroMechTopLoadQ0","HydroMechTopLoadRampTime","externalload",
+    "HydroMechDrainage","HydroMechDrainageStartTime","HydroMechDrainageFixedGrid","HydroMechFreeSeepage",
+    "HydroMechFreeSurfaceDrainage","HydroMechFreeSurfaceDrainageStartTime","drainage"}){
+    if(solidEle->FirstChildElement(key))Run_Exceptioon(string("Invalid setting under soils: ")+key+". Use the documented special/hydromechanics, special/externalload or special/drainage setting.");
   }
 
   //-Soil strength parameters.
@@ -4165,10 +4205,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   else if(initmodestr=="analyticalselfweight1d" || initmodestr=="analytical_self_weight_1d" || initmodestr=="selfweight1d" || initmodestr=="3")HydroMechInitMode=HMINIT_AnalyticalSelfWeight1D;
   else Run_Exceptioon("HydroMechInitMode must be None, FreeSurface, ConstantZ or AnalyticalSelfWeight1D.");
   HydroMechInitZ=sxml->ReadElementDouble(hydroReadNode,"HydroMechInitZ","value",true,0);
-  HydroMechDrainage=sxml->ReadElementBool(hydroReadNode,"HydroMechDrainage","value",true,true);
-  HydroMechDrainageStartTime=sxml->ReadElementDouble(hydroReadNode,"HydroMechDrainageStartTime","value",true,0);
-  HydroMechDrainageFixedGrid=sxml->ReadElementBool(hydroReadNode,"HydroMechDrainageFixedGrid","value",true,false);
-  HydroMechFreeSeepage=sxml->ReadElementBool(hydroReadNode,"HydroMechFreeSeepage","value",true,false);
+  ReadDrainage(sxml,solidEle->Parent()->ToElement());
   ReadExternalLoad(sxml,solidEle->Parent()->ToElement());
 
   //-Pore-water material properties and pore-pressure numerical controls.
@@ -4210,7 +4247,6 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     if(SoilCte.PoreWaterBulkModulus<=0.f)Run_Exceptioon("PoreWaterBulkModulus must be greater than zero when HydroMech is enabled.");
     if(SoilCte.Porosity<=0.f || SoilCte.Porosity>=1.f)Run_Exceptioon("Porosity must be greater than zero and lower than one when HydroMech is enabled.");
     if(SoilCte.HydraulicConductivity<0.f)Run_Exceptioon("HydraulicConductivity must be equal to or greater than zero when HydroMech is enabled.");
-    if(HydroMechDrainageStartTime<0)Run_Exceptioon("HydroMechDrainageStartTime must be equal to or greater than zero when HydroMech is enabled.");
     if(PoreDtSafety<=0.f)Run_Exceptioon("PoreDtSafety must be greater than zero when HydroMech is enabled.");
     if(PoreShepardRegularization && !PoreShepardInterval)Run_Exceptioon("PoreShepardInterval must be greater than zero when PoreShepardRegularization is enabled.");
   }

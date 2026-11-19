@@ -113,10 +113,11 @@ def make_xml(stage):
     for key, val in [('phi',24),('coh',15000),('dlt',0),('phi_r',13),('coh_r',500),('n_phi',0 if stage=='prestress' else 5),('n_coh',0 if stage=='prestress' else 5),('SoilTriggerFos',1),('ModulusE','20e6'),('PRvs',0.33)]:
         node(soil, key, value=val)
     hydro = node(special, 'hydromechanics')
-    for key, val in [('HydroMech',1),('HydroMechInitMode','FreeSurface' if stage=='prestress' else 'None'),('HydroMechDrainage',1),('HydroMechDrainageStartTime',0),('PoreWaterRho',1000),('PoreWaterBulkModulus','2e8'),('Porosity',0.38),('HydraulicConductivity','1e-3'),('PoreDtSafety',0.1),('PoreShepardRegularization',0),('PoreShepardInterval',40),('PoreMdbcInterpolationMode',0)]:
+    for key, val in [('HydroMech',1),('HydroMechInitMode','FreeSurface' if stage=='prestress' else 'None'),('PoreWaterRho',1000),('PoreWaterBulkModulus','2e8'),('Porosity',0.38),('HydraulicConductivity','1e-3'),('PoreDtSafety',0.1),('PoreShepardRegularization',0),('PoreShepardInterval',40),('PoreMdbcInterpolationMode',0)]:
         node(hydro, key, value=val)
     hydro.find('PoreWaterBulkModulus').set('comment', 'Provisional numerical Kw from case03, NOT a Table 5 material parameter; sensitivity check required')
     hydro.append(ET.Comment(' Failure requires basal DELTA p=110000*min(t_stage/10,1) Pa on x=[0,24], y=[0,25], z=0. NOT implemented by externalload. See specification; no fake XML option is used. '))
+    node(special, 'drainage', mode='drained')
     slip = node(special, 'mdbcslip')
     for mk in range(5):
         node(slip, 'bound', mkbound=mk, slipmode=2 if mk==0 else 3, comment='Fixed no-slip base' if mk==0 else 'Undrained mechanical roller approximation')

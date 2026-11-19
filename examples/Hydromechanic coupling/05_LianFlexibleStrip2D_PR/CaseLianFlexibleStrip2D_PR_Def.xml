@@ -96,9 +96,8 @@
                 <PoreShepardRegularization value="0" comment="Lian 2023 strip-footing case did not require pore-pressure regularization" />
                 <PoreShepardInterval value="30" comment="Unused when regularization is disabled" />
                 <HydroMechInitMode value="0" comment="No initial hydrostatic pore pressure because gravity is ignored" />
-                <HydroMechDrainage value="1" comment="After tL, drain only the open top free surface outside the strip footprint; strip footing and other boundaries remain impermeable" />
-                <HydroMechDrainageStartTime value="1.0" comment="Drainage starts when q0 reaches its target value" units_comment="seconds" />
             </hydromechanics>
+            <drainage mode="drained" start="1.0" />
             <externalload mode="4" q0="10000" ramptime="1.0" />
             <mdbcslip>
                 <bound mkbound="0" slipmode="3" comment="Lateral walls: free-slip" />
