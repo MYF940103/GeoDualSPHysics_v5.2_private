@@ -49,6 +49,6 @@
 
 ## 验收边界与复现
 
-P3 本地直接数据只到开排水后 1.90735 μs，无法判定约 42 ms 的峰值。应在回传的真实 P3 密集峰窗与衰减数据上，先执行既定的时间采样、幅值 1%、相对 A 额外容差 0.10 个百分点及相位门槛，再在各自实际峰时复核壳层。若仍需改进，优先比较球体粒子布置或能辨别交替壳位移的运动学离散，冻结质量、球半径和外载，并同时核对中心和外层应力。已有证据不足以选用某个新力算子或为提高峰值而调大围压。
+上述本地 P3 短测只到开排水后 1.90735 μs。随后回传的服务器密集峰窗已按同一组材料点和原定阈值独立审核，P3 幅值和峰时均未过门，中心壳层也出现了同样的运动学差异。其数值、分项误差、对数坐标图及 CSV 已汇总到[服务器真实峰窗对比](../../figures/cryer_tpi_p3_nu030_peak.md)。后续运动学检验应冻结质量、球半径和外载，并同时核对中心和外层应力。
 
 四份复核分别由 `tests/support` 中的 `cryer_shell_equilibrium.py`、`cryer_material_shell_volume.py`、`cryer_shell_geometry_check.py` 与 `cryer_shell_gradient.py` 生成。输入是留存显式 A 原生导出和本地 P3 短窗 BI4。输出为 `tests/figures` 下同名数据及 `tests/logs` 下相应核查 JSON；完整压力历史及选定径向场分别见 [历史 CSV](../figures/cryer_shell_equilibrium_r1_history.csv) 和 [剖面 CSV](../figures/cryer_shell_equilibrium_r1_profiles.csv)。

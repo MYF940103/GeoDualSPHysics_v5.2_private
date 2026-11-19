@@ -1,0 +1,6 @@
+{
+  "accepted": false,
+  "scope": "Offline derived momentum decomposition only. Original server run, peak qualification and material-volume checks are intact.",
+  "reason": "The draft assembled the saved shear triple as xy,xz,yz. JSphGpuSingle.cpp stores SigmaState_ij as xy,yz,xz. Discard its total-force, region and plot conclusions.",
+  "replacement": "cryer_peak_momentum_shadow_r2 uses the actual order and checks all nine matrix-vector components against an independent basis fixture."
+}
