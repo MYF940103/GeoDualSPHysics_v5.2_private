@@ -1,0 +1,69 @@
+--- a/source/upl_tpi_cpu_r1.h
++++ b/source/upl_tpi_cpu_r1.h
+@@ -1,6 +1,7 @@
+ // Private CPU P3 author: three full endpoint defects, one final history commit. No public XML/restart claim.
+ #pragma once
+ #include "DualSphDef.h"
++#include "TpiPressureRow.h"
+ #include <algorithm>
+ #include <atomic>
+ #include <cfloat>
+@@ -32,27 +33,7 @@
+   static const bool admitted=[](){const char* e=std::getenv("UPL_TPI_P3_ROWS_R1");
+     Need(e&&std::strcmp(e,"3")==0,"Private P3 requires explicit UPL_TPI_P3_ROWS_R1=3");return true;}();return admitted;
+ }
+-inline double Alpha(){return RequestedScheme()==B_Tpi?.5:0.;}
+ inline const char* Name(){return "B_TPI_alpha_0p5_beta0_P3_rows3";}
+-// The mechanical half and endpoint guess are the same history prediction.
+-// This is a full pressure-prediction ablation, not merely a last-row change.
+-inline double Predict(double pn,double previous,double alpha){
+-  Need(std::isfinite(pn)&&(alpha==0.||alpha==.5),"Invalid beta0 pressure prediction");
+-  if(alpha==0.)return pn; // C has no numerical dependence on previous.
+-  Need(std::isfinite(previous),"B previous complete-step pressure is invalid");
+-  const double q=pn+alpha*(pn-previous);
+-  Need(std::isfinite(q)&&std::fabs(q)<=FLT_MAX,"Pressure prediction overflows float storage");return q;
+-}
+-// S=-k*sum(w) is a positive leading-LP preconditioner, not the complete
+-// derivative of Taylor/inertial feedback in Rgamma. This is one defect
+-// correction; for nonzero S its fixed point satisfies Rgamma=0. It is not a
+-// complete-Jacobian Jacobi step or a converged implicit pressure solve.
+-inline double SolveBeta0(bool drained,double actualQ,double diagonal,double residual){
+-  if(drained)return 0.;
+-  Need(std::isfinite(actualQ)&&std::isfinite(diagonal)&&diagonal>0.&&std::isfinite(residual),"Invalid beta0 row; no epsilon or removed row is permitted");
+-  const double p=actualQ+residual/diagonal;
+-  Need(std::isfinite(p)&&std::fabs(p)<=FLT_MAX,"Beta0 row overflows float storage");return p;
+-}
+ struct Core{tdouble3 pos;tfloat4 velrhop;tsymatrix3d sigma;float kappa,p0,q;double j;};
+ static_assert(sizeof(tdouble3)==3*sizeof(double)&&sizeof(tfloat4)==4*sizeof(float)&&sizeof(tsymatrix3d)==6*sizeof(double),"Endpoint core ABI differs");
+ struct HgRecord{tdouble3 history,rate;};
+@@ -144,7 +125,9 @@
+     Need(!s.sourceDrained[k]||pn[a]==0.f,"Original source-clock Dirichlet projection is absent");
+     if(s.commits&&!Bits(pn[a],s.finalP[k]))Need(s.sourceDrained[k]&&pn[a]==0.f,"Non-Dirichlet complete-step pressure changed before history capture");
+     s.pn[k]=pn[a];s.previousUsed[k]=s.previous[k];s.Jn[k]=j[a];
+-    s.predicted[k]=(Alpha()==0.?double(pn[a]):Predict(double(pn[a]),double(s.previous[k]),.5));s.half[k]=float(s.predicted[k]);s.q[k]=s.half[k];
++    Need(tpi_pressure::Predict(tpi_pressure::Predictor::Linear,pn[a],s.previous[k],s.predicted[k]),
++      "Invalid or overflowing linear pressure prediction");
++    s.half[k]=tpi_pressure::WritePressure(s.predicted[k]);s.q[k]=s.half[k];
+   }
+   s.pending=true;s.preCalls++;
+ }
+@@ -155,7 +138,7 @@
+   for(unsigned k:s.soilIds){const unsigned a=s.slot[k];Need(std::isfinite(half[a])&&std::isfinite(j[a])&&j[a]>0.&&std::isfinite(theta[a]),"Half stage state invalid");s.half[k]=half[a];s.Jhalf[k]=j[a];s.thetaH[k]=theta[a];}
+   s.corCalls++;s.temporary=true;
+ }
+-inline float Guess(unsigned id){Need(IsSoil(id)&&state.pending&&state.temporary,"Endpoint history guess owner invalid");return float(state.predicted[id]);}
++inline float Guess(unsigned id){Need(IsSoil(id)&&state.pending&&state.temporary,"Endpoint history guess owner invalid");return tpi_pressure::WritePressure(state.predicted[id]);}
+ inline void CaptureJ(const void* owner,unsigned np,const unsigned* id,const typecode* code,const double* j){
+   State& s=state;Need(s.owner==owner&&s.pending&&s.temporary&&s.jCalls+1==s.corCalls,"J capture lifecycle invalid");Map(np,id,code);
+   for(unsigned k:s.soilIds){const double v=j[s.slot[k]];Need(std::isfinite(v)&&v>0.,"Full J invalid");s.Jfull[k]=v;}s.jCalls++;
+@@ -183,7 +166,9 @@
+   for(unsigned k:s.soilIds){const unsigned a=s.slot[k];const Core& c=s.core[k];
+     if(s.seen[k]!=1||s.rowError[k])throw std::runtime_error("Endpoint row invalid native_id="+std::to_string(k)+" code="+std::to_string(s.rowError[k]));
+     Need(Bits(pos[a],c.pos)&&Bits(velrhop[a],c.velrhop)&&Bits(sigma[a],c.sigma)&&Bits(kappa[a],c.kappa)&&Bits(p0[a],c.p0)&&Bits(j[a],c.j)&&Bits(q[a],c.q),"Extra pressure force advanced a committed soil field");
+-    s.coreFieldChecks+=7;s.raw[k]=float(SolveBeta0(bool(s.drained[k]),double(s.q[k]),s.S[k],s.R[k]));
++    s.coreFieldChecks+=7;
++    Need(tpi_pressure::Endpoint(bool(s.drained[k]),s.q[k],s.S[k],s.R[k],s.raw[k]),
++      "Invalid or overflowing beta0 endpoint row");
+   }
+   s.prepared=true;
+ }

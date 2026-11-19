@@ -1,0 +1,657 @@
+{
+  "passed": true,
+  "configuration": "Debug",
+  "base": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_p3_gpu_r2_Debug\\out\\DualSPHysics5.2_win64_debug.exe",
+    "sha256": "bcf30cf19304742eda4becdf4dfd47116bbb6f32bce251bdb40c6f2f27be4d9f",
+    "bytes": 186341888
+  },
+  "base_link_recipe": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_p3_gpu_r2_Debug\\link.rsp",
+    "sha256": "2b53e55ebb974b4c621383439852ef134fee4b5ae7eea866dfbf83bb74f19f09",
+    "bytes": 22364
+  },
+  "actual_nvcc_recipe": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_tpi_cryer_gpu_Debug_r1.msbuild.log",
+    "sha256": "871ebd33ad9b069f84acda4e323d73338ee12f4ab3578f3aacbb524d038fde3e",
+    "bytes": 61414
+  },
+  "source_receipt": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_row_gpu_r1.source.json",
+    "sha256": "620746185187f9ba234ab4965e9696ab4f0bd1f40aa0822440d7734994f84b37",
+    "bytes": 1715
+  },
+  "calls": [
+    {
+      "argv": [
+        "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\bin\\nvcc.exe",
+        "-gencode=arch=compute_86,code=\"sm_86,compute_86\"",
+        "--use-local-env",
+        "-ccbin",
+        "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\bin\\HostX64\\x64",
+        "-x",
+        "cu",
+        "-IC:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.7\\include",
+        "-G",
+        "--keep-dir",
+        "C:\\Users\\syosh\\AppData\\Local\\Temp\\cryer_row_gpu_r1_Debug",
+        "-maxrregcount=0",
+        "--machine",
+        "64",
+        "--compile",
+        "-cudart",
+        "static",
+        "-use_fast_math",
+        "-Xcompiler",
+        "/wd 4267",
+        "-Wno-deprecated-gpu-targets",
+        "-g",
+        "-D_WITHGPU",
+        "-DWIN32",
+        "-D_CONSOLE",
+        "-D_VC80_UPGRADE=0x0710",
+        "-D_MBCS",
+        "-Xcompiler",
+        "/EHsc /W3 /nologo /Od /FdC:\\Users\\syosh\\AppData\\Local\\Temp\\cryer_row_gpu_r1_Debug\\vc143.pdb /FS /Zi /RTC1 /MTd ",
+        "-o",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_row_gpu_r1_Debug\\JSphGpu_ker.cu.obj",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_row_gpu_r1_source\\JSphGpu_ker.cu"
+      ],
+      "cwd": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_row_gpu_r1_source",
+      "pid": 28692,
+      "popen_exit": 0,
+      "win32_exit": 0,
+      "start_utc_s": 1795088037.3987596,
+      "wall_s": 862.4184114933014,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_row_gpu_r1_Debug\\nvcc.log",
+        "sha256": "b8a06bc19ddc9f6fa6ae82bfd66f0fccc3527f3fb13ac65a6fd383009cc80097",
+        "bytes": 16
+      }
+    },
+    {
+      "argv": [
+        "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\link.exe",
+        "@D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_row_gpu_r1_Debug\\link.rsp"
+      ],
+      "cwd": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_row_gpu_r1_Debug",
+      "pid": 60992,
+      "popen_exit": 0,
+      "win32_exit": 0,
+      "start_utc_s": 1795088902.7182627,
+      "wall_s": 18.97471022605896,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_row_gpu_r1_Debug\\link.log",
+        "sha256": "5a4e0f378f5db07331f94cd6466f2f1acd0af5a7f455444c1bbc60d14c525520",
+        "bytes": 10349
+      }
+    }
+  ],
+  "replaced_cuda_object": {
+    "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphGpu_ker.cu.obj",
+    "sha256": "f8e2221e63d9aae898c16d30ab8d0efa3d8d79887e057e175cee8cd8dd83f366",
+    "bytes": 132879634
+  },
+  "new_cuda_object": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_row_gpu_r1_Debug\\JSphGpu_ker.cu.obj",
+    "sha256": "65367e7fa252343a3b1b8c14085a8edfc296393a0ab162626573a9bcf773bd28",
+    "bytes": 132891234
+  },
+  "retained": [
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\FunctionsGeo3d_iker.h.obj",
+      "sha256": "f4a839617ef67604414e49d1a8bc991b42bb7a7d9c070b5587b33506a734bb6c",
+      "bytes": 140205
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\FunctionsMath_iker.h.obj",
+      "sha256": "01515c878ddf6e140c4a3e4c161009de7f72d75a50337e644726a803e79837f6",
+      "bytes": 342389
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JCellDivGpu_ker.cu.obj",
+      "sha256": "43b1fd2784a335a1673dcd4124cd404eb73e93fd3e4d51de07da858343bfe3c6",
+      "bytes": 15048890
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JCellDivGpuSingle_ker.cu.obj",
+      "sha256": "8d122b52ccb9698f4664d0459267c5981e9d28aadb6acb5d845c49b977776295",
+      "bytes": 148830
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsPips_ker.cu.obj",
+      "sha256": "6190188ed1bddce606f04060eeaef1d9e30b65c31034e24317f40ef224e0b8d0",
+      "bytes": 225350
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsGauge_ker.cu.obj",
+      "sha256": "a4396eafdfd50dc2b6abc46761cd23382068cad3c899b42dc39643b239fa2c95",
+      "bytes": 302262
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JReduSum_ker.cu.obj",
+      "sha256": "3399732eb01abfec81c4e71b5077042e6fdf0704e3eeabed8a58cefc084ecd0a",
+      "bytes": 282419
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JRelaxZone_ker.cu.obj",
+      "sha256": "2390ec0cf9ad6f16fb79d267ccf418e393df5dd824c848898e290032dfa85cac",
+      "bytes": 710657
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphShifting_ker.cu.obj",
+      "sha256": "2ac6376159873949e95b1a36f33c606b38985141069ed6ba5578111b5179e367",
+      "bytes": 277553
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsAccInput_ker.cu.obj",
+      "sha256": "c6ca8a36434266aa6ce0d43d3389e05ce47d92d3f160438d8f7af11f19baf592",
+      "bytes": 153816
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphGpuSimple_ker.cu.obj",
+      "sha256": "66960c491bec5ce659c8a9ef1eb0bd8faa7e9b871ebe8de3a3a4045580e8f692",
+      "bytes": 2643184
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphHourglassGpu_ker.cu.obj",
+      "sha256": "b124d4a044e8401b382a39f6f21a7c13e7c53ae4b5120b7045fbfa824f1200b0",
+      "bytes": 362642
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JWaveOrder2_ker.cu.obj",
+      "sha256": "f2049793c588d7c9bc36c954d43f5e07e81f083f75647fc58cb9dc159210368c",
+      "bytes": 158405
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\Functions.obj",
+      "sha256": "bed8417678380f0106e3ada02d0b7404a8019d1afe8b5834105d1a86e4c30c5a",
+      "bytes": 1598941
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\FunctionsCuda.obj",
+      "sha256": "c3371bc811eef59414d8b04c2cea94c939da156d05e4e1e007f5946573fc5d65",
+      "bytes": 553967
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\FunGeo3d.obj",
+      "sha256": "c24b00dd54ba1f828749b6f88caca66168c5adb570361fa2068356b4db95be9d",
+      "bytes": 98037
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\FunSphKernelsCfg.obj",
+      "sha256": "17b81dff66872b3c8ec92bc178c62093db1a0f10a6fc08a85fc9df3e0f7f2b75",
+      "bytes": 287591
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JAppInfo.obj",
+      "sha256": "70784110aaa1150d57826bc948a6545096e404d40365ec1904ccf90dac4086db",
+      "bytes": 295183
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JArraysCpu.obj",
+      "sha256": "c2071b7f0265e1e84e53c7b5507d1cc06cd815b1268763a624cd1c7919722c21",
+      "bytes": 197398
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JBinaryData.obj",
+      "sha256": "8110928fcb9de269e816df4f0bc8d0c88a340906ef9c41a95603155a48f7bad3",
+      "bytes": 1733618
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JCellDivCpu.obj",
+      "sha256": "4c23bc87b2976e7640f98c6aa98489ddff0d0cbf17299cc98d9a24cf3f8e401e",
+      "bytes": 333724
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JCellDivCpuSingle.obj",
+      "sha256": "d67c61cbd3a9e2a782dcdc82c140092f9b5d6bd344da31580f6f84072f190ee5",
+      "bytes": 232433
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JCellDivGpu.obj",
+      "sha256": "3d601ae4edcd86a66a4647bfcf63999cbc6527a20d7c821ddb82c6dab98a7dcf",
+      "bytes": 315753
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JCellDivGpuSingle.obj",
+      "sha256": "0cf48d462b9522706203f7d0772425de209e8398f911bd3c5955691622cf5d60",
+      "bytes": 239141
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JCfgRunBase.obj",
+      "sha256": "63cc2c56661883ecebe016b6543305fa7a0af55b38c372175f2bfdfbe3116356",
+      "bytes": 889244
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JChronoObjects.obj",
+      "sha256": "1f131ed6d8025ee1c0e64fa42a469a931fca08512e2eb72312837646c606c870",
+      "bytes": 983494
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JComputeMotionRef.obj",
+      "sha256": "f2fb2e2011051b81dcb9964ae754b74863448308346c17269fa1cb10c7024606",
+      "bytes": 260122
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsDamping.obj",
+      "sha256": "3aa36e73b367e3169cac75c276586761bd7068f070c216e8089ec4b38ec0794b",
+      "bytes": 734075
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JArraysGpu.obj",
+      "sha256": "881753f72ee9b2660d53258af61f8200aff299e49f701eea27dad922be764729",
+      "bytes": 187892
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDataArrays.obj",
+      "sha256": "49ba5503de28402109ed6360c114f4019896a2eeb8f151fbe7a9cbe6a64c9bc5",
+      "bytes": 735418
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDebugSphGpu.obj",
+      "sha256": "6102a8725c11bb3ec3a623fdb66b245d8d75a17683d9a335ce29f3bf5ee7d5e5",
+      "bytes": 400043
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsDcell.obj",
+      "sha256": "636ed8430166b3cbdee6cc2d742e74e4794f71c4e97ab428a106725860ae3d87",
+      "bytes": 42694
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsExtraData.obj",
+      "sha256": "5dd07e2d3b5a37095ffff344c38a81887b4b475014bd3da9f61418a69d8103ff",
+      "bytes": 285169
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsGpuInfo.obj",
+      "sha256": "c3fc6006db051ccc42b2b2f1cd0814114849e1421393ed5264e58600e51029f5",
+      "bytes": 241928
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsphConfig.obj",
+      "sha256": "682350efb3c1230b102540fe097b0c2f1959bc96ce205c41026389e4bf31001a",
+      "bytes": 201221
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsPips.obj",
+      "sha256": "0f99c8175ac2ca55151e7a1922a087544f2f4a852efeba77f54940ea99c09d5b",
+      "bytes": 340092
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsTimers.obj",
+      "sha256": "5dbbd49481e7f507e33da630453bee5286126fa1f4fabf6a424eeb3b352a3eca",
+      "bytes": 299784
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JException.obj",
+      "sha256": "56d213b874e3630bbe161dde48ac75549de74eda51818c93689a479e02f72eb6",
+      "bytes": 232145
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsGaugeItem.obj",
+      "sha256": "de13599cd0c430c3845ae3cd5d00e8e15eb73d3f5a7758cdf740658c4da10813",
+      "bytes": 1033130
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsGaugeSystem.obj",
+      "sha256": "8f64ca0fa5be4379f8883055e1d0b23dd46fb79aa23dd55f77c3c7047ac8fa92",
+      "bytes": 662924
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JFtMotionSave.obj",
+      "sha256": "abaa7cf3175c25d5bf05f76eabaa6c87a2bf3d9adffd26f8a25b9acf7aa26fd8",
+      "bytes": 199468
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JLinearValue.obj",
+      "sha256": "6464b4892c62fcb3cba8a1f7e74b0bc089f6ebf40a79f6dc96b4b8ae0d802769",
+      "bytes": 391552
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JLog2.obj",
+      "sha256": "2782cd81792d47937a70c82eb280da5af75a8f8d60b836bc67ff5a347913e2c1",
+      "bytes": 993894
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JMLPistonsGpu.obj",
+      "sha256": "441b715dc922e1bf688b5485ef7fc147db526419125c625c608fd335eb0445b5",
+      "bytes": 149137
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsMooredFloatings.obj",
+      "sha256": "bfe6220f53ce6f003f07a447cdfbc19122118b15abf60149abcbe6f4fae8e6f4",
+      "bytes": 534277
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JMotion.obj",
+      "sha256": "530ab33357e2da34c4be785a72421a9a9a771ef4cab8f8e7ec6ebc7f7d916323",
+      "bytes": 813169
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JMotionList.obj",
+      "sha256": "008c8fcdddc9d56417937011e8d2cd46201128cf533cae3d31c366cbd680dc7b",
+      "bytes": 171973
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JMotionMov.obj",
+      "sha256": "048c8101923bf16fa198a238821236cad8cedb185bc4adc833b2ff7aa8086f87",
+      "bytes": 348440
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JMotionObj.obj",
+      "sha256": "fbc5a2ffb1c0179451e9fd3aee39597150f12f75978d95a38e23a62d3e3ee2ba",
+      "bytes": 796129
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JMotionPos.obj",
+      "sha256": "b175208baf3961f707e231954d877b48ad791ea03e87f8a1e9d5f5f2be52cb0f",
+      "bytes": 52302
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JObject.obj",
+      "sha256": "fd8819227afb447a516c7d8beb2bbfeff6183f2f1435c3e453854f69a50239f8",
+      "bytes": 146998
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JObjectGpu.obj",
+      "sha256": "ceae258960e52560d996f8ea9a9335edc651d6b4192554f15d58124de43468e8",
+      "bytes": 202552
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JOutputCsv.obj",
+      "sha256": "e187e0396c8e8fe28e09aad61fa3b55fd0fea75a4110510c3e2a1d52a42ff3fe",
+      "bytes": 758714
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JPartDataBi4.obj",
+      "sha256": "de69574df6785ea5b565c43dbd9d2d9a6fef5f7b75ab23d8ee0d2447bd266118",
+      "bytes": 527429
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JPartDataHead.obj",
+      "sha256": "d2c184b3bd45276fdc34d7755abec3997084602300180777cbd688023d2507fe",
+      "bytes": 574717
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JPartFloatBi4.obj",
+      "sha256": "44af182ec72f5dcae913cf3ba65450f23879c95b911c57c9989d27791de65d9d",
+      "bytes": 427869
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JPartNormalData.obj",
+      "sha256": "437e165fb69f330d8ce33f2fa383b7ef48f6aca07ddcb4215893dd0576387950",
+      "bytes": 323313
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JPartOutBi4Save.obj",
+      "sha256": "6084ebf446e744ef482fc799b4060919b5e847171460e24b97e2bf466b901e0b",
+      "bytes": 298933
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JPartsLoad4.obj",
+      "sha256": "08f35f23292fc567e23e98433a0b8e648a74108937ea4daee991a4377940617c",
+      "bytes": 417353
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JRadixSort.obj",
+      "sha256": "a19a7d58c9d023ec2904a997e8b597df5b45b547fe26fb7fa8b927dbcba7230c",
+      "bytes": 500605
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JRangeFilter.obj",
+      "sha256": "78f2b8ea9899de41e07a9ec815d578557b1b95e27ea48ce9846166b8722d7bb6",
+      "bytes": 328922
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JReadDatafile.obj",
+      "sha256": "6dc4fd8f44f545cf7badc49620bee0132ff4feb7e853b57cb9ded6c09446a4d5",
+      "bytes": 690986
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JRelaxZonesGpu.obj",
+      "sha256": "d9c040c6a45c3df2e851159582af48b5302405a707c0de8d0564f84010032a80",
+      "bytes": 187777
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSaveCsv2.obj",
+      "sha256": "e8d30110ca0734f38c132c361dc4e94399756af13196f2ed120b13b01e5baf3d",
+      "bytes": 682743
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsSaveDt.obj",
+      "sha256": "17b583a3d37f00568eb7ad0cc67fd0c0ba7a6ff5983d58945324327ee0fcb942",
+      "bytes": 272920
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphInOutVel.obj",
+      "sha256": "ecee009f5926c954c29668212acb3efcfa8f5bf5d8e4f7cd8208484568705ceb",
+      "bytes": 526238
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphInOutVelAwas.obj",
+      "sha256": "3ae4c26ce6cdde0a5d22a9e3d8b4b7fe5c74970068a52d6f977336351d7a5045",
+      "bytes": 400466
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphInOutZsurf.obj",
+      "sha256": "61a86de4c00f3f45c1d065e7cbe590b4b8ff886dc46a8a322377560a4b94a369",
+      "bytes": 423590
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphShifting.obj",
+      "sha256": "e5a5caf71a698fbfa3166d878fa846af4e2acbde740e551ede438e0aba79ed32",
+      "bytes": 599179
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSimpleNeigs.obj",
+      "sha256": "328eff09ff5fc54f92e3eeed6a845b6fc9e3e69f25019749f521302f1384d37d",
+      "bytes": 249197
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JCaseProperties.obj",
+      "sha256": "6443861dcea23df70892b2a7a1f5f097c97cfea1a44145c473c404dc87ae5f8e",
+      "bytes": 1134415
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JCaseUserVars.obj",
+      "sha256": "026418a3bae7fa20e8c22f5d1f194f42c2475b4c8f1639c96d2497d1751c555e",
+      "bytes": 414224
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JCaseVtkOut.obj",
+      "sha256": "9fcb659307dbe38390076bdb29f1c2725608dcc69ad12d46eedf569d2b79d309",
+      "bytes": 474251
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsAccInput.obj",
+      "sha256": "d25d9bfa4347af06d8f01f203a41524eb2bd10436cbd5ceaeb8709e3047f1ffc",
+      "bytes": 566653
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphCpuSingle_InOut.obj",
+      "sha256": "39bdf702fb29e62ebb9a8409f1d641b1ea90344fa206764aae58fa6e7869c1b9",
+      "bytes": 242467
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphCpu_InOut.obj",
+      "sha256": "1b984dac85f420cae8c276c31da80252e527c36ae479b9a292af4350c8c30028",
+      "bytes": 469890
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsFixedDt.obj",
+      "sha256": "cdd4887203ca6b62948e5945b4c29601e8d07d08a336c595f172738d2f6beac2",
+      "bytes": 205450
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsFtForcePoints.obj",
+      "sha256": "59a919cd8cf19aac2203ba74f5a9fea5a4dd9ebf763f4243576c1b65770e0020",
+      "bytes": 338309
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_p3_gpu_r2_Debug\\JSphGpuSingle.obj",
+      "sha256": "587c275c7a780c16d710ab2c7ff2e4f6e9ee6336b1ddcc87c4ab6d77005baeff",
+      "bytes": 1636125
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphGpuSingle_InOut.obj",
+      "sha256": "76e1704e12f9e0d2c8ccf7d41077b58eb50b2c6bbfa41ee1946ccb079f896e40",
+      "bytes": 249887
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsInitialize.obj",
+      "sha256": "529c46c08f33c85f1e074548392cdd5ec05ef6da553e8b0ba265d6739bfe06b8",
+      "bytes": 886504
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphInOut.obj",
+      "sha256": "b1f325a3c8725a7ae98569ebd7f384fadabf45fa93f43fb05e9d678e048ae390",
+      "bytes": 828726
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphInOutGridData.obj",
+      "sha256": "639c63617e2a69de9a2b23a4285fc9722509db4fe4e66370e8ec453ca2c100bf",
+      "bytes": 442699
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphInOutPoints.obj",
+      "sha256": "f6c8a27420db93dabc3f19d6929f72bd20f9e3027b5368814626642eeb2202a4",
+      "bytes": 663399
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphInOutZone.obj",
+      "sha256": "7acd6a5606ed1564e3f7ecc4b3c9661b5c7148a9fbd2e1961a8d613e72105fdb",
+      "bytes": 453263
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphMk.obj",
+      "sha256": "8a23cff82aad26be9dcce94c0eb36e33db42a48e7f30996195ed2a8d575e4af4",
+      "bytes": 284718
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsMotion.obj",
+      "sha256": "8077a4351f3c7977d6314dea6d6e87f24f9f50a4e0249e0e5556e39bf37469b3",
+      "bytes": 191064
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsPartsInit.obj",
+      "sha256": "6302b72ee7522ca491e1d2904674459fc7e3cd76c378a3a64e9432dd9d5aa577",
+      "bytes": 154972
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsViscoInput.obj",
+      "sha256": "ca0eb360c30748a26eee7eb3010ad8dc46a93bc1bc6140d3d8bfbddedddfaad2",
+      "bytes": 205149
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsPartsOut.obj",
+      "sha256": "b4dccd6c3988266c5eb4852df9df1af8e19a81ecd64e0603325f2b43f9883ab0",
+      "bytes": 156777
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphHourglassCpu.obj",
+      "sha256": "e96137562beac045b529d09ecce9cf395c3acf294f4953dc193f5e52c04be120",
+      "bytes": 556450
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphHourglassGpu.obj",
+      "sha256": "6d452948b7015a7e16226e393437ec53895d2c77b84fa09cc0e3b157c22aa64b",
+      "bytes": 199879
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphCpuSingle.obj",
+      "sha256": "3627122bf4dddf19e9c695f31c41ce03396546f12f940c2a73867b7a53aea368",
+      "bytes": 1034628
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JTimeControl.obj",
+      "sha256": "65479e6624571a352283daae1712fac7cefb8fff38a322f0d19fc477b012eefe",
+      "bytes": 319044
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JDsOutputTime.obj",
+      "sha256": "460063effa7ab80598efb93d24428fe5e8d0e5fee500247e3964218d3a2afce3",
+      "bytes": 386548
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphCfgRun.obj",
+      "sha256": "531a9b8f9a0f923f0ff433c148190ed1c8bcde7e0418d949d8165a3de8a2a508",
+      "bytes": 396338
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JCaseParts.obj",
+      "sha256": "f5fdc37d5e92af6d7b9bb0fac4c42064e5541f1513dd8c8394bec1bfc827db70",
+      "bytes": 812867
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JCaseCtes.obj",
+      "sha256": "62125336a363c055ca9f5675dc77196afe7d96f9d7d27f77773e80a015d7ae11",
+      "bytes": 438847
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JCaseEParms.obj",
+      "sha256": "a800e3ede07b23b56a6f20124713ce19e1d621e9b6bf6afe3f27b9cf50ec0e85",
+      "bytes": 617627
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSph.obj",
+      "sha256": "db33ec6f618e528d0826fa6325e30cce5be917dc23fe0d7a944a8f189f32237a",
+      "bytes": 2904660
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JSphCpu.obj",
+      "sha256": "abcb7605e5ebb64243416e2d72409545e56757a9ed82a118c18f35a87dd8b35d",
+      "bytes": 7893786
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_p3_gpu_r2_Debug\\JSphGpu.obj",
+      "sha256": "d96665c6883acdd0a2d3a4978dd4c59a6ba6177abe227800b98acc009becd34f",
+      "bytes": 1946528
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JWaveSpectrumGpu.obj",
+      "sha256": "8cd0d42ab2b745821c5b02110a12cc2dd70029d45e754de02c9a498c98a453d0",
+      "bytes": 146904
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\JXml.obj",
+      "sha256": "c733e2e997258982226828dc1b8bbd982fd2d1c3acefdf68290b7550e034564a",
+      "bytes": 1054215
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\main.obj",
+      "sha256": "62019cb9b9eb33ed91c97ce2e7d8af44d24e54334f7f16bd8ac28b175feeb6a7",
+      "bytes": 459734
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\randomc.obj",
+      "sha256": "1a57ced8d4c82b582594f670f546e6b79886cbe6cc3ece96b9898c2c0cb953cc",
+      "bytes": 9120
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\tinystr.obj",
+      "sha256": "3df33aef2c5c2b31d67dec8dd97da7037a73444e630c67c4b060285264aa2fa1",
+      "bytes": 27210
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\tinyxml.obj",
+      "sha256": "163ae62beea53865915b57ca98a2da6da6c4a1f9b5e6ea98d6e4635621ec6e4f",
+      "bytes": 255025
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\tinyxmlerror.obj",
+      "sha256": "4091696473a3ba6594c77edff12c9b07a1c6aef1cd649696565e982d364ee57b",
+      "bytes": 6280
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_tpi_cryer_gpu_Debug_r1\\int\\tinyxmlparser.obj",
+      "sha256": "9925c1a0e34cbc70f8f18082251ffdea37df2fdb1e5674bd70af384ec3b0d57e",
+      "bytes": 148816
+    }
+  ],
+  "program": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_row_gpu_r1_Debug\\out\\DualSPHysics5.2_win64_debug.exe",
+    "sha256": "b8c51653970d9c426e5fbb47c7a169a4ebc107d74dc6b40c93f5df3d82f7d8c8",
+    "bytes": 186355712
+  }
+}
