@@ -1,0 +1,443 @@
+--- a/JSphCpu.cpp
++++ b/JSphCpu.cpp
+@@ -44,6 +44,7 @@
+ #include "JSphShifting.h"
+ 
+ #include "upl_tpi_cpu_r1.h"
++#include "upl_tpi_m0_dt_r2.h"
+ 
+ #include <climits>
+ #include <cmath>
+@@ -5002,6 +5003,8 @@
+ /// Calcula un Dt variable.
+ //==============================================================================
+ double JSphCpu::DtVariable(bool final){
++  const bool m0dt=upl_tpi_m0_dt_r2::Enabled(upl_tpi_cpu_r1::Enabled());
++  double legacyWave=0.;
+   //-dt1 depends on force per unit mass.
+   const double dt1=(AceMax? (sqrt(double(KernelH)/AceMax)): DBL_MAX); 
+   //-dt2 combines the Courant and the viscous time-step controls.
+@@ -5010,6 +5013,18 @@
+   double dtw=DBL_MAX;
+   if(DynamicPorePressure){
+     GetDynamicStepScalesCpu(dt2,dtw);
++    if(m0dt){
++      legacyWave=dt2;double skeleton2max=0.;
++      const double m=double(SoilCte.ModulusK)+4.*double(SoilCte.ModulusG)/3.;
++      for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p])&&CODE_IsFluid(Codec[p])){
++        double n,volume,rho;GetPorosityFeedbackStateCpu(p,n,volume,rho);
++        const double c2=m/rho;
++        upl_tpi_m0_dt_r2::Need(n>0.&&n<1.&&std::isfinite(c2)&&c2>0.,"M0 current-J skeleton state invalid");
++        skeleton2max=max(skeleton2max,c2);
++      }
++      upl_tpi_m0_dt_r2::Need(skeleton2max>0.,"M0 skeleton native set empty");
++      dt2=double(KernelH)/(max(sqrt(skeleton2max),VelMax*10.)+double(KernelH)*ViscDtMax);
++    }
+     //-Additional local necessary scale, not a general variable-coefficient stability proof.
+     if(DynamicPoreConductivity && DynamicConductivitySpeedMax>0)
+       dtw=min(dtw,double(PoreDtSafety)*double(KernelH)/DynamicConductivitySpeedMax);
+@@ -5023,6 +5038,8 @@
+   }
+   //-dt new value of time step.
+   double dt=CFLnumber*min(dt1,dt2);
++  if(m0dt)dt=upl_tpi_m0_dt_r2::Record(this,final?1u:(upl_tpi_cpu_r1::state.endpoint?upl_tpi_cpu_r1::EndpointPhase():0u),TimeStep,Nstep,SymplecticDtPre,
++    CFLnumber*dt1,CFLnumber*dt2,dtw,CFLnumber*legacyWave,DBL_MAX /* HG reference unavailable in base; original derived guard retained. */);
+   if(DynamicPorePressure){
+     const double bound=min(dt,dtw);
+     //-Both calls precede their state update, including the first predictor step.
+--- a/JSphCpuSingle.cpp
++++ b/JSphCpuSingle.cpp
+@@ -21,6 +21,7 @@
+ #include "JSphCpuSingle.h"
+ #include "JDsFixedDt.h"
+ #include "upl_tpi_cpu_r1.h"
++#include "upl_tpi_m0_dt_r2.h"
+ #include "JSphHourglassCpu.h"
+ #include "JCellDivCpuSingle.h"
+ #include "JArraysCpu.h"
+@@ -1346,9 +1347,9 @@
+       && !PartBegin && PartBeginDir.empty() && TimeStep==0. && Nstep==0 && TimeMax>0.
+       && NstepsBreak>0 && NstepsBreak<=128 && (!GaugeSystem || GaugeSystem->GetCount()==0),
+       "P3 requires the complete fresh XYZ Cryer native set with an explicit at-most-128-update cap");
+-    upl_tpi_cpu_r1::Need(FixedDt && FixedDt->GetFixedValue()==0.00000095367431640625
+-      && SymplecticDtPre==0.00000095367431640625,
+-      "P3 retains the actual finite-Kw Cryer 2^-20 fixed step");
++    upl_tpi_cpu_r1::Need(FixedDt && upl_tpi_m0_dt_r2::Enabled(true)
++      && upl_tpi_m0_dt_r2::AllowedDt(FixedDt->GetFixedValue(),HydroMechDrainageStartTime)
++      && SymplecticDtPre==FixedDt->GetFixedValue(), "Cryer P3 requires the admitted M0 step");
+     upl_tpi_cpu_r1::Need(HydroMech && HydroMechDynamicSeepage && PorosityObserver && PorosityFeedback && DynamicPorePressure
+       && DynamicPoreFreeBody && !DynamicPoreWall && !DynamicPoreConductivity
+       && HydroMechConductivityModel==0 && HydroMechConductivityCk==0 && !PoreShepardRegularization
+@@ -1370,7 +1371,8 @@
+       && !PoreDarcySymmetricCorr && !PoreMdbcInterpolationMode,
+       "P3 preserves raw confinement, original source-clock ramp/hold/drain and the original free-body guards");
+     upl_tpi_cpu_r1::Init(this,DirOut,Np,Idpc,Codec,PorePressc,PorePress0c,PoroJc,Kplasticc,TimeStep,Nstep,SymplecticDtPre);
+-    Log->Print("UplTpiCryerCpuOverlayR1: XYZ HG0 short qualification only; B alpha.5/C alpha0, beta0 single endpoint defect correction, not literal LF/full implicit/physical acceptance.");
++    upl_tpi_m0_dt_r2::Init(static_cast<JSphCpu*>(this),DirOut,"CPU",std::getenv("UPL_TPI_CPU_R1"),TimeStep,Nstep,SymplecticDtPre,HydroMechDrainageStartTime);
++    Log->Print("Cryer P3: three full XYZ pressure defects per solid step, five M0 Eq40/Rh1 checks.");
+   }
+   RunGaugeSystem(TimeStep,true);
+   if(InOut)InOutInit(TimeStepIni);
+@@ -1403,28 +1405,35 @@
+     else RunCellDivide(true);
+ 
+     if(upl_tpi_cpu_r1::Enabled()){
+-      upl_tpi_cpu_r1::Need(!HourglassCpu && SoilHourglassXi==0,"P3 endpoint must remain HG0; no HG adapter is called");
+-      upl_tpi_cpu_r1::Endpoint(this,Np,Idpc,Codec,Posc,Velrhopc,Sigmac,Kplasticc,PorePress0c,PorePressc,PoroJc,TimeStep,Nstep,stepdt);
++      upl_tpi_cpu_r1::Need(!HourglassCpu && SoilHourglassXi==0, "Cryer P3 requires HG0");
+       bool forceScratch=false;
+       try{
+-        forceScratch=true;
+-        Interaction_Forces(INTERSTEP_SymCorrector); // Endpoint forces/rate only; no XYZ solid/material/J update.
+-        const double endpointdt=DtVariable(false);
+-        upl_tpi_cpu_r1::Need(endpointdt==stepdt,"P3 endpoint fixed dt changed");
+-        upl_tpi_cpu_r1::PrepareFinal(this,Np,Idpc,Codec,Posc,Velrhopc,Sigmac,Kplasticc,PorePress0c,PorePressc,PoroJc);
+-        PosInteraction_Forces();forceScratch=false;
+-        upl_tpi_cpu_r1::WriteFinal(Np,Npb,Idpc,Codec,PorePressc);
++        upl_tpi_cpu_r1::Endpoint(this,Np,Idpc,Codec,Posc,Velrhopc,Sigmac,Kplasticc,PorePress0c,PorePressc,PoroJc,TimeStep,Nstep,stepdt);
++        upl_tpi_cpu_r1::CaptureHG(HourglassCpu);
++        for(unsigned round=0;round<3;round++){
++          if(round)upl_tpi_cpu_r1::NextEndpoint(this,Np,Idpc,Codec,Posc,Velrhopc,Sigmac,Kplasticc,PorePress0c,PorePressc,PoroJc,TimeStep,Nstep,stepdt,HourglassCpu);
++          forceScratch=true;Interaction_Forces(INTERSTEP_SymCorrector);
++          const double endpointdt=DtVariable(false);
++          upl_tpi_cpu_r1::Need(endpointdt==stepdt,"P3 endpoint fixed dt changed");
++          upl_tpi_cpu_r1::CheckHG(HourglassCpu);
++          upl_tpi_cpu_r1::PrepareFinal(this,Np,Idpc,Codec,Posc,Velrhopc,Sigmac,Kplasticc,PorePress0c,PorePressc,PoroJc);
++          PosInteraction_Forces();forceScratch=false;
++          upl_tpi_cpu_r1::WriteFinal(Np,Npb,Idpc,Codec,PorePressc);
++          if(round==2){upl_tpi_cpu_r1::state.endpoint=false;upl_tpi_cpu_r1::state.temporary=false;}
++          ApplyPorePressureBoundaries();
++          const bool drain=IsHydroMechDrainageActive();
++          if(round<2)upl_tpi_cpu_r1::ValidateProvisionalEndpoint(this,Np,Idpc,Codec,PorePressc,PorePress0c,PoroJc,
++            [&](unsigned p){return drain && IsHydroMechDrainedParticle(p,Posc,Codec,FSTypec);});
++          else{
++            for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p]))
++              upl_tpi_cpu_r1::SetCommitDrained(Idpc[p],drain && IsHydroMechDrainedParticle(p,Posc,Codec,FSTypec));
++            upl_tpi_cpu_r1::Commit(this,Np,Idpc,Codec,PorePressc,PorePress0c,PoroJc);
++          }
++        }
++      }catch(...){
+         upl_tpi_cpu_r1::state.endpoint=false;upl_tpi_cpu_r1::state.temporary=false;
+-        ApplyPorePressureBoundaries(); // Original actual-clock FS/drainage policy, unchanged.
+-        const bool drain=IsHydroMechDrainageActive();
+-        for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p]))
+-          upl_tpi_cpu_r1::SetCommitDrained(Idpc[p],drain && IsHydroMechDrainedParticle(p,Posc,Codec,FSTypec));
+-        upl_tpi_cpu_r1::Commit(this,Np,Idpc,Codec,PorePressc,PorePress0c,PoroJc);
+-      }
+-      catch(...){
+-        upl_tpi_cpu_r1::state.endpoint=false;upl_tpi_cpu_r1::state.temporary=false;
+-        if(forceScratch)PosInteraction_Forces();
+-        throw; // Never rotate history or save a rejected endpoint.
++        if(forceScratch){try{PosInteraction_Forces();}catch(...){}}
++        throw;
+       }
+     }
+     TimeStep+=stepdt;
+@@ -1455,6 +1464,7 @@
+   //-End of Simulation.
+   //--------------------
+   if(upl_tpi_cpu_r1::Enabled())upl_tpi_cpu_r1::Finish(this,Nstep,TimeStep);
++  if(upl_tpi_m0_dt_r2::Enabled(upl_tpi_cpu_r1::Enabled()))upl_tpi_m0_dt_r2::Finish(static_cast<JSphCpu*>(this),Nstep,TimeStep);
+   FinishRun(partoutstop);
+ }
+ 
+@@ -1576,6 +1586,7 @@
+   //AddBasicArrays(arrays,npsave,pos,idp,vel,rhop);
+   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
+   if(upl_tpi_cpu_r1::Enabled())upl_tpi_cpu_r1::Saved(this,Part,TimeStep,Nstep,Np,Idpc,Codec,PorePressc,PoroJc);
++  if(upl_tpi_m0_dt_r2::Enabled(upl_tpi_cpu_r1::Enabled()))upl_tpi_m0_dt_r2::Saved(static_cast<JSphCpu*>(this),Part,TimeStep,Nstep);
+   //-Free auxiliary memory for particle data. | Libera memoria auxiliar para datos de particulas.
+   ArraysCpu->Free(idp);
+   ArraysCpu->Free(pos);
+--- a/upl_tpi_cpu_r1.h
++++ b/upl_tpi_cpu_r1.h
+@@ -1,4 +1,4 @@
+-// Private P1 beta=0 pressure-time prototype. No public XML or restart claim.
++// Private CPU P3 author: three full endpoint defects, one final history commit. No public XML/restart claim.
+ #pragma once
+ #include "DualSphDef.h"
+ #include <algorithm>
+@@ -26,9 +26,14 @@
+     Need(std::strcmp(e,"C")==0,"UPL_TPI_CPU_R1 must be absent or exact A/B/C");return C_PpeT;
+   }();return scheme;
+ }
+-inline bool Enabled(){return RequestedScheme()!=A_FiniteKw;}
++inline bool Enabled(){
++  if(RequestedScheme()==A_FiniteKw)return false; // A must not inspect the P3 selector.
++  Need(RequestedScheme()==B_Tpi,"Private P3 supports only B alpha .5");
++  static const bool admitted=[](){const char* e=std::getenv("UPL_TPI_P3_ROWS_R1");
++    Need(e&&std::strcmp(e,"3")==0,"Private P3 requires explicit UPL_TPI_P3_ROWS_R1=3");return true;}();return admitted;
++}
+ inline double Alpha(){return RequestedScheme()==B_Tpi?.5:0.;}
+-inline const char* Name(){return RequestedScheme()==B_Tpi?"B_TPI_alpha_0p5_beta0":"C_PPE_t_alpha0_beta0";}
++inline const char* Name(){return "B_TPI_alpha_0p5_beta0_P3_rows3";}
+ // The mechanical half and endpoint guess are the same history prediction.
+ // This is a full pressure-prediction ablation, not merely a last-row change.
+ inline double Predict(double pn,double previous,double alpha){
+@@ -51,9 +56,18 @@
+ struct Core{tdouble3 pos;tfloat4 velrhop;tsymatrix3d sigma;float kappa,p0,q;double j;};
+ static_assert(sizeof(tdouble3)==3*sizeof(double)&&sizeof(tfloat4)==4*sizeof(float)&&sizeof(tsymatrix3d)==6*sizeof(double),"Endpoint core ABI differs");
+ struct HgRecord{tdouble3 history,rate;};
++// A deep host record, stored independently for rounds1 and2. priorFinalP is the old committed field, never p1/p2.
++struct FirstEndpointRecord{
++  float pn=0,previous=0,half=0,q=0,raw=0,actualBC=0,priorFinalP=0;
++  double predicted=0,S=0,R=0,Jn=0,Jhalf=0,Jfull=0,thetaH=0,thetaEndpoint=0;
++  unsigned sourceDrained=0,drained=0,commitDrained=0;
++};
+ struct State{
+   const void* owner=nullptr;
+   bool ready=false,pending=false,temporary=false,endpoint=false,prepared=false;
++  bool firstValidated=false,secondValidated=false,nextStarting=false,roundWritten=false;unsigned endpointRound=0;
++  unsigned long long firstValidations=0,secondValidations=0,provisionalValidations=0,endpointTransitions=0,endpointWrites=0;
++  std::vector<FirstEndpointRecord> firstRows,secondRows;
+   unsigned nativeCount=0,fixedCount=0,soilCount=0;
+   unsigned long long initialStep=0,sourceStep=0,commits=0;
+   unsigned long long preCalls=0,corCalls=0,jCalls=0,endpointCalls=0,coreFieldChecks=0,hgSnapshotChecks=0;
+@@ -99,7 +113,7 @@
+   Need(s.nativeCount&&size_t(last)+1<=size_t(UINT_MAX),"Native ID extent invalid");
+   const size_t n=size_t(last)+1;s.role.assign(n,0);s.slot.resize(n);s.seen.resize(n);s.rowError.resize(n);s.sourceDrained.resize(n);s.drained.resize(n);s.commitDrained.resize(n);
+   s.previous.resize(n);s.previousUsed.resize(n);s.pn.resize(n);s.half.resize(n);s.q.resize(n);s.raw.resize(n);s.finalP.resize(n);s.initialP0.resize(n);
+-  s.predicted.resize(n);s.S.resize(n);s.R.resize(n);s.Jn.resize(n);s.Jhalf.resize(n);s.Jfull.resize(n);s.thetaH.resize(n);s.thetaEndpoint.resize(n);s.core.resize(n);s.hg.resize(n);
++  s.predicted.resize(n);s.S.resize(n);s.R.resize(n);s.Jn.resize(n);s.Jhalf.resize(n);s.Jfull.resize(n);s.thetaH.resize(n);s.thetaEndpoint.resize(n);s.core.resize(n);s.hg.resize(n);s.firstRows.resize(n);s.secondRows.resize(n);
+   for(unsigned a=0;a<np;a++)if(CODE_IsNormal(code[a])){
+     const unsigned k=id[a];Need(!s.role[k],"Duplicate initial native ID");s.role[k]=CODE_IsFixed(code[a])?1u:2u;s.nativeIds.push_back(k);
+     if(s.role[k]==1)s.fixedCount++;else{s.soilIds.push_back(k);s.soilCount++;}
+@@ -111,18 +125,19 @@
+     s.previous[k]=s.previousUsed[k]=s.pn[k]=s.half[k]=s.q[k]=s.raw[k]=s.finalP[k]=p[a];
+     s.initialP0[k]=p0[a];s.predicted[k]=double(p[a]);s.Jn[k]=s.Jhalf[k]=s.Jfull[k]=j[a];
+   }
+-  const std::string csv=directory+"UplTpiCpuR1.csv",policy=directory+"UplTpiCpuR1.policy.json";
++  const std::string csv=directory+"UplTpiP3CpuR1.csv",policy=directory+"UplTpiP3CpuR1.policy.json";
+   Need(!std::ifstream(csv).good()&&!std::ifstream(policy).good(),"Private pressure sidecar already exists");
+   s.csv=new std::ofstream(csv,std::ios::out|std::ios::trunc);Need(bool(*s.csv),"Pressure sidecar open failed");
+-  *s.csv<<std::setprecision(17)<<"part,native_id,source_step_zero_based,completed_step,source_time_s,actual_save_time_s,dt_s,pn_Pa,previous_Pa,prediction_double_Pa,half_actual_float_Pa,endpoint_q_actual_float_Pa,S_1_per_m_s,Rgamma_Pa_per_m_s,raw_final_float_Pa,final_float_Pa,theta_half_for_J_1_per_s,theta_endpoint_1_per_s,Jn,Jhalf,Jfull,source_drained,endpoint_drained,commit_drained,commits,endpoint_calls,core_field_bit_checks,hg_snapshot_checks\n";
+-  std::ofstream out(policy);Need(bool(out),"Pressure policy open failed");
+-  out<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_cpu_r1\",\"scheme\":\""<<Name()<<"\",\"alpha\":"<<Alpha()<<",\"beta\":0,\"M0\":true,\"native_count\":"<<s.nativeCount<<",\"soil_count\":"<<s.soilCount<<",\"history_ID_owned\":true,\"history_cold_start\":true,\"full_restart_supported\":false,\"half_equals_endpoint_history_guess\":true,\"endpoint_source_clock_is_original_n\":true,\"paper_literal_LF\":false,\"second_order_claimed\":false,\"true_implicit_solution\":false,\"physical_acceptance\":false}\n";
++  *s.csv<<std::setprecision(17)<<"part,pressure_round,native_id,source_step_zero_based,completed_step,source_time_s,actual_save_time_s,dt_s,pn_Pa,previous_Pa,prediction_double_Pa,mechanical_half_actual_float_Pa,endpoint_q_actual_float_Pa,S_1_per_m_s,Rgamma_Pa_per_m_s,raw_candidate_float_Pa,actual_after_BC_float_Pa,prior_committed_finalP_stale_Pa,theta_half_for_J_1_per_s,theta_endpoint_1_per_s,Jn,Jhalf,Jfull,source_drained,endpoint_drained,provisional_or_final_commit_drained,provisional_endpoint_validation_count,commits,endpoint_calls,endpoint_writes,core_field_bit_checks,hg_snapshot_checks\n";
++  std::ofstream out(policy);Need(bool(out),"P3 pressure policy open failed");
++  out<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_p3_cpu_r1\",\"scheme\":\""<<Name()<<"\",\"alpha\":0.5,\"beta\":0,\"M0\":true,\"endpoint_defects_per_step\":3,\"native_count\":"<<s.nativeCount<<",\"soil_count\":"<<s.soilCount<<",\"history_ID_owned\":true,\"history_cold_start\":true,\"full_restart_supported\":false,\"global_source_clock_unchanged\":true,\"staged_load_clock_enabled\":false,\"provisional_finalP_fields_are_prior_commit_not_p1_or_p2\":true,\"both_provisional_BC_values_are_directly_captured\":true,\"q2_is_actual_p1_and_q3_is_actual_p2\":true,\"initial_pressure_round0_is_not_endpoint_observation\":true,\"PorePressRate_is_R3_at_actual_p2_scaled_residual_not_R_at_p3_or_dpdt\":true,\"scalar_fixture_is_not_spatial_kernel_proof\":true,\"paper_literal_LF\":false,\"second_order_claimed\":false,\"true_implicit_solution\":false,\"physical_acceptance\":false}\n";
+   out.flush();Need(bool(out),"Pressure policy write failed");s.ready=true;
+ }
+ template<class SourceDrained> inline void Begin(const void* owner,unsigned np,const unsigned* id,const typecode* code,const float* pn,const double* j,double time,unsigned long long step,double dt,SourceDrained sourceDrained){
+   State& s=state;Need(s.ready&&s.owner==owner&&!s.pending&&!s.temporary&&!s.endpoint,"Predictor lifecycle invalid");
+   Need(step==s.initialStep+s.commits&&dt==s.dt&&Bits(time,s.lastEnd),"Actual scalar clock, completed step or fixed dt changed");
+   Map(np,id,code);s.sourceTime=time;s.sourceStep=step;s.unexpectedRows.store(0);s.prepared=false;
++  s.firstValidated=false;s.secondValidated=false;s.nextStarting=false;s.roundWritten=false;s.endpointRound=0;
+   std::fill(s.seen.begin(),s.seen.end(),0);std::fill(s.rowError.begin(),s.rowError.end(),0);std::fill(s.drained.begin(),s.drained.end(),0);std::fill(s.commitDrained.begin(),s.commitDrained.end(),0);
+   for(unsigned k:s.soilIds){const unsigned a=s.slot[k];Need(std::isfinite(pn[a])&&std::isfinite(j[a])&&j[a]>0.,"Predictor native state invalid");
+     s.sourceDrained[k]=unsigned(sourceDrained(a));
+@@ -148,8 +163,9 @@
+ inline void Endpoint(const void* owner,unsigned np,const unsigned* id,const typecode* code,const tdouble3* pos,const tfloat4* velrhop,
+   const tsymatrix3d* sigma,const float* kappa,const float* p0,const float* q,const double* j,double time,unsigned long long step,double dt){
+   State& s=state;Need(s.owner==owner&&s.pending&&s.temporary&&!s.endpoint&&s.jCalls==s.preCalls&&Bits(time,s.sourceTime)&&step==s.sourceStep&&dt==s.dt,"Endpoint clock or lifecycle invalid");Map(np,id,code);
++  Need(s.endpointRound==0||(((s.endpointRound==1&&s.firstValidated&&!s.secondValidated)||(s.endpointRound==2&&s.firstValidated&&s.secondValidated))&&s.nextStarting&&!s.prepared),"P3 duplicate/unvalidated endpoint round");
+   for(unsigned k:s.soilIds){const unsigned a=s.slot[k];Need(Bits(j[a],s.Jfull[k])&&Bits(p0[a],s.initialP0[k])&&std::isfinite(q[a]),"Endpoint J, P0 or pressure changed");s.core[k]={pos[a],velrhop[a],sigma[a],kappa[a],p0[a],q[a],j[a]};s.q[k]=q[a];}
+-  s.endpoint=true;s.endpointCalls++;
++  s.endpointRound++;s.roundWritten=false;s.endpoint=true;s.endpointCalls++;
+ }
+ // Calls occur in the existing independent receiver loop. Each native ID has one
+ // writer. Errors are latched per ID and thrown only after the OMP region.
+@@ -172,12 +188,37 @@
+   s.prepared=true;
+ }
+ inline void WriteFinal(unsigned np,unsigned npb,const unsigned* id,const typecode* code,float* p){
+-  State& s=state;Need(s.endpoint&&s.pending&&s.prepared,"Final pressure write lifecycle invalid");
++  State& s=state;Need(s.endpoint&&s.pending&&s.prepared&&!s.roundWritten&&(s.endpointRound>=1&&s.endpointRound<=3),"P3 pressure write lifecycle invalid");
+   for(unsigned a=npb;a<np;a++)if(CODE_IsFluid(code[a])){Need(IsSoil(id[a]),"Final pressure owner invalid");p[a]=s.raw[id[a]];}
++  s.roundWritten=true;s.endpointWrites++;
++}
++inline unsigned EndpointPhase(){const State& s=state;Need(s.endpoint&&s.pending&&(s.endpointRound>=1&&s.endpointRound<=3),"P3 timestep is not inside an endpoint");return s.endpointRound+1;}
++template<class Drained> inline void ValidateProvisionalEndpoint(const void* owner,unsigned np,const unsigned* id,const typecode* code,
++  const float* p,const float* p0,const double* j,Drained drained){
++  State& s=state;const unsigned round=s.endpointRound;
++  Need(s.owner==owner&&s.pending&&s.temporary&&s.endpoint&&s.prepared&&s.roundWritten&&!s.nextStarting
++    &&((round==1&&!s.firstValidated&&!s.secondValidated)||(round==2&&s.firstValidated&&!s.secondValidated))
++    &&s.endpointWrites==3*s.commits+round&&s.provisionalValidations==2*s.commits+round-1&&!s.unexpectedRows.load(),
++    "P3 provisional seal lifecycle/rows invalid");Map(np,id,code);
++  Need(s.coreFieldChecks==7ull*s.soilCount*(3*s.commits+round)&&s.hgSnapshotChecks==0,"P3 provisional readonly checks were skipped");
++  for(unsigned k:s.soilIds){const unsigned a=s.slot[k];s.commitDrained[k]=unsigned(drained(a));
++    Need(std::isfinite(p[a])&&Bits(j[a],s.Jfull[k])&&Bits(p0[a],s.initialP0[k]),"P3 provisional BC changed J/P0 or made p nonfinite");
++    Need(s.commitDrained[k]?Bits(p[a],0.f):Bits(p[a],s.raw[k]),"P3 provisional pressure is neither exact raw nor true-Dirichlet +0");}
++  // Both provisional records are independent deep captures AFTER all actual BC values pass.
++  auto& destination=(round==1?s.firstRows:s.secondRows);
++  for(unsigned k:s.soilIds){const unsigned a=s.slot[k];FirstEndpointRecord r;
++    r.pn=s.pn[k];r.previous=s.previousUsed[k];r.half=s.half[k];r.q=s.q[k];r.raw=s.raw[k];r.actualBC=p[a];r.priorFinalP=s.finalP[k];
++    r.predicted=s.predicted[k];r.S=s.S[k];r.R=s.R[k];r.Jn=s.Jn[k];r.Jhalf=s.Jhalf[k];r.Jfull=s.Jfull[k];r.thetaH=s.thetaH[k];r.thetaEndpoint=s.thetaEndpoint[k];
++    r.sourceDrained=s.sourceDrained[k];r.drained=s.drained[k];r.commitDrained=s.commitDrained[k];destination[k]=r;}
++  if(round==1){s.firstValidated=true;s.firstValidations++;}else{s.secondValidated=true;s.secondValidations++;}
++  s.provisionalValidations++;s.endpoint=false; // Keep temporary/prepared and complete-step pn/previous unchanged.
+ }
+ inline void SetCommitDrained(unsigned id,bool drained){Need(IsSoil(id),"Commit drainage owner invalid");state.commitDrained[id]=unsigned(drained);}
+ inline void Commit(const void* owner,unsigned np,const unsigned* id,const typecode* code,const float* p,const float* p0,const double* j){
+-  State& s=state;Need(s.owner==owner&&s.pending&&s.prepared&&!s.temporary&&!s.endpoint,"History commit lifecycle invalid");Map(np,id,code);
++  State& s=state;Need(s.owner==owner&&s.pending&&s.prepared&&!s.temporary&&!s.endpoint&&s.firstValidated&&s.secondValidated&&s.endpointRound==3&&s.roundWritten
++    &&s.endpointWrites==3*(s.commits+1)&&s.firstValidations==s.commits+1&&s.secondValidations==s.commits+1
++    &&s.provisionalValidations==2*(s.commits+1)&&s.endpointTransitions==2*(s.commits+1),"P3 final history commit lifecycle invalid");Map(np,id,code);
++  Need(s.coreFieldChecks==21ull*s.soilCount*(s.commits+1)&&s.hgSnapshotChecks==0,"P3 readonly round checks were skipped");
+   for(unsigned k:s.soilIds){const unsigned a=s.slot[k];Need(std::isfinite(p[a])&&Bits(j[a],s.Jfull[k])&&Bits(p0[a],s.initialP0[k]),"Final BC changed J/P0 or made p nonfinite");Need(s.commitDrained[k]?Bits(p[a],0.f):Bits(p[a],s.raw[k]),"Final pressure differs from exact raw row or true-Dirichlet +0");}
+   for(unsigned k:s.soilIds){s.finalP[k]=p[s.slot[k]];s.previous[k]=s.pn[k];}s.lastEnd=s.sourceTime+s.dt;s.commits++;s.pending=false;
+ }
+@@ -214,20 +255,39 @@
+   }
+   Need(count==s.soilCount,"Readonly HG soil set changed");
+ }
+-inline void Saved(const void* owner,unsigned part,double time,unsigned long long step,unsigned np,const unsigned* id,const typecode* code,const float* p,const double* j){
+-  State& s=state;Need(s.owner==owner&&s.ready&&!s.pending&&Bits(time,s.lastEnd),"Saved clock/commit differs");Map(np,id,code);
+-  Need(s.commits?step+1==s.initialStep+s.commits:step==s.initialStep,"Saved native zero-based step differs");
+-  for(unsigned k:s.soilIds){const unsigned a=s.slot[k];Need(Bits(p[a],s.finalP[k])&&Bits(j[a],s.Jfull[k]),"Saved pressure/J differs from actual commit");
+-    *s.csv<<part<<','<<k<<','<<s.sourceStep<<','<<(s.initialStep+s.commits)<<','<<s.sourceTime<<','<<time<<','<<s.dt<<','<<s.pn[k]<<','<<s.previousUsed[k]<<','<<s.predicted[k]<<','<<s.half[k]<<','<<s.q[k]<<','<<s.S[k]<<','<<s.R[k]<<','<<s.raw[k]<<','<<p[a]<<','<<s.thetaH[k]<<','<<s.thetaEndpoint[k]<<','<<s.Jn[k]<<','<<s.Jhalf[k]<<','<<s.Jfull[k]<<','<<s.sourceDrained[k]<<','<<s.drained[k]<<','<<s.commitDrained[k]<<','<<s.commits<<','<<s.endpointCalls<<','<<s.coreFieldChecks<<','<<s.hgSnapshotChecks<<'\n';
+-  }
+-  s.csv->flush();Need(bool(*s.csv),"Saved pressure sidecar failed");
++template<class HG> inline void NextEndpoint(const void* owner,unsigned np,const unsigned* id,const typecode* code,
++  const tdouble3* pos,const tfloat4* velrhop,const tsymatrix3d* sigma,const float* kappa,const float* p0,const float* q,const double* j,
++  double time,unsigned long long step,double dt,const HG* hg){
++  State& s=state;const unsigned round=s.endpointRound;
++  Need(s.owner==owner&&s.pending&&s.temporary&&!s.endpoint&&s.prepared&&s.roundWritten&&!s.nextStarting
++    &&((round==1&&s.firstValidated&&!s.secondValidated)||(round==2&&s.firstValidated&&s.secondValidated))
++    &&s.provisionalValidations==2*s.commits+round&&s.endpointTransitions==2*s.commits+round-1
++    &&s.endpointWrites==3*s.commits+round&&!s.unexpectedRows.load(),"P3 next endpoint transition invalid");Map(np,id,code);
++  const auto& previous=(round==1?s.firstRows:s.secondRows);
++  for(unsigned k:s.soilIds){const unsigned a=s.slot[k];Need(Bits(q[a],previous[k].actualBC)&&Bits(j[a],previous[k].Jfull)&&Bits(p0[a],s.initialP0[k]),"P3 provisional p1/p2/J/P0 changed before next snapshot");}
++  // All errors were checked and the corresponding independent record copied BEFORE reset.
++  std::fill(s.seen.begin(),s.seen.end(),0);std::fill(s.rowError.begin(),s.rowError.end(),0);std::fill(s.drained.begin(),s.drained.end(),0);std::fill(s.commitDrained.begin(),s.commitDrained.end(),0);
++  s.prepared=false;s.roundWritten=false;s.nextStarting=true;
++  try{Endpoint(owner,np,id,code,pos,velrhop,sigma,kappa,p0,q,j,time,step,dt);CaptureHG(hg);s.endpointTransitions++;s.nextStarting=false;}
++  catch(...){s.nextStarting=false;throw;} // Preserve first error; never retry or rotate pressure history.
++}
++inline void Saved(const void* owner,unsigned part,double time,unsigned long long savedstep,unsigned np,const unsigned* id,const typecode* code,const float* p,const double* j){
++  State& s=state;Need(s.ready&&s.owner==owner&&!s.pending&&!s.endpoint&&Bits(time,s.lastEnd)&&(s.commits?savedstep+1==s.initialStep+s.commits:savedstep==s.initialStep),"P3 genuine saved clock/history differs");Map(np,id,code);
++  const auto emit=[&](unsigned k,unsigned round,const FirstEndpointRecord& r){
++    *s.csv<<part<<','<<round<<','<<k<<','<<s.sourceStep<<','<<(s.initialStep+s.commits)<<','<<s.sourceTime<<','<<time<<','<<s.dt<<','<<r.pn<<','<<r.previous<<','<<r.predicted<<','<<r.half<<','<<r.q<<','<<r.S<<','<<r.R<<','<<r.raw<<','<<r.actualBC<<','<<r.priorFinalP<<','<<r.thetaH<<','<<r.thetaEndpoint<<','<<r.Jn<<','<<r.Jhalf<<','<<r.Jfull<<','<<r.sourceDrained<<','<<r.drained<<','<<r.commitDrained<<','<<(unsigned(s.firstValidated)+unsigned(s.secondValidated))<<','<<s.commits<<','<<s.endpointCalls<<','<<s.endpointWrites<<','<<s.coreFieldChecks<<','<<s.hgSnapshotChecks<<'\n';};
++  for(unsigned k:s.soilIds){const unsigned a=s.slot[k];Need(Bits(p[a],s.finalP[k])&&Bits(j[a],s.Jfull[k]),"P3 saved field changed after commit");
++    FirstEndpointRecord r;r.pn=s.pn[k];r.previous=s.previousUsed[k];r.half=s.half[k];r.q=s.q[k];r.raw=s.raw[k];r.actualBC=s.finalP[k];
++    r.priorFinalP=(s.commits?s.firstRows[k].priorFinalP:s.finalP[k]);r.predicted=s.predicted[k];r.S=s.S[k];r.R=s.R[k];r.Jn=s.Jn[k];r.Jhalf=s.Jhalf[k];r.Jfull=s.Jfull[k];r.thetaH=s.thetaH[k];r.thetaEndpoint=s.thetaEndpoint[k];r.sourceDrained=s.sourceDrained[k];r.drained=s.drained[k];r.commitDrained=s.commitDrained[k];
++    if(s.commits){Need(s.firstValidated&&s.secondValidated&&s.endpointRound==3&&Bits(s.secondRows[k].q,s.firstRows[k].actualBC)&&Bits(s.q[k],s.secondRows[k].actualBC),"P3 q2/q3 are not validated actual p1/p2");emit(k,1,s.firstRows[k]);emit(k,2,s.secondRows[k]);emit(k,3,r);}else emit(k,0,r);}
++  s.csv->flush();Need(bool(*s.csv),"P3 pressure sidecar write failed");
+ }
+ inline void Finish(const void* owner,unsigned long long step,double time){
+-  State& s=state;Need(s.owner==owner&&s.ready&&!s.pending&&step==s.initialStep+s.commits&&Bits(time,s.lastEnd),"Finish clock/history differs");
+-  Need(s.preCalls==s.commits&&s.corCalls==s.commits&&s.jCalls==s.commits&&s.endpointCalls==s.commits,"Missing or duplicate pressure lifecycle stage");
+-  Need(s.coreFieldChecks==7ull*s.soilCount*s.commits,"Missing endpoint core-field checks");
+-  const std::string path=s.directory+"UplTpiCpuR1.summary.json";Need(!std::ifstream(path).good(),"Pressure summary already exists");std::ofstream out(path);Need(bool(out),"Pressure summary open failed");
+-  out<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_cpu_r1\",\"completed\":true,\"scheme\":\""<<Name()<<"\",\"alpha\":"<<Alpha()<<",\"beta\":0,\"commits\":"<<s.commits<<",\"endpoint_calls\":"<<s.endpointCalls<<",\"core_field_bit_checks\":"<<s.coreFieldChecks<<",\"HG_readonly_snapshot_checks\":"<<s.hgSnapshotChecks<<",\"actual_end\":"<<time<<",\"history_cold_start\":true,\"full_restart_supported\":false,\"theta_endpoint_is_not_J_integration_theta\":true,\"paper_literal_LF\":false,\"second_order_claimed\":false,\"true_implicit_solution\":false,\"physical_acceptance\":false}\n";
+-  out.flush();Need(bool(out),"Pressure summary write failed");
++  State& s=state;Need(s.owner==owner&&s.ready&&!s.pending&&!s.endpoint&&step==s.initialStep+s.commits&&Bits(time,s.lastEnd),"P3 Finish clock/history differs");
++  Need(s.preCalls==s.commits&&s.corCalls==s.commits&&s.jCalls==s.commits&&s.endpointCalls==3*s.commits&&s.endpointWrites==3*s.commits
++    &&s.firstValidations==s.commits&&s.secondValidations==s.commits&&s.provisionalValidations==2*s.commits&&s.endpointTransitions==2*s.commits,"P3 missing or duplicate lifecycle round");
++  Need(s.coreFieldChecks==21ull*s.soilCount*s.commits&&s.hgSnapshotChecks==0,"P3 readonly check totals differ");
++  const std::string path=s.directory+"UplTpiP3CpuR1.summary.json";Need(!std::ifstream(path).good(),"P3 summary already exists");std::ofstream out(path);Need(bool(out),"P3 summary open failed");
++  out<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_p3_cpu_r1\",\"completed\":true,\"scheme\":\""<<Name()<<"\",\"alpha\":0.5,\"beta\":0,\"endpoint_defects_per_step\":3,\"commits\":"<<s.commits<<",\"endpoint_calls\":"<<s.endpointCalls<<",\"endpoint_writes\":"<<s.endpointWrites<<",\"first_validations\":"<<s.firstValidations<<",\"second_validations\":"<<s.secondValidations<<",\"provisional_validations\":"<<s.provisionalValidations<<",\"endpoint_transitions\":"<<s.endpointTransitions<<",\"core_field_bit_checks\":"<<s.coreFieldChecks<<",\"HG_readonly_snapshot_checks\":"<<s.hgSnapshotChecks<<",\"actual_end\":"<<time<<",\"history_cold_start\":true,\"full_restart_supported\":false,\"PorePressRate_is_R3_at_actual_p2_scaled_residual_not_R_at_p3_or_dpdt\":true,\"theta_endpoint_is_not_J_integration_theta\":true,\"provisional_finalP_fields_are_prior_commit_not_p1_or_p2\":true,\"scalar_fixture_is_not_spatial_kernel_proof\":true,\"paper_literal_LF\":false,\"second_order_claimed\":false,\"true_implicit_solution\":false,\"physical_acceptance\":false}\n";
++  out.flush();Need(bool(out),"P3 summary write failed");
+ }
+ } // namespace upl_tpi_cpu_r1
+--- /dev/null
++++ b/upl_tpi_m0_dt_r2.h
+@@ -0,0 +1,108 @@
++// Private, host-only P3 Eq40 necessary timestep audit; no public XML or ABI.
++#pragma once
++#ifdef __CUDACC__
++#error The P3 timestep policy is host-only and must not change a CUDA closure.
++#endif
++#include <algorithm>
++#include <cfloat>
++#include <cmath>
++#include <cstdlib>
++#include <cstring>
++#include <fstream>
++#include <iomanip>
++#include <stdexcept>
++#include <string>
++
++// Intentional source substitution for the original M0 dt header, never co-include it.
++namespace upl_tpi_m0_dt_r2 {
++inline void Need(bool q,const char* m){if(!q)throw std::runtime_error(m);}
++inline bool Bits(double a,double b){return !std::memcmp(&a,&b,sizeof(a));}
++inline bool Enabled(bool pressureBC){
++  if(!pressureBC)return false; // A does not inspect or initialise either private policy.
++  static const bool yes=[](){const char* rows=std::getenv("UPL_TPI_P3_ROWS_R1");
++    if(!rows||!*rows)return false;
++    Need(!std::strcmp(rows,"3"),"Private P3 rows must be absent or exactly 3");
++    const char* p=std::getenv("UPL_TPI_M0_DT_R1");
++    Need(p&&!std::strcmp(p,"EQ40_RH1"),"Private P3 dt requires EQ40_RH1");return true;}();
++  return yes;
++}
++inline bool AllowedDt(double dt,double event){
++  return std::isfinite(dt)&&dt>0.&&event==.0078125&&Bits(dt,event/4096.);
++}
++struct Extrema {
++  unsigned long long pre=0,cor=0,endpoint1=0,endpoint2=0,endpoint3=0;
++  double force=DBL_MAX,wave=DBL_MAX,hydro=DBL_MAX,legacyWave=DBL_MAX,hg=DBL_MAX,bound=DBL_MAX,error=-DBL_MAX;
++};
++struct State {
++  const void* owner=nullptr;std::string directory,backend,scheme;
++  double dt=0,sourceTime=0,lastEnd=0,lastSaved=0;unsigned phase=0;
++  unsigned long long completed=0,saves=0;Extrema interval,total;std::ofstream csv;
++};
++inline State& Get(){static State s;return s;}
++inline void Init(const void* owner,const std::string& directory,const char* backend,const char* scheme,
++  double time,unsigned long long step,double dt,double event){
++  // Check B before reading private environment; the default A path never calls Init.
++  Need(scheme&&!std::strcmp(scheme,"B"),"Private P3 dt admits only scheme B");
++  Need(Enabled(true),"Private P3 dt requires explicit rows=3");
++  State& s=Get();Need(owner&&!s.owner&&time==0.&&step==0&&AllowedDt(dt,event),"P3 dt requires a fresh admitted fixed grid");
++  Need(backend&&(!std::strcmp(backend,"CPU")||!std::strcmp(backend,"GPU")),"P3 dt backend absent");
++  s.owner=owner;s.directory=directory;s.backend=backend;s.scheme=scheme;s.dt=dt;
++  const std::string policy=directory+"UplTpiP3DtR1.policy.json",csv=directory+"UplTpiP3DtR1.csv";
++  Need(!std::ifstream(policy).good()&&!std::ifstream(csv).good(),"P3 dt sidecar already exists");
++  s.csv.open(csv);Need(bool(s.csv),"P3 dt interval output failed");s.csv<<std::setprecision(17);
++  s.csv<<"part,actual_save_time_s,saved_step,completed_updates,dt_s,interval_pre,interval_cor,interval_endpoint1,interval_endpoint2,interval_endpoint3,total_pre,total_cor,total_endpoint1,total_endpoint2,total_endpoint3,interval_empty,min_force_CFL_s,min_skeleton_wave_AV_CFL_s,min_Rh_hydro_s,min_legacy_Kw_wave_CFL_reference_s,min_HG_limit_reference_s,min_selected_bound_s,max_dt_minus_bound_s\n";
++  std::ofstream p(policy);p<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_p3_dt_r1\",\"backend\":\""<<backend
++    <<"\",\"pressure_scheme\":\""<<scheme<<"\",\"endpoint_defect_rounds\":3,\"force_phases_per_update\":5,\"dt_policy\":\"M0_Eq40_Rh1\",\"R_h\":1,\"fixed_dt_s\":"<<dt
++    <<",\"drainage_event_s\":"<<event<<",\"source_clock_policy\":\"original_TimeStep_all_five_phases\",\"force_and_AV_retained\":true,\"hydro_is_true_Kw_explicit_reference\":true,\"legacy_Kw_wave_is_reference_only\":true,\"HG_independent_guard_retained\":true,\"HG_limit_reference_available\":false,\"signed_dterror_is_method_specific\":true,\"initial_dterror_not_rewritten\":true,\"sufficient_stability_claimed\":false,\"physical_acceptance\":false}\n";
++  p.flush();Need(bool(p),"P3 dt policy write failed");
++}
++inline void Add(Extrema& x,unsigned phase,double force,double wave,double hydro,double oldwave,double hg,double bound,double error){
++  Need(phase<=4,"P3 dt phase outside five-phase audit");
++  if(phase==0)x.pre++;else if(phase==1)x.cor++;else if(phase==2)x.endpoint1++;else if(phase==3)x.endpoint2++;else x.endpoint3++;
++  x.force=(std::min)(x.force,force);x.wave=(std::min)(x.wave,wave);x.hydro=(std::min)(x.hydro,hydro);
++  x.legacyWave=(std::min)(x.legacyWave,oldwave);x.hg=(std::min)(x.hg,hg);
++  x.bound=(std::min)(x.bound,bound);x.error=(std::max)(x.error,error);
++}
++// Query only: callers pass the backend pressure helper's independent actual round.
++inline unsigned EndpointPhase(){
++  const State& s=Get();Need(s.owner&&(s.phase>=2&&s.phase<=4),"P3 dt is not at an expected endpoint phase");return s.phase;
++}
++// Eq40 necessary bound only: R_h is fixed to one in this candidate.
++// The old true-Kw wave is diagnostic; HG retains its independent original gate.
++inline double Record(const void* owner,unsigned phase,double time,unsigned long long step,double dt,
++  double forceCFL,double skeletonWaveAVCFL,double hydro,double legacyWaveCFL,double hgLimit){
++  State& s=Get();Need(s.owner==owner&&phase<=4&&phase==s.phase&&step==s.completed&&Bits(dt,s.dt),"P3 dt phase/owner/step changed");
++  if(phase==0){Need(Bits(time,s.lastEnd),"P3 dt predictor clock changed");s.sourceTime=time;}
++  else Need(Bits(time,s.sourceTime),"P3 dt stage source clock changed");
++  const double values[]={forceCFL,skeletonWaveAVCFL,hydro,legacyWaveCFL,hgLimit};
++  for(double x:values)Need(std::isfinite(x)&&x>0.,"P3 dt necessary scale must be finite and positive");
++  const double bound=(std::min)((std::min)(forceCFL,skeletonWaveAVCFL),hydro),error=dt-bound;
++  Need(std::isfinite(bound)&&bound>0.&&std::isfinite(error),"P3 dt combined necessary bound invalid");
++  Add(s.interval,phase,forceCFL,skeletonWaveAVCFL,hydro,legacyWaveCFL,hgLimit,bound,error);
++  Add(s.total,phase,forceCFL,skeletonWaveAVCFL,hydro,legacyWaveCFL,hgLimit,bound,error);
++  s.phase=(phase+1)%5;if(phase==4){s.completed++;s.lastEnd=time+dt;}
++  return bound; // Original DtVariable still rejects an already locked excess step.
++}
++inline void Saved(const void* owner,unsigned part,double time,unsigned long long savedstep){
++  State& s=Get();Need(s.owner==owner&&s.phase==0&&Bits(time,s.lastEnd)
++    &&(s.completed?savedstep+1==s.completed:savedstep==0),"P3 dt genuine saved clock changed");
++  Need(s.interval.pre==s.interval.cor&&s.interval.cor==s.interval.endpoint1&&s.interval.endpoint1==s.interval.endpoint2&&s.interval.endpoint2==s.interval.endpoint3,"P3 dt saved interval has missing stages");
++  const auto& x=s.interval;const bool empty=x.pre==0;
++  s.csv<<part<<','<<time<<','<<savedstep<<','<<s.completed<<','<<s.dt<<','<<x.pre<<','<<x.cor<<','<<x.endpoint1<<','<<x.endpoint2<<','<<x.endpoint3
++    <<','<<s.total.pre<<','<<s.total.cor<<','<<s.total.endpoint1<<','<<s.total.endpoint2<<','<<s.total.endpoint3<<','<<unsigned(empty)<<','<<x.force<<','<<x.wave<<','<<x.hydro
++    <<','<<x.legacyWave<<','<<x.hg<<','<<x.bound<<','<<x.error<<'\n';
++  s.csv.flush();Need(bool(s.csv),"P3 dt saved interval write failed");s.interval=Extrema{};s.saves++;s.lastSaved=time;
++}
++inline void Finish(const void* owner,unsigned long long completed,double time){
++  State& s=Get();Need(s.owner==owner&&s.phase==0&&s.completed==completed&&Bits(time,s.lastEnd)&&Bits(time,s.lastSaved)
++    &&s.total.pre==completed&&s.total.cor==completed&&s.total.endpoint1==completed&&s.total.endpoint2==completed&&s.total.endpoint3==completed,"P3 dt complete stage/save counts differ");
++  const std::string path=s.directory+"UplTpiP3DtR1.summary.json";Need(!std::ifstream(path).good(),"P3 dt summary exists");
++  std::ofstream f(path);f<<std::setprecision(17)<<"{\"stage\":\"upl_tpi_p3_dt_r1\",\"completed\":true,\"endpoint_defect_rounds\":3,\"force_phases_per_update\":5,\"dt_policy\":\"M0_Eq40_Rh1\",\"R_h\":1,\"updates\":"<<completed
++    <<",\"pre\":"<<s.total.pre<<",\"cor\":"<<s.total.cor<<",\"endpoint1\":"<<s.total.endpoint1<<",\"endpoint2\":"<<s.total.endpoint2<<",\"endpoint3\":"<<s.total.endpoint3<<",\"saved_intervals_including_initial\":"<<s.saves
++    <<",\"actual_end_s\":"<<time<<",\"fixed_dt_s\":"<<s.dt<<",\"min_selected_bound_s\":"<<s.total.bound<<",\"max_dt_minus_bound_s\":"<<s.total.error
++    <<",\"min_force_CFL_s\":"<<s.total.force<<",\"min_skeleton_wave_AV_CFL_s\":"<<s.total.wave<<",\"min_Rh_hydro_s\":"<<s.total.hydro
++    <<",\"min_legacy_Kw_wave_CFL_reference_s\":"<<s.total.legacyWave<<",\"HG_limit_reference_available\":false,\"min_HG_limit_reference_s\":"<<s.total.hg
++    <<",\"source_clock_policy\":\"original_TimeStep_all_five_phases\",\"signed_dterror_is_method_specific\":true,\"initial_dterror_not_rewritten\":true,\"sufficient_stability_claimed\":false,\"physical_acceptance\":false}\n";
++  f.flush();Need(bool(f),"P3 dt summary write failed");
++}
++} // namespace upl_tpi_m0_dt_r2
