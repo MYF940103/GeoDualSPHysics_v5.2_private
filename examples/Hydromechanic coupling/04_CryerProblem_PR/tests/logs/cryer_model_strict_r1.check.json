@@ -1,0 +1,184 @@
+{
+  "scope": "Private Cryer strict HydroMechModel/externalload XML and same-backend native equivalence; two updates only",
+  "harness": "tests/support/cryer_model_strict_r1.py",
+  "kernel_changes": 0,
+  "server_package_modified": false,
+  "backend": {
+    "cpu": {
+      "build_receipt": "cryer_model_strict_cpu_r1_DebugCPU.build.json",
+      "profiles": {
+        "default": {
+          "exit": 0,
+          "model": 0,
+          "ids": 37181,
+          "frames": 2,
+          "exact_arrays": 15,
+          "exact_pressure_dt_files": 0,
+          "actual_times_s": [
+            0.0,
+            1.9073486328125e-06
+          ]
+        },
+        "model0": {
+          "exit": 0,
+          "model": 0,
+          "ids": 37181,
+          "frames": 2,
+          "exact_arrays": 15,
+          "exact_pressure_dt_files": 0,
+          "actual_times_s": [
+            0.0,
+            1.9073486328125e-06
+          ]
+        },
+        "model1": {
+          "exit": 0,
+          "model": 1,
+          "ids": 37181,
+          "frames": 2,
+          "exact_arrays": 22,
+          "exact_pressure_dt_files": 0,
+          "actual_times_s": [
+            0.0,
+            1.9073486328125e-06
+          ]
+        },
+        "model2": {
+          "exit": 0,
+          "model": 2,
+          "ids": 37181,
+          "frames": 2,
+          "exact_arrays": 22,
+          "exact_pressure_dt_files": 6,
+          "actual_times_s": [
+            0.0,
+            3.814697265625e-06
+          ]
+        },
+        "legacy": {
+          "exit": 1,
+          "frames": 0,
+          "rejection": "Text: Error reading xml - Element 'HydroMechDynamicSeepage' is invalid."
+        },
+        "mixed": {
+          "exit": 1,
+          "frames": 0,
+          "rejection": "Text: Error reading xml - Element 'HydroMechDynamicSeepage' is invalid."
+        },
+        "integrator": {
+          "exit": 1,
+          "frames": 0,
+          "rejection": "Text: Error reading xml - Element 'HydroMechPressureIntegrator' is invalid."
+        },
+        "legacy_load": {
+          "exit": 1,
+          "frames": 0,
+          "rejection": "Text: Error reading xml - Element 'HydroMechTopLoadMode' is invalid."
+        },
+        "mixed_load": {
+          "exit": 1,
+          "frames": 0,
+          "rejection": "Text: Error reading xml - Element 'HydroMechTopLoadMode' is invalid."
+        },
+        "old_alpha": {
+          "exit": 1,
+          "frames": 0,
+          "rejection": "Text: Error reading xml - Element 'PoreTpiAlpha' is invalid."
+        }
+      }
+    },
+    "gpu": {
+      "build_receipt": "cryer_model_strict_gpu_r1_Release.build.json",
+      "profiles": {
+        "default": {
+          "exit": 0,
+          "model": 0,
+          "ids": 37181,
+          "frames": 2,
+          "exact_arrays": 15,
+          "exact_pressure_dt_files": 0,
+          "actual_times_s": [
+            0.0,
+            1.9073486328125e-06
+          ]
+        },
+        "model0": {
+          "exit": 0,
+          "model": 0,
+          "ids": 37181,
+          "frames": 2,
+          "exact_arrays": 15,
+          "exact_pressure_dt_files": 0,
+          "actual_times_s": [
+            0.0,
+            1.9073486328125e-06
+          ]
+        },
+        "model1": {
+          "exit": 0,
+          "model": 1,
+          "ids": 37181,
+          "frames": 2,
+          "exact_arrays": 22,
+          "exact_pressure_dt_files": 0,
+          "actual_times_s": [
+            0.0,
+            1.9073486328125e-06
+          ]
+        },
+        "model2": {
+          "exit": 0,
+          "model": 2,
+          "ids": 37181,
+          "frames": 2,
+          "exact_arrays": 22,
+          "exact_pressure_dt_files": 9,
+          "actual_times_s": [
+            0.0,
+            3.814697265625e-06
+          ]
+        },
+        "legacy": {
+          "exit": 1,
+          "frames": 0,
+          "rejection": "Text: Error reading xml - Element 'HydroMechDynamicSeepage' is invalid."
+        },
+        "mixed": {
+          "exit": 1,
+          "frames": 0,
+          "rejection": "Text: Error reading xml - Element 'HydroMechDynamicSeepage' is invalid."
+        },
+        "integrator": {
+          "exit": 1,
+          "frames": 0,
+          "rejection": "Text: Error reading xml - Element 'HydroMechPressureIntegrator' is invalid."
+        },
+        "legacy_load": {
+          "exit": 1,
+          "frames": 0,
+          "rejection": "Text: Error reading xml - Element 'HydroMechTopLoadMode' is invalid."
+        },
+        "mixed_load": {
+          "exit": 1,
+          "frames": 0,
+          "rejection": "Text: Error reading xml - Element 'HydroMechTopLoadMode' is invalid."
+        },
+        "old_alpha": {
+          "exit": 1,
+          "frames": 0,
+          "rejection": "Text: Error reading xml - Element 'PoreTpiAlpha' is invalid."
+        }
+      }
+    }
+  },
+  "model2": {
+    "commits": 2,
+    "endpoint_writes": 6,
+    "actual_pressure_rounds_per_update": 3,
+    "alpha": 0.5,
+    "beta": 0,
+    "Rh": 1,
+    "physical_full_cycle_acceptance": "pending independent Cryer results"
+  },
+  "passed": true
+}
