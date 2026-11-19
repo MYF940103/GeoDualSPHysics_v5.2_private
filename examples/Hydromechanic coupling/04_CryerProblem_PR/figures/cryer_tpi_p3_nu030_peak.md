@@ -18,6 +18,7 @@ TPI 的时间采样和相对显式 A 的幅值比较通过。峰值幅度未达 
 | [孔压和有效应力一同施加解析场后的合力残差](../tests/figures/cryer_peak_paired_manufactured_r1.png) | [两种几何的四个分区](../tests/figures/cryer_peak_paired_manufactured_r1_regions.csv) · [20 个壳面的径向分量及 RMS](../tests/figures/cryer_peak_paired_manufactured_r1_shells.csv) |
 | [离散残差的内核与表面来源](../tests/notes/cryer_p3_return_causal_r1.md) | [常张量项与邻点梯度项的分区分解](../tests/figures/cryer_peak_force_moments_r1_regions.csv) · [各壳的方向与协方差](../tests/figures/cryer_peak_force_moments_r1_shells.csv) |
 | [四面体内力和显式表面牵引的合力对比](../tests/figures/cryer_tet_weak_force_r1_detail.png) | [同一粒子质量下的区域数据](../tests/figures/cryer_tet_weak_force_r1_regions.csv) · [闭态、峰值与几何质量核验](../tests/notes/cryer_tet_weak_force_r1.md) |
+| [三维 Darcy 迭代的高频谱与首开过冲](../tests/figures/cryer_tet_darcy_rowsum_r2.png) | [原对角与闭态绝对行和](../tests/notes/cryer_tet_darcy_screen_r1.md) · [两次 CPU 冻结行与三轮实际计算](../tests/figures/cryer_tet_darcy_rowsum_r2_cpu_sweeps.csv) |
 | [守恒空间离散的径向瞬态与频响预测](../tests/figures/cryer_shell_candidate_comparison_r1.png) | [原 SPH、保留粒子 Darcy 和四面体 Darcy 的对照](../tests/notes/cryer_shell_candidate_comparison_r1.md) · [独立球壳积分与边界功](../tests/notes/cryer_smoothed_traction_r1.md) |
 | [原生、方法和峰值判定](../tests/figures/cryer_p3_server_peak_actual_r1/peak_rejected.json) | [三轮五阶段审查](../tests/figures/cryer_p3_server_peak_actual_r1/sidecar_review.json) · [连续和同步采样的理论峰值](../tests/figures/cryer_p3_server_peak_actual_r1/physical/physical_review.json) |
 

@@ -1,0 +1,28 @@
+{
+  "nodes": 37173,
+  "open_unknowns": 32020,
+  "drain_nodes": 5153,
+  "K_entries": 540053,
+  "diagonal_over_absolute_row_percentiles": [
+    0.25428983437012076,
+    0.3515479858738564,
+    0.46089113091806067,
+    0.4939067387486354,
+    0.5000000000000002
+  ],
+  "open_absolute_over_closed_absolute_max": 1.0,
+  "original_row_sum_Gershgorin_lower": -0.4914203312597585,
+  "SPD_plus_closed_row_sum_Gershgorin_upper": 1.0,
+  "normalized_min": 0.0018363592662053215,
+  "normalized_max": 0.9887575080405475,
+  "three_sweep_slowest_norm": 0.9945010326548489,
+  "three_sweep_highest_norm": 1.4209793179415905e-06,
+  "spectral_interval_pressure_error_action": [
+    0.011242491959452483,
+    0.9981636407337947
+  ],
+  "radial_normalized_min": 0.0018429030087945347,
+  "radial_normalized_max": 0.3031983446973703,
+  "fixed_row_definition": "S_i = sum_j |K_ij| over all original nodes, including diagonal and all true fixed surface nodes. A=K_II. CPU update p += (b-Ap)/S.",
+  "scoped_predictor": "Known P1 linear systems b=A p_M0(r,t), t=dt and 2dt. TPI history seed for second test uses 2*previous_estimated-previous2. No force-stage or real projected-P3 RHS; this only checks algebra and error propagation."
+}
