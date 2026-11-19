@@ -155,6 +155,16 @@ def audit(data, steps, dt, reference=None, exact=False, p3_sidecars=False, radia
         if radial is not None:
             if not i:
                 radial.set_materials(np.linalg.norm(initial[SOIL],axis=1),a["PoroCurrentVolume"][SOIL])
+                # CENTER was established from sorted initial native IDs above.
+                # Freeze its material connectivity once, before the sphere deforms.
+                from cryer_material_shell_volume import faces, volume
+                center_faces=faces(initial[CENTER])
+                center_volume=volume(initial[CENTER],center_faces)
+            center_effective=np.mean(a["SigmaState_kk"][CENTER],dtype=np.float64)
+            row.update(center18_effective_mean_tensile_Pa=float(center_effective),
+                       center18_total_compression_Pa=row["center18_Pa"]-float(center_effective),
+                       center18_J_minus_1=float(a["PoroVolumeRatio"][CENTER].mean()-1),
+                       center18_enclosed_volume_change=float(volume(a["Posd"][CENTER],center_faces)/center_volume-1))
             radial.observe(row,a["PorePress"][SOIL],a["FSType"][SOIL])
         if reference:
             other,other_err=snapshot(reference/file.name,i,step,dt)
