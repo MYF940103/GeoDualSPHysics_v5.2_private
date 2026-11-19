@@ -1,0 +1,650 @@
+{
+  "role": "Frozen small-strain particle pressure and matched nodal mechanics. No physical solver or continuum certification.",
+  "scope": "Pressure-only perturbations at held displacement/velocity/theta/external load. Their temporal predictor is conditional; the complete evolving body/velocity trajectory has further feedback.",
+  "dimensions": {
+    "n": 37173,
+    "surface": 5153,
+    "shells": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ]
+  },
+  "closed": {
+    "uniform_closed_body_pressure_load_acceleration_residual_m_s2": 1.586583020006835e-13,
+    "sudden_10kPa_load_first_three_rounds_zero_theta_not_linear_ramp": [
+      {
+        "round": 1,
+        "min_Pa": -1869.5113655800312,
+        "max_Pa": 655.3249770628055,
+        "rms_Pa": 405.39873277871345,
+        "mean_Pa": -128.9360732348283
+      },
+      {
+        "round": 2,
+        "min_Pa": -2473.904002745415,
+        "max_Pa": 257.5234741583682,
+        "rms_Pa": 589.5915451110349,
+        "mean_Pa": -270.4851383940432
+      },
+      {
+        "round": 3,
+        "min_Pa": -3008.5487116524682,
+        "max_Pa": 23.07932040582792,
+        "rms_Pa": 789.6778198948655,
+        "mean_Pa": -418.0561479951609
+      }
+    ],
+    "closed_integrated_residual": {
+      "Vdual": {
+        "pressure_constant_null": 1.3267263031003859e-12,
+        "pressure_column_defect": {
+          "sum_m": -6.938893903907228e-16,
+          "L1_m": 18.60568480968593,
+          "max_m": 0.005520032964036119,
+          "L1_per_volume_mneg2": 35574.33182586336,
+          "max_native_id": 17355
+        },
+        "combined_pressure_mechanics_column_defect": {
+          "sum_m": 2.721528591106243,
+          "L1_m": 18.756023780658403,
+          "max_m": 0.004788127832559727,
+          "L1_per_volume_mneg2": 35861.78205918933,
+          "max_native_id": 17355
+        },
+        "acceleration_uniform_p_alone_integral_per_volume_mneg2": 5203.601058703639,
+        "vector_acceleration_flux_coeff_L1_m2": 0.014546766428375567,
+        "boundary_total_area_m2": 0.0313806763884929,
+        "surface_only_acceleration_flux_coeff_fraction": 0.9999999999999981
+      },
+      "Vnative": {
+        "pressure_constant_null": 6.958867295115176e-13,
+        "pressure_column_defect": {
+          "sum_m": -4.0419056990259605e-16,
+          "L1_m": 1.6484247462609893,
+          "max_m": 0.0005445882870975813,
+          "L1_per_volume_mneg2": 2838.0595465100814,
+          "max_native_id": 18592
+        },
+        "combined_pressure_mechanics_column_defect": {
+          "sum_m": 2.6513797839070845,
+          "L1_m": 7.10881874104713,
+          "max_m": 0.0019875545850229896,
+          "L1_per_volume_mneg2": 12239.109451736116,
+          "max_native_id": 37049
+        },
+        "acceleration_uniform_p_alone_integral_per_volume_mneg2": 4564.826950219763,
+        "vector_acceleration_flux_coeff_L1_m2": 0.03716876710675182,
+        "boundary_total_area_m2": 0.0313806763884929,
+        "surface_only_acceleration_flux_coeff_fraction": 0.3851254309649481
+      }
+    },
+    "probes": [
+      {
+        "field": "constant_pressure_at_fixed_external_traction",
+        "each_round": [
+          {
+            "round": 1,
+            "l2_gain": 1.0136225609033922,
+            "linf_gain": 1.1869511365580028
+          },
+          {
+            "round": 3,
+            "l2_gain": 1.0439574417529536,
+            "linf_gain": 1.3008548711652466
+          },
+          {
+            "round": 6,
+            "l2_gain": 1.0960117592305028,
+            "linf_gain": 1.4605761161498054
+          }
+        ],
+        "frozen_temporal_impulse": [
+          {
+            "complete_pressure_steps": 1,
+            "l2_gain": 1.56593616262943
+          },
+          {
+            "complete_pressure_steps": 3,
+            "l2_gain": 2.261099287951924
+          },
+          {
+            "complete_pressure_steps": 6,
+            "l2_gain": 3.3360973373999525
+          }
+        ]
+      },
+      {
+        "field": "highest_shell_parity",
+        "each_round": [
+          {
+            "round": 1,
+            "l2_gain": 0.13510988561384626,
+            "linf_gain": 0.5793485010943578
+          },
+          {
+            "round": 3,
+            "l2_gain": 0.1277468311848333,
+            "linf_gain": 0.36209038468684385
+          },
+          {
+            "round": 6,
+            "l2_gain": 0.13517138824139927,
+            "linf_gain": 0.3391520842893546
+          }
+        ],
+        "frozen_temporal_impulse": [
+          {
+            "complete_pressure_steps": 1,
+            "l2_gain": 0.19162024677724993
+          },
+          {
+            "complete_pressure_steps": 3,
+            "l2_gain": 0.2878807057838045
+          },
+          {
+            "complete_pressure_steps": 6,
+            "l2_gain": 0.45134179689539494
+          }
+        ]
+      },
+      {
+        "field": "cartesian_cos_pi_x_over_dp",
+        "each_round": [
+          {
+            "round": 1,
+            "l2_gain": 0.0882293441013797,
+            "linf_gain": 0.5734816433996757
+          },
+          {
+            "round": 3,
+            "l2_gain": 0.01968902995644223,
+            "linf_gain": 0.31457723207278027
+          },
+          {
+            "round": 6,
+            "l2_gain": 0.013552820221863564,
+            "linf_gain": 0.22876545413767718
+          }
+        ],
+        "frozen_temporal_impulse": [
+          {
+            "complete_pressure_steps": 1,
+            "l2_gain": 0.02953354493466336
+          },
+          {
+            "complete_pressure_steps": 3,
+            "l2_gain": 0.017365060471773327
+          },
+          {
+            "complete_pressure_steps": 6,
+            "l2_gain": 0.014178910295733855
+          }
+        ]
+      },
+      {
+        "field": "random",
+        "each_round": [
+          {
+            "round": 1,
+            "l2_gain": 0.2510477467751661,
+            "linf_gain": 0.9119938263031767
+          },
+          {
+            "round": 3,
+            "l2_gain": 0.12015306953477213,
+            "linf_gain": 0.5670129527694522
+          },
+          {
+            "round": 6,
+            "l2_gain": 0.08105688414764159,
+            "linf_gain": 0.44258567796301684
+          }
+        ],
+        "frozen_temporal_impulse": [
+          {
+            "complete_pressure_steps": 1,
+            "l2_gain": 0.18022960430215815
+          },
+          {
+            "complete_pressure_steps": 3,
+            "l2_gain": 0.11412198411483786
+          },
+          {
+            "complete_pressure_steps": 6,
+            "l2_gain": 0.11065296584024091
+          }
+        ]
+      },
+      {
+        "field": "boundary_only",
+        "each_round": [
+          {
+            "round": 1,
+            "l2_gain": 0.7897877478666788,
+            "linf_gain": 0.8025942676794668
+          },
+          {
+            "round": 3,
+            "l2_gain": 0.7793733324704641,
+            "linf_gain": 0.6989445980443032
+          },
+          {
+            "round": 6,
+            "l2_gain": 0.8239363513003918,
+            "linf_gain": 0.6848045118185208
+          }
+        ],
+        "frozen_temporal_impulse": [
+          {
+            "complete_pressure_steps": 1,
+            "l2_gain": 1.1690599987056958
+          },
+          {
+            "complete_pressure_steps": 3,
+            "l2_gain": 1.7562643477980944
+          },
+          {
+            "complete_pressure_steps": 6,
+            "l2_gain": 2.760561999399525
+          }
+        ]
+      }
+    ],
+    "arnoldi": {
+      "dimension": 55,
+      "ritz": [
+        {
+          "lambda_real": 1.0268751186970242,
+          "lambda_imag": 0.0,
+          "resid": 0.0006071784416527257,
+          "error_field_max_native_id": 30705,
+          "surface_energy_fraction": 0.31339094106542764,
+          "outer_two_shells_energy_fraction": 0.6380650748912979,
+          "frozen_P3_temporal_root_max": 1.1557869215297576,
+          "three_round_factor": 1.0828115832518754
+        },
+        {
+          "lambda_real": 1.0221503318225165,
+          "lambda_imag": 0.0,
+          "resid": 0.00428521737142897,
+          "error_field_max_native_id": 139,
+          "surface_energy_fraction": 0.31723819177881213,
+          "outer_two_shells_energy_fraction": 0.6454883402821501,
+          "frozen_P3_temporal_root_max": 1.1289054279372897,
+          "three_round_factor": 1.0679337748438733
+        },
+        {
+          "lambda_real": 1.0179570777333828,
+          "lambda_imag": 0.0,
+          "resid": 0.013402075147801071,
+          "error_field_max_native_id": 11159,
+          "surface_energy_fraction": 0.315126388701841,
+          "outer_two_shells_energy_fraction": 0.6429369320217122,
+          "frozen_P3_temporal_root_max": 1.1049321063190862,
+          "three_round_factor": 1.05484439350128
+        },
+        {
+          "lambda_real": 1.0109354051636295,
+          "lambda_imag": 0.0,
+          "resid": 0.01994285244195926,
+          "error_field_max_native_id": 27683,
+          "surface_energy_fraction": 0.31218510915186337,
+          "outer_two_shells_energy_fraction": 0.6406974234050649,
+          "frozen_P3_temporal_root_max": 1.064439327840952,
+          "three_round_factor": 1.0331662724386637
+        }
+      ]
+    },
+    "source_oriented_arnoldi": {
+      "dimension": 35,
+      "ritz": [
+        {
+          "lambda_real": 1.0268821529355618,
+          "lambda_imag": 0.0,
+          "resid": 0.0002797627484721611,
+          "error_field_max_native_id": 139,
+          "surface_energy_fraction": 0.31325084601309067,
+          "outer_two_shells_energy_fraction": 0.6378169778445296,
+          "frozen_P3_temporal_root_max": 1.1558268601514756,
+          "three_round_factor": 1.0828338356377942
+        },
+        {
+          "lambda_real": 1.0218741261780566,
+          "lambda_imag": 0.0,
+          "resid": 0.012628376652072152,
+          "error_field_max_native_id": 19405,
+          "surface_energy_fraction": 0.31183818170124195,
+          "outer_two_shells_energy_fraction": 0.6364988255636153,
+          "frozen_P3_temporal_root_max": 1.1273300820453003,
+          "three_round_factor": 1.067068276997265
+        },
+        {
+          "lambda_real": 1.0197912476755466,
+          "lambda_imag": 0.0,
+          "resid": 0.02236778559054056,
+          "error_field_max_native_id": 35928,
+          "surface_energy_fraction": 0.3213933897914026,
+          "outer_two_shells_energy_fraction": 0.6512800914327443,
+          "frozen_P3_temporal_root_max": 1.1154339981967407,
+          "three_round_factor": 1.0605565755830701
+        },
+        {
+          "lambda_real": 0.9956261464467516,
+          "lambda_imag": 0.0,
+          "resid": 0.06019366249276856,
+          "error_field_max_native_id": 17355,
+          "surface_energy_fraction": 0.28037484855876305,
+          "outer_two_shells_energy_fraction": 0.5677263732632721,
+          "frozen_P3_temporal_root_max": 0.9735060040186114,
+          "three_round_factor": 0.9869357474505501
+        }
+      ]
+    }
+  },
+  "open": {
+    "uniform_closed_body_pressure_load_acceleration_residual_m_s2": 1.586583020006835e-13,
+    "sudden_10kPa_load_first_three_rounds_zero_theta_not_linear_ramp": [
+      {
+        "round": 1,
+        "min_Pa": -1869.5113655800312,
+        "max_Pa": 0.0,
+        "rms_Pa": 431.89376338344204,
+        "mean_Pa": -163.0157240477622
+      },
+      {
+        "round": 2,
+        "min_Pa": -2492.072031925287,
+        "max_Pa": 102.15656385435123,
+        "rms_Pa": 637.178381177111,
+        "mean_Pa": -277.39320345015904
+      },
+      {
+        "round": 3,
+        "min_Pa": -2815.596104297296,
+        "max_Pa": 22.88127496693253,
+        "rms_Pa": 772.5100014843359,
+        "mean_Pa": -367.7033229988772
+      }
+    ],
+    "probes": [
+      {
+        "field": "constant_pressure_at_fixed_external_traction",
+        "each_round": [
+          {
+            "round": 1,
+            "l2_gain": 0.9585955555645471,
+            "linf_gain": 1.0633566555114293
+          },
+          {
+            "round": 3,
+            "l2_gain": 0.9112973677896901,
+            "linf_gain": 1.0054769241181316
+          },
+          {
+            "round": 6,
+            "l2_gain": 0.8650985422316632,
+            "linf_gain": 1.000786451328712
+          }
+        ],
+        "frozen_temporal_impulse": [
+          {
+            "complete_pressure_steps": 1,
+            "l2_gain": 1.366946051684535
+          },
+          {
+            "complete_pressure_steps": 3,
+            "l2_gain": 1.5088305293531696
+          },
+          {
+            "complete_pressure_steps": 6,
+            "l2_gain": 1.3647565721693622
+          }
+        ]
+      },
+      {
+        "field": "highest_shell_parity",
+        "each_round": [
+          {
+            "round": 1,
+            "l2_gain": 0.0936520611579387,
+            "linf_gain": 0.3515173939003823
+          },
+          {
+            "round": 3,
+            "l2_gain": 0.03539435256721299,
+            "linf_gain": 0.104862287583494
+          },
+          {
+            "round": 6,
+            "l2_gain": 0.01987894615525098,
+            "linf_gain": 0.04308081049859723
+          }
+        ],
+        "frozen_temporal_impulse": [
+          {
+            "complete_pressure_steps": 1,
+            "l2_gain": 0.05309152885081949
+          },
+          {
+            "complete_pressure_steps": 3,
+            "l2_gain": 0.023303379717341102
+          },
+          {
+            "complete_pressure_steps": 6,
+            "l2_gain": 0.015348168038457516
+          }
+        ]
+      },
+      {
+        "field": "cartesian_cos_pi_x_over_dp",
+        "each_round": [
+          {
+            "round": 1,
+            "l2_gain": 0.08937548176364192,
+            "linf_gain": 0.35203303758079674
+          },
+          {
+            "round": 3,
+            "l2_gain": 0.010252410999687829,
+            "linf_gain": 0.10056697506507117
+          },
+          {
+            "round": 6,
+            "l2_gain": 0.00400690690520026,
+            "linf_gain": 0.03224872947545335
+          }
+        ],
+        "frozen_temporal_impulse": [
+          {
+            "complete_pressure_steps": 1,
+            "l2_gain": 0.015378616499531742
+          },
+          {
+            "complete_pressure_steps": 3,
+            "l2_gain": 0.004216317168289189
+          },
+          {
+            "complete_pressure_steps": 6,
+            "l2_gain": 0.002280052340194516
+          }
+        ]
+      },
+      {
+        "field": "random",
+        "each_round": [
+          {
+            "round": 1,
+            "l2_gain": 0.2448002545722169,
+            "linf_gain": 0.9113977853402331
+          },
+          {
+            "round": 3,
+            "l2_gain": 0.10458125802193619,
+            "linf_gain": 0.4119519297931097
+          },
+          {
+            "round": 6,
+            "l2_gain": 0.06072793474912069,
+            "linf_gain": 0.24217034712346044
+          }
+        ],
+        "frozen_temporal_impulse": [
+          {
+            "complete_pressure_steps": 1,
+            "l2_gain": 0.15687188703290428
+          },
+          {
+            "complete_pressure_steps": 3,
+            "l2_gain": 0.0661886169028915
+          },
+          {
+            "complete_pressure_steps": 6,
+            "l2_gain": 0.03554940238654571
+          }
+        ]
+      },
+      {
+        "field": "outermost_active_shell_only",
+        "each_round": [
+          {
+            "round": 1,
+            "l2_gain": 0.5207395656636672,
+            "linf_gain": 0.4942781830302135
+          },
+          {
+            "round": 3,
+            "l2_gain": 0.27925870033128464,
+            "linf_gain": 0.2570738902521299
+          },
+          {
+            "round": 6,
+            "l2_gain": 0.16989417458720635,
+            "linf_gain": 0.1304169199042205
+          }
+        ],
+        "frozen_temporal_impulse": [
+          {
+            "complete_pressure_steps": 1,
+            "l2_gain": 0.41888805049692696
+          },
+          {
+            "complete_pressure_steps": 3,
+            "l2_gain": 0.18488288431635264
+          },
+          {
+            "complete_pressure_steps": 6,
+            "l2_gain": 0.10104009634967401
+          }
+        ]
+      }
+    ],
+    "arnoldi": {
+      "dimension": 55,
+      "ritz": [
+        {
+          "lambda_real": 0.9933422943321694,
+          "lambda_imag": 0.0,
+          "resid": 5.722547372851718e-06,
+          "error_field_max_native_id": 18443,
+          "surface_energy_fraction": 0.0,
+          "outer_two_shells_energy_fraction": 0.0016349862954436645,
+          "frozen_P3_temporal_root_max": 0.9594434361604426,
+          "three_round_factor": 0.9801595630276848
+        },
+        {
+          "lambda_real": 0.9863284651850117,
+          "lambda_imag": 0.0,
+          "resid": 0.0001673598266203444,
+          "error_field_max_native_id": 20674,
+          "surface_energy_fraction": 0.0,
+          "outer_two_shells_energy_fraction": 0.0033630753152836448,
+          "frozen_P3_temporal_root_max": 0.9149405242071735,
+          "three_round_factor": 0.9595435727892403
+        },
+        {
+          "lambda_real": 0.9775092069004485,
+          "lambda_imag": 0.0,
+          "resid": 0.0028695155783238476,
+          "error_field_max_native_id": 31907,
+          "surface_energy_fraction": 0.0,
+          "outer_two_shells_energy_fraction": 0.005392279672149735,
+          "frozen_P3_temporal_root_max": 0.8545345314748776,
+          "three_round_factor": 0.9340337513763451
+        },
+        {
+          "lambda_real": 0.9728672791081133,
+          "lambda_imag": 0.0,
+          "resid": 0.004688807151431434,
+          "error_field_max_native_id": 17338,
+          "surface_energy_fraction": 0.0,
+          "outer_two_shells_energy_fraction": 0.006460005724009954,
+          "frozen_P3_temporal_root_max": 0.8191355059897956,
+          "three_round_factor": 0.920790416263601
+        }
+      ]
+    },
+    "source_oriented_arnoldi": {
+      "dimension": 35,
+      "ritz": [
+        {
+          "lambda_real": 0.9933422745620732,
+          "lambda_imag": 0.0,
+          "resid": 1.2064219678481994e-05,
+          "error_field_max_native_id": 17343,
+          "surface_energy_fraction": 0.0,
+          "outer_two_shells_energy_fraction": 0.0016348785193969636,
+          "frozen_P3_temporal_root_max": 0.9594433136523981,
+          "three_round_factor": 0.9801595045045095
+        },
+        {
+          "lambda_real": 0.9744580052061231,
+          "lambda_imag": 0.0,
+          "resid": 0.02098842768631031,
+          "error_field_max_native_id": 18602,
+          "surface_energy_fraction": 0.0,
+          "outer_two_shells_energy_fraction": 0.004726791068277025,
+          "frozen_P3_temporal_root_max": 0.8316781737289743,
+          "three_round_factor": 0.9253145326811899
+        },
+        {
+          "lambda_real": 0.9732643267805476,
+          "lambda_imag": 0.0,
+          "resid": 0.001223230160578348,
+          "error_field_max_native_id": 18443,
+          "surface_energy_fraction": 0.0,
+          "outer_two_shells_energy_fraction": 0.006154629243459507,
+          "frozen_P3_temporal_root_max": 0.8223139707670131,
+          "three_round_factor": 0.9219182584509118
+        },
+        {
+          "lambda_real": 0.9404672444433595,
+          "lambda_imag": 0.0,
+          "resid": 0.0018386753393360609,
+          "error_field_max_native_id": 18443,
+          "surface_energy_fraction": 0.0,
+          "outer_two_shells_energy_fraction": 0.0131304379916752,
+          "frozen_P3_temporal_root_max": 0.6449120821195118,
+          "three_round_factor": 0.8318231873274479
+        }
+      ]
+    }
+  }
+}

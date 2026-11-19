@@ -1,0 +1,230 @@
+{
+  "material_ids": 37173,
+  "tetrahedra": 209117,
+  "boundary_triangles": 10302,
+  "true_drained": 5153,
+  "units": "total_flux[p,a] in Pa m; positive sign is integrated divergence of grad(p)+rho*a, i.e. negative times Darcy outward discharge gamma/k.",
+  "element_all_six_pairs_random_independent_vs_sparse_residual_Pa_m": {
+    "rms": 5.861280120654148e-16,
+    "max": 2.842170943040401e-14
+  },
+  "random_signed_scalar_total_Pa_m": 1.0658141036401503e-14,
+  "relative_pair_drift": 2.959965503584881e-19,
+  "integrated_constant_pressure_residual_Pa_m": {
+    "rms": 2.493214068629267e-18,
+    "max": 8.370040771588094e-17
+  },
+  "force_and_volume": {
+    "area_m2": 0.031397065914906826,
+    "volume_geometry_m3": 0.0005230086934804821,
+    "volume_native_m3": 0.0005808281042897892,
+    "b_plus_surfaceforce1_N_per_Pa": {
+      "rms": 5.045663006917707e-22,
+      "max": 3.3881317890172014e-21
+    },
+    "b_net_N_per_Pa": {
+      "rms": 2.4151120498553948e-17,
+      "max": 4.183072210015362e-17
+    },
+    "b_torque_Nm_per_Pa": {
+      "rms": 9.56999007437326e-22,
+      "max": 1.179158887891412e-21
+    },
+    "bTMinvb_m3_per_Pa_s2": 0.005855906321618175,
+    "isolated_closed_pressure_sum": 0.9999999999999999
+  },
+  "affine_moments": [
+    {
+      "combined_constant_acceleration_zero_flux_Pa_m": {
+        "rms": 5.476265490999401e-20,
+        "max": 1.5336664747478305e-18
+      },
+      "applied_true_affine_face_row_residual_Pa_m": {
+        "rms": 5.476341792358448e-20,
+        "max": 1.533976667477538e-18
+      }
+    },
+    {
+      "combined_constant_acceleration_zero_flux_Pa_m": {
+        "rms": 6.784915542225297e-20,
+        "max": 3.1843398184903948e-18
+      },
+      "applied_true_affine_face_row_residual_Pa_m": {
+        "rms": 6.785266278987374e-20,
+        "max": 3.1848438816761693e-18
+      }
+    },
+    {
+      "combined_constant_acceleration_zero_flux_Pa_m": {
+        "rms": 5.647575649273544e-20,
+        "max": 2.9614463864633605e-18
+      },
+      "applied_true_affine_face_row_residual_Pa_m": {
+        "rms": 5.647416508945173e-20,
+        "max": 2.961756579193068e-18
+      }
+    }
+  ],
+  "quadratic_manufactured": {
+    "true_planar_flux_m3": 0.003138052160882892,
+    "sphere_analytical_flux_m3": 0.0031415926535897937,
+    "true_planar_flux_relative_to_sphere": -0.0011269738305683674,
+    "global_weighted_laplacian": 6.000000000000003,
+    "boundary_point_error": {
+      "rms": 0.5700249329458282,
+      "max": 5.613744303922962
+    },
+    "interior_point_error": {
+      "rms": 0.32749629969245303,
+      "max": 3.8053053740997083
+    },
+    "near_center_first18_error": {
+      "rms": 1.555193076491678,
+      "max": 3.008406976194376
+    }
+  },
+  "true_uniform_closed_load": {
+    "mean_pressure_recovered_Pa": 9999.999999999998,
+    "after_first_projection_acceleration_error_m_s2": {
+      "rms": 1.7564148761641438e-13,
+      "max": 1.3642420526593924e-12
+    },
+    "bTa_m3_s2": -1.075881254115095e-14,
+    "projected_sudden_load_uniform_three_rounds_error_Pa": [
+      {
+        "rms": 8.394535802902808e-13,
+        "max": 3.637978807091713e-12
+      },
+      {
+        "rms": 1.1204769027077573e-12,
+        "max": 5.4569682106375694e-12
+      },
+      {
+        "rms": 1.2084563060154662e-12,
+        "max": 5.4569682106375694e-12
+      }
+    ],
+    "arbitrary_random_initial_pressure_plus_load_check": [
+      {
+        "round": 1,
+        "mean_Pa": 9931.736437027612,
+        "condition_bTa_m3_s2": -1.2352098510692855e-14
+      },
+      {
+        "round": 2,
+        "mean_Pa": 9939.098390248246,
+        "condition_bTa_m3_s2": 5.523359547510154e-15
+      },
+      {
+        "round": 3,
+        "mean_Pa": 9945.472193127183,
+        "condition_bTa_m3_s2": -2.6484890669475902e-15
+      }
+    ],
+    "compatibility_note": "If theta already has nonzero geometric integral, frozen pressure rows cannot close it. At each physical velocity/acceleration substage use the same b to correct the new velocity with pressure (b.T v =0); endpoint acceleration projection alone cannot repair old velocity drift."
+  },
+  "closed": {
+    "cond_mode3": {
+      "random": [
+        0.5987006188990881,
+        0.424641086143934,
+        0.3318155854641353
+      ],
+      "shell_alternating": [
+        0.6860328256109006,
+        0.4775768801672249,
+        0.3373126869609976
+      ],
+      "surface_or_outer_first_free": [
+        1.2265836310549558,
+        1.1305362151850593,
+        1.054449500246822
+      ]
+    },
+    "uniform_load_transition": [
+      {
+        "min_Pa": 9999.999999999996,
+        "max_Pa": 10000.000000000004,
+        "weighted_mean_Pa": 10000.0
+      },
+      {
+        "min_Pa": 9999.999999999996,
+        "max_Pa": 10000.000000000005,
+        "weighted_mean_Pa": 10000.0
+      },
+      {
+        "min_Pa": 9999.999999999995,
+        "max_Pa": 10000.000000000005,
+        "weighted_mean_Pa": 10000.0
+      }
+    ],
+    "matched_weak_operator": {
+      "real": 0.9995734544127137,
+      "imag": 0.0,
+      "residual": 1.9471887468336e-09,
+      "three_round": 0.998720908983949,
+      "conditional_temporal_root": 0.9974385247368407,
+      "note": "one dominant-Ritz search; no nonnormal upper bound or whole-step stability proof"
+    },
+    "original_mixed_operator": {
+      "real": 1.0268849110970393,
+      "imag": 0.0,
+      "residual": 8.443356184157922e-10,
+      "three_round": 1.0828425609971317,
+      "conditional_temporal_root": 1.155842520233846,
+      "note": "one dominant-Ritz search; no nonnormal upper bound or whole-step stability proof"
+    }
+  },
+  "open": {
+    "cond_mode3": {
+      "random": [
+        0.5972553119921403,
+        0.4207125564010258,
+        0.3265761758670867
+      ],
+      "shell_alternating": [
+        0.7022019315280877,
+        0.5007434164337387,
+        0.36367894864996725
+      ],
+      "surface_or_outer_first_free": [
+        0.8644763930699945,
+        0.7607505006140152,
+        0.6796838698284986
+      ]
+    },
+    "uniform_load_transition": [
+      {
+        "min_Pa": 8821.068959754022,
+        "max_Pa": 10186.571508395873,
+        "weighted_mean_Pa": 9162.713432636421
+      },
+      {
+        "min_Pa": 7902.71560092628,
+        "max_Pa": 10267.312494993503,
+        "weighted_mean_Pa": 9059.720095685758
+      },
+      {
+        "min_Pa": 7158.2685674958775,
+        "max_Pa": 10271.387204893872,
+        "weighted_mean_Pa": 8964.920223893312
+      }
+    ],
+    "matched_weak_operator": {
+      "real": 0.9989947253768443,
+      "imag": 0.0,
+      "residual": 1.8233930273891542e-09,
+      "three_round": 0.9969872068458293,
+      "conditional_temporal_root": 0.9939559815051628,
+      "note": "one dominant-Ritz search; no nonnormal upper bound or whole-step stability proof"
+    },
+    "original_mixed_operator": {
+      "real": 0.9933422786692775,
+      "imag": 0.0,
+      "residual": 5.531133171389096e-10,
+      "three_round": 0.9801595166626006,
+      "conditional_temporal_root": 0.9594433391032389,
+      "note": "one dominant-Ritz search; no nonnormal upper bound or whole-step stability proof"
+    }
+  }
+}
