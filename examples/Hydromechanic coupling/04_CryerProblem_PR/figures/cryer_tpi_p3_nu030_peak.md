@@ -18,6 +18,7 @@ TPI 的时间采样和相对显式 A 的幅值比较通过。峰值幅度未达 
 | [孔压和有效应力一同施加解析场后的合力残差](../tests/figures/cryer_peak_paired_manufactured_r1.png) | [两种几何的四个分区](../tests/figures/cryer_peak_paired_manufactured_r1_regions.csv) · [20 个壳面的径向分量及 RMS](../tests/figures/cryer_peak_paired_manufactured_r1_shells.csv) |
 | [离散残差的内核与表面来源](../tests/notes/cryer_p3_return_causal_r1.md) | [常张量项与邻点梯度项的分区分解](../tests/figures/cryer_peak_force_moments_r1_regions.csv) · [各壳的方向与协方差](../tests/figures/cryer_peak_force_moments_r1_shells.csv) |
 | [四面体内力和显式表面牵引的合力对比](../tests/figures/cryer_tet_weak_force_r1_detail.png) | [同一粒子质量下的区域数据](../tests/figures/cryer_tet_weak_force_r1_regions.csv) · [闭态、峰值与几何质量核验](../tests/notes/cryer_tet_weak_force_r1.md) |
+| [守恒空间离散的径向瞬态与频响预测](../tests/figures/cryer_shell_candidate_comparison_r1.png) | [原 SPH、保留粒子 Darcy 和四面体 Darcy 的对照](../tests/notes/cryer_shell_candidate_comparison_r1.md) · [独立球壳积分与边界功](../tests/notes/cryer_smoothed_traction_r1.md) |
 | [原生、方法和峰值判定](../tests/figures/cryer_p3_server_peak_actual_r1/peak_rejected.json) | [三轮五阶段审查](../tests/figures/cryer_p3_server_peak_actual_r1/sidecar_review.json) · [连续和同步采样的理论峰值](../tests/figures/cryer_p3_server_peak_actual_r1/physical/physical_review.json) |
 
 在 TPI 的峰值帧，两个方法的中心孔压相差 35.73 Pa，对应解析解本身相差 39.02 Pa。用各自参照比较，同钟压力误差仅相差 3.29 Pa。TPI 峰值帧中心 18 个粒子保存的平均 J−1 为 +0.035258%，这些粒子围成的真实材料体积却缩小 0.035258%。从第 3 壳到第 6 壳依次出现膨胀、收缩、膨胀、收缩，两种时间积分均出现相同的空间特征。[空间诊断与制造解](../tests/notes/cryer_shell_equilibrium_r1.md)

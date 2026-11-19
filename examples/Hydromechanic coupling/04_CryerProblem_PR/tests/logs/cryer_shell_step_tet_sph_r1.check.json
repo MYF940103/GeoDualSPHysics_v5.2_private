@@ -1,0 +1,62 @@
+{
+  "source_blocks": "tests\\figures\\cryer_shell_tet_pair_r1_sph.npz",
+  "models": {
+    "M0": {
+      "stable": true,
+      "static_pressure_limit": 0.0,
+      "max_real_eigenvalue_per_s": -7.746194932529303,
+      "eigenbasis_condition": 233.69509831704605,
+      "eigen_expm_abs_pressure_per_Pa": 5.42565992134314e-12,
+      "M0_elimination_error": 8.94537124180944e-16
+    },
+    "finite_Kw": {
+      "stable": true,
+      "static_pressure_limit": 0.0,
+      "max_real_eigenvalue_per_s": -7.723722719061078,
+      "eigenbasis_condition": 2295.501120890102,
+      "eigen_expm_abs_pressure_per_Pa": 8.716360966332104e-13,
+      "M0_elimination_error": null
+    }
+  },
+  "published_quasistatic_references": "actual r/a=.05, ideal uniform undrained state at opening",
+  "native_t0_is_preopen": true,
+  "model_t0_is_right_hand_limit": true,
+  "time_integrator": "continuous matrix exponential",
+  "removed_angular_response": true,
+  "real_P3_update": false,
+  "solver_runs": 0,
+  "summary": [
+    {
+      "model": "M0",
+      "sampled_peak_Pa": 12455.648831802713,
+      "sampled_peak_tau_s": 0.0411376953125,
+      "continuous_peak_Pa": 12455.648889279431,
+      "continuous_peak_tau_s": 0.04114458955064482,
+      "reference_peak_Pa": 12478.53263299281,
+      "reference_peak_tau_s": 0.04192258568544373,
+      "amplitude_diff_pct": -0.18338489297110572,
+      "phase_diff_pct": -1.855792342190965,
+      "matched_reference_RMS_Pa": 31.032435820958927,
+      "closed_center_Pa": 10000.0,
+      "opening_center_limit_Pa": -3192.737817494886,
+      "local_maxima_in_window": 1,
+      "modal_peak_grid_max_spacing_s": 3e-06
+    },
+    {
+      "model": "finite_Kw",
+      "sampled_peak_Pa": 12416.334959983062,
+      "sampled_peak_tau_s": 0.041259765625,
+      "continuous_peak_Pa": 12416.335049562847,
+      "continuous_peak_tau_s": 0.04126842108304636,
+      "reference_peak_Pa": 12439.176,
+      "reference_peak_tau_s": 0.04205180291164746,
+      "amplitude_diff_pct": -0.1836210890267309,
+      "phase_diff_pct": -1.8628971277331763,
+      "matched_reference_RMS_Pa": 31.823068456717646,
+      "closed_center_Pa": 9975.062341668496,
+      "opening_center_limit_Pa": 9975.062341668467,
+      "local_maxima_in_window": 25,
+      "modal_peak_grid_max_spacing_s": 1.2514879930776212e-06
+    }
+  ]
+}
