@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "source_completed_steps": [
+    2000001,
+    2000002
+  ],
+  "source_times_s": [
+    10.000004999706007,
+    10.000009999706007
+  ],
+  "actual_CPU_force_calls": 6,
+  "spatial_geometry_frozen": true,
+  "physical_updates": 0,
+  "assembled_rows": 30000,
+  "original_beta0_endpoint_bit_checks": 15000,
+  "independent_decimal80_row_bit_checks": 30000,
+  "boundary_and_history_checks": 10000,
+  "fixture_late_failures_preserved_both_histories": 2,
+  "source_negative_ids": 2,
+  "trigger_rule": "native p_n < 0, fixed through all three rounds",
+  "rounds": [
+    {
+      "beta": 0.0,
+      "round": 0,
+      "source_negative": 2,
+      "input_iterate_negative": 2,
+      "trigger_diff_if_using_iterate": 0,
+      "input_to_output_sign_switches": 1
+    },
+    {
+      "beta": 0.0,
+      "round": 1,
+      "source_negative": 2,
+      "input_iterate_negative": 3,
+      "trigger_diff_if_using_iterate": 1,
+      "input_to_output_sign_switches": 0
+    },
+    {
+      "beta": 0.0,
+      "round": 2,
+      "source_negative": 2,
+      "input_iterate_negative": 3,
+      "trigger_diff_if_using_iterate": 1,
+      "input_to_output_sign_switches": 1
+    },
+    {
+      "beta": 0.04,
+      "round": 0,
+      "source_negative": 2,
+      "input_iterate_negative": 2,
+      "trigger_diff_if_using_iterate": 0,
+      "input_to_output_sign_switches": 1
+    },
+    {
+      "beta": 0.04,
+      "round": 1,
+      "source_negative": 2,
+      "input_iterate_negative": 3,
+      "trigger_diff_if_using_iterate": 1,
+      "input_to_output_sign_switches": 0
+    },
+    {
+      "beta": 0.04,
+      "round": 2,
+      "source_negative": 2,
+      "input_iterate_negative": 3,
+      "trigger_diff_if_using_iterate": 1,
+      "input_to_output_sign_switches": 0
+    }
+  ],
+  "beta04_minus_beta0_after_projection": {
+    "all": {
+      "ids": 5000,
+      "rms_Pa": 2.4374949437384825,
+      "max_abs_Pa": 127.0779037475586
+    },
+    "pn_negative": {
+      "ids": 2,
+      "rms_Pa": 116.0069416143463,
+      "max_abs_Pa": 127.0779037475586
+    },
+    "pn_nonnegative": {
+      "ids": 4998,
+      "rms_Pa": 0.747369268832031,
+      "max_abs_Pa": 37.40380859375
+    }
+  },
+  "source_negative_history": true,
+  "physical_acceptance": false
+}
