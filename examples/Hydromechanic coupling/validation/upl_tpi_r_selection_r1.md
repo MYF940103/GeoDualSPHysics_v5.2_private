@@ -2,6 +2,10 @@
 
 ## 方案与接口
 
+**当前接口与服务器实测。** 维护中的配置采用单个 `HydroMechModel`。公共求解器支持 0（u-pw）和 1（显式 u-pl），私有三轮 TPI 验证程序另支持 2。下段记录最初试验程序的配置。迁移后的正式模板见[公共 XML 配置记录](hydro_single_xml_r1.md)。
+
+在 ν=0.30 的 Cryer 服务器峰窗中，576 个非空输出区间共覆盖 36,864 次更新，每步含五个阶段。固定步长为 1.90735 µs，全部阶段中水力上限的最小值为 2.92882 µs，骨架波速与人工黏性上限的最小值为 25.03415 µs。实际所需的最大水力比值为 0.65124，配置 R=1 可以覆盖这个峰窗。旧有限 Kw 波速上限的最小值为 1.58360 µs。提高 R 对同一固定时间步的峰值偏差没有修正作用。[服务器步长数据](upl_tpi_r_selection_server_peak_r1.csv) · [同一峰窗的精度](../04_CryerProblem_PR/tests/notes/cryer_peak_iteration_and_support_r1.md)
+
 Cryer 私有候选在 `case.execution.special.hydromechanics` 读取一个整数选择器 `HydroMechPressureIntegrator`。省略或取 0 时，沿用原有压力时间积分；取 1 时，要求已经显式启用 `HydroMech` 和 `HydroMechDynamicSeepage`。B 使用 α=0.5 的两时层预测、三轮端点压力校正和一次历史提交。三轮是本项目的 Symplectic 实现选择。α=0 的简化方案 C 保留为比较。负压 β、压力迭代轮数及可调水力放大量本阶段均不作为公共 XML 参数。生产接口的发布仍取决于相关 benchmark 的物理审查。
 
 ## 怎样确定 R

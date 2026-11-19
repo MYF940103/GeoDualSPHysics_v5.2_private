@@ -1,4 +1,5 @@
 """Evaluate the hydraulic multiplier needed by the actual saved C02 and C04 TPI profiles."""
+import argparse
 import csv
 import json
 from pathlib import Path
@@ -11,8 +12,9 @@ JOBS=(
 )
 
 
-def audit(case,tag):
-    output=ROOT/case/"tests/outputs"/tag
+def audit(case,tag,output=None):
+    if output is None:
+        output=ROOT/case/"tests/outputs"/tag
     summary=json.loads((output/"UplTpiP3DtR1.summary.json").read_text(encoding="utf-8-sig"))
     assert summary["completed"] and summary["R_h"]==1
     with (output/"UplTpiP3DtR1.csv").open(encoding="utf-8-sig",newline="") as f:
@@ -42,7 +44,18 @@ def audit(case,tag):
 
 
 if __name__=="__main__":
-    stats=[audit(*job) for job in JOBS]
-    with RESULT.open("x",encoding="utf-8",newline="") as f:
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--server-peak",type=Path,help="Returned Cryer P3 peak output containing Run.out and the five-phase ledger")
+    args=parser.parse_args()
+    if args.server_peak:
+        stat=audit("04_CryerProblem_PR","Cryer_TPI_P3_nu030_peak",args.server_peak)
+        if (stat["updates"],stat["nonempty_intervals"],stat["dt_us"])!=(36864,576,1e6*2.**-19):
+            raise ValueError("Returned run does not match the peak-window stage")
+        stats=[stat]
+        target=RESULT.with_name("upl_tpi_r_selection_server_peak_r1.csv")
+    else:
+        stats=[audit(*job) for job in JOBS]
+        target=RESULT
+    with target.open("x",encoding="utf-8",newline="") as f:
         w=csv.DictWriter(f,fieldnames=list(stats[0]));w.writeheader();w.writerows(stats)
     for row in stats: print(row)
