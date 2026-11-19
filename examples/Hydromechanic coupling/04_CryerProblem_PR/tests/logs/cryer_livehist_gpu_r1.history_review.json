@@ -1,0 +1,125 @@
+{
+  "passed": true,
+  "backend": "gpu",
+  "profiles": {
+    "model1": {
+      "profile": "model1",
+      "dt_s": 9.5367431640625e-07,
+      "original_run": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_drain_schema_gpu_r1_model1",
+      "observed_run": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_livehist_gpu_r1_model1",
+      "parts": [
+        {
+          "part": 0,
+          "step": 0,
+          "history_present": false,
+          "signed_dterror_s": 0.0,
+          "id_count": 37173,
+          "runtime_metadata_differences": {},
+          "raw_slot_arrays_equal": 22
+        },
+        {
+          "part": 1,
+          "step": 2,
+          "history_present": false,
+          "signed_dterror_s": -6.404515229630209e-07,
+          "id_count": 37173,
+          "runtime_metadata_differences": {},
+          "raw_slot_arrays_equal": 22
+        }
+      ]
+    },
+    "model2": {
+      "profile": "model2",
+      "dt_s": 1.9073486328125e-06,
+      "original_run": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_drain_schema_gpu_r1_model2",
+      "observed_run": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_livehist_gpu_r1_model2",
+      "parts": [
+        {
+          "part": 0,
+          "step": 0,
+          "history_present": false,
+          "signed_dterror_s": 0.0,
+          "id_count": 37173,
+          "runtime_metadata_differences": {},
+          "raw_slot_arrays_equal": 22
+        },
+        {
+          "part": 1,
+          "step": 2,
+          "history_present": true,
+          "signed_dterror_s": -1.0714212835768775e-06,
+          "id_count": 37173,
+          "runtime_metadata_differences": {},
+          "raw_slot_arrays_equal": 22,
+          "all_round_source_pressure_and_prediction_checks": 111519,
+          "cold_would_change_next_predictor_ids": 37173
+        }
+      ]
+    },
+    "dense4": {
+      "profile": "dense4",
+      "dt_s": 1.9073486328125e-06,
+      "original_run": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_drain_schema_gpu_r1_model2",
+      "observed_run": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_livehist_gpu_r1_dense4",
+      "parts": [
+        {
+          "part": 0,
+          "step": 0,
+          "history_present": false,
+          "signed_dterror_s": 0.0,
+          "id_count": 37173
+        },
+        {
+          "part": 1,
+          "step": 1,
+          "history_present": true,
+          "signed_dterror_s": -1.0714212862313856e-06,
+          "id_count": 37173,
+          "previous_part_bit_checks": 37173,
+          "next_trace_predictor_per_round_bit_checks": 37173,
+          "cold_substitution_changes_actual_input_ids": 0,
+          "all_round_source_pressure_and_prediction_checks": 111519,
+          "cold_would_change_next_predictor_ids": 0
+        },
+        {
+          "part": 2,
+          "step": 2,
+          "history_present": true,
+          "signed_dterror_s": -1.0714212835768775e-06,
+          "id_count": 37173,
+          "previous_part_bit_checks": 37173,
+          "next_trace_predictor_per_round_bit_checks": 37173,
+          "cold_substitution_changes_actual_input_ids": 0,
+          "all_round_source_pressure_and_prediction_checks": 111519,
+          "cold_would_change_next_predictor_ids": 37173
+        },
+        {
+          "part": 3,
+          "step": 3,
+          "history_present": true,
+          "signed_dterror_s": -1.0714212752499647e-06,
+          "id_count": 37173,
+          "previous_part_bit_checks": 37173,
+          "next_trace_predictor_per_round_bit_checks": 37173,
+          "cold_substitution_changes_actual_input_ids": 37173,
+          "all_round_source_pressure_and_prediction_checks": 111519,
+          "cold_would_change_next_predictor_ids": 37173
+        },
+        {
+          "part": 4,
+          "step": 4,
+          "history_present": true,
+          "signed_dterror_s": -1.0714212646149265e-06,
+          "id_count": 37173,
+          "previous_part_bit_checks": 37173,
+          "next_trace_predictor_per_round_bit_checks": 37173,
+          "cold_substitution_changes_actual_input_ids": 37173,
+          "all_round_source_pressure_and_prediction_checks": 111519,
+          "cold_would_change_next_predictor_ids": 37173
+        }
+      ]
+    }
+  },
+  "solver_runs": 0,
+  "full_restart_tested": false
+}
