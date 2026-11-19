@@ -1,0 +1,130 @@
+{
+  "audit_pass": true,
+  "candidate_pass": false,
+  "first_attempt": {
+    "reason": "Noncontiguous buffer for setGeometry",
+    "last_read_step": null
+  },
+  "actual_fault": {
+    "reason": "First invalid update 38, phase 1 (1 predictor, 2 corrector, 3/4/5 pressure), slot 35295, native ID 35303",
+    "last_read_step": 32
+  },
+  "fault_slot_shell": 15,
+  "retained_topology_material_ids": 37173,
+  "saved_step_count": 7,
+  "rows_by_shell": 140,
+  "last_read_time_s": 6.103515625e-05,
+  "last_complete_source_load_Pa": 151.3671875,
+  "reported_fault_phase": "Mechanical predictor, before corrector and three endpoint pressure rounds of update 38",
+  "predicate_components": "OR of velocity, position/radius, J/porosity and finite stress; individual bit unavailable",
+  "first_fault_material_is_not_unique_worst": true,
+  "fault_slot_saved_state_unavailable": true,
+  "abi_probe_synthetic": true,
+  "small_cpu_gpu_fixtures": {
+    "viscosity": 1.1102230246251565e-15,
+    "pressure": 7.265299473147024e-13,
+    "total_with_damping": 1.8189894035458565e-12,
+    "pressure_round_closed_Pa": 0.0,
+    "pressure_round_open_Pa": 0.0
+  },
+  "pressure_closed_all_saved": true,
+  "measured_variance_identity": "population variance = weighted average of within-shell variances + variance of shell means",
+  "last_summaries": [
+    {
+      "step": 16,
+      "time_us": 30.517578125,
+      "load_Pa": 73.2421875,
+      "min_Pa": -470.3799743652344,
+      "max_Pa": 641.8333740234375,
+      "center_Pa": 119.37479061550565,
+      "mean_Pa": 82.23900398670148,
+      "global_std_Pa": 28.706500697956248,
+      "within_shell_std_rms_Pa": 27.772807722541327,
+      "between_shell_mean_std_Pa": 7.261840918700402,
+      "within_shell_variance_share": 0.936006929250334,
+      "largest_scatter_shell": 16,
+      "largest_shell_std_Pa": 37.10116525161755,
+      "max_speed_m_s": 0.00020063080026596434,
+      "rms_speed_m_s": 1.0298785119341981e-05,
+      "face_traction_rms_Pa": 28.30560188886136,
+      "kinetic_J": 6.468579423881383e-11,
+      "Jmin": 0.9999999747290599,
+      "Jmax": 1.0000000052649034
+    },
+    {
+      "step": 32,
+      "time_us": 61.03515625,
+      "load_Pa": 151.3671875,
+      "min_Pa": -53518940.0,
+      "max_Pa": 47893616.0,
+      "center_Pa": 1677.485749138726,
+      "mean_Pa": 2246.1264199798443,
+      "global_std_Pa": 2558197.263674296,
+      "within_shell_std_rms_Pa": 2558159.8068413762,
+      "between_shell_mean_std_Pa": 13843.501433770114,
+      "within_shell_variance_share": 0.9999707164422134,
+      "largest_scatter_shell": 16,
+      "largest_shell_std_Pa": 3748836.899121333,
+      "max_speed_m_s": 16.82824680876128,
+      "rms_speed_m_s": 0.7991414997057873,
+      "face_traction_rms_Pa": 1429272.4606807234,
+      "kinetic_J": 0.3894792185250992,
+      "Jmin": 0.9992041875068952,
+      "Jmax": 1.0007291257835107
+    }
+  ],
+  "updated_formal_source": false,
+  "GPU_calls_made_by_review": 0,
+  "bindings": [
+    {
+      "path": "outputs\\cryer_pair_open_r1\\interrupted.json",
+      "size_bytes": 83,
+      "mtime_ns": 1795102826985266300
+    },
+    {
+      "path": "outputs\\cryer_pair_open_r2\\interrupted.json",
+      "size_bytes": 149,
+      "mtime_ns": 1795102889163935800
+    },
+    {
+      "path": "outputs\\cryer_pair_open_r2\\fixture.json",
+      "size_bytes": 200,
+      "mtime_ns": 1795102888280006300
+    },
+    {
+      "path": "outputs\\cryer_pair_open_r2\\history.csv",
+      "size_bytes": 2691,
+      "mtime_ns": 1795102888784160900
+    },
+    {
+      "path": "outputs\\cryer_pair_open_r2\\shells.csv",
+      "size_bytes": 15717,
+      "mtime_ns": 1795102888784160900
+    },
+    {
+      "path": "outputs\\cryer_pair_window_build_r2\\build.json",
+      "size_bytes": 1461,
+      "mtime_ns": 1795102797754595100
+    },
+    {
+      "path": "outputs\\cryer_pair_window_build_r2\\abi_probe.json",
+      "size_bytes": 407,
+      "mtime_ns": 1795102873088658300
+    },
+    {
+      "path": "outputs\\cryer_pair_window_build_r2\\cryer_pair_window.dll",
+      "size_bytes": 263680,
+      "mtime_ns": 1795102797493819300
+    },
+    {
+      "path": "support\\cryer_pair_window.py",
+      "size_bytes": 11190,
+      "mtime_ns": 1795103297151006000
+    },
+    {
+      "path": "support\\cryer_pair_window.cu",
+      "size_bytes": 15090,
+      "mtime_ns": 1795102707985135300
+    }
+  ]
+}
