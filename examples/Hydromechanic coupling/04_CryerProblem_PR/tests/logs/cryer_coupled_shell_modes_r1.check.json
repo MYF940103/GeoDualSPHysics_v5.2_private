@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "soil_ids": 37173,
+  "undirected_pairs": 3392720,
+  "material_shells": 20,
+  "pressure_dofs": 19,
+  "frequencies_Hz": [
+    0.5,
+    3,
+    10,
+    50
+  ],
+  "sources": [
+    "upl_cryer_freebody_peak_GPU_r1_native/native_ids.csv"
+  ],
+  "storage_models": [
+    "M0",
+    "finite Kw=2e8"
+  ],
+  "mechanical_damping_per_s": 0.24789926409721375,
+  "dt_s": 1.9073486328125e-06,
+  "checks": {
+    "affine_div_absolute": 1.7763568394002505e-14,
+    "hydrostatic_force_relative": 6.340690892803789e-15,
+    "pressure_load_relative": 6.164560590225907e-16,
+    "matrix_net_force_relative": 8.574477611181945e-13,
+    "affine_Darcy_max_per_m": 6.622258297284134e-12,
+    "moment_max_condition": 1.414131935055154,
+    "native_volume_ratio": 1.109299966612978
+  },
+  "nonlinear_solver_runs": 0,
+  "physical_acceptance": false,
+  "actual_P3_time_integration": false,
+  "assumptions": [
+    "linear harmonic perturbation about uniform drained equilibrium, not preload startup",
+    "fixed uniform particle masses/volumes, native positions, angularly unresolved displacement and pressure",
+    "full unprojected discrete acceleration feeds Darcy; drainage p=0 on outer shell",
+    "same continuously linearized nodal stress, no intermediate float rounding or nonlinear AV",
+    "trapezoid time symbol is a diagnostic control; it does not measure actual P3 error"
+  ]
+}
