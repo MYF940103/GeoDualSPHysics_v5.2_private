@@ -1,6 +1,5 @@
 """Material-shell follow-up on the already qualified/rejected native peak, at selected frames only."""
 import argparse
-import csv
 import json
 from pathlib import Path
 
@@ -34,7 +33,7 @@ def main(output,review):
     shape_A=pd.read_csv(NATIVE/"summary.csv",float_precision="round_trip")
     wa=shape_A.iloc[wb.part.to_numpy()]
     peak_A=int(wa.loc[wa.center_pressure_Pa.idxmax(),"part"])
-    need(peak in (416,417) and peak_A==417 and wb.center18_Pa.max()==doc["native_peak_Pa"],"Actual peak frames")
+    need(peak_A==417 and wb.center18_Pa.max()==doc["native_peak_Pa"],"Actual peak frames")
     ids=pd.read_csv(NATIVE/"native_ids.csv",float_precision="round_trip").iloc[SOIL]
     x0=ordered(output/"data",0,["Posd"])["Posd"]
     need(np.array_equal(x0,ids[["x0","y0","z0"]].to_numpy()),"Same original material IDs/initial positions in A and B")

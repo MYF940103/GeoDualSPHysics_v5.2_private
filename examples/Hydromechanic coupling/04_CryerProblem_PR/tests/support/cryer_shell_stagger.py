@@ -1,5 +1,6 @@
 """Screen one fixed, mass-preserving interior radial staggering on the actual Cryer sphere."""
 import json
+import argparse
 from cryer_shell_equilibrium import TESTS, NATIVE, SOIL, need, write
 from cryer_shell_gradient import H, DP, AMPLITUDE
 import numpy as np
@@ -31,12 +32,12 @@ def stagger(x, shell, ids, volumes):
     return out
 
 
-def screen(label,x,shell,volumes):
+def screen(label,x,shell,volumes,h=H):
     selected=np.flatnonzero(shell<=10)
     r=np.linalg.norm(x,axis=1)
     tree=cKDTree(x)
     nn=tree.query(x,k=2)[0][:,1]
-    near=tree.query_ball_point(x[selected],2*H)
+    near=tree.query_ball_point(x[selected],2*h)
     waves={"affine":0.,"smooth":np.pi/(8*DP),"alternating":np.pi/DP}
     uw={};targets={};est={}
     for name,k in waves.items():
@@ -48,7 +49,7 @@ def screen(label,x,shell,volumes):
     for l,(i,jn) in enumerate(zip(selected,near)):
         j=np.array(jn);j=j[j!=i]
         d=x[j]-x[i]
-        weighted=volumes[j,None]*np.maximum(1-np.linalg.norm(d,axis=1)/(2*H),0)[:,None]**3*d
+        weighted=volumes[j,None]*np.maximum(1-np.linalg.norm(d,axis=1)/(2*h),0)[:,None]**3*d
         m=d.T@weighted
         worst_cond=max(worst_cond,np.linalg.cond(m))
         basis=weighted@np.linalg.inv(m)
@@ -66,14 +67,19 @@ def screen(label,x,shell,volumes):
     return rows
 
 
-def main():
+def main(h15_only=False):
     csvpath=TESTS/"figures"/(TAG+".csv")
     log=TESTS/"logs"/(TAG+".check.json")
-    need(not csvpath.exists() and not log.exists(),"Preserve previous test")
     ids=pd.read_csv(NATIVE/"native_ids.csv",float_precision="round_trip").iloc[SOIL]
     x=ids[["x0","y0","z0"]].to_numpy()
     shell=np.rint(ids.r0_m.to_numpy()/DP).astype(int)
     v=ids.initial_native_volume_m3.to_numpy()
+    if h15_only:
+        target=TESTS/"figures/cryer_shell_h15_r1.csv"
+        need(not target.exists(),"Preserve previous support test")
+        write(target,screen("same_positions_h1p5",x,shell,v,1.5*DP))
+        return
+    need(not csvpath.exists() and not log.exists(),"Preserve previous test")
     candidate=stagger(x,shell,ids.id.to_numpy(),v)
     rows=screen("current",x,shell,v)+screen("interior_stagger",candidate,shell,v)
     base=pd.read_csv(TESTS/"figures/cryer_shell_gradient_r1.csv").iloc[0]
@@ -91,4 +97,6 @@ def main():
 
 
 if __name__=="__main__":
-    main()
+    ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--h15-only",action="store_true")
+    main(ap.parse_args().h15_only)
