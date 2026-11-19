@@ -124,7 +124,7 @@ def saved_observations(folder, steps):
         need(next(rows,None) is None and next(ticks,None) is None,"trailing sidecar rows")
 
 
-def audit(data, steps, dt, reference=None, exact=False, p3_sidecars=False):
+def audit(data, steps, dt, reference=None, exact=False, p3_sidecars=False, radial=None):
     files=sorted(data.glob("Part_*.bi4"))
     need(len(files)==len(steps),"native file count differs from plan")
     if reference:
@@ -152,6 +152,10 @@ def audit(data, steps, dt, reference=None, exact=False, p3_sidecars=False):
         time=step*dt
         row=dict(part=i,completed_step=step,time_s=time,tau_s=time-T_D,signed_dterror_s=err)
         row.update(physical(a,initial,time>T_D))
+        if radial is not None:
+            if not i:
+                radial.set_materials(np.linalg.norm(initial[SOIL],axis=1),a["PoroCurrentVolume"][SOIL])
+            radial.observe(row,a["PorePress"][SOIL],a["FSType"][SOIL])
         if reference:
             other,other_err=snapshot(reference/file.name,i,step,dt)
             if exact:

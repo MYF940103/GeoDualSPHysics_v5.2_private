@@ -1,0 +1,72 @@
+{
+  "passed": true,
+  "particle_payloads_read": [
+    "Idp",
+    "PorePress",
+    "FSType"
+  ],
+  "parts_read": [
+    64,
+    65
+  ],
+  "initial_material_source": "outputs\\upl_tpi_cryer_cpu_DebugCPU_B_startup128_r1_native_r2\\native_ids.csv",
+  "initial_volume_m3": 1.562499944286953e-08,
+  "results": [
+    {
+      "part": 64,
+      "time_s": 0.0078125,
+      "active_drained": 0,
+      "fs23": 5153,
+      "other_soil": 32020,
+      "native_mean_Pa": 9999.452661978074,
+      "reconstructed_V0mean_Pa": 9999.452661977584,
+      "absolute_difference_Pa": 4.893081495538354e-10,
+      "other_soil_same_ID_delta_Pa": 0.0,
+      "shell_other_soil_delta_Pa": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "part": 65,
+      "time_s": 0.007814407348632812,
+      "active_drained": 5153,
+      "fs23": 5153,
+      "other_soil": 32020,
+      "native_mean_Pa": 7320.981679082747,
+      "reconstructed_V0mean_Pa": 7320.981679082466,
+      "absolute_difference_Pa": 2.810338628478348e-10,
+      "other_soil_same_ID_delta_Pa": -1500.5421145322991,
+      "shell_other_soil_delta_Pa": [
+        1.0683942522321421,
+        1.499502036118981,
+        1.5821229516006095,
+        1.485218304480706,
+        1.2385189578105715,
+        1.9472052979081758,
+        16.902796856683565,
+        -162.33839885517173,
+        -2426.549903331882,
+        -6090.095125658738
+      ]
+    }
+  ],
+  "selected_parts": {
+    "64": [
+      "closed_tD"
+    ],
+    "65": [
+      "first_open_save"
+    ]
+  },
+  "method": "Ten initial r0/a shells (lo,hi], upper-edge tie within 32 binary64 eps; nominal a=.05 m; positive native initial material volume weight per ID. FS2or3 uses current saved FSType, active only at t>tD. Empty group has no mean.",
+  "timing": "legacy_Tv=(t-tD)*legacy_cv/a^2. Requested Figure 7 Tv uses the closest actual saved clock only when within covered Tv; no interpolation. Peak is the sampled maximum of the fixed 18 centers at Tv>=.005 and tau<=.0625 s; neighbors within that window in CSV."
+}
