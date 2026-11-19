@@ -37,3 +37,9 @@
 C02 在日本时间 17:59 完成。全程 1,653 帧的原生状态、三轮端点更新、五相步长及 1,262 个实际共有的前缀记录已分别核验。十个规定时间因子的孔压和材料沉降均达到原相对 A 精度标准；最底层从 32.242878 s 的保存态起连续 225 帧超出 100 Pa，严格物理验收保留失败。终点 A 与 P3 的全部 100 层竖向总应力剖面仅相差 0.00886 Pa RMS。任务 1 的计算、诊断和图表交付已完成。
 
 据此，下一项可推进 Cryer 三维 P3 的独立实现与资格检查，范围为检验峰幅、相位及时间步收益。C02 这一项共有底层误差继续单独记录。三维候选通过所需的实现检查后再发服务器验证包；本次 C02 终态处理没有启动其他算例。见 [C02 全程数据和结论](../02_TerzaghiConsolidation_q0_PR/tests/notes/upl_tpi_p3_full_physics_r1.md)。
+
+## 2026-11-19 Cryer 服务器验证包已交付
+
+ν=0.30 的私有 CPU/GPU B 已接入三维三轮修正和五相步长检查。1.90735 µs 步长通过本机启动、默认 A 回归和首次排水检查。根目录已有 Windows x64／RTX A6000 验证包。先运行峰窗，原始输出回传后核幅值与相位，再决定 1 Tv 计算。正式公共 XML 接入仍取决于 benchmark 精度。参见 [本机量化结果](../04_CryerProblem_PR/tests/notes/cryer_p3_local_r1.md) 与 [服务器包说明](../04_CryerProblem_PR/README_Cryer_TPI_P3_nu030_r1.md)。
+
+等待数据期间，CPU/CUDA 共享压力行已回放 226,038 条真实三轮记录。C08 的两个冻结状态用于检查式（47）的总负孔压判号与 β/Δt 量级。性能检查已分开统计力计算次数与诊断写出，融合时间步归约原型保留为独立候选。[压力行验证](../04_CryerProblem_PR/tests/notes/cryer_p3_cpu_and_shared_row_r1.md) · [负孔压核验](../08_LianSaturatedColumnCollapse_u_pl/tests/notes/c08_tpi_eq47_state_r1.md) · [开销分解](../04_CryerProblem_PR/tests/notes/cryer_p3_cost_r1.md)
