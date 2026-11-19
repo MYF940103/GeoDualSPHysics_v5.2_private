@@ -30,6 +30,26 @@ def compare(rows, control, stage, ref=None):
     frame["legacy_Tv"]=tv
     frame["M0_r18_Pa"]=truth
     frame["native_minus_M0_Pa"]=frame.center18_Pa-truth
+    if stage=="full":
+        # The dense peak was reviewed independently. Use the actual late saved clocks here.
+        dt_tv=(2**-19)*ref.legacy_cv/.05**2
+        tail=frame.loc[frame.legacy_Tv>=.5]
+        need(len(tail)==101 and .5<=tail.legacy_Tv.iloc[0]<.5+dt_tv
+             and 1.<=tail.legacy_Tv.iloc[-1]<1.+dt_tv, "full tail sampling")
+        p=tail.center18_Pa.to_numpy()
+        error=tail.native_minus_M0_Pa.to_numpy()
+        need(np.all(np.isfinite(p)) and np.all(np.isfinite(error)), "nonfinite tail pressure")
+        worst=tail.iloc[int(np.argmax(np.abs(error)))]
+        return frame,dict(stage=stage,center_material_ids=18,
+            reference="M0, nominal radius .05 m, material r0=.0025 m",
+            tail_first_actual_Tv=float(tail.legacy_Tv.iloc[0]),tail_last_actual_Tv=float(tail.legacy_Tv.iloc[-1]),
+            tail_frames=len(tail),tail_center_RMS_error_Pa=float(np.sqrt(np.mean(error**2))),
+            tail_center_max_abs_error_Pa=float(np.max(np.abs(error))),tail_worst_part=int(worst.part),
+            tail_center_max_saved_increase_Pa=float(max(0.,np.max(np.diff(p)))),
+            tail_center_rising_intervals=int(np.count_nonzero(np.diff(p)>0)),
+            endpoint_center_Pa=float(p[-1]),endpoint_M0_Pa=float(tail.M0_r18_Pa.iloc[-1]),
+            endpoint_center_error_Pa=float(error[-1]),peak_assessment="separate dense peak receipt",
+            tail_physical_assessment="pending review of errors and decay")
     mask=(tv>=.005)&(tau<=.0625)
     need(np.count_nonzero(mask)>=12,"not enough actual Mandel samples")
     peak=minimize_scalar(lambda t:-ref.pressure(t,radius=.0025)[0],

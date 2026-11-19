@@ -23,6 +23,12 @@
 1. 峰窗结束后，将整个 `CaseCryer_TPI_P3_nu030_peak_r1_GPU_out` 目录复制回本机，包括 `data` 内所有原始粒子帧和头文件、实际输入 XML/BI4、`Run.out`、`Run.csv`、所有 `UplTpi*.csv` 和 `UplTpi*.json`、`launch.json` 和 `server_run.json`。发生中断时同样保留完整目录。
 2. 原生粒子读取、压力三轮和时间步审查、固定 18 个中心材料点的峰值和相位分析均在本机完成。请保留完整启动段。回传后在本机仓库的 Cryer 算例根目录执行 `python -B tests/support/cryer_p3_peak_qualify_r1.py "峰窗输出目录" "新的本机审查目录"`。该命令读取对应 ZIP 的运行配置和输出计划，一次核对原生 BI4，分别检查五个计算阶段、三轮压力、峰值误差和峰值时刻，并绘制 M0 对比与原显式有限 Kw 参照。
 3. 本机审查通过后，将生成的 `cryer_tpi_p3_peak_review.json` 放入服务器本包的 `support`，再双击 `xCaseCryer_TPI_P3_nu030_full_r1_win64_GPU.bat`。回执绑定同一候选程序、初始球体、峰窗 XML 和该次峰窗输出的 `Run.csv` 与 `server_run.json`。这两个文件应保留在服务器原峰窗输出目录中。如果有任一项物理指标未达标，本机只生成拒绝记录和分析结果。
-4. 全程结束后，将整个 `CaseCryer_TPI_P3_nu030_full_r1_GPU_out` 复制回本机，生成全周期对数时间压力曲线和 CSV。若程序退出成功但摘要检查报错，保留全套输出供本机复核。
+4. 全程结束后，将整个 `CaseCryer_TPI_P3_nu030_full_r1_GPU_out` 复制回本机，保留峰窗输出和本机峰窗审查目录。在本机 Cryer 算例根目录运行下面的命令，替换实际路径。新审查目录由脚本创建。
+
+```powershell
+python -B tests/support/cryer_p3_full_review_r1.py "全程输出目录" "新的全程审查目录" --peak-review "峰窗审查目录/cryer_tpi_p3_peak_review.json" --peak-output "峰窗输出目录"
+```
+
+全程入口检查配套程序、输入、265 帧原生粒子记录和三轮压力／五阶段步长记录，读取原峰窗审查回执。输出 `physical/cryer_center18.png`、`physical/native_and_theory.csv` 及径向剖面 PNG/CSV；`full_review.json` 汇总 `Tv=0.5–1` 的 101 个保存时刻的中心孔压 RMS、最大绝对偏差、回升区间数和终点偏差。峰值和相位沿用密集 577 帧峰窗的独立审查，尾段误差和曲线供全程精度复核。程序退出成功但服务端摘要检查报错时，同样保留全套输出供本机复核。
 
 同名输出目录会阻止再次启动，以保留已有数据。传输后可用同目录 ZIP 的 SHA256 文件核对压缩包。

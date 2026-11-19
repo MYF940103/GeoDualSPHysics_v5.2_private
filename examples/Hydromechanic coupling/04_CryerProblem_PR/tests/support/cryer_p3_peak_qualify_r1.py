@@ -10,7 +10,7 @@ import sys
 import xml.etree.ElementTree as ET
 import zipfile
 
-from pack_cryer_tpi_p3_r1 import BIN, CASE, DT, MANIFEST, SEED, SOLVER, ZIP_NAME, physics_signature
+from pack_cryer_tpi_p3_r1 import BIN, CASE, DT, MANIFEST, PROFILES, SEED, SOLVER, ZIP_NAME, physics_signature, stem
 from cryer_p3_sidecar_review_r1 import inspect
 
 TAG = 'CaseCryer_TPI_P3_nu030_peak_r1'
@@ -35,7 +35,9 @@ def write(path, doc):
         json.dump(doc,f,indent=2,allow_nan=False)
 
 
-def bind(package, folder):
+def bind(package, folder, stage='peak'):
+    tag=stem(stage)
+    steps,frames,_=PROFILES[stage]
     read_member=lambda p:package.read(p.as_posix())
     m=json.loads(read_member(MANIFEST))
     entries={i['name']:i for i in m['files']}
@@ -46,14 +48,15 @@ def bind(package, folder):
         e=entries[p.as_posix()]
         need(len(data)==e['bytes'] and sha(data)==e['sha256'],f'Packaged input changed: {p}')
         return data
-    definition=checked(Path(TAG+'_Def.xml'))
+    definition=checked(Path(tag+'_Def.xml'))
     template=checked(SEED.with_suffix('.xml'))
     bi4=checked(SEED.with_suffix('.bi4'))
     checked(BIN/SOLVER)
     need(entries[(BIN/SOLVER).as_posix()]['sha256']==m['program_sha256'],'packaged executable binding')
-    need(sha(definition+template+bi4)==m['peak_input_sha256'],'packaged peak binding')
-    need((folder/(TAG+'.bi4')).read_bytes()==bi4,'returned initial particle file')
-    actual=ET.parse(folder/(TAG+'.xml')).getroot()
+    peak_definition=definition if stage=='peak' else checked(Path(TAG+'_Def.xml'))
+    need(sha(peak_definition+template+bi4)==m['peak_input_sha256'],'packaged peak binding')
+    need((folder/(tag+'.bi4')).read_bytes()==bi4,'returned initial particle file')
+    actual=ET.parse(folder/(tag+'.xml')).getroot()
     base=ET.fromstring(template)
     new=ET.fromstring(definition)
     for key in ('special','parameters'):
@@ -62,17 +65,17 @@ def bind(package, folder):
     for loc in ('casedef','execution/special','execution/parameters','execution/particles',
                 'execution/constants','execution/uservars','execution/motion','execution/vtkout'):
         need(physics_signature(actual.find(loc))==physics_signature(base.find(loc)),f'returned XML: {loc}')
-    schedule=checked(Path('support')/(TAG+'_schedule.csv'))
+    schedule=checked(Path('support')/(tag+'_schedule.csv'))
     run=read(folder/'server_run.json')
     launch=read(folder/'launch.json')
     for rec in (launch,run):
-        need(rec['profile']=='peak' and rec['package_id']==m['package_id']
+        need(rec['profile']==stage and rec['package_id']==m['package_id']
              and rec['program_sha256']==m['program_sha256'] and rec['peak_input_sha256']==m['peak_input_sha256']
              and rec['selectors']==m['selectors'],'run/program or input binding')
         cmd=rec['arguments']
-        need(len(cmd)==8 and cmd[:2]==['-gpu','-stable'] and PureWindowsPath(cmd[2]).name==TAG
-             and PureWindowsPath(cmd[3]).name==TAG+'_GPU_out'
-             and cmd[4:]==['-dirdataout','data','-svres','-nsteps:36864'],'command binding')
+        need(len(cmd)==8 and cmd[:2]==['-gpu','-stable'] and PureWindowsPath(cmd[2]).name==tag
+             and PureWindowsPath(cmd[3]).name==tag+'_GPU_out'
+             and cmd[4:]==['-dirdataout','data','-svres',f'-nsteps:{steps}'],'command binding')
     need(run['arguments']==launch['arguments'] and run['solver']==launch['solver']
          and PureWindowsPath(run['solver']).name==SOLVER
          and run['status'] in ('completed_pending_native_physical_review','solver_completed_summary_needs_review')
@@ -84,31 +87,33 @@ def bind(package, folder):
     required=('Steps','PartFiles','PartsOut','Hardware','Np')
     need(len(keys)==len(vals) and all(keys.count(k)==1 for k in required),'Run.csv headers')
     fields={k:vals[keys.index(k)] for k in required}
-    need([int(fields[k]) for k in ('Steps','PartFiles','PartsOut','Np')]==[36864,577,0,37181]
+    need([int(fields[k]) for k in ('Steps','PartFiles','PartsOut','Np')]==[steps,frames,0,37181]
          and 'gpu' in fields['Hardware'].lower() and 'nvidia' in fields['Hardware'].lower(),'Run.csv values')
-    for name,value in (('steps',36864),('part_files',577),('hardware',fields['Hardware'])):
+    for name,value in (('steps',steps),('part_files',frames),('hardware',fields['Hardware'])):
         need(run[name] is None or run[name]==value,'Conflicting server summary: '+name)
     need('Finished execution (code=0).' in (folder/'Run.out').read_text(encoding='utf-8',errors='replace'),'Run.out terminal')
     return m,schedule
 
 
-def qualify(folder,package,review):
+def review_run(folder,raw_plan,review,stage):
     need(not review.exists(),'Review destination must be fresh; preserve and inspect any previous analysis.')
-    with zipfile.ZipFile(package) as z:
-        manifest,raw_plan=bind(z,folder)
     plan=list(csv.DictReader(raw_plan.decode('ascii').splitlines()))
     steps=[int(r['completed_steps']) for r in plan]
-    need(steps==list(range(0,36864+1,64)), 'Peak schedule shape')
+    last,count,_=PROFILES[stage]
+    need(len(steps)==count and steps[:65]==list(range(0,4097,64)) and steps[-1]==last
+         and all(b>a for a,b in zip(steps,steps[1:])), 'Packaged schedule shape')
+    if stage=='peak':
+        need(steps==list(range(0,last+1,64)), 'Peak schedule shape')
     with (folder/'UplTpiP3DtR1.csv').open(newline='') as f:
         dt_rows=list(csv.DictReader(f))
     need([int(r['completed_updates']) for r in dt_rows]==steps and
          [float(r['actual_save_time_s']) for r in dt_rows]==[float(r['time_s']) for r in plan],
          'Method clock differs from shipped plan')
     review.mkdir(parents=True)
-    side=inspect(folder,36864)
-    need(side['passed'] and side['frames']==577 and side['actual_post_open_frames']==512
+    side=inspect(folder,last)
+    need(side['passed'] and side['frames']==count and side['actual_post_open_frames']==count-65
          and side['pressure_rounds']==3 and side['dt_phases']==5 and side['device_and_saved_body_receivers']==37173
-         and side['completely_audited_saved_ids_per_round']==18 and side['inspected_pressure_rows']==577*18*3,
+         and side['completely_audited_saved_ids_per_round']==18 and side['inspected_pressure_rows']==count*18*3,
          'Incomplete five-phase or pressure-round coverage')
     write(review/'sidecar_review.json',side)
     with tempfile.TemporaryDirectory(prefix='cryer_return_') as name:
@@ -126,6 +131,14 @@ def qualify(folder,package,review):
     need(all(int(r['active_drain_count'])==0 for r in native[:65]) and
          all(int(r['active_drain_count'])>0 and float(r['surface_p_absmax_Pa'])==0 for r in native[65:]),
          'True drained receivers')
+    need(ph['stage']==stage and ph['center_material_ids']==18,'Unexpected physical scope')
+    return ph,native,side,steps
+
+
+def qualify(folder,package,review):
+    with zipfile.ZipFile(package) as z:
+        manifest,raw_plan=bind(z,folder)
+    ph,native,side,steps=review_run(folder,raw_plan,review,'peak')
     phys_flags=ph['criteria']
     need(set(phys_flags)=={'sampling','peak_within_one_percent','no_worse_than_A_plus_0p10pp','peak_time'}
          and ph['stage']=='peak' and ph['center_material_ids']==18,'Unexpected physical scope')

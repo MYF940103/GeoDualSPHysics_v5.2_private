@@ -140,6 +140,23 @@ if __name__=='__main__':
         fullout.rename(root/'preserved mock failure')
         run_bat(portable,'full','--unattended',0)
         assert json.loads((fullout/'server_run.json').read_text(encoding='utf-8-sig'))['part_files']==265
+        with zipfile.ZipFile(root/'unit.zip') as z:
+            full_manifest,full_plan=reviewer.bind(z,fullout,'full')
+        assert full_manifest['program_sha256']==m['program_sha256']
+        planned=list(csv.DictReader(io.StringIO(full_plan.decode('ascii'))))
+        assert len(planned)==265 and int(planned[-1]['completed_steps'])==481685
+        # Manufactured pressure offsets on the shipped scalar clock test tail arithmetic only.
+        from cryer_p3_return_r1 import Reference, compare, T_D
+        import numpy as np
+        ref=Reference(.3,finite=False)
+        ref.cv=ref.H*ref.kappa
+        ref.decay=ref.xi**2*ref.cv/.05**2
+        tau=np.array([float(row['time_s'])-T_D for row in planned])
+        center=ref.pressure(tau,radius=.0025)+3.
+        rows=[dict(part=i,tau_s=t,center18_Pa=p) for i,(t,p) in enumerate(zip(tau,center))]
+        _,tail=compare(rows,None,'full',ref)
+        assert tail['tail_frames']==101 and abs(tail['tail_center_RMS_error_Pa']-3.)<1e-10
+        assert abs(tail['endpoint_center_error_Pa']-3.)<1e-10 and 'peak_physical_criteria_met' not in tail
     if args.receipt:
         with args.receipt.open('x',encoding='utf-8') as f:
             json.dump(dict(passed=True,scope='temporary no-physics Windows BAT workflow',
@@ -149,7 +166,8 @@ if __name__=='__main__':
                                'full blocked before reviewed peak','captured successful mock run',
                                'independent archive/returned XML/input/Run bindings','changed DtFixed rejected',
                                'existing directory protected','nonzero solver exit preserved',
-                               'full entry with temporary synthetic receipt'],
+                               'full entry with temporary synthetic receipt','full archive and return bindings',
+                               'full sampling cadence, 101-point manufactured 3 Pa tail and independent peak scope'],
                            synthetic_outputs_discarded=True),f,indent=2)
     print('BAT package fixture passed; 577/265 scalar clock profiles checked; zero physical solver calls.')
 
