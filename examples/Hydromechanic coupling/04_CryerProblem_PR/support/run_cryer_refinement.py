@@ -83,7 +83,7 @@ def write_variant_xml(dst, cfg):
     else:
         ensure_soil_value(root, "HydroMechDrainageRadius", cfg["radius"])
         ensure_soil_value(root, "HydroMechDrainageThickness", cfg.get("drainage_thickness", cfg["dp"]))
-    set_value(root, ".//HydroMechTopLoadRampTime", cfg["load_ramp"])
+    root.find("./execution/special/externalload").set("ramptime", str(cfg["load_ramp"]))
     set_value(root, ".//HydroMechDrainageStartTime", cfg["drain_start"])
     set_value(root, ".//PoreDtSafety", cfg["pore_dt"])
     set_value(root, ".//PoreShepardRegularization", cfg["shepard"])

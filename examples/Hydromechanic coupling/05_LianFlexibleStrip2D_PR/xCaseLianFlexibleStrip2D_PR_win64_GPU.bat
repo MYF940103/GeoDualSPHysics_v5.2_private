@@ -17,7 +17,6 @@ rem "executables" are renamed and called from their directory
 set dirbin=../../../bin/windows
 set gencase="%dirbin%/GenCase_win64.exe"
 set dualsphysicsgpu="%dirbin%/DualSPHysics5.2_GEO_win64.exe"
-if not exist %dualsphysicsgpu% set dualsphysicsgpu="%dirbin%/DualSPHysics5.2_win64_debug.exe"
 set partvtk="%dirbin%/PartVTK_win64.exe"
 set vars=+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic,+fstype,+fsnormal,+porepress,+porepress0,+excessporepress,+hydromechloadace
 
@@ -34,6 +33,10 @@ if exist %dirout% (
 )
 
 :run
+if not exist %dualsphysicsgpu% (
+    echo Required GeoDualSPHysics Release solver missing: %dualsphysicsgpu%
+    exit /b 1
+)
 rem "dirout" to store results is removed if it already exists
 if exist %dirout% rd /s /q %dirout%
 

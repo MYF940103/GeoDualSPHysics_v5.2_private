@@ -1,5 +1,9 @@
 # Lian 2023 饱和土柱塌陷：r5 接收诊断
 
+## 冻结入口与公共配置
+
+根目录 r3、r4、r5、r6 输入各自配有私有程序。r6 仅开放原定的 ψ=0° GPU 诊断。复现这些结果时，使用相应 BAT 及其 `support/runtime_r*`，沿用该版预载、认证与后处理流程。供公共程序使用的新建显式 u-pl 算例采用 `HydroMechModel=1`。
+
 当前入口与依赖见 [README_server_r5.md](README_server_r5.md)，实际运行状态见 [STATUS_current](support/STATUS_current.md)。**ψ=0°撤墙后完整3 s已完成，300帧原生审查、独立Fluid/Bound导出及PNG/CSV均完成。** 0.63–0.64 s出现−450.667/+1352.125 kPa孔压脉冲，约0.8 s后滑动发展不足，尚未通过论文物理验收。另两组已准备配置，但入口仍在调用任何工具之前拒绝启动；先用现有保存数据排查。
 
 **复用本机原r2 GPU 10 s认证弹性PRE，不重新计算预载。** 保持完整目录 `CaseLianSaturatedColumnCollapse_shared_preload_r2_GPU_out`，三个GPU包装BAT均固定该源；本轮没有新PRELOAD或CPU入口。认证的是受限弹性状态承接，不是任意塑性PART重启。

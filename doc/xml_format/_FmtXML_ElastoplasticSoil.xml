@@ -26,7 +26,7 @@
 			<hydromechanics>
 				<HydroMech value="1" comment="Enable hydromechanical coupling; default=0" />
 				<!-- Hydraulic walls require mDBC; checked wall-free configurations are exempt. -->
-				<HydroMechDynamicSeepage value="0" comment="Public solver: 0=u-pw (default), 1=experimental explicit u-pl. Private model-selector builds accept HydroMechModel instead: 0=u-pw, 1=explicit u-pl, 2=TPI u-pl." />
+				<HydroMechModel value="0" comment="0=u-pw (default), 1=explicit u-pl, 2=TPI u-pl (validation build only)." />
 				<!-- Dynamic plasticity: fresh 2D fixed-phi plane strain only; generic PART restart unsupported. -->
 				<HydroMechConductivityModel value="0" comment="Dynamic seepage: 0=constant k0, 1=void-ratio exponential k(J); default=0" />
 				<!-- Model1: k=k0*exp((J-1)/((1-n0)*Ck)); requires dynamic seepage and explicit Ck>0. -->
@@ -51,11 +51,6 @@
 				<!-- <HydroMechInitZ value="1.0" comment="Required in mode2; parser default=0; otherwise unused" units_comment="m" /> -->
 				<!-- Dynamic mode2: saturated flat-top gravity container; initializes p, not effective stress. -->
 
-				<HydroMechTopLoadMode value="0" comment="0=None, 1=TopVertical, 2=FlexibleConfinement, 3=TopStripVertical, 4=LianFlexibleStrip, 5=TopKernelBand; default=0" />
-				<!-- Modes3/4 have fixed strip geometry; mode5 uses a horizontal kernel band. -->
-				<HydroMechTopLoadQ0 value="0" comment="Compressive load; default=0; must be >0 when loading is enabled" units_comment="Pa" />
-				<HydroMechTopLoadRampTime value="0" comment="Load ramp duration; default=0; must be >=0" units_comment="s" />
-
 				<HydroMechDrainage value="1" comment="Zero pore pressure at tracked drained free-surface soil; default=1" />
 				<HydroMechDrainageStartTime value="0" comment="Drainage opening time; default=0; must be >=0" units_comment="s" />
 				<HydroMechDrainageFixedGrid value="0" comment="Align drainage event to the fixed-step count; default=0; requires a fresh constant-DtFixed run" />
@@ -63,6 +58,8 @@
 				<HydroMechFreeSeepage value="0" comment="Experimental dynamic free-seepage surface; default=0; requires HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0" />
 				<!-- FreeSeepage projects positive surface pressure to zero at completed steps; negative pressure is retained. -->
 			</hydromechanics>
+			<!-- mode: 0=None, 1=TopVertical, 2=FlexibleConfinement, 3=TopStripVertical, 4=LianFlexibleStrip, 5=TopKernelBand. -->
+			<externalload mode="0" q0="0" ramptime="0" comment="All default to zero. Active loads require HydroMech=1, q0>0 [Pa], ramptime>=0 [s]." />
 			<!-- Optional fixed-phi 2D gravity preload/release, DPCtes=3; absent=disabled. Required: time [s], release_mkbound (right FreeSlip MK). -->
 			<!-- <gravitypreload time="10" release_mkbound="2" /> -->
 			<!-- elastic_source default=false (plastic history allowed); true requires elastic trials throughout preload. -->

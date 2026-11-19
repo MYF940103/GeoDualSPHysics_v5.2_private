@@ -15,6 +15,7 @@ Selfcheck compares the SAME baseline twice and is not a migration experiment.
 Final PNG/PDF/CSV/JSON/Markdown files are exclusive-create, never overwritten.
 """
 
+from compare_precision_q0 import load_value
 import argparse
 import csv
 from datetime import datetime, timezone
@@ -175,7 +176,6 @@ def model_and_completion(run):
         "E": special + "soils/ModulusE", "nu": special + "soils/PRvs",
         "k": hydro + "HydraulicConductivity", "n": hydro + "Porosity",
         "Kw": hydro + "PoreWaterBulkModulus", "rho_w": hydro + "PoreWaterRho",
-        "q0": hydro + "HydroMechTopLoadQ0", "tL": hydro + "HydroMechTopLoadRampTime",
         "tD": hydro + "HydroMechDrainageStartTime",
         "H": "./execution/uservars/varnum[@name='sizefz']", "dp": "./execution/constants/dp",
         "dt": "./execution/parameters/parameter[@key='DtFixed']",
@@ -183,6 +183,8 @@ def model_and_completion(run):
         "time_max": "./execution/parameters/parameter[@key='TimeMax']",
         "time_out": "./execution/parameters/parameter[@key='TimeOut']",
     }.items()}
+    model["q0"] = load_value(tree, "q0")
+    model["tL"] = load_value(tree, "ramptime")
     for name, expected in {"k": 1e-4, "H": 1, "dp": .01, "q0": 1e4, "tD": .01,
                            "tL": .01, "dt": 1e-5, "dt_ini": 1e-6,
                            "time_max": 72.8842857142858}.items():

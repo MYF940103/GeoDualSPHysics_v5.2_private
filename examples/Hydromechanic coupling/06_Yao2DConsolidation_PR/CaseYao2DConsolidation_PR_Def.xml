@@ -97,12 +97,10 @@
                 <PoreShepardRegularization value="0" comment="Disabled for the first no-diffusion Yao u-p comparison" />
                 <PoreShepardInterval value="30" comment="Unused when regularization is disabled" />
                 <HydroMechInitMode value="0" comment="Initial effective stress and EPWP are zero" />
-                <HydroMechTopLoadMode value="3" comment="3=TopStripVertical; hard-coded Yao strip footprint x=[-3,3] m on the top surface" />
-                <HydroMechTopLoadQ0 value="5000" comment="Compressive strip surcharge sigma_c0=5 kPa" units_comment="Pa" />
-                <HydroMechTopLoadRampTime value="0.1" comment="Ramp load duration in Eq. (75)" units_comment="seconds" />
                 <HydroMechDrainage value="1" comment="Drain the open top free surface outside the impermeable foundation strip" />
                 <HydroMechDrainageStartTime value="0.0" comment="Free-surface drainage is active from the start" units_comment="seconds" />
             </hydromechanics>
+            <externalload mode="3" q0="5000" ramptime="0.1" />
         </special>
         <parameters>
             <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />

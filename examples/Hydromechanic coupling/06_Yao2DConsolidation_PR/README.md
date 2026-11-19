@@ -1,5 +1,9 @@
 # Yao 2D Consolidation PR
 
+## 公共版配置
+
+五份根定义在 `execution/special/externalload` 中指定条形荷载（模式 3，5000 Pa，0.1 s 加载）。相应 BAT 使用仓库 GPU Release。
+
 2026-10-26 task-plan revision: this case is deferred. Lian is now the sole
 active 2-D consolidation verification case, with paper SPH and ABAQUS FEM
 comparisons. Existing Yao source support, formal inputs, outputs and bounded

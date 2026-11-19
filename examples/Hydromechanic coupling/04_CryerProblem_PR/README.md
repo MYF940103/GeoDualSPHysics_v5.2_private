@@ -1,5 +1,11 @@
 # CryerProblem_PR
 
+## 公共程序与复现入口
+
+当前公共版显式 u-pl 的 ν=0.30 配置为 `CaseCryerProblem_u_pl_nu030_Def.xml`（`HydroMechModel=1`）。运行 `xCaseCryerProblem_u_pl_nu030_win64_GPU.bat` 会从该 XML 调用 GenCase，使用仓库 GPU Release 按原时间步与输出计划计算，写入独立的 `CaseCryerProblem_u_pl_nu030_GPU_out`。加 `--smoke` 可按相同输入做六步检查。全程结束后导出 Fluid VTK，原生 BI4 保留完整状态。
+
+带 `release`、`symc`、`u_pl_nu030_r1`、`TPI_P3` 的冻结入口仍与其原程序及原 XML 配套。复现已发布的 r1 显式计算时，使用读取 `support/upl_seed_nu030_r1` 的原 BAT。
+
 ## Returned four-ratio formal comparison (2026-11-02)
 
 The returned nu=.10/.20/.45 `release_nu*_r1_out` datasets are compared with the

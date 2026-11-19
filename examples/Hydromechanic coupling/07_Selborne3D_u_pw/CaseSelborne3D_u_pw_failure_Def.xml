@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<case>
+    <!-- CONFIGURATION PREPARATION ONLY. Global soil below is a geometry-export placeholder, NOT a two-material simulation. Read support/model_spec.json and code_change_plan.md. Solver launch is blocked by BAT until material mapping and basal pore-pressure boundary are implemented. -->
+    <casedef>
+        <constantsdef>
+            <gravity x="0" y="0" z="-9.81" comment="Gravitational acceleration" units_comment="m/s^2" />
+            <rhop0 value="2054" comment="Saturated mixture: (1-0.38)*2700+0.38*1000; NOT grain density" units_comment="kg/m^3" />
+            <rhopgradient value="1" comment="Initial density gradient 1:Rhop0, 2:Water column, 3:Max. water height" />
+            <hswl value="0" auto="true" comment="Maximum still water level to calculate speedofsound using coefsound" units_comment="metres (m)" />
+            <gamma value="7" comment="Polytropic constant used in the state equation" />
+            <speedsystem value="0" auto="true" comment="Maximum system speed" />
+            <coefsound value="20" comment="Coefficient to multiply speedsystem when speedsound is automatic" />
+            <speedsound value="0" auto="true" comment="Soil sound speed is computed from the constrained modulus" />
+            <hdp value="1.5" comment="Wendland smoothing length factor from the u-pw retrogressive slope reference" />
+            <cflnumber value="0.2" comment="Courant number" />
+        </constantsdef>
+        <mkconfig boundcount="240" fluidcount="9" />
+        <geometry>
+            <predefinition>
+                <newvarcte Dp="0.5" />
+                <newvarcte Length="56" />
+                <newvarcte Width="25" />
+                <newvarcte BaseH="6" />
+                <newvarcte SlopeH="9" />
+                <newvarcte CrestX="18" />
+                <newvarcte ToeX="36" />
+                <newvar Hdp="Dp/2" />
+            </predefinition>
+            <definition dp="#Dp" units_comment="metres (m)">
+                <pointmin x="#-4*Dp" y="#-4*Dp" z="#-4*Dp" />
+                <pointmax x="#Length+4*Dp" y="#Width+4*Dp" z="#BaseH+SlopeH+4*Dp" />
+            </definition>
+            <commands>
+                <list name="GeometryForNormals">
+                    <setactive drawpoints="0" drawshapes="1" />
+                    <setshapemode>actual | bound</setshapemode>
+                    <setmkbound mk="0" />
+                    <drawquadri>
+                        <point x="#-4*Dp" y="#-4*Dp" z="#Hdp" />
+                        <point x="#Length+4*Dp" y="#-4*Dp" z="#Hdp" />
+                        <point x="#Length+4*Dp" y="#Width+4*Dp" z="#Hdp" />
+                        <point x="#-4*Dp" y="#Width+4*Dp" z="#Hdp" />
+                    </drawquadri>
+                    <setmkbound mk="1" />
+                    <drawquadri>
+                        <point x="#Hdp" y="#-4*Dp" z="#-4*Dp" />
+                        <point x="#Hdp" y="#Width+4*Dp" z="#-4*Dp" />
+                        <point x="#Hdp" y="#Width+4*Dp" z="#BaseH+SlopeH+Dp" />
+                        <point x="#Hdp" y="#-4*Dp" z="#BaseH+SlopeH+Dp" />
+                    </drawquadri>
+                    <setmkbound mk="2" />
+                    <drawquadri>
+                        <point x="#Length-Hdp" y="#Width+4*Dp" z="#-4*Dp" />
+                        <point x="#Length-Hdp" y="#-4*Dp" z="#-4*Dp" />
+                        <point x="#Length-Hdp" y="#-4*Dp" z="#BaseH+Dp" />
+                        <point x="#Length-Hdp" y="#Width+4*Dp" z="#BaseH+Dp" />
+                    </drawquadri>
+                    <setmkbound mk="3" />
+                    <drawquadri>
+                        <point x="#Length+4*Dp" y="#Hdp" z="#-4*Dp" />
+                        <point x="#-4*Dp" y="#Hdp" z="#-4*Dp" />
+                        <point x="#-4*Dp" y="#Hdp" z="#BaseH+SlopeH+Dp" />
+                        <point x="#Length+4*Dp" y="#Hdp" z="#BaseH+SlopeH+Dp" />
+                    </drawquadri>
+                    <setmkbound mk="4" />
+                    <drawquadri>
+                        <point x="#-4*Dp" y="#Width-Hdp" z="#-4*Dp" />
+                        <point x="#Length+4*Dp" y="#Width-Hdp" z="#-4*Dp" />
+                        <point x="#Length+4*Dp" y="#Width-Hdp" z="#BaseH+SlopeH+Dp" />
+                        <point x="#-4*Dp" y="#Width-Hdp" z="#BaseH+SlopeH+Dp" />
+                    </drawquadri>
+                    <shapeout file="hdp" />
+                    <resetdraw />
+                </list>
+                <mainlist>
+                    <runlist name="GeometryForNormals" />
+                    <setdrawmode mode="full" />
+                    <setshapemode>actual | bound</setshapemode>
+                    <setmkbound mk="0" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#-3*Dp" y="#-3*Dp" z="#-3*Dp" />
+                        <size x="#Length+6*Dp" y="#Width+6*Dp" z="#3*Dp" />
+                    </drawbox>
+                    <setmkbound mk="1" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#-3*Dp" y="#-3*Dp" z="#Dp" />
+                        <size x="#3*Dp" y="#Width+6*Dp" z="#BaseH+SlopeH-Dp" />
+                    </drawbox>
+                    <setmkbound mk="2" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#Length" y="#-3*Dp" z="#Dp" />
+                        <size x="#3*Dp" y="#Width+6*Dp" z="#BaseH-Dp" />
+                    </drawbox>
+                    <setmkbound mk="3" />
+                    <setdrawmode mode="full" />
+                    <drawprism>
+                        <point x="#Dp" y="#-3*Dp" z="#BaseH+SlopeH" />
+                        <point x="#CrestX" y="#-3*Dp" z="#BaseH+SlopeH" />
+                        <point x="#ToeX" y="#-3*Dp" z="#BaseH" />
+                        <point x="#Length-Dp" y="#-3*Dp" z="#BaseH" />
+                        <point x="#Length-Dp" y="#-3*Dp" z="#Dp" />
+                        <point x="#Dp" y="#-3*Dp" z="#Dp" />
+                        <point x="#Dp" y="0" z="#BaseH+SlopeH" />
+                        <point x="#CrestX" y="0" z="#BaseH+SlopeH" />
+                        <point x="#ToeX" y="0" z="#BaseH" />
+                        <point x="#Length-Dp" y="0" z="#BaseH" />
+                        <point x="#Length-Dp" y="0" z="#Dp" />
+                        <point x="#Dp" y="0" z="#Dp" />
+                    </drawprism>
+                    <fillprism x="10" y="#-Dp" z="3">
+                        <point x="#Dp" y="#-3*Dp" z="#BaseH+SlopeH" />
+                        <point x="#CrestX" y="#-3*Dp" z="#BaseH+SlopeH" />
+                        <point x="#ToeX" y="#-3*Dp" z="#BaseH" />
+                        <point x="#Length-Dp" y="#-3*Dp" z="#BaseH" />
+                        <point x="#Length-Dp" y="#-3*Dp" z="#Dp" />
+                        <point x="#Dp" y="#-3*Dp" z="#Dp" />
+                        <point x="#Dp" y="0" z="#BaseH+SlopeH" />
+                        <point x="#CrestX" y="0" z="#BaseH+SlopeH" />
+                        <point x="#ToeX" y="0" z="#BaseH" />
+                        <point x="#Length-Dp" y="0" z="#BaseH" />
+                        <point x="#Length-Dp" y="0" z="#Dp" />
+                        <point x="#Dp" y="0" z="#Dp" />
+                        <modefill>void</modefill>
+                    </fillprism>
+                    <setmkbound mk="4" />
+                    <setdrawmode mode="full" />
+                    <drawprism>
+                        <point x="#Dp" y="#Width" z="#BaseH+SlopeH" />
+                        <point x="#CrestX" y="#Width" z="#BaseH+SlopeH" />
+                        <point x="#ToeX" y="#Width" z="#BaseH" />
+                        <point x="#Length-Dp" y="#Width" z="#BaseH" />
+                        <point x="#Length-Dp" y="#Width" z="#Dp" />
+                        <point x="#Dp" y="#Width" z="#Dp" />
+                        <point x="#Dp" y="#Width+3*Dp" z="#BaseH+SlopeH" />
+                        <point x="#CrestX" y="#Width+3*Dp" z="#BaseH+SlopeH" />
+                        <point x="#ToeX" y="#Width+3*Dp" z="#BaseH" />
+                        <point x="#Length-Dp" y="#Width+3*Dp" z="#BaseH" />
+                        <point x="#Length-Dp" y="#Width+3*Dp" z="#Dp" />
+                        <point x="#Dp" y="#Width+3*Dp" z="#Dp" />
+                    </drawprism>
+                    <fillprism x="10" y="#Width+Dp" z="3">
+                        <point x="#Dp" y="#Width" z="#BaseH+SlopeH" />
+                        <point x="#CrestX" y="#Width" z="#BaseH+SlopeH" />
+                        <point x="#ToeX" y="#Width" z="#BaseH" />
+                        <point x="#Length-Dp" y="#Width" z="#BaseH" />
+                        <point x="#Length-Dp" y="#Width" z="#Dp" />
+                        <point x="#Dp" y="#Width" z="#Dp" />
+                        <point x="#Dp" y="#Width+3*Dp" z="#BaseH+SlopeH" />
+                        <point x="#CrestX" y="#Width+3*Dp" z="#BaseH+SlopeH" />
+                        <point x="#ToeX" y="#Width+3*Dp" z="#BaseH" />
+                        <point x="#Length-Dp" y="#Width+3*Dp" z="#BaseH" />
+                        <point x="#Length-Dp" y="#Width+3*Dp" z="#Dp" />
+                        <point x="#Dp" y="#Width+3*Dp" z="#Dp" />
+                        <modefill>void</modefill>
+                    </fillprism>
+                    <setmkfluid mk="0" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#Dp" y="#Dp" z="#Dp" />
+                        <size x="#Length-2*Dp" y="#Width-2*Dp" z="#BaseH-Dp" />
+                    </drawbox>
+                    <setmkfluid mk="1" />
+                    <setdrawmode mode="full" />
+                    <drawprism>
+                        <point x="#Dp" y="#Dp" z="#BaseH+SlopeH" />
+                        <point x="#CrestX" y="#Dp" z="#BaseH+SlopeH" />
+                        <point x="#ToeX-2*Dp" y="#Dp" z="#BaseH+Dp" />
+                        <point x="#Dp" y="#Dp" z="#BaseH+Dp" />
+                        <point x="#Dp" y="#Width-Dp" z="#BaseH+SlopeH" />
+                        <point x="#CrestX" y="#Width-Dp" z="#BaseH+SlopeH" />
+                        <point x="#ToeX-2*Dp" y="#Width-Dp" z="#BaseH+Dp" />
+                        <point x="#Dp" y="#Width-Dp" z="#BaseH+Dp" />
+                    </drawprism>
+                    <fillprism x="10" y="12.5" z="10">
+                        <point x="#Dp" y="#Dp" z="#BaseH+SlopeH" />
+                        <point x="#CrestX" y="#Dp" z="#BaseH+SlopeH" />
+                        <point x="#ToeX-2*Dp" y="#Dp" z="#BaseH+Dp" />
+                        <point x="#Dp" y="#Dp" z="#BaseH+Dp" />
+                        <point x="#Dp" y="#Width-Dp" z="#BaseH+SlopeH" />
+                        <point x="#CrestX" y="#Width-Dp" z="#BaseH+SlopeH" />
+                        <point x="#ToeX-2*Dp" y="#Width-Dp" z="#BaseH+Dp" />
+                        <point x="#Dp" y="#Width-Dp" z="#BaseH+Dp" />
+                        <modefill>void</modefill>
+                    </fillprism>
+                    <shapeout file="" />
+                </mainlist>
+            </commands>
+        </geometry>
+        <normals>
+            <distanceh value="3.0" comment="Normal search distance for mDBC boundary" />
+            <geometryfile file="[CaseName]_hdp_Actual.vtk" comment="File with boundary geometry for mDBC normals" />
+            <svshapes value="1" comment="Save normal-generation geometry for inspection" />
+        </normals>
+    </casedef>
+    <execution>
+        <special>
+            <soils>
+                <!-- Current parser supports ONE global material only. Upper-layer values here are placeholders. BOTH real layer specifications are in support/model_spec.json. -->
+                <phi value="24" />
+                <coh value="15000" />
+                <dlt value="0" />
+                <phi_r value="13" />
+                <coh_r value="500" />
+                <n_phi value="5" />
+                <n_coh value="5" />
+                <SoilTriggerFos value="1" />
+                <ModulusE value="20e6" />
+                <PRvs value="0.33" />
+            </soils>
+            <hydromechanics>
+                <HydroMech value="1" />
+                <HydroMechInitMode value="None" />
+                <HydroMechDrainage value="1" />
+                <HydroMechDrainageStartTime value="0" />
+                <PoreWaterRho value="1000" />
+                <PoreWaterBulkModulus value="2e8" comment="Provisional numerical Kw from case03, NOT a Table 5 material parameter; sensitivity check required" />
+                <Porosity value="0.38" />
+                <HydraulicConductivity value="1e-3" />
+                <PoreDtSafety value="0.1" />
+                <PoreShepardRegularization value="0" />
+                <PoreShepardInterval value="40" />
+                <PoreMdbcInterpolationMode value="0" />
+                <!-- Failure requires basal DELTA p=110000*min(t_stage/10,1) Pa on x=[0,24], y=[0,25], z=0. NOT implemented by externalload. See specification; no fake XML option is used. -->
+            </hydromechanics>
+            <mdbcslip>
+                <bound mkbound="0" slipmode="2" comment="Fixed no-slip base" />
+                <bound mkbound="1" slipmode="3" comment="Undrained mechanical roller approximation" />
+                <bound mkbound="2" slipmode="3" comment="Undrained mechanical roller approximation" />
+                <bound mkbound="3" slipmode="3" comment="Undrained mechanical roller approximation" />
+                <bound mkbound="4" slipmode="3" comment="Undrained mechanical roller approximation" />
+            </mdbcslip>
+        </special>
+        <parameters>
+            <parameter key="SavePosDouble" value="1" comment="Selborne preparation setting; see README" />
+            <parameter key="SaveExtraParts" value="1" comment="Save mDBC restart normals for every PART during the coupled prestress stage" />
+            <parameter key="DPCtes" value="1" comment="3D circumscribed DP; differs from paper SMP mapping, see model notes" />
+            <parameter key="Boundary" value="2" comment="Boundary method 1:DBC, 2:mDBC" />
+            <parameter key="SlipMode" value="3" comment="Side-wall free-slip; base overridden by mdbcslip" />
+            <parameter key="NoPenetration" value="1" comment="Selborne preparation setting; see README" />
+            <parameter key="StepAlgorithm" value="2" comment="Step Algorithm 1:Verlet, 2:Symplectic" />
+            <parameter key="VerletSteps" value="40" comment="Verlet only: Number of steps to apply Euler timestepping" />
+            <parameter key="Kernel" value="2" comment="Interaction Kernel 1:Cubic Spline, 2:Wendland" />
+            <parameter key="ViscoTreatment" value="1" comment="Viscosity formulation 1:Artificial, 2:Laminar+SPS" />
+            <parameter key="Visco" value="0.1" comment="Artificial viscosity coefficient" />
+            <parameter key="ViscoBoundFactor" value="1" comment="Multiply viscosity value with boundary" />
+            <parameter key="ArtificialStress" value="1" comment="Bui 2008 tensile instability treatment" />
+            <parameter key="ArtificialStressCoef" value="0.2" comment="Bui 2008 artificial stress coefficient" />
+            <parameter key="ArtificialStressExp" value="4" comment="Bui 2008 artificial stress kernel-ratio exponent" />
+            <parameter key="SoilDamping" value="0" comment="Gravity relaxation only; disabled in failure" />
+            <parameter key="SoilDampingCoef" value="0.02" comment="Damping coefficient from the u-pw reference" />
+            <parameter key="DensityDT" value="0" comment="Disabled pending heterogeneous-interface verification" />
+            <parameter key="DensityDTvalue" value="0.1" comment="Stress diffusion coefficient" />
+            <parameter key="Shifting" value="0" comment="Shifting mode" />
+            <parameter key="ShiftCoef" value="-2" comment="Coefficient for shifting computation" />
+            <parameter key="ShiftTFS" value="1.5" comment="Threshold to detect free surface" />
+            <parameter key="RigidAlgorithm" value="1" comment="Rigid Algorithm 1:SPH, 2:DEM, 3:Chrono" />
+            <parameter key="FtPause" value="0.0" units_comment="seconds" />
+            <parameter key="CoefDtMin" value="0.01" comment="Coefficient to calculate minimum time step" />
+            <parameter key="DtIni" value="0" units_comment="seconds" />
+            <parameter key="DtMin" value="1e-9" comment="Small lower clamp for high conductivity; validate reported diffusion dt" units_comment="seconds" />
+            <parameter key="DtFixed" value="0" comment="Adaptive mechanical and hydraulic stability limits; do not copy MPM dt=1e-3" units_comment="seconds" />
+            <parameter key="DtFixedFile" value="NONE" />
+            <parameter key="DtAllParticles" value="0" comment="1:All, 0:Only fluid/floating" />
+            <parameter key="TimeMax" value="100" comment="Provisional horizon; convergence/failure must be assessed, not assumed" units_comment="seconds" />
+            <parameter key="TimeOut" value="0.5" comment="Selborne preparation setting; see README" units_comment="seconds" />
+            <parameter key="PartsOutMax" value="0.001" comment="Abort on excessive particle loss" units_comment="decimal" />
+            <parameter key="RhopOutMin" value="1400" units_comment="kg/m^3" comment="Selborne preparation setting; see README" />
+            <parameter key="RhopOutMax" value="2800" units_comment="kg/m^3" comment="Selborne preparation setting; see README" />
+            <simulationdomain comment="Defines domain of simulation">
+                <posmin x="default - 2" y="default - 2" z="default - 2" />
+                <posmax x="default + 10" y="default + 2" z="default + 5" />
+            </simulationdomain>
+        </parameters>
+    </execution>
+</case>

@@ -54,6 +54,17 @@ def signature(element):
     return element.tag, attrs, (element.text or "").strip(), children
 
 
+def load_value(tree, attr, default=None):
+    load = tree.find("./execution/special/externalload")
+    if load is not None:
+        return float(load.attrib[attr])
+    legacy_name = {"q0": "HydroMechTopLoadQ0", "ramptime": "HydroMechTopLoadRampTime"}[attr]
+    node = tree.find(".//" + legacy_name)
+    if node is None and default is not None:
+        return default
+    return xml_value(tree, ".//" + legacy_name)
+
+
 def xml_value(tree, xpath):
     element = tree.find(xpath)
     if element is None or "value" not in element.attrib:
@@ -95,8 +106,8 @@ def read_run(folder, partial):
         "n": xml_value(tree, hydro + "Porosity"),
         "Kw": xml_value(tree, hydro + "PoreWaterBulkModulus"),
         "rho_w": xml_value(tree, hydro + "PoreWaterRho"),
-        "q0": xml_value(tree, hydro + "HydroMechTopLoadQ0"),
-        "tL": xml_value(tree, hydro + "HydroMechTopLoadRampTime"),
+        "q0": load_value(tree, "q0"),
+        "tL": load_value(tree, "ramptime"),
         "tD": xml_value(tree, hydro + "HydroMechDrainageStartTime"),
         "H": xml_value(tree, "./execution/uservars/varnum[@name='sizefz']"),
         "dp": xml_value(tree, "./execution/constants/dp"),

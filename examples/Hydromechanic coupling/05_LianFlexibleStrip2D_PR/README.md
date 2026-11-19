@@ -1,5 +1,9 @@
 # Lian Flexible Strip 2D PR
 
+## 公共版配置
+
+通用 `CaseLianFlexibleStrip2D_PR_Def.xml` 用 `externalload` 指定条形荷载。带 `_release` 的服务器入口使用随包发布的 `support/bin` 和原 XML，以复现正式结果。
+
 ## 论文曲线加密取点与最新对比（2026-10-28，r3）
 
 已重新从原论文第18页嵌入图像采集SPH/FEM可辨曲线，替代旧图只用25个稀疏点的比较方式。

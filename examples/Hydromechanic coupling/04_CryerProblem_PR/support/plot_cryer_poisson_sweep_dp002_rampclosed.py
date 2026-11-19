@@ -52,6 +52,8 @@ def read_line(data, offset):
 def parse_xml(case_name):
     root = ET.parse(ROOT / f"{case_name}_Def.xml").getroot()
 
+    load = root.find("./execution/special/externalload")
+
     def value(name, default=None):
         node = root.find(f".//{name}")
         return float(node.attrib["value"]) if node is not None else default
@@ -62,12 +64,12 @@ def parse_xml(case_name):
 
     radius_node = root.find(".//newvarcte[@radius]")
     dp_node = root.find(".//newvarcte[@Dp]")
-    ramp_time = value("HydroMechTopLoadRampTime", 0.0)
+    ramp_time = float(load.attrib["ramptime"]) if load is not None else value("HydroMechTopLoadRampTime", 0.0)
     drainage_start = value("HydroMechDrainageStartTime", ramp_time)
     return {
         "radius": float(radius_node.attrib["radius"]),
         "dp": float(dp_node.attrib["Dp"]),
-        "q0": value("HydroMechTopLoadQ0"),
+        "q0": float(load.attrib["q0"]) if load is not None else value("HydroMechTopLoadQ0"),
         "e": value("ModulusE"),
         "nu": value("PRvs"),
         "khyd": value("HydraulicConductivity"),

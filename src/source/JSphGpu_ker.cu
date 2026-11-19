@@ -19,6 +19,7 @@
 /// \file JSphGpu_ker.cu \brief Implements functions and CUDA kernels for the Particle Interaction and System Update.
 
 #include "JSphGpu_ker.h"
+#include "FunExternalLoad.h"
 #include "Functions.h"
 #include "FunctionsCuda.h"
 #include "JLog2.h"
@@ -1064,28 +1065,11 @@ __device__ bool KerHydroMechIsFreeSurface(unsigned p,const typecode *code,const 
 }
 
 //==============================================================================
-/// Returns true inside a hard-coded benchmark strip-footing footprint.
-//==============================================================================
-__device__ bool KerHydroMechInBenchmarkTopStrip(const unsigned loadmode,const double x){
-  if(loadmode==HMLOAD_TopStripVertical)return(x>=-3.0 && x<=3.0);
-  //-Same half-domain mirror as CPU; loading, drainage and pore-rate selection share this predicate.
-  if(loadmode==HMLOAD_LianFlexibleStrip)return(fabs(x)<=1.25);
-  return(false);
-}
-
-//==============================================================================
-/// Returns true for the hard-coded top surface of a benchmark strip footprint.
-//==============================================================================
-__device__ bool KerHydroMechIsBenchmarkTopStripSurface(const unsigned loadmode,const double x,const double z,const double dp){
-  return(KerHydroMechInBenchmarkTopStrip(loadmode,x) && z>=10.0-0.5*dp && z<=10.0+0.5*dp);
-}
-
-//==============================================================================
 /// Returns true when the particle belongs to the active drained pore boundary.
 //==============================================================================
 __device__ bool KerHydroMechIsDrainedParticle(unsigned p,unsigned loadmode,const double2 *posxy,const typecode *code,const unsigned *fstype){
   if(!KerHydroMechIsFreeSurface(p,code,fstype))return(false);
-  if(posxy && KerHydroMechInBenchmarkTopStrip(loadmode,posxy[p].x))return(false);
+  if(posxy && externalload::InStripFootprint(loadmode,posxy[p].x))return(false);
   return(true);
 }
 
@@ -1130,13 +1114,13 @@ __global__ void KerApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,un
 {
   const unsigned p=blockIdx.x*blockDim.x + threadIdx.x + npb;
   const bool striptop=(p<np && (loadmode==HMLOAD_TopStripVertical || loadmode==HMLOAD_LianFlexibleStrip));
-  const bool stripgeom=(striptop && posxy && posz && KerHydroMechIsBenchmarkTopStripSurface(loadmode,posxy[p].x,posz[p],CTE.dp));
+  const bool stripgeom=(striptop && posxy && posz && externalload::IsStripSurface(loadmode,posxy[p].x,posz[p],CTE.dp));
   if(p<np && CODE_IsNormal(code[p]) && CODE_IsFluid(code[p]) && (KerHydroMechIsFreeSurface(p,code,fstype) || stripgeom)){
     const bool freesurf=KerHydroMechIsFreeSurface(p,code,fstype);
     float3 a=ace[p];
     float3 aload=make_float3(0.f,0.f,0.f);
     const bool alltop=(loadmode==HMLOAD_TopVertical || loadmode==HMLOAD_TopKernelBand);
-    if(alltop || stripgeom || (striptop && posxy && KerHydroMechInBenchmarkTopStrip(loadmode,posxy[p].x))){
+    if(alltop || stripgeom || (striptop && posxy && externalload::InStripFootprint(loadmode,posxy[p].x))){
       if(freesurf){
         const float3 n=fsnormal[p];
         const double nlen=sqrt(double(n.x)*n.x+double(n.y)*n.y+double(n.z)*n.z);
@@ -1293,7 +1277,7 @@ template<TpKernel tker,bool sim2d> __global__ void KerExtrapolateYaoTopStripPore
 {
   const unsigned p1=blockIdx.x*blockDim.x + threadIdx.x + npb;
   if(p1<np && CODE_IsFluid(code[p1]) && KerHydroMechIsFreeSurface(p1,code,fstype)
-    && KerHydroMechIsBenchmarkTopStripSurface(loadmode,posxy[p1].x,posz[p1],CTE.dp)){
+    && externalload::IsStripSurface(loadmode,posxy[p1].x,posz[p1],CTE.dp)){
     const double2 posp1xy=posxy[p1];
     const double posp1z=posz[p1];
     double sumwab=0,pwsum=0;
@@ -1305,7 +1289,7 @@ template<TpKernel tker,bool sim2d> __global__ void KerExtrapolateYaoTopStripPore
       unsigned pini,pfin=0; cunsearch::ParticleRange(c2,c3,ini1,fin1,beginendcell,pini,pfin);
       if(pfin)for(unsigned p2=pini;p2<pfin;p2++){
         if(p2==p1 || !CODE_IsFluid(code[p2]) || velrhop[p2].w<=0.f)continue;
-        if(KerHydroMechIsBenchmarkTopStripSurface(loadmode,posxy[p2].x,posz[p2],CTE.dp))continue;
+        if(externalload::IsStripSurface(loadmode,posxy[p2].x,posz[p2],CTE.dp))continue;
         if(posz[p2]>posp1z-0.25*double(CTE.dp))continue;
         const double2 p2xy=posxy[p2];
         const double drx=posp1xy.x-p2xy.x;
@@ -2187,7 +2171,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     const float pressp1=cufsph::ComputePressCte(velrhop1.w);
     const bool rsymp1=(symm && PSCEL_GetPartY(__float_as_uint(pscellp1.w))==0); //<vs_syymmetry>
     const double xposp1=double(pscellp1.x)+double(CTE.poscellsize)*double(PSCEL_GetfX(pscellp1.w));
-    const bool stripdrainexempt=KerHydroMechInBenchmarkTopStrip(CTE.hydrotoploadmode,xposp1);
+    const bool stripdrainexempt=externalload::InStripFootprint(CTE.hydrotoploadmode,xposp1);
     const bool drainedp1=(hydrodrainfs && KerHydroMechIsFreeSurface(p1,code,fstype) && !stripdrainexempt);
     const bool poreratep1=(CTE.hydromech && porepress && porepressrate && CODE_IsFluid(code[p1]) && !drainedp1);
     const bool observeporosity=(porotheta && CODE_IsFluid(code[p1]));

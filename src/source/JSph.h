@@ -66,6 +66,7 @@ class JDsPartsOut;
 class JSphShifting;
 class JDsDamping;
 class JXml;
+class TiXmlElement;
 class JDsOutputTime;
 class JGaugeSystem;
 class JPartsLoad4;
@@ -604,6 +605,7 @@ protected:
   StSoilCte SoilCte;       ///<Contains constants of soils.
 
   void InitSoilParameters(const JXml *sxml,std::string xmlpath);
+  void ReadExternalLoad(const JXml *xml,const TiXmlElement *special);
   void ConfigConstantsSoil();
   float GetDynamicSoilDampingRate()const;
   bool IsGravityPreloadHandoff()const{ return(!GravityPreloadStateFile.empty()); }

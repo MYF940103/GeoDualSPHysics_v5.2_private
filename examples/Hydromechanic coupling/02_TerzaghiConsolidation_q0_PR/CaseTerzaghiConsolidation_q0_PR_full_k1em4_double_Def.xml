@@ -118,12 +118,10 @@
         <PoreShepardRegularization value="0" comment="Disabled for the first q0 verification" />
         <PoreShepardInterval value="30" comment="Unused when regularization is disabled" />
         <HydroMechInitMode value="0" comment="HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; current 0=None" />
-        <HydroMechTopLoadMode value="TopVertical" comment="Apply q0 vertically to upward free-surface particles" />
-        <HydroMechTopLoadQ0 value="10000" comment="Compressive surcharge q0" units_comment="Pa" />
-        <HydroMechTopLoadRampTime value="0.01" comment="Ramp load duration tL" units_comment="seconds" />
         <HydroMechDrainage value="1" comment="Enable drained top free-surface pore pressure after the loading stage" />
         <HydroMechDrainageStartTime value="0.01" comment="Drainage starts when q0 reaches its target value" units_comment="seconds" />
       </hydromechanics>
+      <externalload mode="TopVertical" q0="10000" ramptime="0.01" />
     </special>
     <parameters>
       <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />

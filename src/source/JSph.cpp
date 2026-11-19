@@ -4060,6 +4060,32 @@ float JSph::GetDynamicSoilDampingRate()const{
 }
 
 //==============================================================================
+// Read external mechanical loads for both backends.
+//==============================================================================
+void JSph::ReadExternalLoad(const JXml *xml,const TiXmlElement *special){
+  const TiXmlElement* load=special->FirstChildElement("externalload");
+  if(!load)return;
+  if(load->NextSiblingElement("externalload"))Run_Exceptioon("Duplicate externalload element.");
+  xml->CheckAttributeNames(load,"mode q0 ramptime comment units_comment");
+  xml->CheckElementNames(load,true,"");
+  const string mode=fun::StrLower(xml->GetAttributeStr(load,"mode",true,"0"));
+  unsigned value=HMLOAD_None;
+  for(;value<=HMLOAD_TopKernelBand;value++){
+    if(mode==fun::UintStr(value) || mode==fun::StrLower(GetHydroMechTopLoadModeName(TpHydroMechLoadMode(value))))break;
+  }
+  if(value>HMLOAD_TopKernelBand)Run_Exceptioon("Unknown externalload mode. Use 0..5 or the documented mode name.");
+  HydroMechTopLoadMode=TpHydroMechLoadMode(value);
+  HydroMechTopLoadQ0=xml->GetAttributeFloat(load,"q0",true,0.f);
+  HydroMechTopLoadRampTime=xml->GetAttributeDouble(load,"ramptime",true,0.);
+  if(!std::isfinite(HydroMechTopLoadQ0) || !std::isfinite(HydroMechTopLoadRampTime) || HydroMechTopLoadRampTime<0.)
+    Run_Exceptioon("External load requires finite q0 and finite nonnegative ramptime.");
+  if(HydroMechTopLoadMode!=HMLOAD_None && (!HydroMech || HydroMechTopLoadQ0<=0.f))
+    Run_Exceptioon("An active externalload requires HydroMech=1 and q0>0.");
+  if(!load->Attribute("mode") && (HydroMechTopLoadQ0 || HydroMechTopLoadRampTime))
+    Run_Exceptioon("An externalload with nonzero q0 or ramptime requires a mode.");
+}
+
+//==============================================================================
 // Load related data 
 //==============================================================================
 void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
@@ -4074,10 +4100,18 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   TiXmlNode* hydroReadNode=(hydroNode? hydroNode: solidNode);
   const TiXmlElement* hydroEle=(hydroNode? hydroNode->ToElement(): solidEle);
 
-  //-Reject removed experimental controls instead of silently running PR.
-  if(sxml->ExistsElement(hydroEle,"PorePressureIntegrationMode") || sxml->ExistsElement(hydroEle,"PoreTpiAlpha")
-    || sxml->ExistsElement(solidEle,"PorePressureIntegrationMode") || sxml->ExistsElement(solidEle,"PoreTpiAlpha"))
-    Run_Exceptioon("PorePressureIntegrationMode and PoreTpiAlpha are no longer supported: TPI was removed. Remove these options only if a PR run is intended.");
+  if(hydroNode)sxml->CheckElementNames(hydroEle,true,
+    "HydroMech HydroMechModel HydroMechConductivityModel HydroMechConductivityCk HydroMechInitMode HydroMechInitZ "
+    "HydroMechDrainage HydroMechDrainageStartTime HydroMechDrainageFixedGrid HydroMechFreeSeepage "
+    "PoreWaterRho PoreWaterBulkModulus Porosity HydraulicConductivity PoreDtSafety "
+    "PoreShepardRegularization PoreShepardInterval PoreMdbcInterpolationMode PoreCompressionSourceMode "
+    "PoreCompressionGradCorr PoreDarcySymmetricCorr");
+  //-Some older dry and slope inputs keep pore material properties under soils.
+  // New model and load choices have only one location, including in such cases.
+  for(const char* key:{"HydroMechModel","HydroMechDynamicSeepage","HydroMechPressureIntegrator","PorePressureIntegrationMode",
+    "PoreTpiAlpha","HydroMechTopLoadMode","HydroMechTopLoadQ0","HydroMechTopLoadRampTime","externalload"}){
+    if(solidEle->FirstChildElement(key))Run_Exceptioon(string("Invalid setting under soils: ")+key+". Use hydromechanics/HydroMechModel or special/externalload.");
+  }
 
   //-Soil strength parameters.
   SoilCte.coh=sxml->ReadElementFloat(solidNode,"coh","value",true);
@@ -4115,7 +4149,12 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
 
   //-Hydromechanical switches, pore-pressure initialization, loading and drainage options.
   HydroMech=sxml->ReadElementBool(hydroReadNode,"HydroMech","value",true,false);
-  HydroMechDynamicSeepage=sxml->ReadElementBool(hydroReadNode,"HydroMechDynamicSeepage","value",true,false);
+  const TiXmlElement* model=hydroEle->FirstChildElement("HydroMechModel");
+  const unsigned modelid=(model? sxml->GetAttributeUnsigned(model,"value"): 0);
+  if(modelid==2)Run_Exceptioon("HydroMechModel=2 (TPI) requires the matching TPI validation program.");
+  if(modelid>1)Run_Exceptioon("HydroMechModel must be 0 (u-pw), 1 (explicit u-pl) or 2 (TPI).");
+  HydroMechDynamicSeepage=(modelid==1);
+  if(HydroMechDynamicSeepage && !HydroMech)Run_Exceptioon("HydroMechModel=1 requires HydroMech=1.");
   HydroMechConductivityModel=sxml->ReadElementUnsigned(hydroReadNode,"HydroMechConductivityModel","value",true,0);
   HydroMechConductivityCk=sxml->ReadElementDouble(hydroReadNode,"HydroMechConductivityCk","value",true,0.);
   if(HydroMech && TBoundary==BC_MDBC)MdbcFastSingle=false;
@@ -4130,61 +4169,37 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   HydroMechDrainageStartTime=sxml->ReadElementDouble(hydroReadNode,"HydroMechDrainageStartTime","value",true,0);
   HydroMechDrainageFixedGrid=sxml->ReadElementBool(hydroReadNode,"HydroMechDrainageFixedGrid","value",true,false);
   HydroMechFreeSeepage=sxml->ReadElementBool(hydroReadNode,"HydroMechFreeSeepage","value",true,false);
-  const string toploadmodestr=fun::StrLower(sxml->ReadElementStr(hydroReadNode,"HydroMechTopLoadMode","value",true,"None"));
-  if(toploadmodestr=="none" || toploadmodestr=="off" || toploadmodestr=="0")HydroMechTopLoadMode=HMLOAD_None;
-  else if(toploadmodestr=="topvertical" || toploadmodestr=="top_vertical" || toploadmodestr=="vertical" || toploadmodestr=="1")HydroMechTopLoadMode=HMLOAD_TopVertical;
-  else if(toploadmodestr=="flexibleconfinement" || toploadmodestr=="flexible_confinement" || toploadmodestr=="confinement" || toploadmodestr=="zhaoconfinement" || toploadmodestr=="2")HydroMechTopLoadMode=HMLOAD_FlexibleConfinement;
-  else if(toploadmodestr=="topstripvertical" || toploadmodestr=="top_strip_vertical" || toploadmodestr=="stripvertical" || toploadmodestr=="strip_vertical" || toploadmodestr=="3")HydroMechTopLoadMode=HMLOAD_TopStripVertical;
-  else if(toploadmodestr=="lianflexiblestrip" || toploadmodestr=="lian_flexible_strip" || toploadmodestr=="lianstripvertical" || toploadmodestr=="lian_strip_vertical" || toploadmodestr=="4")HydroMechTopLoadMode=HMLOAD_LianFlexibleStrip;
-  else if(toploadmodestr=="topkernelband" || toploadmodestr=="5")HydroMechTopLoadMode=HMLOAD_TopKernelBand;
-  else Run_Exceptioon("HydroMechTopLoadMode must be 0=None, 1=TopVertical, 2=FlexibleConfinement, 3=TopStripVertical, 4=LianFlexibleStrip or 5=TopKernelBand.");
-  HydroMechTopLoadQ0=sxml->ReadElementFloat(hydroReadNode,"HydroMechTopLoadQ0","value",true,0.f);
-  HydroMechTopLoadRampTime=sxml->ReadElementDouble(hydroReadNode,"HydroMechTopLoadRampTime","value",true,0);
+  ReadExternalLoad(sxml,solidEle->Parent()->ToElement());
 
   //-Pore-water material properties and pore-pressure numerical controls.
-  const auto ReadHydroFloat=[&](const std::string &name,float valdef)->float{
-    const TiXmlNode* node=(sxml->ExistsElement(hydroEle,name,"value")? hydroReadNode: solidNode);
-    return(sxml->ReadElementFloat(node,name,"value",true,valdef));
-  };
-  const auto ReadHydroBool=[&](const std::string &name,bool valdef)->bool{
-    const TiXmlNode* node=(sxml->ExistsElement(hydroEle,name,"value")? hydroReadNode: solidNode);
-    return(sxml->ReadElementBool(node,name,"value",true,valdef));
-  };
-  const auto ReadHydroUnsigned=[&](const std::string &name,unsigned valdef)->unsigned{
-    const TiXmlNode* node=(sxml->ExistsElement(hydroEle,name,"value")? hydroReadNode: solidNode);
-    return(sxml->ReadElementUnsigned(node,name,"value",true,valdef));
-  };
-  const auto ReadHydroStr=[&](const std::string &name,const std::string &valdef)->std::string{
-    const TiXmlNode* node=(sxml->ExistsElement(hydroEle,name,"value")? hydroReadNode: solidNode);
-    return(sxml->ReadElementStr(node,name,"value",true,valdef));
-  };
-  SoilCte.PoreWaterRho=ReadHydroFloat("PoreWaterRho",1000.f);
-  SoilCte.PoreWaterBulkModulus=ReadHydroFloat("PoreWaterBulkModulus",0.f);
-  SoilCte.Porosity=ReadHydroFloat("Porosity",0.f);
-  SoilCte.HydraulicConductivity=ReadHydroFloat("HydraulicConductivity",0.f);
-  PoreDtSafety=ReadHydroFloat("PoreDtSafety",0.1f);
-  PoreShepardRegularization=ReadHydroBool("PoreShepardRegularization",false);
-  PoreShepardInterval=ReadHydroUnsigned("PoreShepardInterval",30);
-  const string poremdbcstr=fun::StrLower(ReadHydroStr("PoreMdbcInterpolationMode","0"));
+  // Read pore properties from the hydro block, or soils in a single-block input.
+  SoilCte.PoreWaterRho=sxml->ReadElementFloat(hydroReadNode,"PoreWaterRho","value",true,1000.f);
+  SoilCte.PoreWaterBulkModulus=sxml->ReadElementFloat(hydroReadNode,"PoreWaterBulkModulus","value",true,0.f);
+  SoilCte.Porosity=sxml->ReadElementFloat(hydroReadNode,"Porosity","value",true,0.f);
+  SoilCte.HydraulicConductivity=sxml->ReadElementFloat(hydroReadNode,"HydraulicConductivity","value",true,0.f);
+  PoreDtSafety=sxml->ReadElementFloat(hydroReadNode,"PoreDtSafety","value",true,0.1f);
+  PoreShepardRegularization=sxml->ReadElementBool(hydroReadNode,"PoreShepardRegularization","value",true,false);
+  PoreShepardInterval=sxml->ReadElementUnsigned(hydroReadNode,"PoreShepardInterval","value",true,30);
+  const string poremdbcstr=fun::StrLower(sxml->ReadElementStr(hydroReadNode,"PoreMdbcInterpolationMode","value",true,"0"));
   if(poremdbcstr=="0" || poremdbcstr=="zeroorder" || poremdbcstr=="zero_order" || poremdbcstr=="zerothorder" || poremdbcstr=="zeroth_order")
     PoreMdbcInterpolationMode=0;
   else if(poremdbcstr=="1" || poremdbcstr=="mlsdirect" || poremdbcstr=="mls_direct" || poremdbcstr=="mls")
     PoreMdbcInterpolationMode=1;
   else Run_Exceptioon("PoreMdbcInterpolationMode must be 0=ZeroOrder or 1=MLSDirect.");
-  const string porecompsrcstr=fun::StrLower(ReadHydroStr("PoreCompressionSourceMode","PairDivergence"));
+  const string porecompsrcstr=fun::StrLower(sxml->ReadElementStr(hydroReadNode,"PoreCompressionSourceMode","value",true,"PairDivergence"));
   if(porecompsrcstr=="0" || porecompsrcstr=="pair" || porecompsrcstr=="pairdivergence" || porecompsrcstr=="pair_divergence" || porecompsrcstr=="divergence")
     PoreCompressionSourceMode=0;
   else if(porecompsrcstr=="1" || porecompsrcstr=="densityrate" || porecompsrcstr=="density_rate" || porecompsrcstr=="arc" || porecompsrcstr=="rhoprate")
     PoreCompressionSourceMode=1;
   else Run_Exceptioon("PoreCompressionSourceMode must be 0=PairDivergence or 1=DensityRate.");
-  PoreCompressionGradCorr=ReadHydroBool("PoreCompressionGradCorr",true);
-  PoreDarcySymmetricCorr=ReadHydroBool("PoreDarcySymmetricCorr",false);
+  PoreCompressionGradCorr=sxml->ReadElementBool(hydroReadNode,"PoreCompressionGradCorr","value",true,true);
+  PoreDarcySymmetricCorr=sxml->ReadElementBool(hydroReadNode,"PoreDarcySymmetricCorr","value",true,false);
 
   //-Input validation.
   if(HydroMechConductivityModel>1)
     Run_Exceptioon("HydroMechConductivityModel must be 0=constant or 1=void-ratio exponential.");
   if(HydroMechConductivityModel && !HydroMechDynamicSeepage)
-    Run_Exceptioon("Evolving conductivity requires HydroMechDynamicSeepage=1.");
+    Run_Exceptioon("Evolving conductivity requires a dynamic HydroMechModel.");
   if(HydroMechConductivityModel && (!std::isfinite(HydroMechConductivityCk) || HydroMechConductivityCk<=0))
     Run_Exceptioon("Void-ratio exponential conductivity requires explicit finite HydroMechConductivityCk>0.");
   if(HydroMech && HydroMechInitMode==HMINIT_ConstantZ && !sxml->ExistsElement(hydroEle,"HydroMechInitZ","value"))
@@ -4196,12 +4211,8 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     if(SoilCte.Porosity<=0.f || SoilCte.Porosity>=1.f)Run_Exceptioon("Porosity must be greater than zero and lower than one when HydroMech is enabled.");
     if(SoilCte.HydraulicConductivity<0.f)Run_Exceptioon("HydraulicConductivity must be equal to or greater than zero when HydroMech is enabled.");
     if(HydroMechDrainageStartTime<0)Run_Exceptioon("HydroMechDrainageStartTime must be equal to or greater than zero when HydroMech is enabled.");
-    if(HydroMechTopLoadMode!=HMLOAD_None && HydroMechTopLoadQ0<=0.f)Run_Exceptioon("HydroMechTopLoadQ0 must be greater than zero when HydroMechTopLoadMode is not None.");
-    if(HydroMechTopLoadMode!=HMLOAD_None && HydroMechTopLoadRampTime<0)Run_Exceptioon("HydroMechTopLoadRampTime must be equal to or greater than zero when HydroMechTopLoadMode is not None.");
     if(PoreDtSafety<=0.f)Run_Exceptioon("PoreDtSafety must be greater than zero when HydroMech is enabled.");
     if(PoreShepardRegularization && !PoreShepardInterval)Run_Exceptioon("PoreShepardInterval must be greater than zero when PoreShepardRegularization is enabled.");
-    if(PoreMdbcInterpolationMode>1)Run_Exceptioon("PoreMdbcInterpolationMode must be 0=ZeroOrder or 1=MLSDirect.");
-    if(PoreCompressionSourceMode>1)Run_Exceptioon("PoreCompressionSourceMode must be 0=PairDivergence or 1=DensityRate.");
   }
 
   //-Validate every material, including the zero-elasticity pure-fluid configuration.
@@ -4257,6 +4268,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   //-Log hydromechanical switches, pore-water parameters and PR controls.
     Log->Print(fun::VarStr("  Hydromechanics", (HydroMech? "Enabled": "Disabled")));
   if(HydroMech){
+    Log->Printf("  HydroMechModel=%u (%s)",unsigned(HydroMechDynamicSeepage),HydroMechDynamicSeepage? "explicit u-pl": "u-pw");
     Log->Print(fun::VarStr("  HydroMechDynamicSeepage",HydroMechDynamicSeepage));
     if(HydroMechDynamicSeepage){
       Log->Print(HydroMechFreeSeepage?

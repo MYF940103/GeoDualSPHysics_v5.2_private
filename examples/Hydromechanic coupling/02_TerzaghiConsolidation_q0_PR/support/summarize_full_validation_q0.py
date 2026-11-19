@@ -1,4 +1,5 @@
 from pathlib import Path
+from compare_precision_q0 import load_value
 import argparse
 import csv
 import importlib.util
@@ -63,10 +64,7 @@ def case_ramp_time(tag):
     if not xml_path.exists():
         return pp.TL
     tree = ET.parse(xml_path)
-    elem = tree.find(".//HydroMechTopLoadRampTime")
-    if elem is None:
-        return pp.TL
-    return float(elem.attrib["value"])
+    return load_value(tree, "ramptime", pp.TL)
 
 
 def load_series(folder, tout):

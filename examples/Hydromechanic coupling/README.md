@@ -1,6 +1,8 @@
 # 水土耦合算例索引
 
-当前生产基线是无孔压精度补偿的 **u-pw float**。旧 u-pl、TPI、precision 和 double 试验是历史材料，不代表当前程序支持这些功能，也不是新 TPI 开发的验收结果。
+当前公共源码在 `execution/special/hydromechanics` 中读取 `HydroMechModel`。打开 `HydroMech` 后，缺省或 0 使用 u-pw，1 使用显式 u-pl。旧配置中的 `HydroMechDynamicSeepage` 需要迁移，false/0 对应模型 0，true/1 对应模型 1。2 为 TPI u-pl，当前由 Cryer 验证程序执行，公共程序请求该值时会报错。运行既有算例请使用其 BAT 配套的程序和 XML。
+
+新程序可在 `execution/special` 中单独指定外载，例如 `<externalload mode="FlexibleConfinement" q0="10000" ramptime="0.00390625" />` 表示在 0.00390625 s 内将球面围压加至 10 kPa。省略该节点表示无外载。旧配置的 `HydroMechTopLoadMode`、`HydroMechTopLoadQ0`、`HydroMechTopLoadRampTime` 分别迁至 `mode`、`q0`、`ramptime`。孔压排水和开放时刻仍在 `hydromechanics` 中配置。[XML 格式](../../doc/xml_format/_FmtXML_ElastoplasticSoil.xml) · [TPI 验证包说明](04_CryerProblem_PR/README_Cryer_TPI_P3_nu030_r1.md)
 
 ## 算例
 

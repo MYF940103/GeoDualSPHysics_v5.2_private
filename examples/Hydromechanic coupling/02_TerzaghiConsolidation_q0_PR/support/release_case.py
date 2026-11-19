@@ -14,7 +14,7 @@ import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from compare_precision_q0 import pressure_theory, xml_value
+from compare_precision_q0 import load_value, pressure_theory, xml_value
 
 CASE = Path(__file__).resolve().parents[1]
 REPO = CASE.parents[2]
@@ -31,10 +31,11 @@ def model(xml):
     h = "./execution/special/hydromechanics/"
     m = {k: xml_value(tree, p) for k, p in dict(E="./execution/special/soils/ModulusE",
         nu="./execution/special/soils/PRvs", H="./execution/uservars/varnum[@name='sizefz']",
-        q0=h+"HydroMechTopLoadQ0", tD=h+"HydroMechDrainageStartTime", k=h+"HydraulicConductivity",
+        tD=h+"HydroMechDrainageStartTime", k=h+"HydraulicConductivity",
         n=h+"Porosity", Kw=h+"PoreWaterBulkModulus", rho_w=h+"PoreWaterRho",
         dt="./execution/parameters/parameter[@key='DtFixed']",
         tmax="./execution/parameters/parameter[@key='TimeMax']").items()}
+    m["q0"] = load_value(tree, "q0")
     m["dp"] = xml_value(tree, "./execution/constants/dp")
     m["width"] = xml_value(tree, "./execution/uservars/varnum[@name='sizefx']")
     m["nx"], m["nz"] = round(m["width"]/m["dp"]), round(m["H"]/m["dp"])

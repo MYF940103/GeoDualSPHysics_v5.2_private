@@ -25,6 +25,7 @@
 #include "JCellDivGpu.h"
 #include "JDsGpuInfo.h"
 #include "JPartFloatBi4.h"
+#include "FunExternalLoad.h"
 #include "Functions.h"
 #include "FunctionsCuda.h"
 #include "JDsMotion.h"
@@ -982,7 +983,7 @@ void JSphGpu::ConstantDataUp(){
   if(HydroMech && (HydroMechTopLoadMode==HMLOAD_FlexibleConfinement || HydroMechTopLoadMode==HMLOAD_TopKernelBand) && HydroMechTopLoadQ0>0.f){
     const double tramp=HydroMechTopLoadRampTime;
     const double q0=double(HydroMechTopLoadQ0);
-    const double q=(tramp>0 && TimeStep<tramp? q0*max(0.0,TimeStep)/tramp: q0);
+    const double q=externalload::RampedPressure(q0,tramp,TimeStep);
     ctes.hydrotoploadpressure=float(max(0.0,q));
   }
   ctes.porewaterrho=SoilCte.PoreWaterRho;
@@ -1389,7 +1390,7 @@ void JSphGpu::ApplyHydroMechTopLoadAcceleration(){
   const double q0=double(HydroMechTopLoadQ0);
   if(q0<=0)return;
   const double tramp=HydroMechTopLoadRampTime;
-  const double q=(tramp>0 && TimeStep<tramp? q0*max(0.0,TimeStep)/tramp: q0);
+  const double q=externalload::RampedPressure(q0,tramp,TimeStep);
   if(q<=0)return;
   const double por=double(SoilCte.Porosity);
   const double rhol=double(SoilCte.PoreWaterRho);

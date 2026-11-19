@@ -1,5 +1,9 @@
 # 02 外载 1D 固结：入口与文件索引
 
+## 公共版外载配置
+
+根目录公共 Release 算例在 `execution/special/externalload` 指定 `mode`、`q0`（Pa）和 `ramptime`（s），水力模型默认 0（u-pw）。已完成的三组正式结果各自保留原生输入，后处理可读取这些历史数据。
+
 ## 2026-11-03：u-pl 受限开发测试（不是新的正式发行）
 
 已验收的三组 u-pw 正式 XML/BAT、数据和图表保持不变。u-pl 的公开开关、原生状态及短窗 CPU/GPU 兼容性证据在 `tests/notes/upl_column_public_root_r1.json`；无辅助稳定项的 ON/OFF 各自 .125 s 半步检查与对比在 `tests/notes/upl_column_ringdown_on_off_root_r1.json`。两套框架仍有启动振荡，尚不能据此宣称完整固结精度通过。

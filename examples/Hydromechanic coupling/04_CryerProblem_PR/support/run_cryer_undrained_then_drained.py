@@ -87,11 +87,10 @@ def write_stage_xml(dst, cfg, stage):
         0,
         "HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; Cryer two-stage verification uses 0=None",
     )
-    ensure_soil_value(root, "HydroMechTopLoad", 1, "Apply sustained spherical normal pressure p0")
-    ensure_soil_value(root, "HydroMechTopLoadMode", 2, "HydroMechTopLoadMode values: 0=None, 1=TopVertical, 2=FlexibleConfinement; Cryer uses 2=FlexibleConfinement")
-    ensure_soil_value(root, "HydroMechTopLoadQ0", cfg["q0"], "Compressive spherical surface pressure p0")
-    set_value(root, ".//HydroMechTopLoadRampTime", cfg["load_ramp"])
-    set_comment(root, ".//HydroMechTopLoadRampTime", "Ramp duration for the undrained loading stage")
+    load = root.find("./execution/special/externalload")
+    load.set("mode", "2")
+    load.set("q0", str(cfg["q0"]))
+    load.set("ramptime", str(cfg["load_ramp"]))
     ensure_soil_value(root, "HydroMechDrainageMode", "FreeSurface", "Drain tracked free-surface particles on Cryer's exterior")
     remove_soil_value(root, "HydroMechDrainageRadius")
     remove_soil_value(root, "HydroMechDrainageThickness")
