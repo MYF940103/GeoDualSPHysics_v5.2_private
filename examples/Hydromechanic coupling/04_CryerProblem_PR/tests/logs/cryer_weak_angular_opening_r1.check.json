@@ -1,0 +1,49 @@
+{
+  "passed": true,
+  "inputs": [
+    {
+      "step": 4096,
+      "old": "CaseCryer_TPI_P3_nu030_peak_r1_GPU_out\\CaseCryer_TPI_P3_nu030_peak_r1_GPU_out\\data\\Part_0064.bi4",
+      "new": "tests\\outputs\\cryer_weak_open_r1\\state_4096.npz",
+      "theory360_vs720_absmax_Pa": 0.0
+    },
+    {
+      "step": 4097,
+      "old": "tests\\outputs\\cryer_p3_gpu_drain4097_r1\\data\\Part_0065.bi4",
+      "new": "tests\\outputs\\cryer_weak_open_r1\\state_4097.npz",
+      "theory360_vs720_absmax_Pa": 7.967203346903261
+    },
+    {
+      "step": 4160,
+      "old": "CaseCryer_TPI_P3_nu030_peak_r1_GPU_out\\CaseCryer_TPI_P3_nu030_peak_r1_GPU_out\\data\\Part_0065.bi4",
+      "new": "tests\\outputs\\cryer_weak_open_r1\\state_4160.npz",
+      "theory360_vs720_absmax_Pa": 0.0
+    }
+  ],
+  "source_seal_steps": 4160,
+  "native_ids": 37173,
+  "center_ids": [
+    17338,
+    17343,
+    17769,
+    17770,
+    17771,
+    17772,
+    18412,
+    18443,
+    18592,
+    18755,
+    18756,
+    18757,
+    18758,
+    19403,
+    19460,
+    19553,
+    19554,
+    19979
+  ],
+  "coverage": "Fixed source-referenced groups, original pre-open and every available selected real snapshot. Uploaded material cases have the same initial IDs and shell definitions. First step is a retained local P3 comparison.",
+  "pressure_reference": "Original nu=.3 M0, actual gamma=9806.65 and actual tau, 720 modes compared to 360; at tau=0 use closed 10 kPa state",
+  "angular_graph": "6 nearest original cartesian neighbors within each material shell, sorted unique undirected pairs",
+  "reading": "Original BI4 memory-mapped only at selected steps; access Idp,PorePress,FSType. Candidate NPZ accesses ids,step,p. No native decoding, new trajectory or interpolations."
+}

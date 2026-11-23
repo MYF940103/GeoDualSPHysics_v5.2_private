@@ -1,0 +1,93 @@
+{
+  "checkpoints": [
+    {
+      "step": 36864,
+      "time_s": 0.0703125,
+      "tau_s": 0.0625,
+      "original_program": "cryer_weak_window.dll",
+      "ids": 37173,
+      "nodes_fs": 5153,
+      "faces": 10302,
+      "initial_geometric_volume_m3": 0.000523008693480482,
+      "initial_native_volume_m3": 0.0005808281042897892,
+      "J_volume_change_geometric_quadrature_m3": -1.68259891849887e-06,
+      "J_volume_change_native_quadrature_m3": -1.931417856107125e-06,
+      "volume_change_by_tet_determinants_m3": -1.6838755047849759e-06,
+      "volume_by_surface_m3": 0.0005213248179756969,
+      "volume_by_tets_m3": 0.000521324817975697,
+      "signed_volume_rate_bT_v_m3_s": -1.2239398750778481e-05,
+      "fixed_volume_rate_by_Vdual_div_v_m3_s": -1.2239398750778476e-05,
+      "current_surface_outward_velocity_m3_s": -1.2213113779968225e-05,
+      "linear_volume_change_bT_u_m3": -1.6856858989744778e-06,
+      "deformed_area_m2": 0.03132963950524781,
+      "reference_area_m2": 0.031397065914906826,
+      "area_weighted_reference_surface_normal_inward_mm": 0.05368928114311921,
+      "surface_mean_inward_radial_mm": 0.053717267274636056,
+      "deformed_J_element_minmax": [
+        0.9901161993918217,
+        1.0233416733995526
+      ],
+      "J_node_minmax": [
+        0.995053896074464,
+        0.9995052770117495
+      ],
+      "effective_volume_minus_linear_sigma_consistency_RMS_Pa": 0.4930080342695783,
+      "P0_storage": "initial pressure field P0 is not stored in this private checkpoint",
+      "surface_pressure_absmax_Pa": 0.0,
+      "surface_history_absmax_Pa": 0.0,
+      "all_p_minmax_Pa": [
+        0.0,
+        11985.7373046875
+      ],
+      "fixed18_p_Pa": 11977.995551215277,
+      "center18_effective_compression_Pa": 835.066070049133,
+      "center18_total_compression_Pa": 12813.06162126441,
+      "total_compression_volume_weighted_Pa": 9999.988798996083,
+      "fixed_face_total_traction_RMS_Pa": 49.617321996585964,
+      "fixed_face_normal_traction_RMS_Pa": 12.89391602004683,
+      "fixed_face_shear_traction_RMS_Pa": 47.91268696056269,
+      "fixed_surface_pressure_power_W": 0.12239398750778481,
+      "deformed_surface_pressure_power_W": 0.12213113779968225,
+      "constant_q_reference_traction_potential_work_from_undeformed_J": 0.016856858989744778,
+      "constant_q_current_surface_comparison_work_from_undeformed_J": 0.01683875504784976,
+      "weak_dirichlet_reaction_out_m3_s": 1.2254058722483066e-05,
+      "raw_one_sided_normal_Darcy_out_m3_s": 1.2597032671179572e-05,
+      "global_consolidation_outward_volume_expectation_m3_s": 1.2239398750778481e-05,
+      "posterior_interior_continuity_integrated_rate_m3_s": 1.4659971704583872e-08,
+      "posterior_interior_weak_residual_RMS_per_s": 3.7003738811591195e-05,
+      "stored_water_volume_change_M0_fixed_solid_geometric_m3": -1.68259891849887e-06,
+      "current_geometric_minus_integrated_ledger_m3": -1.2765862861057853e-09,
+      "files": "outputs/cryer_weak_peak_r1/state_36864.npz",
+      "affine_volume_virial": {
+        "volume_weighted_p_Pa": 4628.215802194079,
+        "unweighted_p_Pa": 4329.058367186147,
+        "volume_mean_tensile_stress_Pa": -5371.772996802003,
+        "volume_weighted_total_compression_minus_applied_Pa": -0.01120100391926826,
+        "inertia_minus_AV_and_damping_dilation_work_per_3V_Pa": -0.011201003918586675,
+        "independent_dilation_virtual_work_residual_Pa": -6.815849967756193e-13,
+        "inferred_quasistatic_inward_from_geometric_mean_p_mm": 0.05368953600762432,
+        "actual_area_normal_inward_mm": 0.05368928114311921,
+        "scope": "Moment identity is algebraic on the fixed linear geometry; using the quasistatic estimate neglects inertia and stress-rate/strain mismatch."
+      },
+      "posterior_power": {
+        "pore_body_work_W": -0.06919543963593135,
+        "by_volume_pressure_strain_rate_W": -0.06919543963593136,
+        "effective_stress_work_W": -0.05319840294166879,
+        "by_volume_contracted_strain_rate_W": -0.053198402941668825,
+        "AV_work_W": -2.115847483593765e-06,
+        "damping_work_W": -4.112523686272108e-08,
+        "applied_face_work_W": 0.12239398750778481,
+        "inertial_work_W": -2.012042535829707e-06,
+        "mechanical_work_identity_error_W": -3.9691963908336514e-17,
+        "element_Darcy_quadratic_W": 0.06928683438315443,
+        "liquid_acceleration_cross_W": -8.174570567865617e-07,
+        "nonzero_continuity_pressure_work_W": 9.221220427984134e-05,
+        "residual_power_identity_W": 1.4948437453143892e-17,
+        "elastic_energy_from_nodal_strain_u_J": 0.005550967601926478,
+        "soil_kinetic_energy_J": 8.294747669479528e-08,
+        "note": "Dissipation here is a constitutive nonnegative quadratic of posterior element-mean acceleration. The liquid-acceleration cross term and finite three-sweep pressure residual remain; this endpoint identity is not a global time-integrated energy certificate."
+      }
+    }
+  ],
+  "scope": "Point-in-time work and reaction on the actual reference faces. The mass matrix retains native particle mass. Geometric and native quadratures are separately reported. At constant load and fixed reference pressure, work after opening is exactly -q [b^Tu(t)-b^Tu(tD)]. The checkpoint contains no true substage acceleration, frozen endpoint AV or per-step face flux. The reconstructed instantaneous full-state reaction and one-sided unaveraged P1 gradient trace can differ. Neither is a cumulative native fluid mass balance. J is a separate nodal time integration; the P1 element determinant comes from saved displacement."
+}
