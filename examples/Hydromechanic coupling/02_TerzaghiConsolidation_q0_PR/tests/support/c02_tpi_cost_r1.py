@@ -15,6 +15,10 @@ CASE = TESTS.parent
 ROOT = CASE.parents[2]
 PREFIX = 'c02_tpi_cost_r1'
 PLAN = json.loads((TESTS/'configs'/(PREFIX+'.json')).read_text(encoding='utf8'))
+REFERENCES = json.loads((TESTS/'configs/c02_tpi_cost_ref_r1.json').read_text(encoding='utf8'))
+if PLAN['lanes'].keys() & REFERENCES['lanes'].keys():
+    raise ValueError('Supplementary explicit lanes would overwrite an original definition')
+PLAN['lanes'].update(REFERENCES['lanes'])
 MC = 2e6*(1-.3)/((1+.3)*(1-2*.3))
 CV = PLAN['hydraulic_conductivity_m_s']*MC/9810.
 EVENT = PLAN['ramp_and_drain_s']
@@ -92,8 +96,8 @@ def planned_clock(lane):
     return [(step,clocks[step],target) for step,target in targets]
 
 
-def prepare():
-    for name in PLAN['lanes']:
+def prepare(lane=None):
+    for name in ((lane,) if lane else PLAN['lanes']):
         root,_,_=setup_xml(name)
         encoded=ET.tostring(root.getroot(),encoding='utf-8',xml_declaration=True)
         path=xml_path(name)
@@ -145,7 +149,7 @@ if __name__=='__main__':
     ap.add_argument('--exe',type=Path,help='Optional isolated executable with its adjacent runtime DLLs')
     args=ap.parse_args()
     if args.action=='prepare':
-        prepare()
+        prepare(args.lane)
     else:
         if not args.lane or not args.backend:
             ap.error('run requires --lane and --backend')

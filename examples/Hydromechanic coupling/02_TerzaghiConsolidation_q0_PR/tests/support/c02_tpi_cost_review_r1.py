@@ -23,6 +23,17 @@ DOUBLE_FIELDS = set('Posd SigmaState_kk SigmaState_ij PoroVolumeRatio PoroPorosi
 VEC3 = set('Posd Vel Sigma_kk Sigma_ij SigmaState_kk SigmaState_ij FSNormal HydroMechLoadAce'.split())
 
 
+def write_report(path,report):
+    def native_scalar(value):
+        if isinstance(value,np.generic):
+            return value.item()
+        raise TypeError('Unexpected non-scalar report value: '+type(value).__name__)
+    # Serialize and reject any nonfinite/unexpected value before creating the public receipt.
+    encoded=json.dumps(report,indent=2,allow_nan=False,default=native_scalar)+'\n'
+    with path.open('x',encoding='utf8') as f:
+        f.write(encoded)
+
+
 def theory(t,z,model):
     # Original one-dimensional surface-drained solution at initial material centres.
     capacity=1/(1+.3*MC/2e8) if model==1 else 1.
@@ -170,7 +181,7 @@ def one(lane,backend,frame_sink=None):
     return dict(lane=lane,model=model,backend=backend,host=ex['host'],hardware=rr['Hardware'],cuda_driver_runtime=driver.group(1).strip() if driver else None,
                 program_identity={key:ex[key] for key in ('program','size','mtime_ns')},steps=plan[-1][0],wall_s=ex['wall_seconds'],loop_s=float(rr['TSimul']),
                 total_s=float(rr['TTotal']),io_bytes=sizes,save_timer_s=None if not rr.get('SU-SavePart') else float(rr['SU-SavePart']),
-                hg_limits=hg,early_100Pa_stress_pass=max_layer<=100 and max_gap<=100,post01_max_layer_Pa=float(max_layer),post01_max_topgap_Pa=float(max_gap),rows=rows)
+                hg_limits=hg,early_100Pa_stress_pass=bool(max_layer<=100 and max_gap<=100),post01_max_layer_Pa=float(max_layer),post01_max_topgap_Pa=float(max_gap),rows=rows)
 
 
 def target_budgets(a,b):
@@ -211,4 +222,4 @@ if __name__=='__main__':
         anchor=reference if args.reference=='kw25' else one('kw25',args.backend)
         report['comparison']=compare(reference,report,anchor)
     dest=TESTS/'logs'/(PREFIX+'_'+args.lane+'_'+args.backend+('_vs_'+args.reference if args.reference else '')+'.json')
-    with dest.open('x',encoding='utf8') as f:json.dump(report,f,indent=2,allow_nan=False)
+    write_report(dest,report)

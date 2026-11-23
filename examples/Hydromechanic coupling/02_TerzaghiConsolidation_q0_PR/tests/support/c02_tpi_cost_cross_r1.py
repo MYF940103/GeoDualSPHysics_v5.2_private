@@ -1,11 +1,10 @@
 """Compare a single high-k lane on CPU/GPU at its 13 actual clocks, without starting a solver."""
 import argparse
-import json
 
 import numpy as np
 
 from c02_tpi_cost_r1 import PLAN, PREFIX, TESTS, directory, need, planned_clock
-from c02_tpi_cost_review_r1 import FIELDS, SOIL, one
+from c02_tpi_cost_review_r1 import FIELDS, SOIL, one, write_report
 
 
 def differences(cpu,gpu,ids):
@@ -105,6 +104,5 @@ if __name__=='__main__':
     for backend in ('cpu','gpu'):
         need((directory(args.lane,backend)/'exit.json').is_file(),'Missing completed '+backend+'; no files written')
     result=compare(args.lane)
-    with dest.open('x',encoding='utf8') as f:
-        json.dump(result,f,indent=2,allow_nan=False)
+    write_report(dest,result)
     print(dest)
