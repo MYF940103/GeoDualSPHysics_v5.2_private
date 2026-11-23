@@ -3,6 +3,9 @@
 
 struct WeakContext {
   Csr stiffness;
+#ifdef CRYER_VORONOI_WINDOW
+  Csr hydraulicAcceleration;
+#endif
   double *volume,*diagonal,*blockSum,*correction;
   V *halfBase,*halfPressure,*endBase,*trial;
   double closedResponse;
@@ -36,6 +39,9 @@ API int uploadWeak(int nz,const int* row,const int* col,const double* value,
   allocate(weak.halfBase,n);allocate(weak.halfPressure,n);allocate(weak.endBase,n);allocate(weak.trial,n);END_API}
 
 API int startWeak(){BEGIN_API
+#ifdef CRYER_VORONOI_WINDOW
+  if(!weak.hydraulicAcceleration.row)throw std::runtime_error("Missing Voronoi acceleration flux");
+#endif
   if(weakStarted||failed||completed||!ctx.x||!ctx.gradient.row||!ctx.transpose.row||!ctx.av.row||!weak.stiffness.row)
     throw std::runtime_error("Incomplete or duplicate weak initialization");
   if(!started){initJ<<<grid(),128>>>(ctx.now,ctx.n);ck(cudaDeviceSynchronize());started=true;}
@@ -47,8 +53,13 @@ __global__ void weakLocalRows(Context c,WeakContext w,const double* q,double* ou
   double stiffness=0.,accFlux=0.;
   for(int k=w.stiffness.row[i];k<w.stiffness.row[i+1];k++)
     stiffness+=w.stiffness.scalar[k]*q[w.stiffness.col[k]];
-  for(int k=c.transpose.row[i];k<c.transpose.row[i+1];k++)
-    accFlux+=dot(c.transpose.vector[k],c.acc[c.transpose.col[k]]);
+#ifdef CRYER_VORONOI_WINDOW
+  const Csr flux=w.hydraulicAcceleration;
+#else
+  const Csr flux=c.transpose;
+#endif
+  for(int k=flux.row[i];k<flux.row[i+1];k++)
+    accFlux+=dot(flux.vector[k],c.acc[flux.col[k]]);
   const double beta=(1000.*9.80665)/double(1.e-5f);
   const double next=q[i]-(stiffness+1000.*accFlux+beta*w.volume[i]*c.theta[i])/w.diagonal[i];
   output[i]=roundFloat?double(float(next)):next;

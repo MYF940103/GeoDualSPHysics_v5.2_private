@@ -1,0 +1,121 @@
+{
+  "steps": 4160,
+  "closed_steps": 4096,
+  "open_steps": 64,
+  "sampled_states": 73,
+  "material_ids": 37173,
+  "surface_ids": 5153,
+  "source_clock_s": 1.9073486328125e-06,
+  "checkpoints": [
+    {
+      "step": 4096,
+      "time_s": 0.0078125,
+      "tau_s": 0.0,
+      "center18_Pa": 10000.0,
+      "J_min": 1.0,
+      "J_max": 1.0,
+      "p_min_Pa": 10000.0,
+      "p_max_Pa": 10000.0,
+      "surface_pressure_absmax_Pa": 10000.0
+    },
+    {
+      "step": 4097,
+      "time_s": 0.007814407348632812,
+      "tau_s": 1.9073486328125e-06,
+      "center18_Pa": 10000.0,
+      "J_min": 0.9999971969287492,
+      "J_max": 1.000000860874564,
+      "p_min_Pa": 0.0,
+      "p_max_Pa": 10000.0,
+      "surface_pressure_absmax_Pa": 0.0
+    },
+    {
+      "step": 4160,
+      "time_s": 0.0079345703125,
+      "tau_s": 0.0001220703125,
+      "center18_Pa": 12375.429036458334,
+      "J_min": 0.9945610579102226,
+      "J_max": 1.0012727535128398,
+      "p_min_Pa": 0.0,
+      "p_max_Pa": 19960.42578125,
+      "surface_pressure_absmax_Pa": 0.0
+    }
+  ],
+  "closed_limits": {
+    "rms_p_to_10000_Pa": 100,
+    "rms_total_to_10000_Pa": 100,
+    "max_speed_m_s": 1e-05,
+    "rms_displacement_mm": 1e-05,
+    "rms_surface_displacement_mm": 1e-05
+  },
+  "closed_max": {
+    "rms_p_to_10000_Pa": 0.0,
+    "rms_total_to_10000_Pa": 2.080546508478284e-12,
+    "max_speed_m_s": 2.053220528139265e-16,
+    "rms_displacement_mm": 4.490177096206089e-17,
+    "rms_surface_displacement_mm": 2.2937262253485546e-17
+  },
+  "closed_pass": true,
+  "time_advance_wall_s": 53.83464439999079,
+  "recorded_utc": "2026-11-23T12:00:21.021746+00:00",
+  "experiment": "fixed reference, native mass and AV; changed only hydraulic K and F and their coupled row bound",
+  "fixture": {
+    "viscosity": 1.1102230246251565e-15,
+    "pressure": 7.265299473147024e-13,
+    "total_with_damping": 1.8189894035458565e-12,
+    "pressure_round_closed_Pa": 0.0,
+    "pressure_round_open_Pa": 0.0,
+    "edges": 244163,
+    "stiffness_nnz": 525499,
+    "acceleration_nnz": 525499,
+    "native_mass_kg": 1.219739019008557,
+    "mechanical_work_volume_m3": 0.0005230086934804821,
+    "denominator_min": 0.01087955793721545,
+    "denominator_max": 0.038819428868261605,
+    "damping_s_inv": 0.24789926409721375,
+    "step_s": 1.9073486328125e-06,
+    "three_pressure_sweeps": true,
+    "surface_boundary": "closed zero total flux; open surface p=0",
+    "volume_for_velocity_divergence": "original P1 weak V",
+    "inputs_sha256": {
+      "outputs\\cryer_voronoi_flux_interior_r1.npz": "6279b689cb27e23912e8d653eed583b3ef17d0ceceb47925486d6c0b99bdb29a",
+      "outputs\\cryer_voronoi_surface_r1.npz": "0df331a67f06c4d88180c2845c9e0ef16a3db19eaa5921a32e0a0d1bca84096c",
+      "outputs\\cryer_voronoi_window_build_r1\\cryer_voronoi_window.dll": "6ea2303a2b6689693cf007b249879d76de920d3fb10f2a560f56add796680f3a"
+    },
+    "coupled_directional_derivative_max_error": 4.163336342344337e-17,
+    "positive_pressure_energy": 438.24010695661445,
+    "pressure_edge_energy_difference": 5.684341886080802e-14,
+    "total_random_closed_flux": -1.3877787807814457e-16,
+    "constant_p_hydraulic_residual_max": 6.750155989720952e-14,
+    "linear_p_hydraulic_residual_max": 1.7011597954418554e-15,
+    "quadratic_p_hydraulic_residual_max": 1.1085696163121161e-15,
+    "constant_a_only_interior_max": 7.421052933471019e-19,
+    "constant_a_only_full_sum": 1.734723475976807e-18,
+    "closed_all_id_max_Pa": 0.0,
+    "open_all_id_max_Pa": 0.0,
+    "uniform_multiplier_max_Pa": 0.0,
+    "nonuniform_multiplier_max_Pa": 0.0
+  },
+  "build_warnings": [
+    "LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library"
+  ],
+  "sha256": {
+    "support/cryer_pair_window.py": "bd9b60eb9d82435610bbcaccfed5f9bf50712f2257c54c0e4dbaf36eaf5b72f5",
+    "support/cryer_pair_window.cu": "fa698f74c9573f0b4e6e406e2b7a9498e889ae6d9b766a2214db02f19a34a148",
+    "support/cryer_weak_window.cu": "a6c9d2c8ad11314249f9fb1860daa26503d49886bb09b68e964ef80b7140b57a",
+    "support/cryer_voronoi_window.py": "8e173b5b86748263b482e05f85d6b900ea3ee9015b7ba78afe91ee700e1fa88c",
+    "support/cryer_voronoi_window.cu": "515cd17c73586ddd59f1c9eadca062d8bec175023a226734b40c2e252aa703d8",
+    "support/build_cryer_voronoi_window.ps1": "2854bc5c24251de6b19b9baab7c69676865b532bd75972c35f08ad096c244151",
+    "support/cryer_voronoi_window_receipt.py": "6a4dbbbd3a32644ccef30d0721a89c3a25213fcd73f79ac8f880c62365b67c0f",
+    "outputs/cryer_voronoi_window_open_r1/fixture.json": "27c37b18eb8942f9ca2e1efdb18c1426ac1fac00cfeb598c83c668428114e8ed",
+    "outputs/cryer_voronoi_window_open_r1/completed.json": "67da772fcc8ff05afa8be57045ad88a1dbfd5c069664a4e77d1e857646dabfee",
+    "outputs/cryer_voronoi_window_open_r1/history.csv": "363abda72ad7f545ac4b56dcc4847242d0f195be0bba962213fb6dbb2685f996",
+    "outputs/cryer_voronoi_window_open_r1/shells.csv": "2feb3add84849f88c0e61e5a3c298564d32fca65928ffed99ad2915849237381",
+    "outputs/cryer_voronoi_window_open_r1/state_4096.npz": "1038ff800c67a2f7da2b580690efa555242ea37468108aab71d0e49a09a84242",
+    "outputs/cryer_voronoi_window_open_r1/state_4097.npz": "f2edd08ae4c2de5b6772eb997187f6806431c5a37cb73491a55632d701f357d9",
+    "outputs/cryer_voronoi_window_open_r1/state_4160.npz": "4466788885a5e20e86e7b60171d30388ed90fed9e293937026746582344c55c5",
+    "outputs/cryer_voronoi_window_build_r1/cryer_voronoi_window.dll": "6ea2303a2b6689693cf007b249879d76de920d3fb10f2a560f56add796680f3a",
+    "outputs/cryer_voronoi_window_build_r1/build.json": "a81ab30c006a7a4fbf5d9672a6ac34598f6a47595bccfbe2350d80b195d75b20",
+    "outputs/cryer_voronoi_window_build_r1/build.log": "c8cf1dbe889abec4bc812322bcd6f12aa5241782cd12d5e5cfd9b28f94a33d1f"
+  }
+}
