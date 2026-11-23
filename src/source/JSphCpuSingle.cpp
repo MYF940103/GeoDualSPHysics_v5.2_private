@@ -607,6 +607,7 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
   Np=CellDivSingle->GetNpFinal();
   Npb=CellDivSingle->GetNpbFinal();
   NpbOk=Npb-CellDivSingle->GetNpbIgnore();
+  if(HydroMechTpi)CheckTpiMaterialSet();
 
   //-Manages excluded particles fixed, moving and floating before aborting the execution.
   if(CellDivSingle->GetNpbOut())AbortBoundOut();
@@ -742,7 +743,8 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   //-Both precede the single final acceleration maximum reduction.
   if(HydroMechTopLoadMode==HMLOAD_TopKernelBand)NormalizeHydroMechTopBandLoad();
   if(HourglassCpu){
-    if(interstep==INTERSTEP_SymPredictor)
+    if(TpiEndpoint)HourglassCpu->EndpointForce(Np,Npb,Idpc,Codec,Acec,PoroJc);
+    else if(interstep==INTERSTEP_SymPredictor)
       HourglassCpu->PredictorForce(Np,Npb,Idpc,Codec,Posc,Velrhopc,Kplasticc,Acec,SymplecticDtPre,(PorosityFeedback? PoroJc: NULL));
     else HourglassCpu->CorrectorForce(Np,Npb,Idpc,Codec,Acec,(PorosityFeedback? PoroJc: NULL));
   }
@@ -751,6 +753,39 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   AceMax=ComputeAceMax(Np-Npb,Acec+Npb,Codec+Npb);
 
   Timersc->TmStop(TMC_CfForces);
+}
+
+//==============================================================================
+/// Three Jacobi updates on the full-step geometry. Only the pressure changes
+/// between evaluations of the coupled acceleration and Darcy pressure row.
+//==============================================================================
+void JSphCpuSingle::CorrectTpiPressure(double dt){
+  TpiEndpoint=true;
+  try{
+    for(unsigned round=0;round<3;round++){
+      //-All neighbouring rows read the previous iterate before any pressure is replaced.
+      Interaction_Forces(INTERSTEP_SymCorrector);
+      if(DtVariable(false)!=dt)Run_Exceptioon("TPI requires the same fixed time step in every pressure round.");
+      PosInteraction_Forces();
+      for(unsigned p=Npb;p<Np;p++)if(CODE_IsFluid(Codec[p]))PorePressc[p]=TpiNext[Idpc[p]];
+      ApplyPorePressureBoundaries();
+      const bool drain=IsHydroMechDrainageActive();
+      for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p])){
+        const bool drained=drain && IsHydroMechDrainedParticle(p,Posc,Codec,FSTypec);
+        const float expected=(drained? 0.f: TpiNext[Idpc[p]]);
+        if(!std::isfinite(PorePressc[p]) || PorePressc[p]!=expected)
+          Run_Exceptioon(fun::PrintStr("Invalid TPI boundary pressure on material ID %u.",Idpc[p]));
+      }
+    }
+  }
+  catch(...){
+    TpiEndpoint=false;
+    if(Arc || Acec)PosInteraction_Forces();
+    throw;
+  }
+  TpiEndpoint=false;
+  TpiPrevious.swap(TpiSource); //-Commit source p_n only after the final boundary update succeeds.
+  TpiPreviousTime=TimeStep;
 }
 
 //==============================================================================
@@ -1367,6 +1402,7 @@ void JSphCpuSingle::Run(std::string appname,const JSphCfgRun *cfg,JLog2 *log){
   //------------------------------------------------------------------------------------
   InitRunCpu();
   RunGravityPreloadHandoffCpu();
+  if(HydroMechTpi)InitTpiPressure();
   RunGaugeSystem(TimeStep,true);
   if(InOut)InOutInit(TimeStepIni);
   FreePartsInit();
@@ -1393,10 +1429,14 @@ void JSphCpuSingle::Run(std::string appname,const JSphCfgRun *cfg,JLog2 *log){
     if(ViscoTime)Visco=ViscoTime->GetVisco(float(TimeStep));
     if(DDTRamp.x)RunInitialDDTRamp(); //<vs_ddramp>
     double stepdt=ComputeStep();
-    RunGaugeSystem(TimeStep+stepdt);
+    if(!HydroMechTpi)RunGaugeSystem(TimeStep+stepdt);
     if(CaseNmoving)RunMotion(stepdt);
     if(InOut)InOutComputeStep(stepdt);
     else RunCellDivide(true);
+    if(HydroMechTpi){
+      CorrectTpiPressure(stepdt);
+      RunGaugeSystem(TimeStep+stepdt);
+    }
     TimeStep+=stepdt;
     LastDt=stepdt;
     partoutstop=(Np<NpMinimum || !Np);
@@ -1485,6 +1525,10 @@ void JSphCpuSingle::SaveData(){
   //-Gather additional information. | Reune informacion adicional.
   StInfoPartPlus infoplus;
   memset(&infoplus,0,sizeof(StInfoPartPlus));
+  if(HydroMechTpi && Part>PartIni && (SvData&SDAT_Binx)){
+    if(TpiPrevious.size()!=CaseNp)Run_Exceptioon("Missing native TPI pressure history for PART.");
+    infoplus.tpiprevious=TpiPrevious.data()+(CaseNp-CaseNfluid);
+  }
   if(SvData&SDAT_Info){
     infoplus.nct=CellDivSingle->GetNct();
     infoplus.npbin=NpbOk;

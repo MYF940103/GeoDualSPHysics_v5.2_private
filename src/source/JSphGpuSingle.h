@@ -65,6 +65,7 @@ protected:
   double ComputeStep(){ return(TStep==STEP_Verlet? ComputeStep_Ver(): ComputeStep_Sym()); }
   double ComputeStep_Ver();
   double ComputeStep_Sym();
+  void CorrectTpiPressure(double dt);
 
   void UpdateFtObjs();
   void FtApplyImposedVel(float3 *ftoforcesresg)const;

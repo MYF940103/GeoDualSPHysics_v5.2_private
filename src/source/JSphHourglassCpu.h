@@ -77,7 +77,7 @@ private:
     const tdouble3* pos,const tfloat4* velrhop,const float* kplastic,const double* poroj);
   void EvaluateRate(bool endpoint,unsigned np,unsigned npb,const unsigned* idp,
     const typecode* code,const tdouble3* pos,const tfloat4* velrhop,const float* kplastic,const double* poroj);
-  void AddHistory(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,tfloat3* ace,const double* poroj);
+  void AddHistory(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,tfloat3* ace,const double* poroj,bool record=true);
   void UpdateHistory(double dt);
 
 public:
@@ -88,6 +88,7 @@ public:
     const tdouble3* pos,const tfloat4* velrhop,const float* kplastic,tfloat3* ace,double dt,const double* poroj=NULL);
   void PredictorUpdate(double dt);
   void CorrectorForce(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,tfloat3* ace,const double* poroj=NULL);
+  void EndpointForce(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,tfloat3* ace,const double* poroj);
   void CorrectorUpdate(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,
     const tdouble3* pos,const tfloat4* velrhop,const float* kplastic,double dt,const double* poroj=NULL);
 

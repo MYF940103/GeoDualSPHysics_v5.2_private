@@ -19,6 +19,7 @@
 /// \file JSphGpu_ker.cu \brief Implements functions and CUDA kernels for the Particle Interaction and System Update.
 
 #include "JSphGpu_ker.h"
+#include "TpiPressureRow.h"
 #include "FunExternalLoad.h"
 #include "Functions.h"
 #include "FunctionsCuda.h"
@@ -1073,6 +1074,72 @@ __device__ bool KerHydroMechIsDrainedParticle(unsigned p,unsigned loadmode,const
   return(true);
 }
 
+//-An index from a periodic copy is valid only when its native owner survives the divide.
+__global__ void KerMapTpiOwners(unsigned np,unsigned npb,unsigned first,unsigned total,const unsigned *idp
+  ,const typecode *code,unsigned *seen,unsigned *error){
+  const unsigned p=blockIdx.x*blockDim.x+threadIdx.x;
+  if(p>=npb && p<np){
+    const unsigned id=idp[p];const typecode type=code[p];
+    if(!CODE_IsFluid(type) || id<first || id>=total || !(CODE_IsNormal(type) || CODE_IsPeriodic(type)))
+      atomicOr(error,1u);
+    else if(CODE_IsNormal(type) && atomicCAS(seen+id-first,0u,1u)!=0u)atomicOr(error,2u);
+  }
+}
+__global__ void KerCheckTpiOwners(unsigned count,const unsigned *seen,unsigned *error){
+  const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;
+  if(i<count && !seen[i])atomicOr(error,4u);
+}
+void CheckTpiOwners(unsigned np,unsigned npb,unsigned first,unsigned total,const unsigned *idp,const typecode *code
+  ,unsigned *seen,unsigned *error){
+  const unsigned count=total-first;
+  cudaMemset(error,0,sizeof(unsigned));
+  cudaMemset(seen,0,sizeof(unsigned)*size_t(count));
+  if(np)KerMapTpiOwners<<<GetSimpleGridSize(np,SPHBSIZE),SPHBSIZE>>>(np,npb,first,total,idp,code,seen,error);
+  if(count)KerCheckTpiOwners<<<GetSimpleGridSize(count,SPHBSIZE),SPHBSIZE>>>(count,seen,error);
+}
+
+__global__ void KerPrepareTpiPressure(unsigned np,unsigned npb,unsigned total,const unsigned *idp,const typecode *code
+  ,const float *source,const float *previous,float *history,float *guess,float *half
+  ,bool drained,unsigned mode,const double2 *xy,const unsigned *fstype,unsigned *error)
+{
+  const unsigned p=blockIdx.x*blockDim.x+threadIdx.x;
+  if(p>=npb && p<np && CODE_IsNormal(code[p]) && CODE_IsFluid(code[p])){
+    const unsigned id=idp[p];
+    if(id>=total || !isfinite(source[p])){atomicMin(error,p);return;}
+    history[id]=source[p];
+    if(previous){
+      double value=0.;
+      if(!tpi_pressure::Predict(tpi_pressure::Predictor::Linear,source[p],previous[id],value)){atomicMin(error,p);return;}
+      guess[id]=tpi_pressure::WritePressure(value);
+      half[id]=(drained && KerHydroMechIsDrainedParticle(p,mode,xy,code,fstype)? 0.f: guess[id]);
+    }
+  }
+}
+void PrepareTpiPressure(unsigned np,unsigned npb,unsigned total,const unsigned *idp,const typecode *code
+  ,const float *source,const float *previous,float *history,float *guess,float *half
+  ,bool drained,TpHydroMechLoadMode mode,const double2 *xy,const unsigned *fstype,unsigned *error)
+{
+  if(np)KerPrepareTpiPressure<<<GetSimpleGridSize(np,SPHBSIZE),SPHBSIZE>>>(np,npb,total,idp,code,source,previous
+    ,history,guess,half,drained,unsigned(mode),xy,fstype,error);
+}
+__global__ void KerWriteTpiPressure(unsigned np,unsigned npb,unsigned total,const unsigned *idp,const typecode *code
+  ,const float *source,const float *rows,float *pressure,bool drained,unsigned mode
+  ,const double2 *xy,const unsigned *fstype,unsigned *error)
+{
+  const unsigned p=blockIdx.x*blockDim.x+threadIdx.x;
+  if(p>=np)return;
+  if(p<npb || !CODE_IsFluid(code[p]))pressure[p]=source[p];
+  else if(idp[p]>=total)atomicMin(error,p);
+  else pressure[p]=(drained && KerHydroMechIsDrainedParticle(p,mode,xy,code,fstype)? 0.f: rows[idp[p]]);
+}
+void WriteTpiPressure(unsigned np,unsigned npb,unsigned total,const unsigned *idp,const typecode *code
+  ,const float *source,const float *rows,float *pressure,bool drained,TpHydroMechLoadMode mode
+  ,const double2 *xy,const unsigned *fstype,unsigned *error)
+{
+  if(np)KerWriteTpiPressure<<<GetSimpleGridSize(np,SPHBSIZE),SPHBSIZE>>>(np,npb,total,idp,code,source,rows
+    ,pressure,drained,unsigned(mode),xy,fstype,error);
+}
+
 //==============================================================================
 /// Enforces drained pore pressure on free-surface particles.
 //==============================================================================
@@ -1410,7 +1477,7 @@ static __device__ __forceinline__ double KerDynamicConductivity(double k0,double
 /// Reduces the current native J-derived undrained speed without float narrowing.
 //==============================================================================
 __global__ void KerComputePorosityWaveSpeed2(unsigned np,unsigned npb,double solid0,double rho0,double rhow,double m,double kw
-  ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid,double khyd,double gamma,double *maxdiffusion,bool conductivity,double ck)
+  ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid,double khyd,double gamma,double *maxdiffusion,bool conductivity,double ck,bool skeletonwave)
 {
   extern __shared__ double speed2[];
   const unsigned tid=threadIdx.x;
@@ -1424,7 +1491,7 @@ __global__ void KerComputePorosityWaveSpeed2(unsigned np,unsigned npb,double sol
       const double rho=rhow+(rho0-rhow)/jp;
       valid=(isfinite(n) && n>0. && n<1. && isfinite(rho) && rho>0.);
       if(valid){
-        value=(m+kw/n)/rho;
+        value=(skeletonwave? m/rho: (m+kw/n)/rho);
         valid=(isfinite(value) && value>0.);
         if(valid && (khyd!=0 || maxdiffusion)){
           valid=(isfinite(khyd) && khyd>=0 && isfinite(gamma) && gamma>0);
@@ -1454,11 +1521,11 @@ __global__ void KerComputePorosityWaveSpeed2(unsigned np,unsigned npb,double sol
 }
 
 void ComputePorosityWaveSpeed2(unsigned np,unsigned npb,double solid0,double rho0,double rhow,double m,double kw
-  ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid,double khyd,double gamma,double *maxdiffusion,bool conductivity,double ck)
+  ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid,double khyd,double gamma,double *maxdiffusion,bool conductivity,double ck,bool skeletonwave)
 {
   if(np){
     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
-    KerComputePorosityWaveSpeed2 <<<sgrid,SPHBSIZE,SPHBSIZE*sizeof(double)*(maxdiffusion? 2: 1)>>> (np,npb,solid0,rho0,rhow,m,kw,code,j,maxcu2,invalid,khyd,gamma,maxdiffusion,conductivity,ck);
+    KerComputePorosityWaveSpeed2 <<<sgrid,SPHBSIZE,SPHBSIZE*sizeof(double)*(maxdiffusion? 2: 1)>>> (np,npb,solid0,rho0,rhow,m,kw,code,j,maxcu2,invalid,khyd,gamma,maxdiffusion,conductivity,ck,skeletonwave);
   }
 }
 
@@ -1499,13 +1566,13 @@ void ExtendDynamicPorePeriodic(unsigned np,unsigned npb,unsigned idini,unsigned 
 /// Complete rate with optional smooth div(k*(grad p+rho_w*Ace)) chain.
 /// Lstar cancels affine-pressure bias; it is not a conservative pair flux.
 //==============================================================================
-template<TpKernel tker> __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb
+template<TpKernel tker,bool tpirows> __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb
   ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcellfluid,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
   ,const double *j,const double *theta,const float *porepress,float *rate
   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
   ,bool conductivity,double ck,double *maxspeed,bool wall,const int2 *beginendcellbound,const byte *boundmode
-  ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,unsigned loadmode,double3 bodycentre,double bodyradius2,bool freeseepage)
+  ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,unsigned loadmode,double3 bodycentre,double bodyradius2,bool freeseepage,StTpiPressureRows tpi)
 {
   const unsigned p1=blockIdx.x*blockDim.x+threadIdx.x;
   if(p1<np && p1>=npb && CODE_IsNormal(code[p1]) && CODE_IsFluid(code[p1])){
@@ -1514,12 +1581,16 @@ template<TpKernel tker> __global__ void KerComputeDynamicPorePressureRate(unsign
       const double r2=dx*dx+dy*dy+dz*dz;
       if(!isfinite(r2) || r2>=bodyradius2){atomicMin(invalid,p1);return;}
     }
-    if(drainfs && KerHydroMechIsDrainedParticle(p1,loadmode,posxy,code,fstype)){rate[p1]=0.f;return;}
+    if(tpirows && tpi.idp[p1]>=tpi.total){atomicMin(invalid,p1);return;}
+    if(drainfs && KerHydroMechIsDrainedParticle(p1,loadmode,posxy,code,fstype)){
+      if(tpirows)tpi.next[tpi.idp[p1]]=0.f;
+      rate[p1]=0.f;return;
+    }
     const double jp=j[p1],n=1.-solid0/jp;
     if(!isfinite(jp) || jp<=solid0 || !isfinite(n) || !(n>0 && n<1)){atomicMin(invalid,p1);return;}
     const double ki=KerDynamicConductivity(khyd,jp,solid0,conductivity,ck);
     if(!isfinite(ki) || ki<0 || (khyd>0 && ki==0)){atomicMin(invalid,p1);return;}
-    double lp=0.,da=0.;
+    double lp=0.,da=0.,sumw=0.;
     double3 lx=make_double3(0,0,0),gp=make_double3(0,0,0),gjstate=make_double3(0,0,0);
     if(khyd>0){
       const tmatrix3d ci=corrmat[p1];
@@ -1543,6 +1614,7 @@ template<TpKernel tker> __global__ void KerComputeDynamicPorePressureRate(unsign
           const double3 gj=make_double3(cj.a11*g.x+cj.a12*g.y+cj.a13*g.z,cj.a21*g.x+cj.a22*g.y+cj.a23*g.z,cj.a31*g.x+cj.a32*g.y+cj.a33*g.z);
           const double vol2=vol0*j[p2],dp=double(porepress[p1])-double(porepress[p2]);
           const double w=vol2*(d.x*(gi.x+gj.x)+d.y*(gi.y+gj.y)+d.z*(gi.z+gj.z))/(rr2+double(CTE.eta2));
+          if(tpirows)sumw+=w;
           lp+=w*dp;lx.x+=d.x*w;lx.y+=d.y*w;lx.z+=d.z*w;
           gp.x-=gi.x*(vol2*dp);gp.y-=gi.y*(vol2*dp);gp.z-=gi.z*(vol2*dp);
           if(conductivity){
@@ -1586,6 +1658,13 @@ template<TpKernel tker> __global__ void KerComputeDynamicPorePressureRate(unsign
       if(!isfinite(speed) || speed<0){atomicMin(invalid,p1);return;}
     }
     if(!isfinite(value) || fabs(value)>FLT_MAX){atomicMin(invalid,p1);return;}
+    if(tpirows){
+      const double diagonal=-__dmul_rn(khyd,sumw);
+      const double residual=__dadd_rn(-__dmul_rn(gamma,theta[p1]),__dmul_rn(khyd,lap));
+      float next=0.f;
+      if(!tpi_pressure::Endpoint(false,porepress[p1],diagonal,residual,next)){atomicMin(invalid,p1);return;}
+      tpi.next[tpi.idp[p1]]=next;
+    }
     //-Finite nonnegative double bits are ordered; no new block barrier after early returns.
     if(maxspeed)atomicMax((unsigned long long*)maxspeed,(unsigned long long)__double_as_longlong(speed));
 #ifdef C08_STAGE_TRACE
@@ -1615,19 +1694,19 @@ template<TpKernel tker> __global__ void KerComputeDynamicPorePressureRate(unsign
   }
 }
 
-template<TpKernel tker> void ComputeDynamicPorePressureRateT(unsigned np,unsigned npb,const StDivDataGpu &dvd,const unsigned *dcell
+template<TpKernel tker,bool tpirows> void ComputeDynamicPorePressureRateT(unsigned np,unsigned npb,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
   ,const double *j,const double *theta,const float *porepress,float *rate
   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
   ,bool conductivity,double ck,double *maxspeed,bool wall,const byte *boundmode
   ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,TpHydroMechLoadMode loadmode
-  ,tdouble3 bodycentre,double bodyradius2,bool freeseepage)
+  ,tdouble3 bodycentre,double bodyradius2,bool freeseepage,StTpiPressureRows tpi)
 {
   if(np){
     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
-    KerComputeDynamicPorePressureRate<tker> <<<sgrid,SPHBSIZE>>> (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,dcell
+    KerComputeDynamicPorePressureRate<tker,tpirows> <<<sgrid,SPHBSIZE>>> (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,dcell
       ,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,dvd.beginendcell,boundmode
-      ,fstype,fsnormal,drainfs,closedfs,unsigned(loadmode),make_double3(bodycentre.x,bodycentre.y,bodycentre.z),bodyradius2,freeseepage);
+      ,fstype,fsnormal,drainfs,closedfs,unsigned(loadmode),make_double3(bodycentre.x,bodycentre.y,bodycentre.z),bodyradius2,freeseepage,tpi);
   }
 }
 
@@ -1637,10 +1716,14 @@ void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu 
   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
   ,bool conductivity,double ck,double *maxspeed,bool wall,const byte *boundmode
   ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,TpHydroMechLoadMode loadmode
-  ,tdouble3 bodycentre,double bodyradius2,TpKernel tkernel,bool freeseepage)
+  ,tdouble3 bodycentre,double bodyradius2,TpKernel tkernel,bool freeseepage,StTpiPressureRows tpi)
 {
-  if(tkernel==KERNEL_Wendland)ComputeDynamicPorePressureRateT<KERNEL_Wendland>(np,npb,dvd,dcell,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,boundmode,fstype,fsnormal,drainfs,closedfs,loadmode,bodycentre,bodyradius2,freeseepage);
-  else if(tkernel==KERNEL_Cubic)ComputeDynamicPorePressureRateT<KERNEL_Cubic>(np,npb,dvd,dcell,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,boundmode,fstype,fsnormal,drainfs,closedfs,loadmode,bodycentre,bodyradius2,freeseepage);
+  if(tpi.next){
+    if(tkernel!=KERNEL_Wendland)throw "TPI requires the Wendland Darcy operator.";
+    ComputeDynamicPorePressureRateT<KERNEL_Wendland,true>(np,npb,dvd,dcell,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,boundmode,fstype,fsnormal,drainfs,closedfs,loadmode,bodycentre,bodyradius2,freeseepage,tpi);
+  }
+  else if(tkernel==KERNEL_Wendland)ComputeDynamicPorePressureRateT<KERNEL_Wendland,false>(np,npb,dvd,dcell,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,boundmode,fstype,fsnormal,drainfs,closedfs,loadmode,bodycentre,bodyradius2,freeseepage,tpi);
+  else if(tkernel==KERNEL_Cubic)ComputeDynamicPorePressureRateT<KERNEL_Cubic,false>(np,npb,dvd,dcell,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,boundmode,fstype,fsnormal,drainfs,closedfs,loadmode,bodycentre,bodyradius2,freeseepage,tpi);
   else throw "Kernel unknown.";
 }
 

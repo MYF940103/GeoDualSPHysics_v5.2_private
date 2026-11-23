@@ -1,0 +1,55 @@
+{
+  "checked": "2026-11-23T22:11:09.004176+09:00",
+  "archive": "Cryer_public_SPH_TPI_nu030_1Tv_Windows_RTXA6000.zip",
+  "archive_bytes": 23317530,
+  "archive_sha256": "c7516b69269c0ee183207516189963fb38e572f8327aef27d6089068fae2fb99",
+  "gpu_release_sha256": "c46d12391dfeaa8b1ff14218baad878cc53f10ab771042b67b2353af3662a7e6",
+  "manifest_verified": 16,
+  "manifest_sha256": "10c6280997e6e3d47e9ced9e64f2aefd7ba44748aebb0cd47c150c90c93a93dc",
+  "all_zip_members": 17,
+  "seed_receipt": "tests/logs/cryer_public_1tv_seed.json",
+  "preserved_preview_path": "tests/outputs/Cryer Public SPH preview e801d6466e04/Cryer_public_SPH_TPI_nu030_1Tv_Windows_RTXA6000.zip",
+  "preview_sha256": "e801d6466e047c3912a28f13fa9f0d87db1d3c2013197e602533e12f49a64b1b",
+  "changed_from_preview": [
+    "README.md",
+    "manifest.json"
+  ],
+  "extracted_path": "tests/outputs/Cryer Public SPH extracted c46d12391dfe",
+  "independent_dense_reference": "tests/outputs/public_tpi_sphere4hist_gpu_hist1/result/data",
+  "command": "xCaseCryer_TPI_nu030_1Tv_win64_GPU.bat --smoke",
+  "exit_code": 0,
+  "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+  "physical_time_s": 3.814697265625e-06,
+  "excluded": 0,
+  "frames": [
+    {
+      "completed_updates": 0,
+      "native_file_sha256": "3fd96b5f6215cc88d8092cbbe94dcb3ff79e9d2ca1ba1364c165b0287222dca5",
+      "native_arrays_bitwise_equal_to_stage_and_dense": 22,
+      "vtk_ids_and_pressures_exact": 37173,
+      "pressure_history_owners": 0,
+      "history": null
+    },
+    {
+      "completed_updates": 2,
+      "native_file_sha256": "6e89994119fa58db48bb6746718775ed151860d1a415eefe300807d5838c6879",
+      "native_arrays_bitwise_equal_to_stage_and_dense": 22,
+      "vtk_ids_and_pressures_exact": 37173,
+      "pressure_history_owners": 37173,
+      "history": {
+        "schema": 1,
+        "scheme": "P3_B_alpha_half_beta_zero",
+        "valid": true,
+        "previous_time_s": 1.9073486328125e-06,
+        "saved_time_s": 3.814697265625e-06,
+        "completed_updates": 2,
+        "dt_s": 1.9073486328125e-06,
+        "run_code_matches": true,
+        "different_from_current": 37173,
+        "bitwise_matches_independent_step1_source": true
+      }
+    }
+  ],
+  "full_run": "pending",
+  "physical_peak_acceptance": "original P3 dense peak exceeds 1% amplitude and 2% time limits"
+}

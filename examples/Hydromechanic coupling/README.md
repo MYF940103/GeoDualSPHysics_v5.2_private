@@ -1,6 +1,10 @@
 # 水土耦合算例索引
 
-当前公共源码在 `execution/special/hydromechanics` 中读取 `HydroMechModel`。打开 `HydroMech` 后，缺省或 0 使用 u-pw，1 使用显式 u-pl。旧配置中的 `HydroMechDynamicSeepage` 需要迁移，false/0 对应模型 0，true/1 对应模型 1。2 为 TPI u-pl，当前由 Cryer 验证程序执行，公共程序请求该值时会报错。运行既有算例请使用其 BAT 配套的程序和 XML。
+公共源码在 `execution/special/hydromechanics` 中读取 `HydroMechModel`。打开 `HydroMech` 后，缺省或 0 使用 u-pw，1 使用有限水体积模量的显式 u-pl，2 使用零储水的三轮 TPI u-pl。旧配置中 `HydroMechDynamicSeepage` 的 false/0 和 true/1 分别迁至模型 0 和 1。复现历史计算时使用原 BAT 配套的程序与 XML。
+
+模型 2 采用 α=0.5、β=0、水力步长系数 R=1。首次预测以初始孔压作为上一时刻压力，各轮在施加边界后的压力场上重算端点力和渗流残差。当前适用范围是从头计算的恒渗透率、固定步长、Wendland 核、固定步数排水：C02 周期弹性柱及 C04 受均布围压的自由球体。C08 撤墙接续、自由渗流、变渗透率与一般 PART 重启需要另外验证。原始 SPH 孔压力与真实四面体表面积分的 Cryer 研究程序采用不同的空间离散。
+
+模型 2 每个非初始 PART 的 `TpiPressureHistory` 按材料 ID 保存预测器实际使用的上一整步源孔压及其时钟。首次开启排水时，受控表面点的源压力已经归零，而上一闭态 PART 仍可有非零压力。两次常规输出之间可能包含多个积分步。
 
 新程序可在 `execution/special` 中单独指定外载，例如 `<externalload mode="FlexibleConfinement" q0="10000" ramptime="0.00390625" />` 表示在 0.00390625 s 内将球面围压加至 10 kPa。省略该节点表示无外载。旧配置的 `HydroMechTopLoadMode`、`HydroMechTopLoadQ0`、`HydroMechTopLoadRampTime` 分别迁至 `mode`、`q0`、`ramptime`。
 
@@ -8,7 +12,16 @@
 
 `<drainage mode="off" />` 关闭上述规定孔压边界。`<drainage mode="freeSeepage" />` 用于当前支持的二维动态渗流重力容器，采用相应的表面渗流离散，完整步末将表面正孔压置零并保留负孔压。这两种模式均不填写 `start` 或 `clock`。复现历史结果时请成套使用对应的输入、BAT 和可执行程序。
 
-[排水迁移与逐算例验证](validation/drainage_xml_review.md) · [XML 格式](../../doc/xml_format/_FmtXML_ElastoplasticSoil.xml) · [TPI 验证包说明](04_CryerProblem_PR/README_Cryer_TPI_P3_nu030_r1.md)
+[排水迁移与逐算例验证](validation/drainage_xml_review.md) · [XML 格式](../../doc/xml_format/_FmtXML_ElastoplasticSoil.xml) · [已回传的私有 TPI 峰窗](04_CryerProblem_PR/figures/cryer_tpi_p3_nu030_peak.md)
+
+### Cryer ν=0.30 服务器入口
+
+| 目的 | 输入和运行方式 | 回传目录 |
+|---|---|---|
+| 用公共 GeoDualSPHysics 计算 SPH/TPI 至 1 Tv | [标准服务器包说明](04_CryerProblem_PR/README_Cryer_TPI_nu030_1Tv.md)。BAT 从 Def.xml 运行 GenCase、GPU Release 和 PartVTK。 | `CaseCryer_TPI_nu030_1Tv_GPU_out` |
+| 检验改用固定参考四面体弱式后，峰值改善能否保持到晚期 | [独立研究包](04_CryerProblem_PR/tests/outputs/cryer_weak_full_server_r1.zip)。先运行 `CHECK_GPU.bat`，再运行 `RUN_FULL.bat`。独立程序读取预先组装的几何、离散矩阵和检查点。 | `cryer_weak_full_out` |
+
+两种方法的[同一批材料点峰窗比较](04_CryerProblem_PR/tests/notes/cryer_weak_3d_peak_r1.md)和[旧四组泊松比的正式结果](04_CryerProblem_PR/figures/formal_validation/cryer_formal_four_nu_r2_log.png)可直接查看。两个新入口分别使用独立输出目录。
 
 ## 算例
 

@@ -135,12 +135,13 @@ void JSphHourglassGpu::EvaluateRate(bool endpoint,unsigned np,unsigned npb,const
   EndpointRateReady=endpoint;
 }
 
-void JSphHourglassGpu::AddHistory(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,float3* ace,const double* poroj){
+void JSphHourglassGpu::AddHistory(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,float3* ace,const double* poroj,bool record){
   Check(!RhopZero || poroj,"HG single-J force state is missing.");
   // Resolve the physical slots again after the predictor's main cell sorting.
   MapNative(np,npb,idp,code);
   cuhg::AddHistory(Count,Mass,Slotsg,Errorg,Historyg,ace,Partialg,poroj,RhopZero,WaterRho);
   const cuhg::StReduce r=ReadResult();CheckState(r.errors);
+  if(!record)return;
   Stats.maxnetforce=(std::max)(Stats.maxnetforce,hypot(r.netx,r.netz));
   Stats.maxactualnetforce=(std::max)(Stats.maxactualnetforce,hypot(r.actualx,r.actualz));
   if(r.sumforce>0)Stats.maxrelativeforce=(std::max)(Stats.maxrelativeforce,hypot(r.netx,r.netz)/r.sumforce);
@@ -165,6 +166,10 @@ void JSphHourglassGpu::PredictorUpdate(double dt){
 void JSphHourglassGpu::CorrectorForce(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,float3* ace,const double* poroj){
   Check(Phase==PH_CorrectorForce,"HG invalid corrector force stage.");
   AddHistory(np,npb,idp,code,ace,poroj);Phase=PH_CorrectorUpdate;
+}
+void JSphHourglassGpu::EndpointForce(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,float3* ace,const double* poroj){
+  Check(Phase==PH_PredictorForce,"HG endpoint force requires the completed corrector history.");
+  AddHistory(np,npb,idp,code,ace,poroj,false);
 }
 void JSphHourglassGpu::CorrectorUpdate(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,
   const double2* posxy,const double* posz,const float4* velrhop,const float* kplastic,double dt,const double* poroj)

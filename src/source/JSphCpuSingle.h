@@ -73,6 +73,7 @@ protected:
   double ComputeStep(){ return(TStep==STEP_Verlet? ComputeStep_Ver(): ComputeStep_Sym()); }
   double ComputeStep_Ver();
   double ComputeStep_Sym();
+  void CorrectTpiPressure(double dt);
 
   inline tfloat3 FtPeriodicDist(const tdouble3 &pos,const tdouble3 &center,float radius)const;
   void FtCalcForcesSum(unsigned cf,tfloat3 &face,tfloat3 &fomegaace)const;

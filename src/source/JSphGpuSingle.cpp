@@ -574,6 +574,15 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
 
   //-Manages excluded particles fixed, moving and floating before aborting the execution.
   if(CellDivSingle->GetNpbOut())AbortBoundOut();
+  if(HydroMechTpi){
+    if(CaseNfluid>GpuParticlesSize)Run_Exceptioon("TPI native owner set exceeds the GPU map capacity.");
+    unsigned *seen=ArraysGpu->ReserveUint(),error=0;
+    cusph::CheckTpiOwners(Np,Npb,CaseNpb,CaseNp,Idpg,Codeg,seen,MaterialErrorg);
+    cudaMemcpy(&error,MaterialErrorg,sizeof(error),cudaMemcpyDeviceToHost);
+    ArraysGpu->Free(seen);
+    Check_CudaErroor("Failed checking TPI native owners after cell division.");
+    if(error)Run_Exceptioon("TPI requires one native soil owner per material ID and valid periodic copies.");
+  }
 
   //-Collect position of floating particles. | Recupera posiciones de floatings.
   if(CaseNfloat)cusph::CalcRidp(PeriActive!=0,Np-Npb,Npb,CaseNpb,CaseNpb+CaseNfloat,Codeg,Idpg,FtRidpg);
@@ -671,7 +680,8 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
   if(SoilDamping)cusph::AddSoilDamping(Np,Npb,Codeg,Velrhopg,Aceg,(DynamicPorePressure? GetDynamicSoilDampingRate(): 0.f));
   NormalizeHydroMechTopBandLoad();
   if(HourglassGpu){
-    if(interstep==INTERSTEP_SymPredictor)
+    if(TpiEndpoint)HourglassGpu->EndpointForce(Np,Npb,Idpg,Codeg,Aceg,PoroJg);
+    else if(interstep==INTERSTEP_SymPredictor)
       HourglassGpu->PredictorForce(Np,Npb,Idpg,Codeg,Posxyg,Poszg,Velrhopg,Kplasticg,Aceg,SymplecticDtPre,(PorosityFeedback? PoroJg: NULL));
     else HourglassGpu->CorrectorForce(Np,Npb,Idpg,Codeg,Aceg,(PorosityFeedback? PoroJg: NULL));
   }
@@ -1173,6 +1183,30 @@ void JSphGpuSingle::RunGravityPreloadHandoffGpu(){
 }
 
 //==============================================================================
+/// Three complete Jacobi corrections on the committed mechanical geometry. Each
+/// new pressure is made visible to all receivers only after their neighbors finish.
+//==============================================================================
+void JSphGpuSingle::CorrectTpiPressure(double dt){
+  TpiEndpoint=true;
+  try{
+    for(unsigned round=0;round<3;round++){
+      //-The physical load and drainage use the source clock through all five forces.
+      Interaction_Forces(INTERSTEP_SymCorrector);
+      if(DtVariable(false)!=dt || (HourglassGpu && dt>HourglassGpu->GetDtLimit()))
+        Run_Exceptioon("TPI endpoint exceeds the fixed step or hourglass limit.");
+      PosInteraction_Forces();
+      WriteTpiPressure(PorePressg,TpiNextg,Posxyg,false);
+      ApplyPorePressureBoundaries();
+    }
+  }
+  catch(...){TpiEndpoint=false;PosInteraction_Forces();throw;}
+  TpiEndpoint=false;
+  //-Commit p^n once for the next step's linear predictor.
+  swap(TpiPreviousg,TpiSourceg);
+  TpiPreviousTime=TimeStep;
+}
+
+//==============================================================================
 /// Initialises execution of simulation.
 /// Inicia ejecucion de simulacion.
 //==============================================================================
@@ -1201,6 +1235,7 @@ void JSphGpuSingle::Run(std::string appname,const JSphCfgRun *cfg,JLog2 *log){
   //-Initialisation of execution variables. | Inicializacion de variables de ejecucion.
   //------------------------------------------------------------------------------------
   InitRunGpu();
+  if(HydroMechTpi)PrepareTpiPressure(PorePressg,Posxyg,true);
   RunGravityPreloadHandoffGpu();
   RunGaugeSystem(TimeStep,true);
   if(InOut)InOutInit(TimeStepIni);
@@ -1232,6 +1267,7 @@ void JSphGpuSingle::Run(std::string appname,const JSphCfgRun *cfg,JLog2 *log){
     if(CaseNmoving)RunMotion(stepdt);
     if(InOut)InOutComputeStep(stepdt);
     else RunCellDivide(true);
+    if(HydroMechTpi)CorrectTpiPressure(stepdt);
     TimeStep+=stepdt;
     LastDt=stepdt;
     partoutstop=(Np<NpMinimum || !Np);
@@ -1288,6 +1324,14 @@ void JSphGpuSingle::SaveData(){
   Timersg->TmStart(TMG_SuSavePart,false);
   StInfoPartPlus infoplus;
   memset(&infoplus,0,sizeof(StInfoPartPlus));
+  std::vector<float> previous;
+  if(HydroMechTpi && Part>PartIni && (SvData&SDAT_Binx)){
+    previous.resize(CaseNfluid);
+    const cudaError_t err=cudaMemcpy(previous.data(),TpiPreviousg+(CaseNp-CaseNfluid),
+      sizeof(float)*CaseNfluid,cudaMemcpyDeviceToHost);
+    if(err!=cudaSuccess)Run_Exceptioon(std::string("Failed downloading TPI PART history: ")+cudaGetErrorString(err));
+    infoplus.tpiprevious=previous.data();
+  }
   if(SvData&SDAT_Info){
     infoplus.nct=CellDivSingle->GetNct();
     infoplus.npbin=NpbOk;

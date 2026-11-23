@@ -167,6 +167,9 @@ protected:
   float *PorePressRateg; ///<Explicit pore-water pressure rate on GPU.
   bool PorosityObserver; ///<Private default-OFF observer; does not enable dynamic seepage.
   bool PorosityFeedback; ///<Private J-derived quadrature/storage/inertia; k=0 unless the complete rate is enabled.
+  //-TPI buffers are indexed by original material ID across cell sorting and periodic copies.
+  float *TpiPreviousg,*TpiSourceg,*TpiGuessg,*TpiNextg;
+  bool TpiEndpoint;
   bool DynamicPorePressure; ///<Private complete Darcy rate; default OFF and requires J feedback.
   bool DynamicPoreWall; ///<Private opposing static axis FreeSlip planes; default OFF.
   bool DynamicPoreConductivity; ///<Private optional smooth scalar conductivity derived from J.
@@ -330,6 +333,8 @@ protected:
   double GetPorosityStepWaveGpu();
   unsigned* PrepareDynamicPorePeriodicGpu();
   void ComputeDynamicPorePressureRateGpu(unsigned *ridpg);
+  void PrepareTpiPressure(const float *source,const double2 *sourcexy,bool init);
+  void WriteTpiPressure(const float *source,const float *rows,const double2 *xy,bool project);
   void GetDynamicStepScalesGpu(double &wave,double &pore);
   void ComputeSymplecticPorosity(bool corrector,double dt);
   double DtVariable(bool final);

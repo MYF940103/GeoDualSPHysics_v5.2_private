@@ -2,6 +2,8 @@
 
 ## 公共程序与复现入口
 
+公共 TPI（`HydroMechModel=2`）的 ν=0.30 全程使用 [标准 Def.xml](CaseCryer_TPI_nu030_1Tv_Def.xml)。[GPU BAT](xCaseCryer_TPI_nu030_1Tv_win64_GPU.bat) 从 XML 生成初态、计算至 1 Tv 并导出 Fluid VTK，加 `--smoke` 可独立检查两步。标准服务器包可直接[下载 ZIP](Cryer_public_SPH_TPI_nu030_1Tv_Windows_RTXA6000.zip)，回传原生结果和本机画图方法见[服务器使用说明](README_Cryer_TPI_nu030_1Tv.md)。非初始 PART 的 `TpiPressureHistory` 保存上一整步用于外推的源孔压。首次开启排水时，受控表面点已施加规定零压，上一闭态 PART 的孔压仍可为非零。
+
 当前公共版显式 u-pl 的 ν=0.30 配置为 `CaseCryerProblem_u_pl_nu030_Def.xml`（`HydroMechModel=1`）。运行 `xCaseCryerProblem_u_pl_nu030_win64_GPU.bat` 会从该 XML 调用 GenCase，使用仓库 GPU Release 按原时间步与输出计划计算，写入独立的 `CaseCryerProblem_u_pl_nu030_GPU_out`。加 `--smoke` 可按相同输入做六步检查。全程结束后导出 Fluid VTK，原生 BI4 保留完整状态。
 
 带 `release`、`symc`、`u_pl_nu030_r1`、`TPI_P3` 的冻结入口仍与其原程序及原 XML 配套。复现已发布的 r1 显式计算时，使用读取 `support/upl_seed_nu030_r1` 的原 BAT。

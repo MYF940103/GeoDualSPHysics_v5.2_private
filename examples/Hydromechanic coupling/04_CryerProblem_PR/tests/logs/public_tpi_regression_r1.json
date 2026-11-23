@@ -1,0 +1,480 @@
+{
+  "title": "Public TPI constant-conductivity CPU/GPU regression",
+  "created_utc": "2026-11-23T13:08:11.723133+00:00",
+  "source_git_head_at_validation": "aa0a143574192406d1c60695f2db47d0398d3957",
+  "scope": "C02 native periodic mDBC column, C04 confined free body, original same-backend private P3 references. No fixed-reference weak DLL is used in this audit.",
+  "final_executables": {
+    "DebugCPU": {
+      "path": "bin/windows/DualSPHysics5.2CPU_win64_debug.exe",
+      "sha256": "cfebcfa6b5b57d6a3d7ac4c358ef45e4034b25f5c2d8c9e7f2fa326f799d72f2"
+    },
+    "ReleaseCPU": {
+      "path": "bin/windows/DualSPHysics5.2CPU_win64.exe",
+      "sha256": "3ba2060e65a1400f0e5066446062944f8b6b3a6646875bd42a580e9615cbc782"
+    },
+    "Debug": {
+      "path": "bin/windows/DualSPHysics5.2_win64_debug.exe",
+      "sha256": "7527fe6101a5be6fefa63c736787232c2ca793cb1968b508d19fd87af40ba43a"
+    },
+    "Release": {
+      "path": "bin/windows/DualSPHysics5.2_GEO_win64.exe",
+      "sha256": "c46d12391dfeaa8b1ff14218baad878cc53f10ab771042b67b2353af3662a7e6"
+    }
+  },
+  "runner": {
+    "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/support/public_tpi_regression.py",
+    "sha256": "cc292c70af4b3f99f665dcd6074c381298aae856c76cb529de599a0dda0ef17c"
+  },
+  "final_checks": [
+    {
+      "case": "04",
+      "profile": "sphere4hist_cpu_dbgfinal",
+      "build": "DebugCPU",
+      "exit": 0,
+      "backend": "cpu",
+      "mode": 2,
+      "steps": 4,
+      "dt_s": 1.9073486328125e-06,
+      "saved_frames": 5,
+      "particles": 37181,
+      "total_native_fields": 22,
+      "minimum_bitwise_matched_fields": 22,
+      "five_native_clocks_bitwise": true,
+      "review": {
+        "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/public_tpi_sphere4hist_cpu_dbgfinal/review.json",
+        "sha256": "766a0dc870ba5ff9798036b0c2ccf5f196214680e0daedb8e21df989103d85a6"
+      },
+      "exe_sha256": "cfebcfa6b5b57d6a3d7ac4c358ef45e4034b25f5c2d8c9e7f2fa326f799d72f2",
+      "written_history_frames": 4,
+      "private_round1_source_values_exact": 0,
+      "archived_BI4_history_values_exact": 148692,
+      "history_audit": {
+        "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/public_tpi_sphere4hist_cpu_dbgfinal/history_audit.json",
+        "sha256": "70d798b9a58737ff812fdd1f97157b407d78ffd6a42517788f2bce524b1bf7e2"
+      }
+    },
+    {
+      "case": "04",
+      "profile": "sphere4hist_cpu_hist1",
+      "build": "ReleaseCPU",
+      "exit": 0,
+      "backend": "cpu",
+      "mode": 2,
+      "steps": 4,
+      "dt_s": 1.9073486328125e-06,
+      "saved_frames": 5,
+      "particles": 37181,
+      "total_native_fields": 22,
+      "minimum_bitwise_matched_fields": 22,
+      "five_native_clocks_bitwise": true,
+      "review": {
+        "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/public_tpi_sphere4hist_cpu_hist1/review.json",
+        "sha256": "9a3a5139d5977a3ce7c3431db02d8ab962ca33528671d181c96197e8bf253326"
+      },
+      "exe_sha256": "3ba2060e65a1400f0e5066446062944f8b6b3a6646875bd42a580e9615cbc782",
+      "written_history_frames": 4,
+      "private_round1_source_values_exact": 0,
+      "archived_BI4_history_values_exact": 148692,
+      "history_audit": {
+        "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/public_tpi_sphere4hist_cpu_hist1/history_audit.json",
+        "sha256": "00d728a8c28022fb25199b82010d5dbaa53bbe7b5ed75d039e698dc19364683a"
+      }
+    },
+    {
+      "case": "04",
+      "profile": "sphere4hist_gpu_hist1",
+      "build": "Release",
+      "exit": 0,
+      "backend": "gpu",
+      "mode": 2,
+      "steps": 4,
+      "dt_s": 1.9073486328125e-06,
+      "saved_frames": 5,
+      "particles": 37181,
+      "total_native_fields": 22,
+      "minimum_bitwise_matched_fields": 22,
+      "five_native_clocks_bitwise": true,
+      "review": {
+        "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/public_tpi_sphere4hist_gpu_hist1/review.json",
+        "sha256": "f87d82334eb85bed0be293505a5cca2d27d3a87b9d1ba8f8ef5ef0dcc04b96a5"
+      },
+      "exe_sha256": "c46d12391dfeaa8b1ff14218baad878cc53f10ab771042b67b2353af3662a7e6",
+      "written_history_frames": 4,
+      "private_round1_source_values_exact": 0,
+      "archived_BI4_history_values_exact": 148692,
+      "history_audit": {
+        "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/public_tpi_sphere4hist_gpu_hist1/history_audit.json",
+        "sha256": "e72fdf48f87cfe335d1c6cea9b8e003b006aa2da4c47ffe25c2b1d152d22be7e"
+      }
+    },
+    {
+      "case": "02",
+      "profile": "column25_cpu_hist1",
+      "build": "ReleaseCPU",
+      "exit": 0,
+      "backend": "cpu",
+      "mode": 2,
+      "steps": 25,
+      "dt_s": 1.000022888183594e-05,
+      "saved_frames": 3,
+      "particles": 1040,
+      "total_native_fields": 22,
+      "minimum_bitwise_matched_fields": 21,
+      "five_native_clocks_bitwise": true,
+      "review": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_column25_cpu_hist1/review.json",
+        "sha256": "cdcf952eab68c8561be63ec0819df78f4f0bd6e808704c12e232b885a132127b"
+      },
+      "exe_sha256": "3ba2060e65a1400f0e5066446062944f8b6b3a6646875bd42a580e9615cbc782",
+      "old_P3_different_field": "Rhop",
+      "all_J_density_checks_passed": true,
+      "exact_material_density_observations": 3000,
+      "maximum_Rhop_difference_kg_m3": 0.000244140625,
+      "density_audit": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_column25_cpu_hist1/density_audit.json",
+        "sha256": "d9b8dd7691fc2936a3fd410f6e3769a4d8c4bfb57adbb8c47b9c71d293ef6195"
+      },
+      "written_history_frames": 2,
+      "private_round1_source_values_exact": 2000,
+      "archived_BI4_history_values_exact": 0,
+      "history_audit": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_column25_cpu_hist1/history_audit.json",
+        "sha256": "63c79e6dc24b96e82ae0f14c5567e97b643aea87040664351c2f6f922a73713e"
+      }
+    },
+    {
+      "case": "02",
+      "profile": "column_gpu_hist1",
+      "build": "Release",
+      "exit": 0,
+      "backend": "gpu",
+      "mode": 2,
+      "steps": 1002,
+      "dt_s": 1.000022888183594e-05,
+      "saved_frames": 106,
+      "particles": 1040,
+      "total_native_fields": 22,
+      "minimum_bitwise_matched_fields": 21,
+      "five_native_clocks_bitwise": true,
+      "review": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_column_gpu_hist1/review.json",
+        "sha256": "423e399c46def3f59b9181ff104f675f60231098ec5e348433158a5a6f9d35b9"
+      },
+      "exe_sha256": "c46d12391dfeaa8b1ff14218baad878cc53f10ab771042b67b2353af3662a7e6",
+      "old_P3_different_field": "Rhop",
+      "all_J_density_checks_passed": true,
+      "exact_material_density_observations": 106000,
+      "maximum_Rhop_difference_kg_m3": 0.00439453125,
+      "density_audit": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_column_gpu_hist1/density_audit.json",
+        "sha256": "1a260854b690e3be364ea4add74309295d7a898742eca754a5c35cb722439adb"
+      },
+      "written_history_frames": 105,
+      "private_round1_source_values_exact": 105000,
+      "archived_BI4_history_values_exact": 0,
+      "history_audit": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_column_gpu_hist1/history_audit.json",
+        "sha256": "2c420e805f04410fb9688f92fdc331d84da1de01c711aedc90d5aa3dae94a495"
+      }
+    },
+    {
+      "case": "02",
+      "profile": "column2mem_gpu_dbg1",
+      "build": "Debug",
+      "exit": 0,
+      "backend": "gpu",
+      "mode": 2,
+      "steps": 2,
+      "dt_s": 1.0000228881835938e-05,
+      "saved_frames": 2,
+      "particles": 1040,
+      "total_native_fields": 22,
+      "minimum_bitwise_matched_fields": 22,
+      "five_native_clocks_bitwise": true,
+      "review": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_column2mem_gpu_dbg1/review.json",
+        "sha256": "8ed81f0c7562890fe1be5b5f83c2e9662503935990e8d76d2a9a4cd5352293dd"
+      },
+      "exe_sha256": "7527fe6101a5be6fefa63c736787232c2ca793cb1968b508d19fd87af40ba43a",
+      "written_history_frames": 1,
+      "private_round1_source_values_exact": 1000,
+      "archived_BI4_history_values_exact": 0,
+      "history_audit": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_column2mem_gpu_dbg1/history_audit.json",
+        "sha256": "99f771161e4cf5e8937f972b262ac7f6f6d2255f85e1caa5221380b22dc56807"
+      },
+      "sanitizer_exit": 0,
+      "independently_observed_windows_solver_exit": 0,
+      "compute_sanitizer_sha256": "ce9846b9fb169e71a6ee7da04a5f0214017dbc0cd8d7e5dc28187965eb4db691",
+      "memcheck": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_column2mem_gpu_dbg1/memcheck.log",
+        "sha256": "adba10db853bd67fe9009b776eefe7b61210d2cbe3eee029ba6fa188978b5832"
+      },
+      "memcheck_errors": 0
+    },
+    {
+      "case": "02",
+      "profile": "upw_cpu_final1",
+      "build": "ReleaseCPU",
+      "exit": 0,
+      "backend": "cpu",
+      "mode": 0,
+      "steps": 6,
+      "dt_s": 1e-05,
+      "saved_frames": 4,
+      "particles": 1040,
+      "total_native_fields": 15,
+      "minimum_bitwise_matched_fields": 15,
+      "five_native_clocks_bitwise": true,
+      "review": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_upw_cpu_final1/review.json",
+        "sha256": "f6b4630983c2f3da338ac8ab67929eb698dd2075c20f854fd06dfa690d731398"
+      },
+      "exe_sha256": "3ba2060e65a1400f0e5066446062944f8b6b3a6646875bd42a580e9615cbc782"
+    },
+    {
+      "case": "02",
+      "profile": "upw_gpu_final1",
+      "build": "Release",
+      "exit": 0,
+      "backend": "gpu",
+      "mode": 0,
+      "steps": 6,
+      "dt_s": 1e-05,
+      "saved_frames": 4,
+      "particles": 1040,
+      "total_native_fields": 15,
+      "minimum_bitwise_matched_fields": 15,
+      "five_native_clocks_bitwise": true,
+      "review": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_upw_gpu_final1/review.json",
+        "sha256": "e689799ff1625d442b86c7526a73f6a8c141089ef7a9d3813a3d6a1bc26bb66a"
+      },
+      "exe_sha256": "c46d12391dfeaa8b1ff14218baad878cc53f10ab771042b67b2353af3662a7e6"
+    },
+    {
+      "case": "04",
+      "profile": "upl_cpu_final1",
+      "build": "ReleaseCPU",
+      "exit": 0,
+      "backend": "cpu",
+      "mode": 1,
+      "steps": 6,
+      "dt_s": 9.5367431640625e-07,
+      "saved_frames": 4,
+      "particles": 37181,
+      "total_native_fields": 22,
+      "minimum_bitwise_matched_fields": 22,
+      "five_native_clocks_bitwise": true,
+      "review": {
+        "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/public_tpi_upl_cpu_final1/review.json",
+        "sha256": "acb7bb49a014b92e0b8559344f442a8573d72389186f3fa7685e4dbb9c0da801"
+      },
+      "exe_sha256": "3ba2060e65a1400f0e5066446062944f8b6b3a6646875bd42a580e9615cbc782"
+    },
+    {
+      "case": "04",
+      "profile": "upl_gpu_final1",
+      "build": "Release",
+      "exit": 0,
+      "backend": "gpu",
+      "mode": 1,
+      "steps": 6,
+      "dt_s": 9.5367431640625e-07,
+      "saved_frames": 4,
+      "particles": 37181,
+      "total_native_fields": 22,
+      "minimum_bitwise_matched_fields": 22,
+      "five_native_clocks_bitwise": true,
+      "review": {
+        "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/public_tpi_upl_gpu_final1/review.json",
+        "sha256": "716b4e607f7afc045c11f8a8de226fa645c714e784e3865a3091b36ca9b3d502"
+      },
+      "exe_sha256": "c46d12391dfeaa8b1ff14218baad878cc53f10ab771042b67b2353af3662a7e6"
+    }
+  ],
+  "previous_build_checks": [
+    {
+      "case": "02",
+      "profile": "column_cpu_r2",
+      "build": "DebugCPU",
+      "exit": 0,
+      "backend": "cpu",
+      "mode": 2,
+      "steps": 200,
+      "dt_s": 1.000022888183594e-05,
+      "saved_frames": 18,
+      "particles": 1040,
+      "total_native_fields": 22,
+      "minimum_bitwise_matched_fields": 21,
+      "five_native_clocks_bitwise": true,
+      "review": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_column_cpu_r2/review.json",
+        "sha256": "3b7e777b9d775481c2a366c52030cdf75eeb09dd0c9a81af2bdb2cb8ec0b650a"
+      },
+      "exe_sha256": "af23a9a99a000c488d859ebb320b6723d1e9e5e90fdfc821b044bc469235e5ad",
+      "old_P3_different_field": "Rhop",
+      "all_J_density_checks_passed": true,
+      "exact_material_density_observations": 18000,
+      "maximum_Rhop_difference_kg_m3": 0.0009765625,
+      "density_audit": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_column_cpu_r2/density_audit.json",
+        "sha256": "a7e45cceaa5f916ef2ee7fb9e12e7ddfe457074b6295e1068b25a767873c2450"
+      }
+    },
+    {
+      "case": "04",
+      "profile": "sphere64_gpu_r1",
+      "build": "Release",
+      "exit": 0,
+      "backend": "gpu",
+      "mode": 2,
+      "steps": 64,
+      "dt_s": 1.9073486328125e-06,
+      "saved_frames": 2,
+      "particles": 37181,
+      "total_native_fields": 22,
+      "minimum_bitwise_matched_fields": 22,
+      "five_native_clocks_bitwise": true,
+      "review": {
+        "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/public_tpi_sphere64_gpu_r1/review.json",
+        "sha256": "974fd497861b388f4b7e2aebfc81b15fcfb883309a9e8eee2b91461e34c5388b"
+      },
+      "exe_sha256": "3adbb2589f59ba2dce9781e175e9e87f2ec5ea448529b4aa64a48b2e212795d3"
+    }
+  ],
+  "previous_build_rejections": [
+    {
+      "case": "02",
+      "option": "changing_k",
+      "backend": "cpu",
+      "exit": 1,
+      "raw_frames": 0,
+      "observed_message": "Text: HydroMechModel=2 supports fresh symplectic constant-k columns (fixed mDBC, X-periodic, kernel-band load) and confined 3-D free bodies with fixed-step drainage. Preload handoff, changing material sets and free seepage are unsupported.",
+      "exe_sha256": "af23a9a99a000c488d859ebb320b6723d1e9e5e90fdfc821b044bc469235e5ad",
+      "review": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_changing_k_cpu_r2/review.json",
+        "sha256": "bac6ac3925c1e8ac88aad383cbf540cf95e9e1936c3f3df8bd2542cef1650d82"
+      }
+    },
+    {
+      "case": "02",
+      "option": "restart",
+      "backend": "cpu",
+      "exit": 1,
+      "raw_frames": 0,
+      "observed_message": "Text: HydroMechModel=2 supports fresh symplectic constant-k columns (fixed mDBC, X-periodic, kernel-band load) and confined 3-D free bodies with fixed-step drainage. Preload handoff, changing material sets and free seepage are unsupported.",
+      "exe_sha256": "af23a9a99a000c488d859ebb320b6723d1e9e5e90fdfc821b044bc469235e5ad",
+      "review": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_restart_cpu_r2/review.json",
+        "sha256": "7469a53085554b88b11802995eb7602cc73327b4b8cb1bb89c158c0fd6b07f74"
+      }
+    },
+    {
+      "case": "02",
+      "option": "changing_k",
+      "backend": "gpu",
+      "exit": 1,
+      "raw_frames": 0,
+      "observed_message": "Text: HydroMechModel=2 supports fresh symplectic constant-k columns (fixed mDBC, X-periodic, kernel-band load) and confined 3-D free bodies with Wendland kernels and fixed-step drainage. Preload handoff, changing material sets and free seepage are unsupported.",
+      "exe_sha256": "3adbb2589f59ba2dce9781e175e9e87f2ec5ea448529b4aa64a48b2e212795d3",
+      "review": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_changing_k_gpu_r1/review.json",
+        "sha256": "de0a857b8194291f888952420a5a0a69f43851a54aebd5f7d341bcc5e6d01539"
+      }
+    },
+    {
+      "case": "02",
+      "option": "restart",
+      "backend": "gpu",
+      "exit": 1,
+      "raw_frames": 0,
+      "observed_message": "Text: HydroMechModel=2 supports fresh symplectic constant-k columns (fixed mDBC, X-periodic, kernel-band load) and confined 3-D free bodies with Wendland kernels and fixed-step drainage. Preload handoff, changing material sets and free seepage are unsupported.",
+      "exe_sha256": "3adbb2589f59ba2dce9781e175e9e87f2ec5ea448529b4aa64a48b2e212795d3",
+      "review": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/public_tpi_restart_gpu_r1/review.json",
+        "sha256": "13aef341fe5eaff99e9bc3fc7b2fc41ccce77724765267f00a51e9732bda4c84"
+      }
+    }
+  ],
+  "native_density_interpretation": "In C02, the private solver left Rhop near its original value. Current soil Rhop is float32(rho_w + (rho_0-rho_w)/J). Every saved material Rhop, both outputs' double mixture density, all fixed Rhop, remaining native fields and clocks were checked individually. Strict historical 22-field equality fails in C02 whenever J produces a float-resolvable change in density.",
+  "C02_drainage": {
+    "target_time_s": 0.010000228881835938,
+    "actual": [
+      {
+        "step": 1000,
+        "actual_t_s": 0.010000228881836042,
+        "surface_count": 10,
+        "surface_pressure_absmax_Pa": 10026.44140625,
+        "source_time_s": 0.009990228652954205,
+        "history_different_ids_vs_preceding_PART": 0
+      },
+      {
+        "step": 1001,
+        "actual_t_s": 0.010010229110717878,
+        "surface_count": 10,
+        "surface_pressure_absmax_Pa": 0.0,
+        "source_time_s": 0.010000228881836042,
+        "history_different_ids_vs_preceding_PART": 10
+      },
+      {
+        "step": 1002,
+        "actual_t_s": 0.010020229339599715,
+        "surface_count": 10,
+        "surface_pressure_absmax_Pa": 0.0,
+        "source_time_s": 0.010010229110717878,
+        "history_different_ids_vs_preceding_PART": 0
+      }
+    ],
+    "source_history": "The history child stores the pressure actually consumed by the predictor at the source time. At the first open update boundary projection occurs after the preceding physical PART and before the source p_n is captured. For the 10 surface IDs the historical value is zero. The 990 interiors still equal the preceding physical PART. All 105000 history values match original private first-round p_n.",
+    "observed_boundary_projection": {
+      "ids": [
+        139,
+        239,
+        339,
+        439,
+        539,
+        639,
+        739,
+        839,
+        939,
+        1039
+      ],
+      "preceding_native_p_Pa": [
+        10026.44140625,
+        10026.4404296875,
+        10026.4404296875,
+        10026.4404296875,
+        10026.4404296875,
+        10026.4404296875,
+        10026.4404296875,
+        10026.4404296875,
+        10026.44140625,
+        10026.4404296875
+      ],
+      "predictor_history_p_Pa": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "matching_interior_ids": 990
+    }
+  },
+  "excluded_old_incremental_CPU": {
+    "exit_hex": "0x80000003",
+    "native_after_solver_return": {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/public_tpi_sphere_cpu_r1/native_after_bad_exit.json",
+      "sha256": "29fdae8b6f6e15c0c3aa141cf545ad49e430fcd9577eb96398edf72132cf9b34"
+    },
+    "clean_cpu_runs_supersede": true,
+    "reason": "Stale incremental Debug objects with /RTC failure after the nominal solver log return; rejected as an executable-level regression."
+  },
+  "limitations": "Restricted fresh-start short-path regression. Pressure-history serialization is checked; public restart is explicitly rejected. C04 closed four-step and 64-step regressions do not qualify the original weak-component peak/decay in the production solver. No new production full-cycle benchmark was run."
+}

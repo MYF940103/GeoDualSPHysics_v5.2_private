@@ -334,6 +334,7 @@ void JSphGpu::InitVars(){
   PorosityObserver=false;
   PorosityFeedback=false;
   DynamicPorePressure=false;
+  TpiPreviousg=TpiSourceg=TpiGuessg=TpiNextg=NULL;TpiEndpoint=false;
   DynamicPoreConductivity=false;DynamicPoreConductivityCk=0.;DynamicConductivitySpeedMax=0.;
   DynamicPoreWall=false;
   PoroJg=NULL; PoroThetag=NULL; PoroJPreg=NULL;
@@ -405,6 +406,10 @@ void JSphGpu::AllocCpuMemoryFixed(){
 void JSphGpu::FreeGpuMemoryFixed(){
   MemGpuFixed=0;
   if(MaterialErrorg)cudaFree(MaterialErrorg); MaterialErrorg=NULL;
+  if(TpiPreviousg)cudaFree(TpiPreviousg); TpiPreviousg=NULL;
+  if(TpiSourceg)cudaFree(TpiSourceg); TpiSourceg=NULL;
+  if(TpiGuessg)cudaFree(TpiGuessg); TpiGuessg=NULL;
+  if(TpiNextg)cudaFree(TpiNextg); TpiNextg=NULL;
   if(BoundDerivativeFitShiftg)cudaFree(BoundDerivativeFitShiftg); BoundDerivativeFitShiftg=NULL;
   if(RidpMoveg)         cudaFree(RidpMoveg);          RidpMoveg=NULL;
   if(FtRidpg)           cudaFree(FtRidpg);            FtRidpg=NULL;
@@ -427,6 +432,13 @@ void JSphGpu::FreeGpuMemoryFixed(){
 //==============================================================================
 void JSphGpu::AllocGpuMemoryFixed(){
   MemGpuFixed=0;
+  if(HydroMechTpi){
+    const size_t bytes=sizeof(float)*size_t(CaseNp);
+    cudaMalloc((void**)&TpiPreviousg,bytes);cudaMalloc((void**)&TpiSourceg,bytes);
+    cudaMalloc((void**)&TpiGuessg,bytes);cudaMalloc((void**)&TpiNextg,bytes);
+    Check_CudaErroor("Failed allocating native TPI pressure histories.");
+    MemGpuFixed+=bytes*4;
+  }
   if(SoilCte.ModulusK>0.f && SoilCte.ModulusG>0.f){
     cudaMalloc((void**)&MaterialErrorg,sizeof(unsigned)); MemGpuFixed+=sizeof(unsigned);
   }
@@ -1753,7 +1765,11 @@ void JSphGpu::ComputeSymplecticPre(double dt){
   const bool c08traceupdate=(HydroMech && PorePressg && PorePressPreg && PorePressRateg
     ? C08TraceBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,dt05,C08_TRACE_UPDATE,Idpg,FSTypeg,PorePressRateg): false);
 #endif
-  if(HydroMech && PorePressg && PorePressPreg && PorePressRateg)
+  if(HydroMechTpi){
+    PrepareTpiPressure(PorePressPreg,PosxyPreg,false);
+    WriteTpiPressure(PorePressPreg,TpiNextg,PosxyPreg,false);
+  }
+  else if(HydroMech && PorePressg && PorePressPreg && PorePressRateg)
     cusph::UpdatePorePressureSymplectic(Np,Npb,dt05,Codeg,PorePressPreg,PorePressRateg,PorePressg
       ,DynamicPorePressure && IsHydroMechDrainageActive(),HydroMechTopLoadMode,PosxyPreg,FSTypeg);
 #ifdef C08_STAGE_TRACE
@@ -1877,7 +1893,8 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
   const bool c08traceupdate=(HydroMech && DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg
     ? C08TraceBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,dt,C08_TRACE_UPDATE,Idpg,FSTypeg,PorePressRateg): false);
 #endif
-  if(HydroMech && DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg)
+  if(HydroMechTpi)WriteTpiPressure(PorePressPreg,TpiGuessg,Posxyg,true);
+  else if(HydroMech && DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg)
     cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg
       ,IsHydroMechDrainageActive(),HydroMechTopLoadMode,Posxyg,FSTypeg);
 #ifdef C08_STAGE_TRACE
@@ -2042,8 +2059,30 @@ unsigned* JSphGpu::PrepareDynamicPorePeriodicGpu(){
 }
 
 //==============================================================================
-/// Replaces the complete rate after all force contributions; consumes ridpg.
+/// Capture source pressure by native material ID before any half-step update.
 //==============================================================================
+void JSphGpu::PrepareTpiPressure(const float *source,const double2 *sourcexy,bool init){
+  unsigned error=UINT_MAX;
+  cudaMemset(MaterialErrorg,0xff,sizeof(unsigned));
+  cusph::PrepareTpiPressure(Np,Npb,CaseNp,Idpg,Codeg,source,(init? NULL: TpiPreviousg)
+    ,(init? TpiPreviousg: TpiSourceg),TpiGuessg,TpiNextg,IsHydroMechDrainageActive()
+    ,HydroMechTopLoadMode,sourcexy,FSTypeg,MaterialErrorg);
+  cudaMemcpy(&error,MaterialErrorg,sizeof(error),cudaMemcpyDeviceToHost);
+  Check_CudaErroor("Failed preparing native TPI pressure prediction.");
+  if(error<Np)Run_Exceptioon("Invalid native TPI pressure history or prediction.");
+}
+
+void JSphGpu::WriteTpiPressure(const float *source,const float *rows,const double2 *xy,bool project){
+  unsigned error=UINT_MAX;
+  cudaMemset(MaterialErrorg,0xff,sizeof(unsigned));
+  cusph::WriteTpiPressure(Np,Npb,CaseNp,Idpg,Codeg,source,rows,PorePressg
+    ,project && IsHydroMechDrainageActive(),HydroMechTopLoadMode,xy,FSTypeg,MaterialErrorg);
+  cudaMemcpy(&error,MaterialErrorg,sizeof(error),cudaMemcpyDeviceToHost);
+  Check_CudaErroor("Failed applying a complete TPI pressure field.");
+  if(error<Np)Run_Exceptioon("Invalid particle ID applying the TPI pressure field.");
+}
+
+//-Replaces the complete rate after all force contributions; consumes ridpg.
 void JSphGpu::ComputeDynamicPorePressureRateGpu(unsigned *ridpg){
   DynamicConductivitySpeedMax=0.;
   if(!DynamicPorePressure){if(ridpg)ArraysGpu->Free(ridpg);return;}
@@ -2067,12 +2106,13 @@ void JSphGpu::ComputeDynamicPorePressureRateGpu(unsigned *ridpg){
     c08tracerhs=C08TraceBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,0.,C08_TRACE_RHS,Idpg,FSTypeg,PorePressRateg);
 #endif
 #endif
+    const cusph::StTpiPressureRows rows={Idpg,(TpiEndpoint? TpiNextg: NULL),CaseNp};
     cusph::ComputeDynamicPorePressureRate(Np,Npb,DivData,Dcellg,Posxyg,Poszg,Codeg,CorrMatg,Aceg
       ,PoroJg,PoroThetag,PorePressg,PorePressRateg,1.-double(SoilCte.Porosity),double(SoilCte.PoreWaterBulkModulus)
       ,rhow,double(SoilCte.HydraulicConductivity),gamma,double(MassFluid)/double(RhopZero),invalidg
       ,DynamicPoreConductivity,DynamicPoreConductivityCk,maxspeedg,DynamicPoreWall,BoundModeg
       ,FSTypeg,FSNormalg,IsHydroMechDrainageActive(),HydroMechDrainage && !IsHydroMechDrainageActive(),HydroMechTopLoadMode
-      ,DynamicPoreBodyCentre,(DynamicPoreFreeBody? DynamicPoreBodyRadius2: 0.),TKernel,HydroMechFreeSeepage);
+      ,DynamicPoreBodyCentre,(DynamicPoreFreeBody? DynamicPoreBodyRadius2: 0.),TKernel,HydroMechFreeSeepage,rows);
     if(ridpg)cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,NULL,NULL,NULL,PorePressRateg,invalidg);
     cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
     if(maxspeedg)cudaMemcpy(&maxspeed,maxspeedg,sizeof(double),cudaMemcpyDeviceToHost);
@@ -2110,7 +2150,7 @@ void JSphGpu::GetDynamicStepScalesGpu(double &wave,double &pore){
   const double gamma=double(SoilCte.PoreWaterRho)*9.80665;
   cusph::ComputePorosityWaveSpeed2(Np,Npb,1.-double(SoilCte.Porosity),double(RhopZero)
     ,double(SoilCte.PoreWaterRho),m,double(SoilCte.PoreWaterBulkModulus),Codeg,PoroJg,maxg,invalidg
-    ,double(SoilCte.HydraulicConductivity),gamma,maxg+1,DynamicPoreConductivity,DynamicPoreConductivityCk);
+    ,double(SoilCte.HydraulicConductivity),gamma,maxg+1,DynamicPoreConductivity,DynamicPoreConductivityCk,HydroMechTpi);
   cudaMemcpy(values,maxg,sizeof(values),cudaMemcpyDeviceToHost);
   cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
   ArraysGpu->Free(maxg);ArraysGpu->Free(invalidg);

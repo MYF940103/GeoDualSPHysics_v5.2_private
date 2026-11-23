@@ -221,7 +221,7 @@ void JSphHourglassCpu::EvaluateRate(bool endpoint,unsigned np,unsigned npb,const
 /// Add a double history to the physical float acceleration once, keeping the
 /// tested conversion order. Resolve IDs again after the predictor cell sort.
 //==============================================================================
-void JSphHourglassCpu::AddHistory(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,tfloat3* ace,const double* poroj){
+void JSphHourglassCpu::AddHistory(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,tfloat3* ace,const double* poroj,bool record){
   Check(!RhopZero || poroj,"HG single-J force state is missing.");
   Vec net{},actualnet{};double sumforce=0,hmax=0;
   unsigned count=0;
@@ -243,6 +243,7 @@ void JSphHourglassCpu::AddHistory(unsigned np,unsigned npb,const unsigned* idp,c
     hmax=(std::max)(hmax,hypot(a.x,a.z));count++;
   }
   Check(count==Count,"HG native soil particle set changed before force addition.");
+  if(!record)return;
   Stats.maxnetforce=(std::max)(Stats.maxnetforce,hypot(net.x,net.z));
   Stats.maxactualnetforce=(std::max)(Stats.maxactualnetforce,hypot(actualnet.x,actualnet.z));
   if(sumforce>0)Stats.maxrelativeforce=(std::max)(Stats.maxrelativeforce,hypot(net.x,net.z)/sumforce);
@@ -272,6 +273,12 @@ void JSphHourglassCpu::PredictorUpdate(double dt){
 void JSphHourglassCpu::CorrectorForce(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,tfloat3* ace,const double* poroj){
   Check(Phase==PH_CorrectorForce,"HG invalid corrector force stage.");
   AddHistory(np,npb,idp,code,ace,poroj);Phase=PH_CorrectorUpdate;
+}
+
+// A TPI endpoint reads the completed mechanical history without advancing its phase or statistics.
+void JSphHourglassCpu::EndpointForce(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,tfloat3* ace,const double* poroj){
+  Check(Phase==PH_PredictorForce,"HG endpoint pressure evaluation requires completed mechanical history.");
+  AddHistory(np,npb,idp,code,ace,poroj,false);
 }
 
 void JSphHourglassCpu::CorrectorUpdate(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,

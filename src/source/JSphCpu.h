@@ -158,6 +158,9 @@ protected:
   float* PorePressc;   ///<Current total/gauge pore-water pressure for u-pw hydromechanics.
   float* PorePress0c;  ///<Initial hydrostatic pore-water pressure reference.
   float* PorePressRatec; ///<Current pore-pressure rate dpw/dt for u-pw PR formulation.
+  std::vector<float> TpiPrevious,TpiSource,TpiGuess,TpiNext; ///<Committed previous pressure and scratch by material ID (model 2 only).
+  std::vector<byte> TpiMaterialSeen; ///<Original native soil IDs present after cell division.
+  bool TpiEndpoint=false; ///<In a pressure-only force evaluation at the corrected geometry.
   bool PorosityObserver; ///<Internal CPU J state; public master enables observer, feedback and dynamic rate together.
   bool PorosityFeedback; ///<J-derived volume/storage/inertia; no independent public partial-model switch.
   bool DynamicPorePressure; ///<CPU dynamic Darcy-acceleration rate; public master default=false.
@@ -410,6 +413,9 @@ protected:
   void ComputeSymplecticCorr(double dt);
   void ComputeVerletPorePressure(double dt);
   void ComputeSymplecticPrePorePressure(double dt);
+  void InitTpiPressure();
+  void CheckTpiMaterialSet();
+  void PredictTpiPressure(bool predictor);
   void ComputeSymplecticCorrPorePressure(double dt);
   void InitPorosityObserverCpu();
   void GetPorosityFeedbackStateCpu(unsigned p,double &porosity,double &volume,double &rhot)const;

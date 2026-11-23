@@ -305,7 +305,7 @@ void UpdatePorosityObserver(unsigned np,unsigned npb,bool corrector,double dt,do
 //-Current native J-derived undrained speed squared; caller initializes maxcu2=0 and invalid=np.
 void ComputePorosityWaveSpeed2(unsigned np,unsigned npb,double solid0,double rho0,double rhow,double m,double kw
   ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid
-  ,double khyd=0,double gamma=1,double *maxdiffusion=NULL,bool conductivity=false,double ck=0);
+  ,double khyd=0,double gamma=1,double *maxdiffusion=NULL,bool conductivity=false,double ck=0,bool skeletonwave=false);
 //-Extend only requested fields from normal-fluid native owners; caller initializes invalid=np.
 void ExtendDynamicPorePeriodic(unsigned np,unsigned npb,unsigned idini,unsigned idfin
   ,const typecode *code,const unsigned *idp,const unsigned *ridp
@@ -316,6 +316,16 @@ void DynamicPoreWall(unsigned stage,unsigned np,unsigned npbok,float threshold,c
   ,const double2 *posxy,const double *posz,const typecode *code,const float3 *boundnormal
   ,byte *boundmode,float3 *tangenvel,float3 *derivativevel,float4 *velrhop,tsymatrix3d *sigma
   ,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace,double solid0,unsigned *invalid,TpKernel tkernel=KERNEL_Wendland,const byte *boundslipmode=NULL,const float4 *poscell=NULL);
+void CheckTpiOwners(unsigned np,unsigned npb,unsigned first,unsigned total,const unsigned *idp,const typecode *code
+  ,unsigned *seen,unsigned *error);
+//-TPI source history and Jacobi endpoint values are indexed by original material ID.
+void PrepareTpiPressure(unsigned np,unsigned npb,unsigned total,const unsigned *idp,const typecode *code
+  ,const float *source,const float *previous,float *history,float *guess,float *half
+  ,bool drained,TpHydroMechLoadMode mode,const double2 *xy,const unsigned *fstype,unsigned *error);
+void WriteTpiPressure(unsigned np,unsigned npb,unsigned total,const unsigned *idp,const typecode *code
+  ,const float *source,const float *rows,float *pressure,bool drained,TpHydroMechLoadMode mode
+  ,const double2 *xy,const unsigned *fstype,unsigned *error);
+struct StTpiPressureRows{ const unsigned *idp; float *next; unsigned total; };
 //-Complete same-stage rate; optional smooth k(J) chain and native gradient-speed maximum.
 void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
@@ -323,7 +333,8 @@ void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu 
   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
   ,bool conductivity=false,double ck=0,double *maxspeed=NULL,bool wall=false,const byte *boundmode=NULL
   ,const unsigned *fstype=NULL,const float3 *fsnormal=NULL,bool drainfs=false,bool closedfs=false,TpHydroMechLoadMode loadmode=HMLOAD_None
-  ,tdouble3 bodycentre=TDouble3(0),double bodyradius2=0,TpKernel tkernel=KERNEL_Wendland,bool freeseepage=false);
+  ,tdouble3 bodycentre=TDouble3(0),double bodyradius2=0,TpKernel tkernel=KERNEL_Wendland,bool freeseepage=false
+  ,StTpiPressureRows tpi=StTpiPressureRows{NULL,NULL,0});
 void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
   ,const double2 *posxy,const double *posz,const float4 *poscell

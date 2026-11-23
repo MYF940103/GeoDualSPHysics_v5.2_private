@@ -119,6 +119,7 @@ public:
     llong memorynpused;
     llong memorynctalloc;
     llong memorynctused;
+    const float *tpiprevious; ///<Borrowed previous pressures in contiguous original soil-ID order for this PART.
   }StInfoPartPlus;
 
 private:
@@ -213,6 +214,8 @@ protected:
   bool ArtificialStressExpAuto; ///<Uses default ArtificialStressExp when XML value is not defined. //mdbr
   bool HydroMech;             ///<Hydromechanical u-pw support switch (default=0). //mdbr
   bool HydroMechDynamicSeepage; ///<Experimental limited CPU/GPU J/n/dynamic-Darcy model; default=false keeps u-pw.
+  bool HydroMechTpi;           ///<M0 three-point pressure integration on the dynamic seepage path.
+  double TpiPreviousTime;      ///<Actual source clock paired with the last committed TPI history.
   bool DynamicPoreFreeBody;    ///<Limited 3-D free body with inactive fixed DBC markers, not a mirror wall.
   tdouble3 DynamicPoreBodyCentre; ///<Centre of the no-contact enclosure; never a physical/theory radius fit.
   double DynamicPoreBodyRadius2; ///<Squared admission radius, checked before each dynamic update.
@@ -555,6 +558,7 @@ protected:
     ,const tfloat3 *sigma_kk,const tfloat3 *sigma_ab,const float *kplastic)const;//ruofeng
   void AddBasicArrays(JDataArrays &arrays,unsigned np,const tdouble3 *pos
     ,const unsigned *idp,const tfloat3 *vel,const float *rhop)const;
+  void SaveTpiHistoryPart(unsigned npok,unsigned nout,const unsigned *idp,const float *previous);
   void SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays,unsigned ndom,const tdouble3 *vdom,const StInfoPartPlus *infoplus);
   void SaveData(unsigned npok,const JDataArrays& arrays,unsigned ndom,const tdouble3 *vdom,const StInfoPartPlus *infoplus);
 

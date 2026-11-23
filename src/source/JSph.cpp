@@ -214,6 +214,8 @@ void JSph::InitVars(){
   ArtificialStressExpAuto=true;
   HydroMech=false;
   HydroMechDynamicSeepage=false;
+  HydroMechTpi=false;
+  TpiPreviousTime=-1.;
   DynamicPoreFreeBody=false;
   DynamicPoreBodyCentre=TDouble3(0);
   DynamicPoreBodyRadius2=0;
@@ -650,6 +652,16 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
       && HydroMechConductivityModel==0 && HydroMechConductivityCk==0
       && HydroMechTopLoadMode==HMLOAD_FlexibleConfinement && HydroMechDrainage && HydroMechDrainageFixedGrid
       && !SoilBoundaryDerivativeSPR && SoilHourglassXi==0 && !ViscoTime);
+    if(HydroMechTpi){
+      const bool column=Simulate2D && TBoundary==BC_MDBC && PeriX && !PeriY && !PeriZ
+        && HydroMechTopLoadMode==HMLOAD_TopKernelBand;
+      if(TStep!=STEP_Symplectic || TKernel!=KERNEL_Wendland || PartBegin || WithMpi || InOut || CaseNmoving || CaseNfloat
+        || GravityPreload || HydroMechFreeSeepage || NoPenetration || PoreShepardRegularization
+        || ArtificialStress || ShiftingMode!=SHIFT_None || HydroMechConductivityModel!=0
+        || !(SoilCte.HydraulicConductivity>0.f) || !HydroMechDrainageFixedGrid
+        || !(column || DynamicPoreFreeBody))
+        Run_Exceptioon("HydroMechModel=2 supports fresh symplectic constant-k columns (fixed mDBC, X-periodic, kernel-band load) and confined 3-D free bodies with Wendland kernels and fixed-step drainage. Preload handoff, changing material sets and free seepage are unsupported.");
+    }
     if(!HydroMech || (!Simulate2D && !DynamicPoreFreeBody) || PartBegin
       || ((Gravity.x || Gravity.y || Gravity.z) && !gravitycontainer)
       || (HydroMechInitMode!=HMINIT_None && !gravitycontainer) || !FixedDt || !(FixedDt->GetFixedValue()>0)
@@ -2958,6 +2970,48 @@ void JSph::AddBasicArrays(JDataArrays &arrays,unsigned np,const tdouble3 *pos
 }
 
 //==============================================================================
+/// Writes one completed model-2 PART with the previous pressure for every native soil ID.
+//==============================================================================
+void JSph::SaveTpiHistoryPart(unsigned npok,unsigned nout,const unsigned *idp,const float *previous){
+  if(!previous || !CaseNfluid || npok!=CaseNp || nout || Part<=PartIni || PartBegin
+    || !std::isfinite(TpiPreviousTime) || TpiPreviousTime<0. || !std::isfinite(LastDt)
+    || LastDt<=0. || TpiPreviousTime+LastDt!=TimeStep || LastDt!=SymplecticDtPre)
+    Run_Exceptioon("Invalid committed TPI history or full-step clock.");
+  const unsigned first=CaseNp-CaseNfluid;
+  std::vector<unsigned> ids(CaseNfluid,UINT_MAX);
+  unsigned owners=0;
+  for(unsigned p=0;p<npok;p++){
+    const unsigned id=idp[p];
+    if(id>=CaseNp)Run_Exceptioon("Invalid native ID in TPI PART.");
+    if(id>=first){
+      const unsigned soil=id-first;
+      if(ids[soil]!=UINT_MAX || !std::isfinite(previous[soil]))
+        Run_Exceptioon("Duplicate TPI soil ID or nonfinite previous pressure in PART.");
+      ids[soil]=id;owners++;
+    }
+  }
+  if(owners!=CaseNfluid)Run_Exceptioon("Incomplete TPI soil history in PART.");
+  JBinaryData* part=DataBi4->GetPart();
+  const char* name="TpiPressureHistory";
+  try{
+    JBinaryData* history=part->CreateItem(name);
+    history->SetvUint("Schema",1);
+    history->SetvText("Scheme","P3_B_alpha_half_beta_zero");
+    history->SetvText("RunCode",NoRtimes? "00000000": RunCode);
+    history->SetvUint("CompletedUpdates",unsigned(Nstep)+1u);
+    history->SetvDouble("PreviousTime",TpiPreviousTime);
+    history->SetvDouble("SavedTime",TimeStep);
+    history->SetvDouble("Dt",LastDt);
+    history->SetvBool("Valid",true);
+    history->CreateArray("Idp",JBinaryDataDef::DatUint,CaseNfluid,ids.data(),true);
+    history->CreateArray("PorePressPrev",JBinaryDataDef::DatFloat,CaseNfluid,previous,true);
+    DataBi4->SaveFilePart();
+  }
+  catch(...){part->RemoveItem(name);throw;}
+  part->RemoveItem(name);
+}
+
+//==============================================================================
 /// Stores files of particle data.
 /// Graba los ficheros de datos de particulas.
 //==============================================================================
@@ -2982,6 +3036,7 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays
     }
     if(HydroMechDynamicSeepage){
       bdpart->SetvBool("HydroMechDynamicSeepage",true);
+      if(HydroMechTpi)bdpart->SetvUint("HydroMechModel",2u);
       bdpart->SetvUint("DynamicSeepageSchema",1);
       if(HydroMechFreeSeepage)bdpart->SetvBool("HydroMechFreeSeepage",true);
       bdpart->SetvUint("HydroMechConductivityModel",HydroMechConductivityModel);
@@ -3097,7 +3152,8 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays
           DataBi4->AddPartData(arr.keyname,npok,arr.ptr,arr.type);
         }
       }
-      DataBi4->SaveFilePart();
+      if(HydroMechTpi && Part>PartIni)SaveTpiHistoryPart(npok,nout,idp,(infoplus? infoplus->tpiprevious: NULL));
+      else DataBi4->SaveFilePart();
     }
     if(SvData&SDAT_Info)DataBi4->SaveFileInfo();
     delete[] posf3;
@@ -4191,10 +4247,10 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   HydroMech=sxml->ReadElementBool(hydroReadNode,"HydroMech","value",true,false);
   const TiXmlElement* model=hydroEle->FirstChildElement("HydroMechModel");
   const unsigned modelid=(model? sxml->GetAttributeUnsigned(model,"value"): 0);
-  if(modelid==2)Run_Exceptioon("HydroMechModel=2 (TPI) requires the matching TPI validation program.");
-  if(modelid>1)Run_Exceptioon("HydroMechModel must be 0 (u-pw), 1 (explicit u-pl) or 2 (TPI).");
-  HydroMechDynamicSeepage=(modelid==1);
-  if(HydroMechDynamicSeepage && !HydroMech)Run_Exceptioon("HydroMechModel=1 requires HydroMech=1.");
+  if(modelid>2)Run_Exceptioon("HydroMechModel must be 0 (u-pw), 1 (explicit u-pl) or 2 (TPI).");
+  HydroMechDynamicSeepage=(modelid!=0);
+  HydroMechTpi=(modelid==2);
+  if(HydroMechDynamicSeepage && !HydroMech)Run_Exceptioon("A dynamic HydroMechModel requires HydroMech=1.");
   HydroMechConductivityModel=sxml->ReadElementUnsigned(hydroReadNode,"HydroMechConductivityModel","value",true,0);
   HydroMechConductivityCk=sxml->ReadElementDouble(hydroReadNode,"HydroMechConductivityCk","value",true,0.);
   if(HydroMech && TBoundary==BC_MDBC)MdbcFastSingle=false;
@@ -4304,7 +4360,9 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   //-Log hydromechanical switches, pore-water parameters and PR controls.
     Log->Print(fun::VarStr("  Hydromechanics", (HydroMech? "Enabled": "Disabled")));
   if(HydroMech){
-    Log->Printf("  HydroMechModel=%u (%s)",unsigned(HydroMechDynamicSeepage),HydroMechDynamicSeepage? "explicit u-pl": "u-pw");
+    const unsigned model=(HydroMechTpi? 2u: unsigned(HydroMechDynamicSeepage));
+    const char* const modelname[]={"u-pw","explicit u-pl","TPI u-pl M0, alpha=0.5, beta=0, 3 endpoint corrections, Rh=1"};
+    Log->Printf("  HydroMechModel=%u (%s)",model,modelname[model]);
     Log->Print(fun::VarStr("  HydroMechDynamicSeepage",HydroMechDynamicSeepage));
     if(HydroMechDynamicSeepage){
       Log->Print(HydroMechFreeSeepage?

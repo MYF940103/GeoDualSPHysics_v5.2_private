@@ -27,6 +27,7 @@
 #include "FunSoilMaterial.h"
 #include "FunFixedPlaneContact.h"
 #include "FunExternalLoad.h"
+#include "TpiPressureRow.h"
 #include "Functions.h"
 #include "FunctionsMath.h"
 #include "JDsMotion.h"
@@ -468,6 +469,8 @@ llong JSphCpu::GetAllocMemoryCpu()const{
   s+=MemCpuParticles;
   //-Reserved in AllocCpuMemoryFixed().
   s+=MemCpuFixed;
+  s+=llong((TpiPrevious.capacity()+TpiSource.capacity()+TpiGuess.capacity()+TpiNext.capacity())*sizeof(float));
+  s+=llong(TpiMaterialSeen.capacity()*sizeof(byte));
   s+=llong(BoundDerivativeFitShift.capacity()*sizeof(tdouble3));
   //-Reserved in other objects.
   if(MLPistons)s+=MLPistons->GetAllocMemoryCpu();
@@ -3165,6 +3168,7 @@ template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){
       if(!std::isfinite(r2) || r2>=DynamicPoreBodyRadius2){invalid++;continue;}
     }
     if(drainfs && IsHydroMechDrainedParticle(unsigned(p1),Posc,Codec,FSTypec)){
+      if(TpiEndpoint)TpiNext[Idpc[p1]]=0.f;
       PorePressRatec[p1]=0; //-Dirichlet p is constrained; theta and J still evolve normally.
       continue;
     }
@@ -3172,7 +3176,7 @@ template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){
     GetPorosityFeedbackStateCpu(unsigned(p1),porosity,volume,rhot);
     const double ki=GetDynamicConductivityCpu(unsigned(p1));
     if(!std::isfinite(ki) || ki<0 || (khyd>0 && ki==0)){invalid++;continue;}
-    double lp=0,da=0;
+    double lp=0,da=0,sumweights=0;
     tdouble3 lx=TDouble3(0),gp=TDouble3(0),gjstate=TDouble3(0);
     if(khyd>0){
       const tmatrix3d ci=CorrMatc[p1];
@@ -3193,6 +3197,7 @@ template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){
           const tdouble3 gj=TDouble3(cj.a11*g.x+cj.a12*g.y+cj.a13*g.z,cj.a21*g.x+cj.a22*g.y+cj.a23*g.z,cj.a31*g.x+cj.a32*g.y+cj.a33*g.z);
           const double vol2=vol0*PoroJc[p2],dp=double(PorePressc[p1])-double(PorePressc[p2]);
           const double w=vol2*(d.x*(gi.x+gj.x)+d.y*(gi.y+gj.y)+d.z*(gi.z+gj.z))/(rr2+double(Eta2));
+          if(TpiEndpoint)sumweights+=w;
           lp+=w*dp;lx=lx+d*w;gp=gp-gi*(vol2*dp);
           if(DynamicPoreConductivity)gjstate=gjstate+gi*(vol2*(PoroJc[p2]-PoroJc[p1]));
           da+=vol2*((double(Acec[p2].x)-Acec[p1].x)*gi.x
@@ -3216,6 +3221,11 @@ template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){
     const double lap=(HydroMechFreeSeepage && IsFreeSurfaceParticle(unsigned(p1),Codec,FSTypec)?
       lp+rhow*(double(Acec[p1].x)*lx.x+double(Acec[p1].y)*lx.y+double(Acec[p1].z)*lx.z+da):
       lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da);
+    if(TpiEndpoint){
+      //-The complete M=0 pressure row uses the actual force-stage acceleration.
+      const double diagonal=-khyd*sumweights,residual=-gamma*PoroThetac[p1]+khyd*lap;
+      if(!tpi_pressure::Endpoint(false,PorePressc[p1],diagonal,residual,TpiNext[Idpc[p1]]))invalid++;
+    }
     double rate=kw/porosity*(-PoroThetac[p1]+khyd/gamma*lap);
     if(DynamicPoreConductivity && khyd>0){
       //-Smooth scalar k: div(k*(grad p+rho_w*Ace)); not a conservative interface flux.
@@ -3235,6 +3245,7 @@ template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){
     for(unsigned p=Npb;p<Np;p++)if(CODE_IsPeriodic(Codec[p]))PorePressRatec[p]=PorePressRatec[ridp[Idpc[p]]];
     ArraysCpu->Free(ridp);
   }
+  if(invalid && TpiEndpoint)Run_Exceptioon("TPI pressure correction failed: invalid Darcy state, nonpositive diagonal or nonfinite corrected pressure.");
   if(invalid)Run_Exceptioon(DynamicPoreFreeBody?
     "Dynamic free body lost its inactive-DBC separation envelope or produced an invalid Darcy rate.":
     "Dynamic Darcy fixture produced a nonfinite pressure rate or conductivity-gradient speed.");
@@ -3306,10 +3317,70 @@ void JSphCpu::ComputeVerletPorePressure(double dt2){
 }
 
 //==============================================================================
+/// The present TPI model has a fixed material set. Never advance on a shortened
+/// column or sphere; periodic copies are allowed only with a live native owner.
+//==============================================================================
+void JSphCpu::CheckTpiMaterialSet(){
+  TpiMaterialSeen.assign(CaseNfluid,0);
+  const unsigned first=CaseNp-CaseNfluid;
+  unsigned count=0;
+  for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p])){
+    const unsigned id=Idpc[p];
+    if(id<first || id>=CaseNp || TpiMaterialSeen[id-first])
+      Run_Exceptioon(fun::PrintStr("TPI invalid or duplicate native soil ID %u.",id));
+    TpiMaterialSeen[id-first]=1;count++;
+  }
+  if(count!=CaseNfluid)Run_Exceptioon(fun::PrintStr("TPI lost native soil particles: found %u of %u.",count,CaseNfluid));
+  for(unsigned p=Npb;p<Np;p++)if(CODE_IsPeriodic(Codec[p]) && CODE_IsFluid(Codec[p])){
+    const unsigned id=Idpc[p];
+    if(id<first || id>=CaseNp || !TpiMaterialSeen[id-first])
+      Run_Exceptioon(fun::PrintStr("TPI periodic copy has no native soil owner for ID %u.",id));
+  }
+}
+
+//==============================================================================
+/// Prepare ID-indexed pressure history once for a fresh simulation.
+//==============================================================================
+void JSphCpu::InitTpiPressure(){
+  TpiPrevious.assign(CaseNp,std::numeric_limits<float>::quiet_NaN());
+  TpiSource.resize(CaseNp);TpiGuess.resize(CaseNp);TpiNext.resize(CaseNp);
+  for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p])){
+    const unsigned id=Idpc[p];
+    if(id>=CaseNp || !std::isnan(TpiPrevious[id]) || !std::isfinite(PorePressc[p]))
+      Run_Exceptioon("Invalid TPI initial material ID or pressure.");
+    TpiPrevious[id]=PorePressc[p]; //-Cold start: the previous pressure equals the initial pressure.
+  }
+}
+
+//==============================================================================
+/// Both the mechanical half-step pressure and the first endpoint guess use pAlpha.
+//==============================================================================
+void JSphCpu::PredictTpiPressure(bool predictor){
+  if(predictor){
+    for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p])){
+      const unsigned id=Idpc[p];
+      double predicted;
+      if(id>=TpiPrevious.size() || !tpi_pressure::Predict(tpi_pressure::Predictor::Linear,
+          PorePressPrec[p],TpiPrevious[id],predicted))Run_Exceptioon("Invalid TPI pressure history or prediction.");
+      TpiSource[id]=PorePressPrec[p];
+      TpiGuess[id]=tpi_pressure::WritePressure(predicted);
+    }
+  }
+  const tdouble3* pos=(predictor? PosPrec: Posc);
+  const bool drain=IsHydroMechDrainageActive();
+  for(unsigned p=0;p<Np;p++){
+    if(p<Npb || !CODE_IsFluid(Codec[p]))PorePressc[p]=PorePressPrec[p];
+    else if(drain && IsHydroMechDrainedParticle(p,pos,Codec,FSTypec))PorePressc[p]=0;
+    else PorePressc[p]=TpiGuess[Idpc[p]];
+  }
+}
+
+//==============================================================================
 /// Updates pore pressure to the Symplectic predictor half step.
 //==============================================================================
 void JSphCpu::ComputeSymplecticPrePorePressure(double dt){
   if(!HydroMech || !PorePressc || !PorePressPrec || !PorePressRatec)return;
+  if(HydroMechTpi){ PredictTpiPressure(true);return; }
   const double dt05=dt*.5;
   const bool drainfs=(DynamicPorePressure && IsHydroMechDrainageActive());
   const int np=int(Np);
@@ -3329,6 +3400,7 @@ void JSphCpu::ComputeSymplecticPrePorePressure(double dt){
 //==============================================================================
 void JSphCpu::ComputeSymplecticCorrPorePressure(double dt){
   if(!HydroMech || !PorePressc || !PorePressPrec || !PorePressRatec)return;
+  if(HydroMechTpi){ PredictTpiPressure(false);return; }
   const bool drainfs=(DynamicPorePressure && IsHydroMechDrainageActive());
   const int np=int(Np);
   #ifdef OMP_USE
@@ -3714,7 +3786,7 @@ void JSphCpu::GetDynamicStepScalesCpu(double &wave,double &pore)const{
     const double k=GetDynamicConductivityCpu(p);
     if(!std::isfinite(k) || k<0 || (SoilCte.HydraulicConductivity>0 && k==0))
       Run_Exceptioon("Dynamic conductivity must remain finite and positive for positive k0; no overflow/underflow clipping.");
-    const double b=kw/n,cu2=(m+b)/rho;
+    const double b=kw/n,cu2=(HydroMechTpi? m/rho: (m+b)/rho);
     if(!(n>0 && n<1 && rho>0 && cu2>0) || !std::isfinite(cu2))
       Run_Exceptioon("Dynamic step scales require a finite saturated physical state.");
     if(k>0){
