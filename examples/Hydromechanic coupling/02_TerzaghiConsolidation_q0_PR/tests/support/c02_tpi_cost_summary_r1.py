@@ -265,6 +265,85 @@ def write_csv(path,records):
         writer=csv.DictWriter(f,fieldnames=keys);writer.writeheader();writer.writerows(records)
 
 
+def supplemental_checks(cost):
+    lines=['','## 固定 4 µs 的 R 检查','','把 R 从 1 调至 2.25，两组使用相同的实际步长。比较初始、开排水前最后一步及其后第一步。',
+           '','| 后端 | 共同帧／末步 | 材料孔压、顶部沉降 | 区间最小复合上限，R=1／2.25 (µs) | R=2.25 壁钟 (s) |','|---|---|---|---:|---:|']
+    for b in BACKENDS:
+        path=LOG/f'c02_tpi_r_fixed4_r1_{b}.json'
+        if not path.is_file():
+            lines.append(f'| {b.upper()} | 待原生审查 | — | — | — |');continue
+        r=read(path);rows=r['rows'];run=r['run']
+        need(r['passed'] and run['exit']==0 and run['backend']==b and r['candidate_cap']==2501
+             and [x['completed'] for x in rows]==[0,2500,2501] and r['omitted_reference_saves']==10
+             and all(x['exact_native_arrays']==22 and x['native_ids']==1040 and x['typed_R']['candidate']==2.25 for x in rows)
+             and [x['exact_previous_pressure_ids'] for x in rows]==[0,1000,1000], 'Independent fixed-dt R receipt '+b)
+        limits=[min(x['interval_min_composite_limit_s'][k] for x in rows[1:])*1e6 for k in ('baseline','candidate')]
+        lines.append(f"| {b.upper()} | [3／2501](../../logs/{path.name}) | 两者均逐位相同 | {limits[0]:.6f}／{limits[1]:.6f} | {run['wall_s']:.3f} |")
+    lines+=['','这三帧检验了 R 对步长上限的作用。两端各自以本端 R=1 的相同步号为基准；此项不含 Tv=.005、.05 的精度或计时比较。',
+            '','## 同一步长的显式与三轮 TPI 对照','','首目标为 Tv=.005，达到后才评估本端是否进入 13 帧全窗。表中分别列同一步长显式与 TPI 对各自解析解的误差；顶部沉降误差保留符号。',
+            '','| 后端 | Δt (µs) | 实测范围／目标 Tv | 层孔压 RMS，显式／TPI (Pa) | 顶部误差，显式／TPI (mm) | TPI 壁钟／主循环 (s) | 判定 |','|---|---:|---|---:|---:|---:|---|']
+    full={}
+    for b in BACKENDS:
+        ref=next((r['explicit_reference'] for r in cost if r['backend']==b and r['explicit_reference']),None)
+        if not ref:
+            lines.append(f'| {b.upper()} | — | 无合格显式参考 | — | — | — | — |');continue
+        for window,count in [('first',4),('full',13)]:
+            path=LOG/f'c02_tpi_same_dt_r1_{b}_{ref}_{window}.json'
+            if not path.is_file():
+                work=directory(f'tpi_same_{ref}_{window}',b)
+                reason='全窗未启动' if window=='full' else '首目标未启动'
+                if (work/'exit.json').is_file():
+                    code=read(work/'exit.json')['exit']
+                    reason='求解完成，待原生审查' if code==0 else f'求解退出码 {code}'
+                elif (work/'start.json').is_file():reason='已启动，暂无退出记录'
+                lines.append(f"| {b.upper()} | {1e6*PLAN['lanes'][ref]['dt_s']:g} | {reason} | — | — | — | — |");break
+            r=read(path);t=r['tpi'];same=r['explicit_at_shared_saves'];pairs=r['matched_material_rows'];rows=t['rows']
+            need(r['window']==window and r['explicit_reference']==ref and r['independent_anchor']==REFERENCES['anchor']
+                 and r['backend']==t['backend']==b and t['model']==2 and t['lane']==f'tpi_same_{ref}_{window}'
+                 and r['dt_s']==PLAN['lanes'][ref]['dt_s'] and r['R']==1. and t['steps']==rows[-1]['completed']
+                 and len(same)==len(pairs)==len(rows)==count and all(x['completed']==y['completed'] and x['t_s']==y['t_s']==z['t_s']
+                    for x,y,z in zip(rows,same,pairs)) and r['post_point1s_guard_evaluated']==(window=='full'), 'Matched-dt coverage '+path.name)
+            if window=='first':
+                misses=[label for key,label in [('pressure_ok','孔压'),('top_ok','顶层沉降'),('bottom_ok','底层沉降')]
+                        if not all(r[field][0][key] for field in ('first_vs_same_dt','first_vs_anchor'))]
+                need(r['first_target_pass']==(not misses),'First target flags '+b)
+                verdict='首目标通过' if not misses else '首目标未过（'+'、'.join(misses)+'）'
+            else:
+                need(r['first_target_pass'] and r['shared_short_prefix_frames']==4,'Full same-dt admission '+b)
+                full[b]=r
+                verdict='全窗同端精度通过' if r['full_accuracy']['predeclared_target_noninferiority_pass'] else '全窗同端精度未过'
+            for i in ([3] if window=='first' else [3,12]):
+                e,m=same[i],rows[i];tv=(i-2)*PLAN['save_delta_Tv']
+                times=f"{t['wall_s']:.3f}／{t['loop_s']:.3f}" if i==count-1 else '—'
+                lines.append(f"| {b.upper()} | {r['dt_s']*1e6:g} | [{count} 帧／{tv:g}](../../logs/{path.name}) | "
+                             f"{e['pressure_RMS_Pa']:.3f}／{m['pressure_RMS_Pa']:.3f} | {e['top_error_mm']:+.6f}／{m['top_error_mm']:+.6f} | {times} | {verdict} |")
+            if not r['first_target_pass']:
+                need(not (LOG/f'c02_tpi_same_dt_r1_{b}_{ref}_full.json').exists(),'Unexpected later full-window review '+b)
+                break
+    lines+=['','4 帧行的耗时仅覆盖首目标。13 帧行的耗时覆盖两个目标及后段应力检查。']
+    paired=False
+    if len(full)==len(BACKENDS) and len({r['tpi']['lane'] for r in full.values()})==1:
+        lane=full['cpu']['tpi']['lane'];p=LOG/f'{PREFIX}_{lane}_cpu_gpu.json'
+        if p.is_file():
+            c=read(p)
+            need(c['lane']==lane and c['all_pair_clocks_exact'] and c['native_pairs']==len(c['rows'])==13
+                 and c['fields_per_native_frame']==22 and c['soil_count']==1000 and c['fixed_count']==40
+                 and c['backend_pressure_RMS_limit_Pa']==5. and c['backend_displacement_limit_mm']==.005
+                 and c['cross_backend_field_gate_pass']==(max(row['material_pressure_RMS_Pa'] for row in c['rows'])<=5.
+                                                          and max(row['material_max_displacement_diff_mm'] for row in c['rows'])<=.005)
+                 and all(c['program_identities'][b]==full[b]['tpi']['program_identity'] and c['hardware'][b]==full[b]['tpi']['hardware']
+                         and c['host']==full[b]['tpi']['host'] and all(x['t_s']==y['t_s'] and x['completed_step']==y['completed']
+                         for x,y in zip(c['rows'],full[b]['tpi']['rows'])) for b in BACKENDS),'Matched-dt cross receipt')
+            paired=c['cross_backend_field_gate_pass'] and all(r['full_accuracy']['predeclared_target_noninferiority_pass'] for r in full.values())
+    if paired:
+        lines.append('')
+        for b,r in full.items():
+            lines.append(f"- {b.upper()} 同端合格全窗壁钟比（显式／TPI）{r['equal_accuracy_wall_ratio_explicit_over_tpi']:.3f}，主循环比 {r['equal_accuracy_loop_ratio_explicit_over_tpi']:.3f}。")
+    else:
+        lines.append('同一步长辅助组尚无同时满足两端全窗精度与跨端场一致性的耗时比。')
+    return lines
+
+
 def summary_text(cost,statuses):
     lines=['# C02 高渗透率短窗精度与成本','',
            'k=10⁻³ m/s，排水从 0.01 s 开始。每组 13 帧，排水后的输出间隔 ΔTv=.005，终点 Tv≈.05。显式 u-pl 对应有限 Kw 解析解，三轮 TPI 对应 M0 解析解。孔压取 100 个材料层的 RMS，顶部和底部取各自初始材料层的沉降误差。','',
@@ -285,8 +364,9 @@ def summary_text(cost,statuses):
         for s in missing:
             extra=f"。退出码 {s['exit_code']}。{s['first_error']}。最后原生文件 {s['last_native_file']}。" if s['first_error'] else '。'
             lines.append(f"- {s['backend'].upper()} {LABELS[s['lane']]}，{s['status']}{extra}")
-    lines.extend(['','¹ 壁钟比为参考耗时除以本组耗时；大于 1 表示本次测量较快。每组一次计时，包含实际写盘开销。跨端门和同端精度门都通过才列合格比。','',
-                  '各时刻及三个误差量见 history.csv，各端硬件、程序收据、跨端最大差、主循环和输出开销见 timing.csv。每个后端的实测状态、退出码、首因及最后保存记录见 status.csv。'])
+    lines.extend(['','¹ 壁钟比为参考耗时除以本组耗时；大于 1 表示本次测量较快。每组一次计时，包含实际写盘开销。跨端门和同端精度门都通过才列合格比。'])
+    lines.extend(supplemental_checks(cost))
+    lines.extend(['','各时刻及三个误差量见 [history.csv](history.csv)。两个目标时刻各 100 层的材料高度、孔压、理论值和带符号误差见 [pressure_layers.csv](pressure_layers.csv)。各端硬件、程序收据、跨端最大差、主循环和输出开销见 [timing.csv](timing.csv)。每个后端的状态、退出码、首因及最后保存记录见 [status.csv](status.csv)。'])
     return '\n'.join(lines)+'\n'
 
 

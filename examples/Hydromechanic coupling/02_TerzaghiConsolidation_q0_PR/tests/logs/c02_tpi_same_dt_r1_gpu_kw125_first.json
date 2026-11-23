@@ -1,0 +1,293 @@
+{
+  "backend": "gpu",
+  "window": "first",
+  "explicit_reference": "kw125",
+  "independent_anchor": "kw10",
+  "dt_s": 1.25e-06,
+  "R": 1.0,
+  "first_target_pass": false,
+  "first_vs_same_dt": [
+    {
+      "target_Tv": 0.005,
+      "time_difference_s": 0.0,
+      "pressure_ok": false,
+      "top_ok": true,
+      "bottom_ok": true
+    }
+  ],
+  "first_vs_anchor": [
+    {
+      "target_Tv": 0.005,
+      "time_difference_s": -2.4999999694366726e-07,
+      "pressure_ok": false,
+      "top_ok": true,
+      "bottom_ok": true
+    }
+  ],
+  "elapsed_time_scope": "through first target only",
+  "post_point1s_guard_evaluated": false,
+  "matched_material_rows": [
+    {
+      "part": 0,
+      "t_s": 0.0,
+      "signed_timestep_s": {
+        "explicit": 0.0,
+        "tpi": 0.0
+      },
+      "pressure_difference_RMS_Pa": 0.0,
+      "max_abs_pressure_difference_Pa": 0.0,
+      "max_material_XYZ_displacement_difference_mm": 0.0,
+      "max_displacement_material_id": 40,
+      "max_abs_total_zz_difference_Pa": 0.0,
+      "max_abs_J_difference": 0.0,
+      "max_abs_porosity_difference": 0.0
+    },
+    {
+      "part": 1,
+      "t_s": 0.01000000000000021,
+      "signed_timestep_s": {
+        "explicit": -3.5157825993586324e-06,
+        "tpi": -3.5159778258929042e-06
+      },
+      "pressure_difference_RMS_Pa": 421.98203828504535,
+      "max_abs_pressure_difference_Pa": 583.091796875,
+      "max_material_XYZ_displacement_difference_mm": 0.010806227010775406,
+      "max_displacement_material_id": 239,
+      "max_abs_total_zz_difference_Pa": 555.4894549463024,
+      "max_abs_J_difference": 1.7597923803513993e-05,
+      "max_abs_porosity_difference": 1.2318881009165672e-05
+    },
+    {
+      "part": 2,
+      "t_s": 0.01000125000000021,
+      "signed_timestep_s": {
+        "explicit": -3.515782567638542e-06,
+        "tpi": -3.515977645880605e-06
+      },
+      "pressure_difference_RMS_Pa": 556.9412150574601,
+      "max_abs_pressure_difference_Pa": 3430.9169921875,
+      "max_material_XYZ_displacement_difference_mm": 0.01080833686528873,
+      "max_displacement_material_id": 239,
+      "max_abs_total_zz_difference_Pa": 3478.3036459368514,
+      "max_abs_J_difference": 1.7600624233060636e-05,
+      "max_abs_porosity_difference": 1.2320771509588546e-05
+    },
+    {
+      "part": 3,
+      "t_s": 0.028218750000010624,
+      "signed_timestep_s": {
+        "explicit": -3.447387361486221e-06,
+        "tpi": -3.447029595838533e-06
+      },
+      "pressure_difference_RMS_Pa": 291.66239194556897,
+      "max_abs_pressure_difference_Pa": 424.646484375,
+      "max_material_XYZ_displacement_difference_mm": 0.010172543276867821,
+      "max_displacement_material_id": 339,
+      "max_abs_total_zz_difference_Pa": 456.0286112109576,
+      "max_abs_J_difference": 1.1656246392877101e-05,
+      "max_abs_porosity_difference": 8.159524703899024e-06
+    }
+  ],
+  "tpi": {
+    "lane": "tpi_same_kw125_first",
+    "model": 2,
+    "backend": "gpu",
+    "host": "shirakami",
+    "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+    "cuda_driver_runtime": "13.3 / 11.7",
+    "program_identity": {
+      "program": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+      "size": 28946944,
+      "mtime_ns": 1795442882744326400
+    },
+    "steps": 22575,
+    "wall_s": 378.8889909000136,
+    "loop_s": 378.479218,
+    "total_s": 378.540253,
+    "io_bytes": 925562,
+    "save_timer_s": 0.0152223,
+    "hg_limits": [
+      1.18794e-14,
+      3.95611e-05,
+      0.000995134,
+      1.51019e-08
+    ],
+    "early_100Pa_stress_pass": null,
+    "post01_max_layer_Pa": null,
+    "post01_max_topgap_Pa": null,
+    "rows": [
+      {
+        "part": 0,
+        "completed": 0,
+        "t_s": 0.0,
+        "target_time_s": 0.0,
+        "actual_Tv": -0.0027444522857366887,
+        "pressure_RMS_Pa": null,
+        "top_error_mm": null,
+        "bottom_error_mm": null,
+        "load_stress_layer_error_Pa": 10000.0,
+        "topgap_Pa": 0.0,
+        "signed_dterror_s": 0.0,
+        "saved_hydraulic_bound_s": 4.766031452676371e-06
+      },
+      {
+        "part": 1,
+        "completed": 8000,
+        "t_s": 0.01000000000000021,
+        "target_time_s": 0.01,
+        "actual_Tv": 5.760647628606427e-17,
+        "pressure_RMS_Pa": null,
+        "top_error_mm": null,
+        "bottom_error_mm": null,
+        "load_stress_layer_error_Pa": 95.79335900584556,
+        "topgap_Pa": 0.4841536584717687,
+        "signed_dterror_s": -3.5159778258929042e-06,
+        "saved_hydraulic_bound_s": 4.765977825892903e-06
+      },
+      {
+        "part": 2,
+        "completed": 8001,
+        "t_s": 0.01000125000000021,
+        "target_time_s": 0.01000125,
+        "actual_Tv": 3.4305653577455957e-07,
+        "pressure_RMS_Pa": null,
+        "top_error_mm": null,
+        "bottom_error_mm": null,
+        "load_stress_layer_error_Pa": 9986.974377788792,
+        "topgap_Pa": 3170.327657495995,
+        "signed_dterror_s": -3.515977645880605e-06,
+        "saved_hydraulic_bound_s": 4.765977645880604e-06
+      },
+      {
+        "part": 3,
+        "completed": 22575,
+        "t_s": 0.028218750000010624,
+        "target_time_s": 0.028218571428571433,
+        "actual_Tv": 0.005000049008079445,
+        "pressure_RMS_Pa": 224.70356704460838,
+        "top_error_mm": 0.02063605238584043,
+        "bottom_error_mm": 2.005071668230391e-05,
+        "load_stress_layer_error_Pa": 228.03729776909495,
+        "topgap_Pa": 4.706274054842652,
+        "signed_dterror_s": -3.447029595838533e-06,
+        "saved_hydraulic_bound_s": 4.724609857317809e-06
+      }
+    ]
+  },
+  "explicit_at_shared_saves": [
+    {
+      "part": 0,
+      "completed": 0,
+      "t_s": 0.0,
+      "target_time_s": 0.0,
+      "actual_Tv": -0.0027444522857366887,
+      "pressure_RMS_Pa": null,
+      "top_error_mm": null,
+      "bottom_error_mm": null,
+      "load_stress_layer_error_Pa": 10000.0,
+      "topgap_Pa": 0.0,
+      "signed_dterror_s": 0.0,
+      "saved_hydraulic_bound_s": 4.766031452676371e-06
+    },
+    {
+      "part": 1,
+      "completed": 8000,
+      "t_s": 0.01000000000000021,
+      "target_time_s": 0.01,
+      "actual_Tv": 5.760647628606427e-17,
+      "pressure_RMS_Pa": null,
+      "top_error_mm": null,
+      "bottom_error_mm": null,
+      "load_stress_layer_error_Pa": 459.83397746027185,
+      "topgap_Pa": 2.5060120670350443,
+      "signed_dterror_s": -3.5157825993586324e-06,
+      "saved_hydraulic_bound_s": 4.765782583495422e-06
+    },
+    {
+      "part": 2,
+      "completed": 8001,
+      "t_s": 0.01000125000000021,
+      "target_time_s": 0.01000125,
+      "actual_Tv": 3.4305653577455957e-07,
+      "pressure_RMS_Pa": null,
+      "top_error_mm": null,
+      "bottom_error_mm": null,
+      "load_stress_layer_error_Pa": 9939.765468314235,
+      "topgap_Pa": 6601.4210333854835,
+      "signed_dterror_s": -3.515782567638542e-06,
+      "saved_hydraulic_bound_s": 4.765782501428007e-06
+    },
+    {
+      "part": 3,
+      "completed": 22575,
+      "t_s": 0.028218750000010624,
+      "target_time_s": 0.028218571428571433,
+      "actual_Tv": 0.005000049008079445,
+      "pressure_RMS_Pa": 179.3327537377781,
+      "top_error_mm": 0.017655897011991162,
+      "bottom_error_mm": 1.0575285966526256e-05,
+      "load_stress_layer_error_Pa": 228.06925889294507,
+      "topgap_Pa": 2.172465942114286,
+      "signed_dterror_s": -3.447387361486221e-06,
+      "saved_hydraulic_bound_s": 4.724568182559081e-06
+    }
+  ],
+  "anchor_at_corresponding_saves": [
+    {
+      "part": 0,
+      "completed": 0,
+      "t_s": 0.0,
+      "target_time_s": 0.0,
+      "actual_Tv": -0.0027444522857366887,
+      "pressure_RMS_Pa": null,
+      "top_error_mm": null,
+      "bottom_error_mm": null,
+      "load_stress_layer_error_Pa": 10000.0,
+      "topgap_Pa": 0.0,
+      "signed_dterror_s": 0.0,
+      "saved_hydraulic_bound_s": 4.766031452676371e-06
+    },
+    {
+      "part": 1,
+      "completed": 10000,
+      "t_s": 0.009999999999999105,
+      "target_time_s": 0.01,
+      "actual_Tv": -2.4566067573230713e-16,
+      "pressure_RMS_Pa": null,
+      "top_error_mm": null,
+      "bottom_error_mm": null,
+      "load_stress_layer_error_Pa": 459.6432653685333,
+      "topgap_Pa": 2.9039531407888717,
+      "signed_dterror_s": -3.7657825919996603e-06,
+      "saved_hydraulic_bound_s": 4.765782579310935e-06
+    },
+    {
+      "part": 2,
+      "completed": 10001,
+      "t_s": 0.010000999999999104,
+      "target_time_s": 0.010001,
+      "actual_Tv": 2.744452283278066e-07,
+      "pressure_RMS_Pa": null,
+      "top_error_mm": null,
+      "bottom_error_mm": null,
+      "load_stress_layer_error_Pa": 9939.781781910175,
+      "topgap_Pa": 6690.059537932942,
+      "signed_dterror_s": -3.7657825666257457e-06,
+      "saved_hydraulic_bound_s": 4.765782521713828e-06
+    },
+    {
+      "part": 3,
+      "completed": 28219,
+      "t_s": 0.028219000000007568,
+      "target_time_s": 0.028218571428571433,
+      "actual_Tv": 0.00500011761938575,
+      "pressure_RMS_Pa": 179.3142818496008,
+      "top_error_mm": 0.017655903461865075,
+      "bottom_error_mm": 1.057751183696908e-05,
+      "load_stress_layer_error_Pa": 228.03420477577492,
+      "topgap_Pa": 2.175543507166367,
+      "signed_dterror_s": -3.6973874021134967e-06,
+      "saved_hydraulic_bound_s": 4.724568177910464e-06
+    }
+  ]
+}

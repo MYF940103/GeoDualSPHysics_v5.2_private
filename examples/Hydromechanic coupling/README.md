@@ -2,7 +2,7 @@
 
 公共源码在 `execution/special/hydromechanics` 中读取 `HydroMechModel`。打开 `HydroMech` 后，缺省或 0 使用 u-pw，1 使用有限水体积模量的显式 u-pl，2 使用零储水的三轮 TPI u-pl。旧配置中 `HydroMechDynamicSeepage` 的 false/0 和 true/1 分别迁至模型 0 和 1。复现历史计算时使用原 BAT 配套的程序与 XML。
 
-模型 2 采用 α=0.5、β=0、水力步长系数 R=1。首次预测以初始孔压作为上一时刻压力，各轮在施加边界后的压力场上重算端点力和渗流残差。当前适用范围是从头计算的恒渗透率、固定步长、Wendland 核、固定步数排水：C02 周期弹性柱及 C04 受均布围压的自由球体。C08 撤墙接续、自由渗流、变渗透率与一般 PART 重启需要另外验证。原始 SPH 孔压力与真实四面体表面积分的 Cryer 研究程序采用不同的空间离散。
+模型 2 采用 α=0.5、β=0。`HydroMechTpiR` 缺省为 1，仅对模型 2 的水力步长上限生效。首次预测以初始孔压作为上一时刻压力，各轮在施加边界后的压力场上重算端点力和渗流残差。公共实现覆盖从头计算的 C02 周期弹性柱和 C04 均布围压球体，采用恒渗透率、固定步长、Wendland 核和固定步数排水。C08 撤墙接续、自由渗流、变渗透率与一般 PART 重启的适用范围见发布说明。Cryer 的真实四面体表面积分使用独立研究程序。[公共 TPI 的验证与限制](validation/public_tpi_release_r1.md) · [R 的选取与实测](validation/upl_tpi_r_selection_r1.md)
 
 模型 2 每个非初始 PART 的 `TpiPressureHistory` 按材料 ID 保存预测器实际使用的上一整步源孔压及其时钟。首次开启排水时，受控表面点的源压力已经归零，而上一闭态 PART 仍可有非零压力。两次常规输出之间可能包含多个积分步。
 
@@ -12,7 +12,7 @@
 
 `<drainage mode="off" />` 关闭上述规定孔压边界。`<drainage mode="freeSeepage" />` 用于当前支持的二维动态渗流重力容器，采用相应的表面渗流离散，完整步末将表面正孔压置零并保留负孔压。这两种模式均不填写 `start` 或 `clock`。复现历史结果时请成套使用对应的输入、BAT 和可执行程序。
 
-[排水迁移与逐算例验证](validation/drainage_xml_review.md) · [XML 格式](../../doc/xml_format/_FmtXML_ElastoplasticSoil.xml) · [已回传的私有 TPI 峰窗](04_CryerProblem_PR/figures/cryer_tpi_p3_nu030_peak.md)
+[正式 XML、BAT 和复现检查](validation/hydro_frozen_entry_release_r2.md) · [排水迁移与逐算例验证](validation/drainage_xml_review.md) · [XML 格式](../../doc/xml_format/_FmtXML_ElastoplasticSoil.xml) · [已回传的私有 TPI 峰窗](04_CryerProblem_PR/figures/cryer_tpi_p3_nu030_peak.md)
 
 ### Cryer ν=0.30 服务器入口
 

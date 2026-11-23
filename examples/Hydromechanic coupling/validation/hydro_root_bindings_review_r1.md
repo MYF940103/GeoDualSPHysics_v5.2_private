@@ -1,5 +1,7 @@
 # 正式根输入、配套程序和迁移边界
 
+以下为迁移前的盘点。2026-11-24 已完成 C01–C08 的 53 份正式根定义统一，旧专用程序通过相应 BAT 接收原输入。[最终安装、核对与恢复](hydro_frozen_entry_release_r2.md)
+
 检查范围为 C01–C08 各案例根目录的 53 份 `*_Def.xml` 和 76 个 BAT。当前有 32 份使用公共格式（含依默认值运行的 XML），这些根 XML 中没有原动态开关、顶载、开排水或自由渗流旧键。另有 21 份根 XML 仍属于冻结程序或以前的回传包。这 21 份使用的旧标签有 HydroMechDrainage 21 份、HydroMechDynamicSeepage 14 份、HydroMechFreeSeepage 11 份、HydroMechDrainageStartTime 10 份、HydroMechDrainageFixedGrid 8 份、HydroMechTopLoadMode 20 份、Q0 和 RampTime 各 9 份。
 
 | 案例 | 公共 / 原程序绑定 | 根 BAT、程序和输入现况 |

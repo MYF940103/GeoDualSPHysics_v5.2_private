@@ -7,6 +7,7 @@ from pathlib import Path
 import shutil
 import socket
 import subprocess
+import tempfile
 import time
 import xml.etree.ElementTree as ET
 
@@ -37,6 +38,29 @@ def need(ok, message):
 
 def directory(lane, backend):
     return TESTS/'outputs'/(PREFIX+'_'+lane+'_'+backend)
+
+
+def restore_seed(tests=TESTS):
+    """Recreate a missing generated seed from three small, tracked inputs."""
+    dest=tests/PLAN['seed_directory']
+    stem=PLAN['seed_name']
+    geometry=tests/'outputs/upl_hg_mid2_half_seed_r1'
+    sources={'.xml':tests/'configs/c02_tpi_cost_seed_r1.xml',
+             '.bi4':geometry/'upl_hg_mid2_half_r1.bi4',
+             '_Normals.nbi4':geometry/'upl_hg_mid2_half_r1_Normals.nbi4'}
+    files={stem+ext:path.read_bytes() for ext,path in sources.items()}
+    if dest.exists():
+        need(all((dest/n).is_file() and (dest/n).read_bytes()==data for n,data in files.items()),
+             'Existing seed differs or is incomplete; preserved '+str(dest))
+    else:
+        dest.parent.mkdir(parents=True,exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=dest.parent) as tmp:
+            seed=Path(tmp)/'seed'
+            seed.mkdir()
+            for n,data in files.items():
+                (seed/n).write_bytes(data)
+            seed.rename(dest)
+    print('Seed verified:',dest)
 
 
 def property_(node, name, value):
@@ -176,12 +200,14 @@ def run(name,backend,exe_override=None,last_part=None):
 
 if __name__=='__main__':
     ap=argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('action',choices=['prepare','run'])
+    ap.add_argument('action',choices=['prepare','run','restore-seed'])
     ap.add_argument('--lane',choices=PLAN['lanes'])
     ap.add_argument('--backend',choices=['cpu','gpu'])
     ap.add_argument('--exe',type=Path,help='Optional isolated executable with its adjacent runtime DLLs')
     args=ap.parse_args()
-    if args.action=='prepare':
+    if args.action=='restore-seed':
+        restore_seed()
+    elif args.action=='prepare':
         prepare(args.lane)
     else:
         if not args.lane or not args.backend:

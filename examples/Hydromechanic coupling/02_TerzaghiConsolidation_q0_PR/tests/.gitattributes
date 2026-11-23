@@ -16,3 +16,7 @@ outputs/upl_p2_*/** -text
 # Keep new frozen Darcy screening receipts and data byte-identical on checkout.
 **/upl_p3_* -text
 outputs/upl_p3_*/** -text
+# Generated column inputs are compared to ElementTree's exact LF serialization.
+configs/c02_tpi_cost_r1_*.xml text eol=lf
+configs/c02_tpi_cost_seed_r1.xml text eol=lf
+configs/c02_kw_startup_r1_*.xml text eol=lf

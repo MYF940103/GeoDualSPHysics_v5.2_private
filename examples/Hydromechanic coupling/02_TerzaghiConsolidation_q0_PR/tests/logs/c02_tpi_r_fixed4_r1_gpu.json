@@ -1,0 +1,106 @@
+{
+  "passed": true,
+  "scope": "Same-backend fixed-step hydraulic-factor implementation regression",
+  "original_full_steps": 48047,
+  "original_saves": 13,
+  "candidate_cap": 2501,
+  "common_interval_updates": [
+    0,
+    2500,
+    1
+  ],
+  "omitted_reference_saves": 10,
+  "hg_limits": [
+    4.73256e-17,
+    1.08812e-05,
+    0.00318443,
+    3.34619e-09
+  ],
+  "run": {
+    "backend": "gpu",
+    "host": "shirakami",
+    "reference": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\c02_tpi_cost_r1_tpi40_gpu",
+    "argv": [
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+      "-gpu",
+      "-stable",
+      "-mdbc_freeslip",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\c02_tpi_r_fixed4_r1_gpu\\seed\\upl_bigstep_2tv_CPU1_r1",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\c02_tpi_r_fixed4_r1_gpu\\result",
+      "-dirdataout",
+      "data",
+      "-svres",
+      "-nsteps:2501"
+    ],
+    "program": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+    "size": 28946944,
+    "mtime_ns": 1795442882744326400,
+    "exit": 0,
+    "wall_s": 42.221764000016265
+  },
+  "rows": [
+    {
+      "part": 0,
+      "completed": 0,
+      "t_s": 0.0,
+      "exact_native_arrays": 22,
+      "native_ids": 1040,
+      "exact_previous_pressure_ids": 0,
+      "typed_R": {
+        "baseline": "omitted (default 1)",
+        "candidate": 2.25
+      },
+      "signed_s": {
+        "baseline": 0.0,
+        "candidate": 0.0
+      },
+      "interval_min_composite_limit_s": null,
+      "interval_updates": 0,
+      "elapsed_since_previous_save_s": 0
+    },
+    {
+      "part": 1,
+      "completed": 2500,
+      "t_s": 0.01000000000000003,
+      "exact_native_arrays": 22,
+      "native_ids": 1040,
+      "exact_previous_pressure_ids": 1000,
+      "typed_R": {
+        "baseline": "omitted (default 1)",
+        "candidate": 2.25
+      },
+      "signed_s": {
+        "baseline": -7.65842194307887e-07,
+        "candidate": -6.7231449371927465e-06
+      },
+      "interval_min_composite_limit_s": {
+        "baseline": 4.765842194307887e-06,
+        "candidate": 1.0723144937192746e-05
+      },
+      "interval_updates": 2500,
+      "elapsed_since_previous_save_s": 0.01000000000000003
+    },
+    {
+      "part": 2,
+      "completed": 2501,
+      "t_s": 0.01000400000000003,
+      "exact_native_arrays": 22,
+      "native_ids": 1040,
+      "exact_previous_pressure_ids": 1000,
+      "typed_R": {
+        "baseline": "omitted (default 1)",
+        "candidate": 2.25
+      },
+      "signed_s": {
+        "baseline": -7.658404299458592e-07,
+        "candidate": -6.7231409673781825e-06
+      },
+      "interval_min_composite_limit_s": {
+        "baseline": 4.765840429945859e-06,
+        "candidate": 1.0723140967378182e-05
+      },
+      "interval_updates": 1,
+      "elapsed_since_previous_save_s": 4.000000000000531e-06
+    }
+  ]
+}

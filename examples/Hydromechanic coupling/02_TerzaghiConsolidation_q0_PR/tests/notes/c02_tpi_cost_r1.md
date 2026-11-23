@@ -1,6 +1,6 @@
 # C02 高渗透率的同机精度与成本比较
 
-准备日期为 2026-11-23。五个输入及 CPU/GPU 共用离线审查器已准备，尚无这五组的真实运行结果。优先完成 C08 大变形证据，再在同一块 GPU 上依次单独计算。CPU 单线程可用同一输入重复整套比较。跨设备结果分开报告。
+这项比较于 2026-11-24 完成。CPU 单线程与 GPU 分别运行了原五组配置和新增的显式参照。两端均选出通过精度门的显式 1.25 µs 作为计时基准。三轮 TPI 的 2.5、4、10 µs 组均超过同端精度预算。两端的独立用时、误差及失败记录见[最终报告](../figures/c02_tpi_cost_r1/summary.md)。
 
 ## 第二轮独立显式参考
 
@@ -16,6 +16,8 @@
 单组原生审查仍使用 `support/c02_tpi_cost_review_r1.py <cpu|gpu> <组名>`。已有原生收据后使用 `support/c02_tpi_cost_ref_review_r1.py <cpu|gpu> <候选> --reference kw10` 或 `kw125` 可独立复核精度，无需重新读取 BI4。汇总脚本不带参数时只列出现有实际状态；全部测试或诊断收尾后用 `--publish` 输出正式汇总和 status.csv。缺少运行证据的后端标为未测；非零退出保留首个原始异常、退出码、最后实际保存记录，排除其用时比。两个合格完成组才能比较耗时。
 
 ### 可选的单一中间步长
+
+2026-11-24 完成两端实际审查。6.25 µs 的启动条件在 CPU 和 GPU 均未满足。两端随后的 1.25 µs 同步长试验均在首目标超过孔压预算，底部、顶部沉降均通过。完整数值、分层压力和实际计时见[最终报告](../figures/c02_tpi_cost_r1/summary.md)。
 
 只有经同端审查确认三轮 TPI 的 4 µs 组满足原精度门、10 µs 组未满足，且确需 R>1 的方案时，才考虑 `tpi625`。候选固定取 6.25 µs、R=1.4，其余材料、加载、边界、输出、门槛与三轮 TPI 原样。初态未放大水力上限为 4.76603 µs，6.25 µs 对应需求 1.31136；1.4 给出的初始水力界为 6.67244 µs。其后逐阶段仍由求解器检查实际限制。该组包含 30,750 步，事件前和首后保存步为 1,600 和 1,601，终点为 0.19218750000012905 s。默认准备列表及未实际选择时的汇总均不纳入该组。手动运行会先读取已验收参考和两条 TPI 轨迹的实际收据；筛选依据写入启动记录。
 
@@ -62,22 +64,23 @@ R 只乘水力 dt_l。以 γw=9806.65 N/m³ 计算，初始限制 dt_l≈4.766 �
 
 ## 运行和记录
 
-成本报告中的 `predeclared_target_noninferiority_pass` 只回答两个预先规定的时刻（Tv=.005、.05）是否达到孔压与沉降误差带，同时检查 t≥.1 s 的全部保存应力。模型 1 用有限 Kw 的解析参考，模型 2 用 M0 参考。两者的归一化时钟沿用原方案，各自在实际保存时间评价。相对 kw40 计时时，kw40 和候选必须分别直接满足 kw25 的误差带，候选还须满足相对 kw40 的误差带。参考和候选两端都检查底部绝对误差 ≤.005 mm。通过只支持该短窗的成本对照，不能外推到 2 Tv。
+成本报告中的 `predeclared_target_noninferiority_pass` 评定两个预定时刻（Tv=.005、.05）的孔压与沉降误差带，同时检查 t≥.1 s 的全部保存应力。模型 1 用有限 Kw 的解析参考，模型 2 用 M0 参考。两者沿用原归一化时钟，在各自实际保存时刻评价。最终以 kw10 为独立锚点，另与通过该锚点的更快 kw125 直接比较。参考与候选均须满足底部绝对误差 ≤.005 mm。此项评定覆盖至 Tv=.05。
 
 同一组 CPU 与 GPU 都有完整结果后，用 `python -B support/c02_tpi_cost_cross_r1.py tpi100`（或其他组名）作独立跨后端检查。报告保存在 `tests/logs/c02_tpi_cost_r1_<组名>_cpu_gpu.json`。每组的两个后端共用同一 XML。离线预查的 13 个时钟在 2.5、4、10 µs 三个步长下分别结束于 0.19218749999978404、0.19218800000010958、0.19219000000005143 s。原生结论要求每一帧两端实际时刻、步号、dt 和 1,040 个 ID 均对应；各端各保留自身的有符号 dterror。1,000 个材料点全体孔压 RMS ≤5 Pa、单点 XYZ 位移差模长最大值 ≤.005 mm 是跨后端重复性指标。报告另列 22 个原生字段在土体和边界上的逐分量差，以及张量次序 xx、yy、zz、xy、yz、xz 的有效应力和总应力差。不同模型相对解析解的精度仍按上段的两个预设时刻评估。
 
 审查器在每帧检查原生配置与迭代历史。显式有限 Kw 沿用没有 `HydroMechModel` 字段的旧输出格式，其动态渗流与 schema 字段标识了求解路径。公共 TPI 在 R=1 时保持原布局，在 R>1 时每帧必须包含可核对的双精度 `HydroMechTpiR`。运行器记录主机、所用程序、实际命令与墙钟，审查器逐项核对启动、结束和实际 XML；只比较同主机、同设备、同程序的测量。主循环包含正常保存开销，同时单列原生字节数与求解器保存计时。
 
-在 case 的 tests 目录中使用以下命令。prepare 只校核或创建 XML。run 只运行指定的一组，遇到已有输出路径即退出。保留旧日志、输入和输出。GPU 各组串行运行并保持同一显卡、驱动、程序和输出配置；CPU 比较时一律使用 CPU1。
+在 case 的 `tests` 目录中操作。干净检出后可运行 `restore-seed`，由 `configs/c02_tpi_cost_seed_r1.xml` 和已跟踪的 `outputs/upl_hg_mid2_half_seed_r1` 初始几何、法向恢复原种子目录 `outputs/public_tpi_column_gpu_hist1/seed`。已有完整种子时此命令只校核相同的三个文件。两套生成器共用此种子。生成 XML 采用 LF 换行。以下以新目录中的 GPU 显式参照为例。已有运行目录会受到保护。GPU 各组串行运行并保持同一显卡、驱动、程序和输出配置，CPU 比较使用单线程。
 
 ```powershell
+python -B support/c02_tpi_cost_r1.py restore-seed
 python -B support/c02_tpi_cost_r1.py prepare
-python -B support/c02_tpi_cost_r1.py run --lane kw25 --backend gpu
-python -B support/c02_tpi_cost_review_r1.py gpu kw25
+python -B support/c02_tpi_cost_r1.py run --lane kw10 --backend gpu
+python -B support/c02_tpi_cost_review_r1.py gpu kw10
 ```
 
 缺省使用项目 bin/windows 的正式程序。所有组也可显式传入同一个 `--exe D:/path/to/candidate.exe`，使用该隔离构建和紧邻可执行文件的 DLL；记录实际绝对路径、大小、修改时间与命令行。不同程序或不同设备的结果只能描述，审查器拒绝将它们作为同机同程序效率对照。
 
-其余组依照同一方式。比较使用例如 `python -B support/c02_tpi_cost_review_r1.py gpu tpi100 --reference kw40`。先比较 kw40 对 kw25 的精度，选择合格的最高效显式结果作为等精度参考。报告分别列出进程壁钟、求解主循环、Run.csv 中总耗时、SU-SavePart 秒数及原生输出字节数。GenCase 种子已冻结复用，独立后处理耗时另计。单次观测用于选择下一步；若差异处于系统背景波动范围，记为未分出优劣。原有正式结果不重跑。
+其余组依照同一方式。取得各自原生收据后，运行例如 `python -B support/c02_tpi_cost_ref_review_r1.py gpu tpi100 --reference kw125`，同时检查相对 kw10 及 kw125 的原精度预算。报告列出进程壁钟、求解主循环、Run.csv 总耗时、求解器保存计时（如记录）及原生输出字节数。独立后处理耗时另计。
 
-两端五组运行及各自原生、跨端审查结束后，执行 `python -B support/c02_tpi_cost_summary_r1.py --publish`。工具读取既有收据，在 `tests/figures/c02_tpi_cost_r1` 一次发布两张图、三张配套表和中文小结。history.csv 保存每个实际时刻、目标 Tv 及三个理论误差；timing.csv 同时给出参考组、实测耗时比和通过验收后的耗时比。某组速度更快但超出误差带时，后者留空并记录原因。
+最终的[中文小结](../figures/c02_tpi_cost_r1/summary.md)附两张图及四张表。`history.csv` 给出真实时刻与误差，`pressure_layers.csv` 给出两个目标时刻 100 个材料层的孔压，`timing.csv` 给出参考组和实测开销，`status.csv` 保存状态与首个错误。合格耗时比只在达到原精度预算时给出。新复现目录取得所需证据后可用 `python -B support/c02_tpi_cost_summary_r1.py --publish` 生成报告。
