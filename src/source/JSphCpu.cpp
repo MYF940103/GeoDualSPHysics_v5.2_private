@@ -3814,6 +3814,7 @@ double JSphCpu::DtVariable(bool final){
   double dtw=DBL_MAX;
   if(DynamicPorePressure){
     GetDynamicStepScalesCpu(dt2,dtw);
+    if(HydroMechTpi)dtw=GetTpiHydraulicDt(dtw);
     //-Additional local necessary scale, not a general variable-coefficient stability proof.
     if(DynamicPoreConductivity && DynamicConductivitySpeedMax>0)
       dtw=min(dtw,double(PoreDtSafety)*double(KernelH)/DynamicConductivitySpeedMax);

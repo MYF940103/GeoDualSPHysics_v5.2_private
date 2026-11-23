@@ -1,0 +1,101 @@
+{
+  "passed": true,
+  "initial_required_R": 2.0981817051132734,
+  "records": {
+    "hydraulic": {
+      "exit": 1,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_tpiR_review\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-ompthreads:1",
+        "-stable",
+        "-mdbc_freeslip",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\tpi_r_step_bounds_cpu_r1\\hydraulic\\seed\\upl_bigstep_2tv_CPU1_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\tpi_r_step_bounds_cpu_r1\\hydraulic\\result",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-nsteps:1"
+      ],
+      "dt_s": 1e-05,
+      "R": 1.0,
+      "parts": 1,
+      "reason": "Dynamic current step or DtMin exceeds its necessary bound: step=0 current=1.0000000000000001e-05 bound=4.7660314526763718e-06 DtMin=1e-08; final=0 force=3.5953862697246315e+307 wave_visc=0.00010054252135374535 pore=4.7660314526763718e-06 k_gradient=1.7976931348623157e+308 AceMax=0 VelMax=0 ViscDtMax=0 conductivity_speed=0.",
+      "bounds": {
+        "current": 1e-05,
+        "bound": 4.766031452676372e-06,
+        "force": 3.5953862697246315e+307,
+        "wave_visc": 0.00010054252135374535,
+        "pore": 4.766031452676372e-06,
+        "k_gradient": 1.7976931348623157e+308
+      }
+    },
+    "admitted": {
+      "exit": 0,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_tpiR_review\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-ompthreads:1",
+        "-stable",
+        "-mdbc_freeslip",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\tpi_r_step_bounds_cpu_r1\\admitted\\seed\\upl_bigstep_2tv_CPU1_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\tpi_r_step_bounds_cpu_r1\\admitted\\result",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-nsteps:1"
+      ],
+      "dt_s": 1e-05,
+      "R": 2.25,
+      "parts": 2
+    },
+    "mechanical": {
+      "exit": 1,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_tpiR_review\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-ompthreads:1",
+        "-stable",
+        "-mdbc_freeslip",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\tpi_r_step_bounds_cpu_r1\\mechanical\\seed\\upl_bigstep_2tv_CPU1_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\tpi_r_step_bounds_cpu_r1\\mechanical\\result",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-nsteps:1"
+      ],
+      "dt_s": 0.001,
+      "R": 512.0,
+      "parts": 1,
+      "reason": "HG dt exceeds 0.2 frozen stiffness time scale."
+    },
+    "wave": {
+      "exit": 1,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_tpiR_review\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-ompthreads:1",
+        "-stable",
+        "-mdbc_freeslip",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\tpi_r_step_bounds_cpu_r1\\wave\\seed\\upl_bigstep_2tv_CPU1_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\tpi_r_step_bounds_cpu_r1\\wave\\result",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-nsteps:1"
+      ],
+      "dt_s": 0.001,
+      "R": 512.0,
+      "parts": 1,
+      "reason": "Dynamic current step or DtMin exceeds its necessary bound: step=0 current=0.001 bound=0.00010054252135374535 DtMin=1e-08; final=0 force=3.5953862697246315e+307 wave_visc=0.00010054252135374535 pore=0.0024402081037703024 k_gradient=1.7976931348623157e+308 AceMax=0 VelMax=0 ViscDtMax=0 conductivity_speed=0.",
+      "bounds": {
+        "current": 0.001,
+        "bound": 0.00010054252135374535,
+        "force": 3.5953862697246315e+307,
+        "wave_visc": 0.00010054252135374535,
+        "pore": 0.0024402081037703024,
+        "k_gradient": 1.7976931348623157e+308
+      }
+    }
+  }
+}

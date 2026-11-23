@@ -2,7 +2,7 @@
 
 ## 方案与接口
 
-维护中的配置采用单个 `HydroMechModel`。公共 CPU 与 GPU 程序已接入 0（u-pw）、1（显式 u-pl）和 2（三轮 TPI）。已发布的模型 2 在 C02 与 C04 中固定使用 R=1。下面保留早期私有试验程序的接口和数据，以便复现。[公共版本适用范围及回归](public_tpi_release_r1.md)
+维护中的配置采用单个 `HydroMechModel`。公共 CPU 与 GPU 程序已接入 0（u-pw）、1（显式 u-pl）和 2（三轮 TPI）。公共模型 2 的可选项 `HydroMechTpiR` 缺省为 1，已归档的 C02 与 C04 保留当时的 R=1。下面保留早期私有试验程序的接口和数据，以便复现。[公共版本适用范围及回归](public_tpi_release_r1.md)
 
 在 ν=0.30 的 Cryer 服务器峰窗中，576 个非空输出区间共覆盖 36,864 次更新，每步含五个阶段。固定步长为 1.90735 µs，全部阶段中水力上限的最小值为 2.92882 µs，骨架波速与人工黏性上限的最小值为 25.03415 µs。实际所需的最大水力比值为 0.65124，配置 R=1 可以覆盖这个峰窗。旧有限 Kw 波速上限的最小值为 1.58360 µs。提高 R 对同一固定时间步的峰值偏差没有修正作用。[服务器步长数据](upl_tpi_r_selection_server_peak_r1.csv) · [同一峰窗的精度](../04_CryerProblem_PR/tests/notes/cryer_peak_iteration_and_support_r1.md)
 

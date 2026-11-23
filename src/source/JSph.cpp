@@ -215,6 +215,7 @@ void JSph::InitVars(){
   HydroMech=false;
   HydroMechDynamicSeepage=false;
   HydroMechTpi=false;
+  HydroMechTpiR=1.;
   TpiPreviousTime=-1.;
   DynamicPoreFreeBody=false;
   DynamicPoreBodyCentre=TDouble3(0);
@@ -2970,6 +2971,16 @@ void JSph::AddBasicArrays(JDataArrays &arrays,unsigned np,const tdouble3 *pos
 }
 
 //==============================================================================
+/// Scales the hydraulic term of Eq. (40) before either backend applies its other limits.
+//==============================================================================
+double JSph::GetTpiHydraulicDt(double explicitdt)const{
+  if(HydroMechTpiR==1. || explicitdt==DBL_MAX)return explicitdt;
+  const double limit=HydroMechTpiR*explicitdt;
+  if(!std::isfinite(limit))Run_Exceptioon("TPI hydraulic step bound exceeds the representable range.");
+  return limit;
+}
+
+//==============================================================================
 /// Writes one completed model-2 PART with the previous pressure for every native soil ID.
 //==============================================================================
 void JSph::SaveTpiHistoryPart(unsigned npok,unsigned nout,const unsigned *idp,const float *previous){
@@ -3036,7 +3047,10 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays
     }
     if(HydroMechDynamicSeepage){
       bdpart->SetvBool("HydroMechDynamicSeepage",true);
-      if(HydroMechTpi)bdpart->SetvUint("HydroMechModel",2u);
+      if(HydroMechTpi){
+        bdpart->SetvUint("HydroMechModel",2u);
+        if(HydroMechTpiR!=1.)bdpart->SetvDouble("HydroMechTpiR",HydroMechTpiR);
+      }
       bdpart->SetvUint("DynamicSeepageSchema",1);
       if(HydroMechFreeSeepage)bdpart->SetvBool("HydroMechFreeSeepage",true);
       bdpart->SetvUint("HydroMechConductivityModel",HydroMechConductivityModel);
@@ -4196,13 +4210,13 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   const TiXmlElement* hydroEle=(hydroNode? hydroNode->ToElement(): solidEle);
 
   if(hydroNode)sxml->CheckElementNames(hydroEle,true,
-    "HydroMech HydroMechModel HydroMechConductivityModel HydroMechConductivityCk HydroMechInitMode HydroMechInitZ "
+    "HydroMech HydroMechModel HydroMechTpiR HydroMechConductivityModel HydroMechConductivityCk HydroMechInitMode HydroMechInitZ "
     "PoreWaterRho PoreWaterBulkModulus Porosity HydraulicConductivity PoreDtSafety "
     "PoreShepardRegularization PoreShepardInterval PoreMdbcInterpolationMode PoreCompressionSourceMode "
     "PoreCompressionGradCorr PoreDarcySymmetricCorr");
   //-Some older dry and slope inputs keep pore material properties under soils.
   // New model and load choices have only one location, including in such cases.
-  for(const char* key:{"HydroMechModel","HydroMechDynamicSeepage","HydroMechPressureIntegrator","PorePressureIntegrationMode",
+  for(const char* key:{"HydroMechModel","HydroMechTpiR","HydroMechDynamicSeepage","HydroMechPressureIntegrator","PorePressureIntegrationMode",
     "PoreTpiAlpha","HydroMechTopLoadMode","HydroMechTopLoadQ0","HydroMechTopLoadRampTime","externalload",
     "HydroMechDrainage","HydroMechDrainageStartTime","HydroMechDrainageFixedGrid","HydroMechFreeSeepage",
     "HydroMechFreeSurfaceDrainage","HydroMechFreeSurfaceDrainageStartTime","drainage"}){
@@ -4250,6 +4264,12 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   if(modelid>2)Run_Exceptioon("HydroMechModel must be 0 (u-pw), 1 (explicit u-pl) or 2 (TPI).");
   HydroMechDynamicSeepage=(modelid!=0);
   HydroMechTpi=(modelid==2);
+  if(const TiXmlElement* factor=hydroEle->FirstChildElement("HydroMechTpiR")){
+    if(!HydroMechTpi)Run_Exceptioon("HydroMechTpiR requires HydroMechModel=2.");
+    HydroMechTpiR=sxml->GetAttributeDouble(factor,"value");
+    if(!std::isfinite(HydroMechTpiR) || HydroMechTpiR<1.)
+      Run_Exceptioon("HydroMechTpiR must be finite and at least 1.");
+  }
   if(HydroMechDynamicSeepage && !HydroMech)Run_Exceptioon("A dynamic HydroMechModel requires HydroMech=1.");
   HydroMechConductivityModel=sxml->ReadElementUnsigned(hydroReadNode,"HydroMechConductivityModel","value",true,0);
   HydroMechConductivityCk=sxml->ReadElementDouble(hydroReadNode,"HydroMechConductivityCk","value",true,0.);
@@ -4361,8 +4381,9 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     Log->Print(fun::VarStr("  Hydromechanics", (HydroMech? "Enabled": "Disabled")));
   if(HydroMech){
     const unsigned model=(HydroMechTpi? 2u: unsigned(HydroMechDynamicSeepage));
-    const char* const modelname[]={"u-pw","explicit u-pl","TPI u-pl M0, alpha=0.5, beta=0, 3 endpoint corrections, Rh=1"};
+    const char* const modelname[]={"u-pw","explicit u-pl","TPI u-pl M0, alpha=0.5, beta=0, 3 endpoint corrections"};
     Log->Printf("  HydroMechModel=%u (%s)",model,modelname[model]);
+    if(HydroMechTpi)Log->Printf("  HydroMechTpiR=%.17g",HydroMechTpiR);
     Log->Print(fun::VarStr("  HydroMechDynamicSeepage",HydroMechDynamicSeepage));
     if(HydroMechDynamicSeepage){
       Log->Print(HydroMechFreeSeepage?

@@ -215,6 +215,7 @@ protected:
   bool HydroMech;             ///<Hydromechanical u-pw support switch (default=0). //mdbr
   bool HydroMechDynamicSeepage; ///<Experimental limited CPU/GPU J/n/dynamic-Darcy model; default=false keeps u-pw.
   bool HydroMechTpi;           ///<M0 three-point pressure integration on the dynamic seepage path.
+  double HydroMechTpiR;        ///<Multiplier on the explicit hydraulic time scale in the TPI step bound.
   double TpiPreviousTime;      ///<Actual source clock paired with the last committed TPI history.
   bool DynamicPoreFreeBody;    ///<Limited 3-D free body with inactive fixed DBC markers, not a mirror wall.
   tdouble3 DynamicPoreBodyCentre; ///<Centre of the no-contact enclosure; never a physical/theory radius fit.
@@ -559,6 +560,7 @@ protected:
   void AddBasicArrays(JDataArrays &arrays,unsigned np,const tdouble3 *pos
     ,const unsigned *idp,const tfloat3 *vel,const float *rhop)const;
   void SaveTpiHistoryPart(unsigned npok,unsigned nout,const unsigned *idp,const float *previous);
+  double GetTpiHydraulicDt(double explicitdt)const;
   void SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays,unsigned ndom,const tdouble3 *vdom,const StInfoPartPlus *infoplus);
   void SaveData(unsigned npok,const JDataArrays& arrays,unsigned ndom,const tdouble3 *vdom,const StInfoPartPlus *infoplus);
 

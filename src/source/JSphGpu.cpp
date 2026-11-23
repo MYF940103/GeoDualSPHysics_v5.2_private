@@ -2176,6 +2176,7 @@ double JSphGpu::DtVariable(bool final){
   double dtw=DBL_MAX;
   if(DynamicPorePressure){
     GetDynamicStepScalesGpu(dt2,dtw);
+    if(HydroMechTpi)dtw=GetTpiHydraulicDt(dtw);
     //-Additional same-stage necessary scale, not a variable-coefficient stability proof.
     if(DynamicPoreConductivity && DynamicConductivitySpeedMax>0)
       dtw=min(dtw,double(PoreDtSafety)*double(KernelH)/DynamicConductivitySpeedMax);
