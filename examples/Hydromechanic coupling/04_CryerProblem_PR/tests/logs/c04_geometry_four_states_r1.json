@@ -1,0 +1,495 @@
+{
+  "source_sha256": "2e61423b6ff3d6750ca45cc1b9e8cc5c7781fe25de3799fa5ffd851518820e0d",
+  "reference_cache_sha256": "776f0d029eb6ac86f9ef767c5266dae4fc017153243d746d74b03bafe095497d",
+  "geometry": {
+    "nodes": 37173,
+    "faces": 10302,
+    "tetrahedra": 209117,
+    "initial_native_mass_kg": 1.219739019008557,
+    "initial_native_volume_m3": 0.0005808281042897892,
+    "initial_facet_volume_m3": 0.000523008693480482
+  },
+  "machine": "Intel64 Family 6 Model 151 Stepping 2, GenuineIntel",
+  "python": "3.11.3",
+  "numpy": "1.25.1",
+  "scope": "Saved spatial stress, pressure, velocity, displacement and original masses. Forcing is 10 kPa. Geometry and reconstructed mechanical acceleration vary independently. AV uses fixed geometry and saved v in both reconstructions. No pressure rounds, constitutive updates or time integration.",
+  "timing_scope": "Four alternating single-thread NumPy geometry-only wall times per state; memory allocation included. No force, Darcy, sparse assembly, solver or GPU time.",
+  "states": [
+    {
+      "step": 4096,
+      "time_s": 0.0078125,
+      "tau_s": 0.0,
+      "input": "outputs\\cryer_weak_open_r1\\state_4096.npz",
+      "sha256": "557e003c76971eebb47aa43e5c93636a8b0ad3382bb8074ac41921f2080fe315",
+      "volume_m3": 0.000523008693480482,
+      "face_area_m2": 0.031397065914906826,
+      "element_J_range": [
+        0.9999999999999892,
+        1.0000000000000033
+      ],
+      "max_errors": {
+        "cross_vs_inverse_weighted_gradient_m2": 8.470329472543003e-21,
+        "volume_vs_reference_J_m3": 1.2407709188295415e-24,
+        "current_direct_vs_cross_N": 2.2724877535296173e-16,
+        "fixed_vs_sparse_N": 5.494872135428097e-17,
+        "affine_virtual_work_J": 3.06477985938194e-17
+      },
+      "force": {
+        "effective_stress": {
+          "fixed_component_rms_m_s2": 2.001034307532679e-13,
+          "current_component_rms_m_s2": 2.0010343075326788e-13,
+          "delta_component_rms_m_s2": 3.479892483486374e-29,
+          "delta_component_max_m_s2": 3.7564806349948255e-28,
+          "center18_delta_component_rms_m_s2": 2.451162562672067e-29,
+          "surface_delta_component_rms_m_s2": 3.9933421662047424e-29,
+          "delta_actual_v_power_W": 1.1550613939101448e-47
+        },
+        "pore_pressure": {
+          "fixed_component_rms_m_s2": 400.03959088115994,
+          "current_component_rms_m_s2": 400.03959088115994,
+          "delta_component_rms_m_s2": 1.9044109655096514e-13,
+          "delta_component_max_m_s2": 1.3349110653021135e-12,
+          "center18_delta_component_rms_m_s2": 1.9138039765748834e-13,
+          "surface_delta_component_rms_m_s2": 1.4890696848901403e-13,
+          "delta_actual_v_power_W": 1.4147505442602384e-32
+        },
+        "external_traction": {
+          "fixed_component_rms_m_s2": 400.03959088115994,
+          "current_component_rms_m_s2": 400.03959088115994,
+          "delta_component_rms_m_s2": 1.951813472081043e-15,
+          "delta_component_max_m_s2": 4.229421196996795e-13,
+          "center18_delta_component_rms_m_s2": 0.0,
+          "surface_delta_component_rms_m_s2": 5.242302116522267e-15,
+          "delta_actual_v_power_W": -4.683360511508002e-34
+        },
+        "sum": {
+          "fixed_component_rms_m_s2": 2.567286613943003e-13,
+          "current_component_rms_m_s2": 2.711089619884542e-13,
+          "delta_component_rms_m_s2": 1.9044951908416755e-13,
+          "delta_component_max_m_s2": 1.3349110653021135e-12,
+          "center18_delta_component_rms_m_s2": 1.9138039765748834e-13,
+          "surface_delta_component_rms_m_s2": 1.4898465617408045e-13,
+          "delta_actual_v_power_W": 1.3679169391451556e-32
+        }
+      },
+      "mechanical_component_RMS_error_against_all_current_m_s2": {
+        "all_fixed": 1.9044951908416755e-13,
+        "current_faces_only": 1.9044109655096514e-13,
+        "current_bulk_only": 1.951813472081043e-15,
+        "current_stress_and_faces": 1.9044109655096514e-13
+      },
+      "hydraulic": {
+        "fixed": {
+          "pressure_face_out_m3_s": -0.0,
+          "inertia_face_out_m3_s": -8.514695021834195e-23,
+          "total_face_out_m3_s": -8.514695021834195e-23,
+          "contraction_rate_m3_s": -2.1010016282026573e-20,
+          "weak_out_by_pressure_inertia_volume_m3_s": null,
+          "weak_reaction_out_m3_s": null
+        },
+        "current_geometry_same_acceleration": {
+          "pressure_face_out_m3_s": -0.0,
+          "inertia_face_out_m3_s": -8.514695021834195e-23,
+          "total_face_out_m3_s": -8.514695021834195e-23,
+          "contraction_rate_m3_s": -2.1010016282026573e-20,
+          "weak_out_by_pressure_inertia_volume_m3_s": null,
+          "weak_reaction_out_m3_s": null
+        },
+        "current_geometry_updated_mechanical_acceleration": {
+          "pressure_face_out_m3_s": -0.0,
+          "inertia_face_out_m3_s": 3.0001193257169066e-21,
+          "total_face_out_m3_s": 3.0001193257169066e-21,
+          "contraction_rate_m3_s": -2.1010016282026573e-20,
+          "weak_out_by_pressure_inertia_volume_m3_s": null,
+          "weak_reaction_out_m3_s": null
+        }
+      },
+      "geometry_only_timing_seconds": {
+        "inverse": [
+          2.9416631999774836,
+          3.177080199995544,
+          3.069916300009936,
+          3.416402400005609
+        ],
+        "cross": [
+          0.11516559997107834,
+          0.09382710000500083,
+          0.08809899998595938,
+          0.09088360000168905
+        ],
+        "boundary": [
+          0.0009078000439330935,
+          0.000799100031144917,
+          0.0008775999885983765,
+          0.0008394999895244837
+        ]
+      }
+    },
+    {
+      "step": 4097,
+      "time_s": 0.007814407348632812,
+      "tau_s": 1.9073486328125e-06,
+      "input": "outputs\\cryer_weak_open_r1\\state_4097.npz",
+      "sha256": "9381fa61afaf747cab7a87980af196f2a9f4c5251b0aebe226777f4e7ddbdea3",
+      "volume_m3": 0.0005230086290260615,
+      "face_area_m2": 0.031397063352694474,
+      "element_J_range": [
+        0.9999952407822261,
+        1.0000034123961465
+      ],
+      "max_errors": {
+        "cross_vs_inverse_weighted_gradient_m2": 7.623296525288703e-21,
+        "volume_vs_reference_J_m3": 1.406207041340147e-23,
+        "current_direct_vs_cross_N": 2.2724877535296173e-16,
+        "fixed_vs_sparse_N": 4.683753385137379e-17,
+        "affine_virtual_work_J": 3.3306690738754696e-16
+      },
+      "force": {
+        "effective_stress": {
+          "fixed_component_rms_m_s2": 0.14095087916177415,
+          "current_component_rms_m_s2": 0.1409508747744917,
+          "delta_component_rms_m_s2": 1.0394635827347313e-08,
+          "delta_component_max_m_s2": 1.9161552518585564e-07,
+          "center18_delta_component_rms_m_s2": 2.9784464555415035e-29,
+          "surface_delta_component_rms_m_s2": 2.6120952494368123e-08,
+          "delta_actual_v_power_W": 1.0273705970506246e-11
+        },
+        "pore_pressure": {
+          "fixed_component_rms_m_s2": 249.12077059381036,
+          "current_component_rms_m_s2": 249.12077089262007,
+          "delta_component_rms_m_s2": 1.2374857023099193e-05,
+          "delta_component_max_m_s2": 0.00019704825766567744,
+          "center18_delta_component_rms_m_s2": 1.9138039765748834e-13,
+          "surface_delta_component_rms_m_s2": 2.2969697263392596e-05,
+          "delta_actual_v_power_W": 1.4881782538924745e-08
+        },
+        "external_traction": {
+          "fixed_component_rms_m_s2": 400.03959088115994,
+          "current_component_rms_m_s2": 400.039558033285,
+          "delta_component_rms_m_s2": 4.051162280576122e-05,
+          "delta_component_max_m_s2": 0.0006030691879038415,
+          "center18_delta_component_rms_m_s2": 0.0,
+          "surface_delta_component_rms_m_s2": 0.00010880863823117192,
+          "delta_actual_v_power_W": -5.547672902115374e-08
+        },
+        "sum": {
+          "fixed_component_rms_m_s2": 309.3991560797043,
+          "current_component_rms_m_s2": 309.39913728186104,
+          "delta_component_rms_m_s2": 3.5042745754787e-05,
+          "delta_component_max_m_s2": 0.0005419387484676451,
+          "center18_delta_component_rms_m_s2": 1.9138039765748831e-13,
+          "surface_delta_component_rms_m_s2": 9.100397751934231e-05,
+          "delta_actual_v_power_W": -4.0584672776363497e-08
+        }
+      },
+      "mechanical_component_RMS_error_against_all_current_m_s2": {
+        "all_fixed": 3.5042745754787e-05,
+        "current_faces_only": 1.2377610503803029e-05,
+        "current_bulk_only": 4.051162280572749e-05,
+        "current_stress_and_faces": 1.237485702306314e-05
+      },
+      "hydraulic": {
+        "fixed": {
+          "pressure_face_out_m3_s": 0.00010561542796397829,
+          "inertia_face_out_m3_s": 3.609304564730923e-05,
+          "total_face_out_m3_s": 0.00014170847361128752,
+          "contraction_rate_m3_s": 6.758536111565308e-05,
+          "weak_out_by_pressure_inertia_volume_m3_s": [
+            9.937294242566435e-05,
+            3.316414819309702e-06,
+            6.137852247535728e-05
+          ],
+          "weak_reaction_out_m3_s": 0.00016406787972033133
+        },
+        "current_geometry_same_acceleration": {
+          "pressure_face_out_m3_s": 0.00010561558292969041,
+          "inertia_face_out_m3_s": 3.609304268467108e-05,
+          "total_face_out_m3_s": 0.0001417086256143615,
+          "contraction_rate_m3_s": 6.758535556798028e-05,
+          "weak_out_by_pressure_inertia_volume_m3_s": [
+            9.937309062194597e-05,
+            3.3164139824426423e-06,
+            6.137851849479214e-05
+          ],
+          "weak_reaction_out_m3_s": 0.00016406802309918073
+        },
+        "current_geometry_updated_mechanical_acceleration": {
+          "pressure_face_out_m3_s": 0.00010561558292969041,
+          "inertia_face_out_m3_s": 3.609303855070148e-05,
+          "total_face_out_m3_s": 0.00014170862148039188,
+          "contraction_rate_m3_s": 6.758535556798028e-05,
+          "weak_out_by_pressure_inertia_volume_m3_s": [
+            9.937309062194597e-05,
+            3.3164116553979417e-06,
+            6.137851849479214e-05
+          ],
+          "weak_reaction_out_m3_s": 0.00016406802077213603
+        }
+      },
+      "geometry_only_timing_seconds": {
+        "inverse": [
+          3.2552489999798127,
+          3.0449919999809936,
+          3.196951200021431,
+          3.2728655000100844
+        ],
+        "cross": [
+          0.10776310000801459,
+          0.09702460002154112,
+          0.09174040000652894,
+          0.09636000002501532
+        ],
+        "boundary": [
+          0.0012248000130057335,
+          0.0010131000308319926,
+          0.0008781000506132841,
+          0.0009414000087417662
+        ]
+      }
+    },
+    {
+      "step": 4160,
+      "time_s": 0.0079345703125,
+      "tau_s": 0.0001220703125,
+      "input": "outputs\\cryer_weak_open_r1\\state_4160.npz",
+      "sha256": "0beeab24bf92646df42adbc65a184d02e66749ba5cc2df0fccb8964c4d3c0a26",
+      "volume_m3": 0.0005228828987482432,
+      "face_area_m2": 0.03139208014477054,
+      "element_J_range": [
+        0.9108763366978768,
+        1.018174138408048
+      ],
+      "max_errors": {
+        "cross_vs_inverse_weighted_gradient_m2": 8.046812998915853e-21,
+        "volume_vs_reference_J_m3": 1.3234889800848443e-23,
+        "current_direct_vs_cross_N": 3.18104917407247e-16,
+        "fixed_vs_sparse_N": 5.898059818321144e-17,
+        "affine_virtual_work_J": 8.881784197001252e-16
+      },
+      "force": {
+        "effective_stress": {
+          "fixed_component_rms_m_s2": 239.77609994378088,
+          "current_component_rms_m_s2": 239.7603788517708,
+          "delta_component_rms_m_s2": 0.04315262194679627,
+          "delta_component_max_m_s2": 0.9553694873949783,
+          "center18_delta_component_rms_m_s2": 4.835641178456751e-07,
+          "surface_delta_component_rms_m_s2": 0.10574042191460348,
+          "delta_actual_v_power_W": 0.0006212249979057146
+        },
+        "pore_pressure": {
+          "fixed_component_rms_m_s2": 320.8291808483872,
+          "current_component_rms_m_s2": 320.81539426263873,
+          "delta_component_rms_m_s2": 0.05980039343306349,
+          "delta_component_max_m_s2": 0.9595493101173646,
+          "center18_delta_component_rms_m_s2": 1.0660433023545826e-05,
+          "surface_delta_component_rms_m_s2": 0.11399354850872223,
+          "delta_actual_v_power_W": 0.0007811692476971035
+        },
+        "external_traction": {
+          "fixed_component_rms_m_s2": 400.03959088115994,
+          "current_component_rms_m_s2": 399.975532774394,
+          "delta_component_rms_m_s2": 0.09816992379709598,
+          "delta_component_max_m_s2": 1.6650419677593296,
+          "center18_delta_component_rms_m_s2": 0.0,
+          "surface_delta_component_rms_m_s2": 0.2636708920507837,
+          "delta_actual_v_power_W": -0.0018768049793346864
+        },
+        "sum": {
+          "fixed_component_rms_m_s2": 69.8906695674564,
+          "current_component_rms_m_s2": 69.90239082962523,
+          "delta_component_rms_m_s2": 0.053307549394746086,
+          "delta_component_max_m_s2": 0.6389384421804805,
+          "center18_delta_component_rms_m_s2": 1.0448461376832261e-05,
+          "surface_delta_component_rms_m_s2": 0.10500498797000982,
+          "delta_actual_v_power_W": -0.00047441073373185135
+        }
+      },
+      "mechanical_component_RMS_error_against_all_current_m_s2": {
+        "all_fixed": 0.053307549394746086,
+        "current_faces_only": 0.07915148891079188,
+        "current_bulk_only": 0.09816992379709598,
+        "current_stress_and_faces": 0.059800393433063474
+      },
+      "hydraulic": {
+        "fixed": {
+          "pressure_face_out_m3_s": 0.00017383950917109682,
+          "inertia_face_out_m3_s": -5.148256538905036e-06,
+          "total_face_out_m3_s": 0.00016869125263219178,
+          "contraction_rate_m3_s": 0.0012837104560351057,
+          "weak_out_by_pressure_inertia_volume_m3_s": [
+            0.00016312340813635277,
+            -3.086603833729262e-06,
+            0.001132234978931885
+          ],
+          "weak_reaction_out_m3_s": 0.0012922717832345085
+        },
+        "current_geometry_same_acceleration": {
+          "pressure_face_out_m3_s": 0.00017430622563623975,
+          "inertia_face_out_m3_s": -5.1473968889232115e-06,
+          "total_face_out_m3_s": 0.00016915882874731655,
+          "contraction_rate_m3_s": 0.0012835227755371736,
+          "weak_out_by_pressure_inertia_volume_m3_s": [
+            0.00016355937507394635,
+            -3.086447967483897e-06,
+            0.0011321158855436978
+          ],
+          "weak_reaction_out_m3_s": 0.0012925888126501602
+        },
+        "current_geometry_updated_mechanical_acceleration": {
+          "pressure_face_out_m3_s": 0.00017430622563623975,
+          "inertia_face_out_m3_s": -5.151089172895602e-06,
+          "total_face_out_m3_s": 0.00016915513646334414,
+          "contraction_rate_m3_s": 0.0012835227755371736,
+          "weak_out_by_pressure_inertia_volume_m3_s": [
+            0.00016355937507394635,
+            -3.0886109498499774e-06,
+            0.0011321158855436978
+          ],
+          "weak_reaction_out_m3_s": 0.001292586649667794
+        }
+      },
+      "geometry_only_timing_seconds": {
+        "inverse": [
+          3.416201899992302,
+          3.3122611999860965,
+          2.895555199997034,
+          2.8994118999689817
+        ],
+        "cross": [
+          0.09975930000655353,
+          0.10222150001209229,
+          0.08376219996716827,
+          0.08200019999640062
+        ],
+        "boundary": [
+          0.0009059999720193446,
+          0.0008316999883390963,
+          0.000770099984947592,
+          0.0007969000143930316
+        ]
+      }
+    },
+    {
+      "step": 36864,
+      "time_s": 0.0703125,
+      "tau_s": 0.0625,
+      "input": "outputs\\cryer_weak_peak_r1\\state_36864.npz",
+      "sha256": "8ab328159720d142763c575db69ae1ac17444a2ecb8672d649c2008ff29486d4",
+      "volume_m3": 0.0005213248179756969,
+      "face_area_m2": 0.03132963950524781,
+      "element_J_range": [
+        0.9901161993918217,
+        1.0233416733995526
+      ],
+      "max_errors": {
+        "cross_vs_inverse_weighted_gradient_m2": 6.776263578034403e-21,
+        "volume_vs_reference_J_m3": 1.4889251025954498e-23,
+        "current_direct_vs_cross_N": 2.6020852139652106e-16,
+        "fixed_vs_sparse_N": 4.163336342344337e-17,
+        "affine_virtual_work_J": 8.454066439955721e-15
+      },
+      "force": {
+        "effective_stress": {
+          "fixed_component_rms_m_s2": 391.39840374336273,
+          "current_component_rms_m_s2": 390.5728406493863,
+          "delta_component_rms_m_s2": 0.8271869430440006,
+          "delta_component_max_m_s2": 5.313692181556653,
+          "center18_delta_component_rms_m_s2": 0.001513584453236785,
+          "surface_delta_component_rms_m_s2": 2.1767666003722996,
+          "delta_actual_v_power_W": 0.00013393085797061143
+        },
+        "pore_pressure": {
+          "fixed_component_rms_m_s2": 90.89417123248515,
+          "current_component_rms_m_s2": 90.75539754545605,
+          "delta_component_rms_m_s2": 0.14323296777277447,
+          "delta_component_max_m_s2": 0.6306581219095251,
+          "center18_delta_component_rms_m_s2": 0.001495341427021702,
+          "surface_delta_component_rms_m_s2": 0.10651905699494084,
+          "delta_actual_v_power_W": 0.0001072210786811131
+        },
+        "external_traction": {
+          "fixed_component_rms_m_s2": 400.03959088115994,
+          "current_component_rms_m_s2": 399.18054117208425,
+          "delta_component_rms_m_s2": 0.8590943879148477,
+          "delta_component_max_m_s2": 5.508578928717577,
+          "center18_delta_component_rms_m_s2": 0.0,
+          "surface_delta_component_rms_m_s2": 2.3074091825263356,
+          "delta_actual_v_power_W": -0.00026284970810248914
+        },
+        "sum": {
+          "fixed_component_rms_m_s2": 0.022640928918872497,
+          "current_component_rms_m_s2": 0.03703351633388708,
+          "delta_component_rms_m_s2": 0.029513681938357773,
+          "delta_component_max_m_s2": 0.14050918410417865,
+          "center18_delta_component_rms_m_s2": 4.1172282534470115e-05,
+          "surface_delta_component_rms_m_s2": 0.025103733733421407,
+          "delta_actual_v_power_W": -2.1697771450764536e-05
+        }
+      },
+      "mechanical_component_RMS_error_against_all_current_m_s2": {
+        "all_fixed": 0.029513681938357773,
+        "current_faces_only": 0.8503514844163362,
+        "current_bulk_only": 0.8590943879148477,
+        "current_stress_and_faces": 0.1432329677727745
+      },
+      "hydraulic": {
+        "fixed": {
+          "pressure_face_out_m3_s": 1.259719911093264e-05,
+          "inertia_face_out_m3_s": -1.6643975306311892e-10,
+          "total_face_out_m3_s": 1.2597032671179577e-05,
+          "contraction_rate_m3_s": 1.223939875077847e-05,
+          "weak_out_by_pressure_inertia_volume_m3_s": [
+            1.190398703711164e-05,
+            -1.7558232377380175e-10,
+            3.502472676951987e-07
+          ],
+          "weak_reaction_out_m3_s": 1.2254058722483065e-05
+        },
+        "current_geometry_same_acceleration": {
+          "pressure_face_out_m3_s": 1.2605733519635284e-05,
+          "inertia_face_out_m3_s": -1.6608120257624505e-10,
+          "total_face_out_m3_s": 1.2605567438432708e-05,
+          "contraction_rate_m3_s": 1.2213113779968225e-05,
+          "weak_out_by_pressure_inertia_volume_m3_s": [
+            1.1912962292681337e-05,
+            -1.7522011173008854e-10,
+            3.4843804390662405e-07
+          ],
+          "weak_reaction_out_m3_s": 1.2261225116476231e-05
+        },
+        "current_geometry_updated_mechanical_acceleration": {
+          "pressure_face_out_m3_s": 1.2605733519635284e-05,
+          "inertia_face_out_m3_s": -1.5351834489083916e-09,
+          "total_face_out_m3_s": 1.2604198336186375e-05,
+          "contraction_rate_m3_s": 1.2213113779968225e-05,
+          "weak_out_by_pressure_inertia_volume_m3_s": [
+            1.1912962292681337e-05,
+            -2.046256533397853e-09,
+            3.4843804390662405e-07
+          ],
+          "weak_reaction_out_m3_s": 1.2259354080054563e-05
+        }
+      },
+      "geometry_only_timing_seconds": {
+        "inverse": [
+          3.358924699947238,
+          3.0681269000051543,
+          2.89749949995894,
+          2.845833200030029
+        ],
+        "cross": [
+          0.07508100004633889,
+          0.0853357000160031,
+          0.0942773999995552,
+          0.08931690000463277
+        ],
+        "boundary": [
+          0.0008627999923191965,
+          0.0008090999908745289,
+          0.0008132000220939517,
+          0.0008181000011973083
+        ]
+      }
+    }
+  ]
+}

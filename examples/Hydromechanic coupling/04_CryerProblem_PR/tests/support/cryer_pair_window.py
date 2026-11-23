@@ -105,7 +105,8 @@ def record(m,fs,step,arrays,rows,swriter,tri,normal,area):
            rms_p_to_10000_Pa=rms(p-10000),rms_total_to_10000_Pa=rms(sigma-10000),
            max_speed_m_s=speed.max(),rms_speed_m_s=rms(speed),rms_displacement_mm=rms(displacement),
            rms_surface_displacement_mm=rms(inward[fs]),mean_inward_mm=inward.mean(),
-           surface_inward_mm=inward[fs].mean(),min_J=J.min(),max_J=J.max(),
+           surface_inward_mm=1000*np.mean(np.linalg.norm(m.x[fs],axis=1)-np.linalg.norm(m.x[fs]+u[fs],axis=1)),
+           min_J=J.min(),max_J=J.max(),
            max_radius_m=np.linalg.norm(m.x+u,axis=1).max(),kinetic_J=.5*np.sum(m.mass*speed**2))
     sface=s[tri].mean(axis=1)
     pressure_face=p[tri].mean(axis=1)
@@ -128,7 +129,7 @@ def record(m,fs,step,arrays,rows,swriter,tri,normal,area):
     return t
 
 
-def execute(dll,out,target,resume=None,weak=None):
+def execute(dll,out,target,resume=None,weak=None,*,prepare_viscosity=viscosity_matrix,check_forces=validate):
     out.mkdir(exist_ok=False)
     m=TetMechanics(T/"outputs/cryer_tet_reference_r1.npz")
     h=CryerSPHPressure.load()
@@ -145,12 +146,12 @@ def execute(dll,out,target,resume=None,weak=None):
         g.upload(1,m.HT)
         for k in (2,3):
             g.upload(k,[h.E])
-        g.upload(4,[viscosity_matrix(m)])
+        g.upload(4,[prepare_viscosity(m)])
         geometry=[np.ascontiguousarray(buf) for buf in
                   (m.x,m.mass,m.unit_surface_force,1/h.S0,h.normal_lx,h.fs.astype(np.uint8))]
         g.call("setGeometry",*geometry)
         g.call("start")
-        e=validate(g,m,h)
+        e=check_forces(g,m,h)
         if weak:
             e.update(weak(g,m,h))
         save_json(out/"fixture.json",e)
@@ -207,7 +208,7 @@ def execute(dll,out,target,resume=None,weak=None):
         save_json(out/"interrupted.json",dict(reason=str(exc),last_read_step=rows[-1]["step"] if locals().get("rows") else None))
         raise
     finally:
-        g.call("release")
+        g.call("releaseWeak" if weak else "release")
 
 
 if __name__=="__main__":
