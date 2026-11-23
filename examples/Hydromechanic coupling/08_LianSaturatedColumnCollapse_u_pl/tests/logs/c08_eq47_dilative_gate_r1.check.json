@@ -1,0 +1,61 @@
+{
+  "source_reference": "logs\\c08_h18_hg_psi2p5_full3_physical_r1.check.json",
+  "inputs": [
+    {
+      "file": "outputs\\c08_h18_hg_psi2p5_full3_r1\\data\\Part_0019.bi4",
+      "sha256": "15d154dd0105399bfc550f489fbc75578a0c950d0639885cfe28fd583f143452",
+      "part": 19,
+      "completed_step": 2038001,
+      "time_s": 10.190004999698814
+    },
+    {
+      "file": "outputs\\c08_h18_hg_psi2p5_full3_r1\\data\\Part_0020.bi4",
+      "sha256": "f0c80aee44c41eed5fc2b5984cac09e2051672b65338cab6f627158b88cfb08a",
+      "part": 20,
+      "completed_step": 2040001,
+      "time_s": 10.200004999698436
+    }
+  ],
+  "physical_steps": 0,
+  "dt_s": 5e-06,
+  "model": "retained finite Kw 1 GPa, psi +2.5 deg, HG enabled",
+  "total_negative": 2405,
+  "surface_negative": 149,
+  "surface_zero": 0,
+  "surface_positive": 0,
+  "interior_negative": 2256,
+  "min_id": 7010,
+  "min_p_Pa": -20204.3203125,
+  "min_row_kappa": 0.05383725464344025,
+  "min_row_saved_interval_delta_kappa": 0.0,
+  "comparisons": {
+    "FS_only": {
+      "selected": 149,
+      "missed": 2256,
+      "extra": 0,
+      "first_missed_id": 2103,
+      "first_extra_id": null
+    },
+    "positive_cumulative_kappa": {
+      "selected": 2285,
+      "missed": 120,
+      "extra": 0,
+      "first_missed_id": 2109,
+      "first_extra_id": null
+    },
+    "positive_saved_interval_delta_kappa": {
+      "selected": 0,
+      "missed": 2405,
+      "extra": 0,
+      "first_missed_id": 2103,
+      "first_extra_id": null
+    },
+    "negative_excess_instead_of_total": {
+      "selected": 5000,
+      "missed": 0,
+      "extra": 2595,
+      "first_missed_id": null,
+      "first_extra_id": 2060
+    }
+  }
+}
