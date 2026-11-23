@@ -12,16 +12,16 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
 
-from c02_tpi_cost_r1 import PLAN, PREFIX, REFERENCES, TESTS, directory, need, planned_clock
+from c02_tpi_cost_r1 import OPTIONAL, PLAN, PREFIX, REFERENCES, TESTS, directory, need, planned_clock
 from c02_tpi_cost_ref_review_r1 import against_reference
 
-LANES=('kw10','kw125','kw25','kw40','tpi25','tpi40','tpi100')
+LANES=('kw10','kw125','kw25','kw40','tpi25','tpi40','tpi625','tpi100')
 BACKENDS=('cpu','gpu')
 LOG=TESTS/'logs'
 LABELS={'kw10':'显式 1 µs','kw125':'显式 1.25 µs','kw25':'显式 2.5 µs','kw40':'显式 4 µs',
-        'tpi25':'TPI 2.5 µs','tpi40':'TPI 4 µs','tpi100':'TPI 10 µs'}
-COLORS={'kw10':'#142e5b','kw125':'#3f7ab6','kw25':'#858ca6','kw40':'#a4bfcb','tpi25':'#00866b','tpi40':'#dc7c00','tpi100':'#a93250'}
-MARKERS=('o','s','P','X','^','D','v')
+        'tpi25':'TPI 2.5 µs','tpi40':'TPI 4 µs','tpi625':'TPI 6.25 µs','tpi100':'TPI 10 µs'}
+COLORS={'kw10':'#142e5b','kw125':'#3f7ab6','kw25':'#858ca6','kw40':'#a4bfcb','tpi25':'#00866b','tpi40':'#dc7c00','tpi625':'#6f4e95','tpi100':'#a93250'}
+MARKERS=('o','s','P','X','^','D','<','v')
 FIELDS=(('pressure_RMS_Pa','层孔压 RMS 误差 (Pa)'),('top_error_mm','顶部沉降误差 (mm)'),('bottom_error_mm','底部沉降误差 (mm)'))
 
 
@@ -82,9 +82,14 @@ def lane_status(lane,backend):
                 last_native_file=parts[-1].name if parts else '',last_original_PART_line=saved[-1] if saved else '')
 
 
+def active_lanes():
+    return tuple(lane for lane in LANES if lane not in OPTIONAL or
+                 any((directory(lane,b)/'start.json').is_file() for b in BACKENDS))
+
+
 def inputs():
     runs={};sources={};cross={};statuses=[]
-    for lane in LANES:
+    for lane in active_lanes():
         for b in BACKENDS:
             state=lane_status(lane,b)
             statuses.append(state)
@@ -202,7 +207,8 @@ def figures(history,cost,statuses):
         sel={row['lane']:row for row in cost if row['backend']==b}
         states={row['lane']:row for row in statuses if row['backend']==b}
         legend_added=False
-        for i,lane in enumerate(LANES):
+        visible=[lane for lane in LANES if lane in states]
+        for i,lane in enumerate(visible):
             if lane not in sel:
                 st=states[lane]
                 label='未测' if st['status']=='未测' else '失败'
@@ -213,7 +219,7 @@ def figures(history,cost,statuses):
             ax.bar(i-.18,r['wall_s'],width=.34,color=COLORS[lane],label='进程壁钟' if not legend_added else None)
             ax.bar(i+.18,r['loop_s'],width=.34,facecolor='white',edgecolor=COLORS[lane],hatch='//',label='求解主循环' if not legend_added else None)
             legend_added=True
-        ax.set_xticks(range(len(LANES)),[LABELS[l].replace(' ','\n',1) for l in LANES])
+        ax.set_xticks(range(len(visible)),[LABELS[l].replace(' ','\n',1) for l in visible])
         ax.set_title(b.upper());ax.set_ylabel('实际用时 (s)');ax.grid(axis='y',alpha=.22);ax.set_axisbelow(True);ax.legend()
     timing.suptitle('相同输出计划下的实际计算用时',fontsize=14)
     return fig,timing
@@ -255,7 +261,7 @@ def main():
     cli.add_argument('--publish',action='store_true',help='Generate reviewed artifacts; default prints current status only')
     if not cli.parse_args().publish:
         for b in BACKENDS:
-            for lane in LANES:
+            for lane in active_lanes():
                 st=lane_status(lane,b)
                 print(b,lane,st['status'],st['exit_code'],st['first_error'])
         return

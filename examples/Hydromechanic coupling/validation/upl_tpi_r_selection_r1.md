@@ -6,7 +6,7 @@
 
 在 ν=0.30 的 Cryer 服务器峰窗中，576 个非空输出区间共覆盖 36,864 次更新，每步含五个阶段。固定步长为 1.90735 µs，全部阶段中水力上限的最小值为 2.92882 µs，骨架波速与人工黏性上限的最小值为 25.03415 µs。实际所需的最大水力比值为 0.65124，配置 R=1 可以覆盖这个峰窗。旧有限 Kw 波速上限的最小值为 1.58360 µs。提高 R 对同一固定时间步的峰值偏差没有修正作用。[服务器步长数据](upl_tpi_r_selection_server_peak_r1.csv) · [同一峰窗的精度](../04_CryerProblem_PR/tests/notes/cryer_peak_iteration_and_support_r1.md)
 
-Cryer 私有候选在 `case.execution.special.hydromechanics` 读取一个整数选择器 `HydroMechPressureIntegrator`。省略或取 0 时，沿用原有压力时间积分；取 1 时，要求已经显式启用 `HydroMech` 和 `HydroMechDynamicSeepage`。B 使用 α=0.5 的两时层预测、三轮端点压力校正和一次历史提交。三轮是本项目的 Symplectic 实现选择。α=0 的简化方案 C 保留为比较。负压 β、压力迭代轮数及可调水力放大量本阶段均不作为公共 XML 参数。生产接口的发布仍取决于相关 benchmark 的物理审查。
+归档的 Cryer 私有程序使用 `HydroMechPressureIntegrator` 和 `HydroMechDynamicSeepage`。公共 XML 统一选择 `HydroMechModel=2`。该实现用两时层压力向前外推（α=0.5），每步进行三轮端点压力校正，再提交一次历史。简化投影和负压 β 保留在研究程序中。
 
 ## 怎样确定 R
 
@@ -21,6 +21,6 @@ Lian 等式（40）使用 Δt ≤ min(Δtₛ, R Δtₗ)。式（41）给出骨�
 
 两例都实际超过旧含水体积模量的波速限制，并且仍在各自 R=1 的水力限制内。C02 与 C04 使用不同的水力安全系数，故不能直接比较名义 R；将 C02 的系数从 1 换算到 0.1，相同状态的水力上限为 4.70055 µs，10.00023 µs 所需比值为 2.12746。这是统一分母的换算，未更改或重算 C02。
 
-现阶段有意义的 R>1 试验可选择高渗的一维固结。在保持 C02 当前粒距、材料状态和 PoreDtSafety=1 的条件下，若 k 从 10⁻⁴ 改到 10⁻³ m/s，式（42）给出的静态估算同样约为 4.70 µs，达到 10 µs 所需 R 约 2.13。实际门槛须由新算例的五个阶段重测。验证时对照同 k 的 A 和理论，按同一 Tv 保存孔压与沉降；保留应力/Q、排水、几何和时间限制，同时比较相同输出下的真实用时。只有这类试验才能支持开放大于 1 的系数。若将来开放，建议一个仅对 B 生效、默认 1 的可选水力因子，避免和已有 PoreDtSafety 重复调节。
+高渗 C02 已在公共 CPU 与 GPU 上实际运行。k=10⁻³ m/s、PoreDtSafety=1 时，初始水力上限为 4.76603 µs。至排水后 Tv=0.05，4 µs 组的 R 需求落在 0.84665 至 0.85157，10 µs 组落在 2.11663 至 2.12871。每个范围的下端来自材料保存态，上端来自全体非空输出区间的最小复合步长界。4 µs 用 R=1，10 µs 用 R=2.25，均走完该窗。选取实际生产步长还须比较同机孔压、沉降误差和耗时。[CPU 10 µs](../02_TerzaghiConsolidation_q0_PR/tests/logs/c02_tpi_cost_r1_tpi100_cpu.json) · [GPU 10 µs](../02_TerzaghiConsolidation_q0_PR/tests/logs/c02_tpi_cost_r1_tpi100_gpu.json)
 
 实际数据覆盖 C02 的 1,652 个非空输出区间和 Cryer 的 65 个区间；每个时间步均包含 5 个阶段。[统计 CSV](upl_tpi_r_selection_r1.csv) · [复核脚本](upl_tpi_r_selection_r1.py)
