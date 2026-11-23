@@ -1,0 +1,142 @@
+{
+  "method": "Cryer original fixed-reference weak 3D native mass, nu=0.30",
+  "status": "Portable package built and smoke-tested; 1 Tv on the target server is pending.",
+  "git_head": "970c40152f60fa8efb33b358c56c6506f216ee20",
+  "original_dll_sha256": "d89fa09263e9ed3af7e15d5e8eedf07b967809e64762a8fa19b2173bfcb14c9c",
+  "original_checkpoint_36864_npz_sha256": "8ab328159720d142763c575db69ae1ac17444a2ecb8672d649c2008ff29486d4",
+  "zip_crc_and_all_manifest_hashes_passed": true,
+  "zip_entry_count": 25,
+  "source_peak": {
+    "solver": "fixed-reference research component",
+    "steps": 36864,
+    "material_ids": 37173,
+    "wall_seconds": 384.21926660009194,
+    "fixture": {
+      "viscosity": 1.1102230246251565e-15,
+      "pressure": 7.265299473147024e-13,
+      "total_with_damping": 1.8189894035458565e-12,
+      "pressure_round_closed_Pa": 0.0,
+      "pressure_round_open_Pa": 0.0,
+      "coupled_row_min": 0.00930791446235496,
+      "coupled_row_max": 0.9435339201439028,
+      "raw_sweep_closed_max_Pa": 0.0,
+      "raw_sweep_open_max_Pa": 0.0,
+      "uniform_preload_recovered_max_error_Pa": 0.0,
+      "nonuniform_multiplier_max_error_Pa": 0.0
+    },
+    "closed_limits": {
+      "rms_p_to_10000_Pa": 100,
+      "rms_total_to_10000_Pa": 100,
+      "max_speed_m_s": 1e-05,
+      "rms_displacement_mm": 1e-05,
+      "rms_surface_displacement_mm": 1e-05
+    },
+    "closed_max": {},
+    "closed_pass": false
+  },
+  "full_run_estimates": {
+    "continuation_36864_to_481685_minutes": 87.09882501035526,
+    "full_including_dense_window_replay_minutes": 94.40950289702415,
+    "assumptions": "Based on retained weak run wall time per update. Server hardware and I/O time have not been measured."
+  },
+  "endpoint_plan_last": {
+    "step": "481685",
+    "time_s": "0.9187412261962891",
+    "tau_s": "0.9109287261962891",
+    "legacy_Tv": "1.0000001699010466",
+    "scheduled": "1",
+    "target_Tv": "1.0",
+    "M0_center18_Pa": "17.771341333094085",
+    "M0_surface_inward_mm": "0.09994061108377325"
+  },
+  "expected_scheduled_full_states": 265,
+  "extra_full_state_steps": [
+    4097,
+    4160,
+    25984,
+    36864
+  ],
+  "expected_total_full_states": 269,
+  "expected_raw_bytes": 1199944440,
+  "expected_tail_frames": 101,
+  "scope": "Uniform scalar k, original solver's material masses, fixed reference P1 stress and flux and 3 pressure rounds. Coordinates are x0+u. This ZIP runs retained private GPU DLL, separate from GeoDualSPHysics CPU/GPU production executables; no XML or production changes.",
+  "smoke": {
+    "unzipped_in_path_with_spaces": true,
+    "original_opening_4096_to_4097_all_fields_exact": true,
+    "independent_python_original_dll_36864_to_36867_all_fields_exact": true,
+    "hardware": [
+      "name, uuid, driver_version, memory.total [MiB]",
+      "NVIDIA GeForce RTX 3050, GPU-1266918a-4f6d-5d0b-57a0-77c68e4dc64b, 610.88, 8192 MiB"
+    ],
+    "source_fixture_equivalence": {
+      "viscosity": 1.1102230246251565e-15,
+      "pressure": 7.265299473147024e-13,
+      "total_with_damping": 1.8189894035458565e-12,
+      "pressure_round_closed_Pa": 0.0,
+      "pressure_round_open_Pa": 0.0,
+      "coupled_row_min": 0.00930791446235496,
+      "coupled_row_max": 0.9435339201439028,
+      "raw_sweep_closed_max_Pa": 0.0,
+      "raw_sweep_open_max_Pa": 0.0,
+      "uniform_preload_recovered_max_error_Pa": 0.0,
+      "nonuniform_multiplier_max_error_Pa": 0.0
+    },
+    "review_sha256": "bbf9191ae93f3421a87951aa95fa0d08790c43ae988b20aeba2530cfbafd58a8",
+    "clock": 0.07031822204589844,
+    "scope": "Two consumed material states across two separate short replays, not a full trajectory."
+  },
+  "launch": "Extract ZIP, optional CHECK_GPU.bat, then RUN_FULL.bat. Return cryer_weak_full_out, then run py -3.11 cryer_weak_full_review.py cryer_weak_full_out NEW_REVIEW_DIR next to manifest.json.",
+  "build_command": "In a new build folder from the Visual Studio 2022 x64 developer environment run cl /nologo /EHsc /std:c++17 /O2 /MT <tests/support/cryer_weak_full_host.cpp> <tests/outputs/cryer_weak_window_build_r1/cryer_weak_window.lib> /Fe:weak_full.exe; then py -3.11 -B <tests/support/cryer_weak_full_pack.py> --build <new_build_folder> --destination <new_zip_directory>",
+  "review_commands": [
+    "powershell -NoProfile -ExecutionPolicy Bypass -File cryer_weak_full_server.ps1 smoke",
+    "py -3.11 -B cryer_weak_full_review.py cryer_weak_smoke_out NEW_SMOKE_REVIEW_DIR --smoke"
+  ],
+  "timestamp_utc": "2026-11-23T12:31:15.026427+00:00",
+  "artifacts": [
+    {
+      "path": "outputs/cryer_weak_full_server_r1.zip",
+      "bytes": 132021012,
+      "sha256": "8152373426af0c166c403f0fc85bb6209735fb5abd6acb2cc548cbda29ef415d"
+    },
+    {
+      "path": "outputs/cryer_weak_full_server_r1.zip.sha256",
+      "bytes": 97,
+      "sha256": "fad67c96e5249b80db2cacbb3a44d99e51d88c74bfa4882a15a1d9871b296002"
+    },
+    {
+      "path": "outputs/cryer_weak_full_smoke_r1/cryer_weak_smoke_out/server_run.json",
+      "bytes": 1452,
+      "sha256": "8982c7c563b0a527d594f18ad4d73a6fdaa5f78b4dd900f2f608360ff9af7fba"
+    },
+    {
+      "path": "outputs/cryer_weak_full_smoke_r1/review/review.json",
+      "bytes": 1543,
+      "sha256": "bbf9191ae93f3421a87951aa95fa0d08790c43ae988b20aeba2530cfbafd58a8"
+    },
+    {
+      "path": "outputs/cryer_weak_full_smoke_r1/review/actual_vs_theory.csv",
+      "bytes": 885,
+      "sha256": "aea8cf1d89704435d2a0016e9fe39056897025b9c3d188767daa81d5b2ee9437"
+    },
+    {
+      "path": "support/cryer_weak_full_host.cpp",
+      "bytes": 6533,
+      "sha256": "7395415f738f196d6d454de1ce18d41600cad5064acc328da96962d86186b5e5"
+    },
+    {
+      "path": "support/cryer_weak_full_server.ps1",
+      "bytes": 2038,
+      "sha256": "dd2c8f3a72c8fb179f0eacdc5a42c16e98e9cbb158693e4f3f6f3b87ed2ca773"
+    },
+    {
+      "path": "support/cryer_weak_full_review.py",
+      "bytes": 10246,
+      "sha256": "7076c1dd76f5a3ac1cf83ad371097e657a772d8377a28645c5b4c38418f4027d"
+    },
+    {
+      "path": "support/cryer_weak_full_pack.py",
+      "bytes": 11291,
+      "sha256": "07e6c86c08c983f1b3c35f6b23b74ecf5cd4c67ee9faa836ee5783d35baeadc2"
+    }
+  ]
+}

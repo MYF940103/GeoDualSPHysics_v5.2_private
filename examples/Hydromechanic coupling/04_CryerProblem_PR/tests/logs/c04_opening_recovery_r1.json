@@ -1,0 +1,152 @@
+{
+  "started": "2026-11-23T21:24:37.821215+09:00",
+  "wall_seconds": 317.33178560005035,
+  "inputs_and_outputs_sha256": {
+    "outputs/cryer_weak_open_r1/shells.csv": "1bb8a0bc03917e601fa6f9fb5df75167fb3e4550c9eef81e485a536c5f4ffa30",
+    "outputs/cryer_weak_peak_r1/shells.csv": "5d8c3e6c644b0cbabb5bec9313af9b588ef6672cbb086bdc5a40aacf1a8b5e88",
+    "figures/cryer_weak_3d_peak_r1.csv": "ae1acc68be7eafcc12f4bb0c1cf69eb29560bbe0095e4b34dec9211281376433",
+    "figures/cryer_weak_geovol_open_r1.csv": "9dbfe8e1f5ac4d77c6acb1349de1be7833b6289f040b1b94436a61bc5ec79f03",
+    "outputs/cryer_tet_reference_r1.npz": "776f0d029eb6ac86f9ef767c5266dae4fc017153243d746d74b03bafe095497d",
+    "figures/cryer_p3_server_peak_actual_r1/physical/physical_review.json": "5895e03db66284791c2008710861d8adb56514c2165f85e597e911590dc1ab26",
+    "notes/cryer_p3_local_r1.md": "7115aab734c88d8baa6e9e6e5ab9917d4f33ca27125500c320c54322f0dfc876",
+    "support/c04_opening_recovery_r1.py": "9b32e49f11541ab0494bd8e48251c3f9028bb307f81397877893115a801b8cc8",
+    "figures/c04_opening_recovery_r1.csv": "89ed84e7655a83933b2198e06eb4229e109b84078a8eb19986a882bbcca102cc",
+    "figures/c04_opening_recovery_r1.png": "5617756ec91be6c436699b06816d2ecda076d68328b371cba57b8a6046041413"
+  },
+  "original_sorted_f32_pressure_sequence_sha256": {
+    "CaseCryer_TPI_P3_nu030_peak_r1_GPU_out": "c9d4c83490de4b73f6d19b1dec1d772c8ff0e7febca10f22a0071efdd065f0c0",
+    "cryer_p3_gpu_drain4097_r1": "42980126edebc623cdafbd78fa07ef9cbbe5af1e1f8b67f9bc385c7a8492852d"
+  },
+  "steps": [
+    4096,
+    36864
+  ],
+  "actual_time_s": [
+    0.0078125,
+    0.0703125
+  ],
+  "frames": 514,
+  "regular_shared_frames": 513,
+  "independent_local_first_update": 4097,
+  "recovery_definition": "Each save from first reported tau through 62.5 ms satisfies the indicated level. The 100, 10 and 2 Pa levels are descriptive, not acceptance limits.",
+  "criteria_source": "cryer_p3_return_r1.py and frozen physical_review.json; original accepted sampling clock; two pressure models use their own reference for A-relative check.",
+  "reference": "Quasistatic M0, r_i/a=i/20, 1440 modes; physical g=9.80665 for decay, legacy g=9.81 for Tv; 10 kPa at last closed state.",
+  "results": {
+    "P3": {
+      "peak_Pa": 12289.150336371527,
+      "peak_tau_s": 0.04296875,
+      "amplitude_pct": -1.517664794340956,
+      "phase_error_s": 0.0010461651409262515,
+      "phase_error_pct": 2.495469075781044,
+      "passes": {
+        "sampling": true,
+        "amplitude": false,
+        "relative_to_A": true,
+        "phase": false
+      },
+      "pre_Mandel": {
+        "center_error_Pa": 598.6444524517071,
+        "angular_rms_Pa": 26.99437347619629,
+        "radial_mean_error_rms_Pa": 978.8101049075655,
+        "all_point_error_rms_Pa": 979.1822698908164,
+        "surface_error_mm": 0.003913828087834936,
+        "samples": 37
+      },
+      "Mandel": {
+        "center_error_Pa": 190.12331448079652,
+        "angular_rms_Pa": 4.941679989038395,
+        "radial_mean_error_rms_Pa": 29.167310803916507,
+        "all_point_error_rms_Pa": 29.582971802141977,
+        "surface_error_mm": 0.0012143355377476001,
+        "samples": 475
+      },
+      "angular_below_Pa_until_endpoint": {
+        "100": {
+          "step": 4160,
+          "tau_s": 0.0001220703125,
+          "previous_saved_tau_s": null
+        },
+        "10": {
+          "step": 6592,
+          "tau_s": 0.0047607421875,
+          "previous_saved_tau_s": 0.004638671875
+        },
+        "2": {
+          "step": 29504,
+          "tau_s": 0.0484619140625,
+          "previous_saved_tau_s": 0.04833984375
+        }
+      }
+    },
+    "weak": {
+      "peak_Pa": 12468.32080078125,
+      "peak_tau_s": 0.041748046875,
+      "amplitude_pct": -0.0818352005952705,
+      "phase_error_s": -0.0001745379840737485,
+      "phase_error_pct": -0.41633402296273575,
+      "passes": {
+        "sampling": true,
+        "amplitude": true,
+        "relative_to_A": true,
+        "phase": true
+      },
+      "pre_Mandel": {
+        "center_error_Pa": 1343.6443058146087,
+        "angular_rms_Pa": 193.46643554907934,
+        "radial_mean_error_rms_Pa": 843.5617312726239,
+        "all_point_error_rms_Pa": 865.4626832808752,
+        "surface_error_mm": 0.001070956306198702,
+        "samples": 37
+      },
+      "Mandel": {
+        "center_error_Pa": 14.1811676274015,
+        "angular_rms_Pa": 7.008137824803296,
+        "radial_mean_error_rms_Pa": 9.557475177898919,
+        "all_point_error_rms_Pa": 11.851553803092346,
+        "surface_error_mm": 0.00011783132013815252,
+        "samples": 475
+      },
+      "angular_below_Pa_until_endpoint": {
+        "100": {
+          "step": 4992,
+          "tau_s": 0.001708984375,
+          "previous_saved_tau_s": 0.0015869140625
+        },
+        "10": {
+          "step": 9536,
+          "tau_s": 0.0103759765625,
+          "previous_saved_tau_s": 0.01025390625
+        },
+        "2": {
+          "step": 23616,
+          "tau_s": 0.0372314453125,
+          "previous_saved_tau_s": 0.037109375
+        }
+      }
+    },
+    "weak_at_or_below_original_until_endpoint": {
+      "angular_rms_Pa": null,
+      "radial_mean_error_rms_Pa": {
+        "step": 4288,
+        "tau_s": 0.0003662109375,
+        "previous_saved_tau_s": 0.000244140625
+      },
+      "all_point_error_rms_Pa": {
+        "step": 4288,
+        "tau_s": 0.0003662109375,
+        "previous_saved_tau_s": 0.000244140625
+      },
+      "surface_error_mm": {
+        "step": 4160,
+        "tau_s": 0.0001220703125,
+        "previous_saved_tau_s": null
+      },
+      "center_error_Pa": {
+        "step": 5120,
+        "tau_s": 0.001953125,
+        "previous_saved_tau_s": 0.0018310546875
+      }
+    },
+    "surface_reference_max_difference_from_archived_mm": 8.346227829074404e-06
+  }
+}

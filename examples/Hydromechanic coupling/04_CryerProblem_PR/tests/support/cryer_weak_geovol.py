@@ -25,15 +25,20 @@ def prepare(m):
     if not np.all(m.volume > 0) or np.ptp(m.volume) == 0:
         raise ValueError("Expected positive, nonuniform tetrahedral dual volumes")
     m.mass = RHO * m.volume
-    i, j = cKDTree(m.x).query_pairs(2*H, output_type="ndarray").T
-    r = m.x[i] - m.x[j]
+    return donor_viscosity(m.x, m.volume)
+
+
+def donor_viscosity(x, volume):
+    """Directed acceleration weights at fixed density, with the donor's material volume."""
+    i, j = cKDTree(x).query_pairs(2*H, output_type="ndarray").T
+    r = x[i] - x[j]
     r2 = np.einsum("ij,ij->i", r, r)
     kernel = ALPHA*SOUND*H*(-2.08891/H**5)*(1-np.sqrt(r2)/(2*H))**3/(r2+.01*H**2)
-    upper = sparse.coo_matrix((kernel, (i,j)), shape=(m.n,m.n)).tocsr()
-    return (upper + upper.T).multiply(m.volume[None,:]).tocsr()
+    upper = sparse.coo_matrix((kernel, (i,j)), shape=(len(x),len(x))).tocsr()
+    return (upper + upper.T).multiply(volume[None,:]).tocsr()
 
 
-def check_forces(g, m, hydro):
+def check_forces(g, m, hydro, *, av_volume=None):
     """Reference sums one equal-and-opposite force per unordered pair before division by m_i."""
     pairs = cKDTree(m.x).query_pairs(2*H, output_type="ndarray")
     rho = np.full(m.n, RHO)
@@ -52,7 +57,7 @@ def check_forces(g, m, hydro):
         g.call("forceFixture",np.ascontiguousarray(field),zero_stress,zero,0.,av,pa,total)
         if np.any(av):
             raise ValueError("Nonzero AV in rigid translation or affine expansion")
-    visc,stats = artificial_viscosity(m.x,m.volume,rho,v,pairs)
+    visc,stats = artificial_viscosity(m.x,m.volume if av_volume is None else av_volume,rho,v,pairs)
     if not (0 < stats["approaching_pairs"] < len(pairs) and stats["nodal_power_W"] < 0
             and stats["net_force_N"] < 1e-10 and stats["net_torque_Nm"] < 1e-11):
         raise ValueError("Independent compression-only pair force/work balance")
