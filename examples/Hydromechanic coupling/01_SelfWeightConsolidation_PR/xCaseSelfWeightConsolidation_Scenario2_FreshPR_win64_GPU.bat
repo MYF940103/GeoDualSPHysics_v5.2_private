@@ -5,6 +5,7 @@ cd /d "%~dp0"
 rem Fresh Windows x64/NVIDIA calculation; never delete outputs or use PART restart.
 set name=CaseSelfWeightConsolidation_Scenario2_FreshPR
 set dirout=%name%_out
+if /i "%~1"=="--prepare-only" set "dirout=%name%_prepare"
 set diroutdata=%dirout%\data
 set dirbin=support/bin
 set gencase="%dirbin%/GenCase_win64.exe"
@@ -14,15 +15,20 @@ set vars=+Idp,+Mk,+Vel,+Rhop,+Press,+Sigma_kk,+Sigma_ij,+Kplastic,+FSType,+FSNor
 if not defined PYTHON set PYTHON=python
 if /i "%~1"=="-postprocess" goto postprocess
 if /i "%~1"=="-post" goto postprocess
-if not "%~1"=="" if /i not "%~1"=="-solver-only" goto usage
+if not "%~1"=="" if /i not "%~1"=="-solver-only" if /i not "%~1"=="--prepare-only" goto usage
 if exist "%dirout%" goto exists
 if not exist "%name%_Def.xml" goto fail
 if not exist "%dirbin%/GenCase_win64.exe" goto fail
 if not exist "%dirbin%/DualSPHysics5.2_GEO_win64.exe" goto fail
-%gencase% "%name%_Def" "%dirout%/%name%" -save:all
+mkdir "%dirout%"
+if errorlevel 1 goto fail
+powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "support\hydro_frozen_runtime_r2.ps1" -Definition "%name%_Def.xml" -OutFile "%dirout%\%name%_Def.xml"
+if errorlevel 1 goto fail
+%gencase% "%dirout%/%name%_Def" "%dirout%/%name%" -save:all
 if not "%ERRORLEVEL%"=="0" goto fail
 
 rem Finite-Kw Tv=2 target; cap gives actual end 7.316858768463135 s.
+if /i "%~1"=="--prepare-only" exit /b 0
 %dualsphysicsgpu% -gpu -ompthreads:1 -stable -mdbc "%dirout%/%name%" "%dirout%" -dirdataout data -svres -svextraparts:1 -nsteps:20459420
 if not "%ERRORLEVEL%"=="0" goto fail
 if /i "%~1"=="-solver-only" exit /b 0
@@ -42,7 +48,7 @@ if not "%ERRORLEVEL%"=="0" goto fail
 set legacy=
 if exist "tests/outputs/CaseSWSc2_MLSDirect_Tv2_from_p0056_GPU_out/data/Part_0000.bi4" set legacy=--legacy-dir "tests/outputs/CaseSWSc2_MLSDirect_Tv2_from_p0056_GPU_out"
 if not defined legacy echo Historical comparison pending: old raw data are not present in this package.
-"%PYTHON%" "support/postprocess_selfweight_freshpr_r1.py" --config "%name%_Def.xml" --data-dir "%diroutdata%" --figures-dir figures --label "%name%" --reader "%dirbin%/ReadSelfWeightNative.exe" %legacy%
+"%PYTHON%" "support/postprocess_selfweight_freshpr_r1.py" --config "%dirout%\%name%.xml" --data-dir "%diroutdata%" --figures-dir figures --label "%name%" --reader "%dirbin%/ReadSelfWeightNative.exe" %legacy%
 if not "%ERRORLEVEL%"=="0" goto fail
 echo Completed calculation and derived particles/figures/CSV. Normal exit is not physical acceptance.
 if "%~1"=="" pause

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version='1.0' encoding='utf-8'?>
 <case app="GenCase v5.0.197 (18-07-2020)" date="01-06-2026 00:00:00">
     <casedef>
         <constantsdef>
@@ -41,7 +41,6 @@
                     <shapeout file="hdp" />
                     <setmkvoid />
                     <redraw />
-
                     <setshapemode>actual | bound</setshapemode>
                     <setdrawmode mode="full" />
                     <setmkbound mk="0" />
@@ -55,7 +54,6 @@
                     </drawbeach>
                     <shapeout file="Boundary" />
                     <matrixreset />
-
                     <setmkbound mk="1" />
                     <setboxlimitmode mode="full" />
                     <fillbox x="#-1.5*Dp" y="0" z="#-1.5*Dp">
@@ -68,7 +66,6 @@
                     <redrawnear times="3" targettp="bound" targetmk="1" bordertp="bound" bordermk="0" />
                     <setmkvoid />
                     <redraw mkbound="1" />
-
                     <setmkfluid mk="0" />
                     <fillbox x="#Dp/2" y="0" z="#Dp/2">
                         <modefill>void</modefill>
@@ -107,6 +104,7 @@
             </soils>
             <hydromechanics>
                 <HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation" />
+                <HydroMechModel value="0" />
                 <PoreWaterRho value="1000" comment="Reference pore-water density" units_comment="kg/m^3" />
                 <PoreWaterBulkModulus value="2e8" comment="Pore-water bulk modulus Kw" units_comment="Pa" />
                 <Porosity value="0.3" comment="Porosity n" />
@@ -116,9 +114,8 @@
                 <PoreShepardInterval value="40" comment="Apply Shepard pore-pressure regularisation every 40 steps" />
                 <PoreMdbcInterpolationMode value="0" comment="mDBC boundary pore-pressure interpolation: 0=zero-order, 1=MLS direct" />
                 <HydroMechInitMode value="3" comment="Existing AnalyticalSelfWeight1D gravity-on initial state; not paper zero-p loading" />
-                <HydroMechDrainage value="1" comment="Drained free surface from the fresh analytical initial state" />
-                <HydroMechDrainageStartTime value="0" comment="Drainage enabled from the start for this baseline" />
             </hydromechanics>
+            <drainage mode="drained" start="0" clock="time" />
         </special>
         <parameters>
             <parameter key="SavePosDouble" value="1" comment="Fresh continuous Scenario2 PR; no PART restart" />

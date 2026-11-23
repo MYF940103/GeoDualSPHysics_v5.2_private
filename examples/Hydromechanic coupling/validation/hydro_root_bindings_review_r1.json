@@ -1,0 +1,5436 @@
+{
+  "recorded": "2026-11-23T22:57:20.251062+09:00",
+  "prior_definitions": 52,
+  "current_definitions": 53,
+  "current_launchers": 76,
+  "current_public": 32,
+  "legacy_tag_counts": {
+    "HydroMechDrainage": 21,
+    "HydroMechDrainageStartTime": 10,
+    "HydroMechDynamicSeepage": 14,
+    "HydroMechTopLoadMode": 20,
+    "HydroMechTopLoadQ0": 9,
+    "HydroMechTopLoadRampTime": 9,
+    "HydroMechDrainageFixedGrid": 8,
+    "HydroMechFreeSeepage": 11
+  },
+  "cases": [
+    {
+      "xml": "01_SelfWeightConsolidation_PR/CaseSelfWeightConsolidation_Scenario1_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "public implicit default"
+    },
+    {
+      "xml": "01_SelfWeightConsolidation_PR/CaseSelfWeightConsolidation_Scenario2_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "01_SelfWeightConsolidation_PR/CaseSelfWeightConsolidation_Scenario2_FreshPR_Def.xml",
+      "legacy_present": {
+        "HydroMechDrainage": "1",
+        "HydroMechDrainageStartTime": "0"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C01 sealed FreshPR release"
+    },
+    {
+      "xml": "01_SelfWeightConsolidation_PR/CaseSelfWeightConsolidation_Stage1_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "02_TerzaghiConsolidation_q0_PR/CaseTerzaghiConsolidation_q0_PR_full_k1em2_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "TopVertical",
+        "q0": "10000",
+        "ramptime": "0.0001"
+      },
+      "drainage": {
+        "mode": "drained",
+        "start": "0.0001"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "02_TerzaghiConsolidation_q0_PR/CaseTerzaghiConsolidation_q0_PR_full_k1em3_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "TopKernelBand",
+        "q0": "10000",
+        "ramptime": "0.01"
+      },
+      "drainage": {
+        "mode": "drained",
+        "start": "0.01",
+        "clock": "fixedStep"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "02_TerzaghiConsolidation_q0_PR/CaseTerzaghiConsolidation_q0_PR_full_k1em4_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "TopKernelBand",
+        "q0": "10000",
+        "ramptime": "0.01"
+      },
+      "drainage": {
+        "mode": "drained",
+        "start": "0.01",
+        "clock": "fixedStep"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "02_TerzaghiConsolidation_q0_PR/CaseTerzaghiConsolidation_q0_PR_full_k1em4_double_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "TopVertical",
+        "q0": "10000",
+        "ramptime": "0.01"
+      },
+      "drainage": {
+        "mode": "drained",
+        "start": "0.01"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "02_TerzaghiConsolidation_q0_PR/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "TopVertical",
+        "q0": "10000",
+        "ramptime": "0.01"
+      },
+      "drainage": {
+        "mode": "drained",
+        "start": "0.01"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "02_TerzaghiConsolidation_q0_PR/CaseTerzaghiConsolidation_q0_PR_full_k1em5_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "TopKernelBand",
+        "q0": "10000",
+        "ramptime": "0.01"
+      },
+      "drainage": {
+        "mode": "drained",
+        "start": "0.01",
+        "clock": "fixedStep"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "02_TerzaghiConsolidation_q0_PR/CaseTerzaghiConsolidation_q0_PR_full_k5em5_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "TopKernelBand",
+        "q0": "10000",
+        "ramptime": "0.01"
+      },
+      "drainage": {
+        "mode": "drained",
+        "start": "0.01",
+        "clock": "fixedStep"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "03_RetrogressiveSlopeFailure_u_pw/CaseRetroSlope8m_u_pw_failure_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "03_RetrogressiveSlopeFailure_u_pw/CaseRetroSlope8m_u_pw_prestress_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "03_RetrogressiveSlopeFailure_u_pw/CaseRetroSlope_u_pw_failure_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "03_RetrogressiveSlopeFailure_u_pw/CaseRetroSlope_u_pw_prestress_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryer_TPI_nu030_1Tv_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": "2",
+      "externalload": {
+        "mode": "2",
+        "q0": "10000.0",
+        "ramptime": "0.00390625"
+      },
+      "drainage": {
+        "mode": "drained",
+        "start": "0.0078125",
+        "clock": "fixedStep"
+      },
+      "prior_evidence": "new public TPI server input after 52-definition drainage audit"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryer_TPI_P3_nu030_full_r1_Def.xml",
+      "legacy_present": {
+        "HydroMechDynamicSeepage": "1",
+        "HydroMechTopLoadMode": "2",
+        "HydroMechTopLoadQ0": "10000.0",
+        "HydroMechTopLoadRampTime": "0.00390625",
+        "HydroMechDrainage": "1",
+        "HydroMechDrainageStartTime": "0.0078125",
+        "HydroMechDrainageFixedGrid": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C04 verified portables/private executable"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryer_TPI_P3_nu030_peak_r1_Def.xml",
+      "legacy_present": {
+        "HydroMechDynamicSeepage": "1",
+        "HydroMechTopLoadMode": "2",
+        "HydroMechTopLoadQ0": "10000.0",
+        "HydroMechTopLoadRampTime": "0.00390625",
+        "HydroMechDrainage": "1",
+        "HydroMechDrainageStartTime": "0.0078125",
+        "HydroMechDrainageFixedGrid": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C04 verified portables/private executable"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryerProblem_PR_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "2",
+        "q0": "10000.0",
+        "ramptime": "0.0"
+      },
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryerProblem_PR_dp002_rampclosed_nu010_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "2",
+        "q0": "10000.0",
+        "ramptime": "0.0025"
+      },
+      "drainage": {
+        "mode": "drained",
+        "start": "0.0025"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryerProblem_PR_dp002_rampclosed_nu020_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "2",
+        "q0": "10000.0",
+        "ramptime": "0.0025"
+      },
+      "drainage": {
+        "mode": "drained",
+        "start": "0.0025"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryerProblem_PR_dp002_rampclosed_nu030_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "2",
+        "q0": "10000.0",
+        "ramptime": "0.0025"
+      },
+      "drainage": {
+        "mode": "drained",
+        "start": "0.0025"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryerProblem_PR_dp002_rampclosed_nu045_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "2",
+        "q0": "10000.0",
+        "ramptime": "0.0025"
+      },
+      "drainage": {
+        "mode": "drained",
+        "start": "0.0025"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryerProblem_PR_nu010_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "2",
+        "q0": "10000.0",
+        "ramptime": "0.0"
+      },
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryerProblem_PR_nu020_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "2",
+        "q0": "10000.0",
+        "ramptime": "0.0"
+      },
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryerProblem_PR_nu045_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "2",
+        "q0": "10000.0",
+        "ramptime": "0.0"
+      },
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryerProblem_PR_release_nu010_r1_Def.xml",
+      "legacy_present": {
+        "HydroMechTopLoadMode": "2",
+        "HydroMechTopLoadQ0": "10000.0",
+        "HydroMechTopLoadRampTime": "0.00390625",
+        "HydroMechDrainage": "1",
+        "HydroMechDrainageStartTime": "0.0078125",
+        "HydroMechDrainageFixedGrid": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C04 verified portables/private executable"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryerProblem_PR_release_nu020_r1_Def.xml",
+      "legacy_present": {
+        "HydroMechTopLoadMode": "2",
+        "HydroMechTopLoadQ0": "10000.0",
+        "HydroMechTopLoadRampTime": "0.00390625",
+        "HydroMechDrainage": "1",
+        "HydroMechDrainageStartTime": "0.0078125",
+        "HydroMechDrainageFixedGrid": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C04 verified portables/private executable"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryerProblem_PR_release_nu045_r1_Def.xml",
+      "legacy_present": {
+        "HydroMechTopLoadMode": "2",
+        "HydroMechTopLoadQ0": "10000.0",
+        "HydroMechTopLoadRampTime": "0.00390625",
+        "HydroMechDrainage": "1",
+        "HydroMechDrainageStartTime": "0.0078125",
+        "HydroMechDrainageFixedGrid": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C04 verified portables/private executable"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryerProblem_PR_release_r2_Def.xml",
+      "legacy_present": {
+        "HydroMechTopLoadMode": "2",
+        "HydroMechTopLoadQ0": "10000.0",
+        "HydroMechTopLoadRampTime": "0.00390625",
+        "HydroMechDrainage": "1",
+        "HydroMechDrainageStartTime": "0.0078125",
+        "HydroMechDrainageFixedGrid": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C04 verified portables/private executable"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryerProblem_PR_symc_nu030_Def.xml",
+      "legacy_present": {
+        "HydroMechTopLoadMode": "2",
+        "HydroMechTopLoadQ0": "10000.0",
+        "HydroMechTopLoadRampTime": "0.00390625",
+        "HydroMechDrainage": "1",
+        "HydroMechDrainageStartTime": "0.0078125",
+        "HydroMechDrainageFixedGrid": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C04 verified portables/private executable"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryerProblem_u_pl_nu030_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": "1",
+      "externalload": {
+        "mode": "2",
+        "q0": "10000.0",
+        "ramptime": "0.00390625"
+      },
+      "drainage": {
+        "mode": "drained",
+        "start": "0.0078125",
+        "clock": "fixedStep"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "04_CryerProblem_PR/CaseCryerProblem_u_pl_nu030_r1_Def.xml",
+      "legacy_present": {
+        "HydroMechDynamicSeepage": "1",
+        "HydroMechTopLoadMode": "2",
+        "HydroMechTopLoadQ0": "10000.0",
+        "HydroMechTopLoadRampTime": "0.00390625",
+        "HydroMechDrainage": "1",
+        "HydroMechDrainageStartTime": "0.0078125",
+        "HydroMechDrainageFixedGrid": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C04 verified portables/private executable"
+    },
+    {
+      "xml": "05_LianFlexibleStrip2D_PR/CaseLianFlexibleStrip2D_PR_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "4",
+        "q0": "10000",
+        "ramptime": "1.0"
+      },
+      "drainage": {
+        "mode": "drained",
+        "start": "1.0"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "05_LianFlexibleStrip2D_PR/CaseLianFlexibleStrip2D_PR_release_Def.xml",
+      "legacy_present": {
+        "HydroMechTopLoadMode": "4",
+        "HydroMechTopLoadQ0": "10000",
+        "HydroMechTopLoadRampTime": "1.0",
+        "HydroMechDrainage": "1",
+        "HydroMechDrainageStartTime": "1.0"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C05 frozen server release"
+    },
+    {
+      "xml": "06_Yao2DConsolidation_PR/CaseYao2DConsolidation_PR_damp000_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "3",
+        "q0": "5000",
+        "ramptime": "0.1"
+      },
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "06_Yao2DConsolidation_PR/CaseYao2DConsolidation_PR_damp001_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "3",
+        "q0": "5000",
+        "ramptime": "0.1"
+      },
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "06_Yao2DConsolidation_PR/CaseYao2DConsolidation_PR_damp002_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "3",
+        "q0": "5000",
+        "ramptime": "0.1"
+      },
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "06_Yao2DConsolidation_PR/CaseYao2DConsolidation_PR_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "3",
+        "q0": "5000",
+        "ramptime": "0.1"
+      },
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "06_Yao2DConsolidation_PR/CaseYao2DConsolidation_PR_SPR_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": {
+        "mode": "3",
+        "q0": "5000",
+        "ramptime": "0.1"
+      },
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "07_Selborne3D_u_pw/CaseSelborne3D_u_pw_failure_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "07_Selborne3D_u_pw/CaseSelborne3D_u_pw_prestress_Def.xml",
+      "legacy_present": {},
+      "public_schema": true,
+      "disposition": "public hydraulic XML",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": {
+        "mode": "drained"
+      },
+      "prior_evidence": "migrated"
+    },
+    {
+      "xml": "08_LianSaturatedColumnCollapse_u_pl/CaseLianSaturatedColumnCollapse_psi0_shared_r3_Def.xml",
+      "legacy_present": {
+        "HydroMechDynamicSeepage": "1",
+        "HydroMechTopLoadMode": "0",
+        "HydroMechDrainage": "0",
+        "HydroMechFreeSeepage": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C08 sealed per-version receiver/preload"
+    },
+    {
+      "xml": "08_LianSaturatedColumnCollapse_u_pl/CaseLianSaturatedColumnCollapse_psi0_shared_r4_Def.xml",
+      "legacy_present": {
+        "HydroMechDynamicSeepage": "1",
+        "HydroMechTopLoadMode": "0",
+        "HydroMechDrainage": "0",
+        "HydroMechFreeSeepage": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C08 sealed per-version receiver/preload"
+    },
+    {
+      "xml": "08_LianSaturatedColumnCollapse_u_pl/CaseLianSaturatedColumnCollapse_psi0_shared_r5_Def.xml",
+      "legacy_present": {
+        "HydroMechDynamicSeepage": "1",
+        "HydroMechTopLoadMode": "0",
+        "HydroMechDrainage": "0",
+        "HydroMechFreeSeepage": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C08 sealed per-version receiver/preload"
+    },
+    {
+      "xml": "08_LianSaturatedColumnCollapse_u_pl/CaseLianSaturatedColumnCollapse_psi0_shared_r6_Def.xml",
+      "legacy_present": {
+        "HydroMechDynamicSeepage": "1",
+        "HydroMechTopLoadMode": "0",
+        "HydroMechDrainage": "0",
+        "HydroMechFreeSeepage": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C08 sealed per-version receiver/preload"
+    },
+    {
+      "xml": "08_LianSaturatedColumnCollapse_u_pl/CaseLianSaturatedColumnCollapse_psi2p5_shared_r3_Def.xml",
+      "legacy_present": {
+        "HydroMechDynamicSeepage": "1",
+        "HydroMechTopLoadMode": "0",
+        "HydroMechDrainage": "0",
+        "HydroMechFreeSeepage": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C08 sealed per-version receiver/preload"
+    },
+    {
+      "xml": "08_LianSaturatedColumnCollapse_u_pl/CaseLianSaturatedColumnCollapse_psi2p5_shared_r4_Def.xml",
+      "legacy_present": {
+        "HydroMechDynamicSeepage": "1",
+        "HydroMechTopLoadMode": "0",
+        "HydroMechDrainage": "0",
+        "HydroMechFreeSeepage": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C08 sealed per-version receiver/preload"
+    },
+    {
+      "xml": "08_LianSaturatedColumnCollapse_u_pl/CaseLianSaturatedColumnCollapse_psi2p5_shared_r5_Def.xml",
+      "legacy_present": {
+        "HydroMechDynamicSeepage": "1",
+        "HydroMechTopLoadMode": "0",
+        "HydroMechDrainage": "0",
+        "HydroMechFreeSeepage": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C08 sealed per-version receiver/preload"
+    },
+    {
+      "xml": "08_LianSaturatedColumnCollapse_u_pl/CaseLianSaturatedColumnCollapse_psim5_shared_r3_Def.xml",
+      "legacy_present": {
+        "HydroMechDynamicSeepage": "1",
+        "HydroMechTopLoadMode": "0",
+        "HydroMechDrainage": "0",
+        "HydroMechFreeSeepage": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C08 sealed per-version receiver/preload"
+    },
+    {
+      "xml": "08_LianSaturatedColumnCollapse_u_pl/CaseLianSaturatedColumnCollapse_psim5_shared_r4_Def.xml",
+      "legacy_present": {
+        "HydroMechDynamicSeepage": "1",
+        "HydroMechTopLoadMode": "0",
+        "HydroMechDrainage": "0",
+        "HydroMechFreeSeepage": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C08 sealed per-version receiver/preload"
+    },
+    {
+      "xml": "08_LianSaturatedColumnCollapse_u_pl/CaseLianSaturatedColumnCollapse_psim5_shared_r5_Def.xml",
+      "legacy_present": {
+        "HydroMechDynamicSeepage": "1",
+        "HydroMechTopLoadMode": "0",
+        "HydroMechDrainage": "0",
+        "HydroMechFreeSeepage": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C08 sealed per-version receiver/preload"
+    },
+    {
+      "xml": "08_LianSaturatedColumnCollapse_u_pl/CaseLianSaturatedColumnCollapse_shared_preload_r3_Def.xml",
+      "legacy_present": {
+        "HydroMechDynamicSeepage": "1",
+        "HydroMechTopLoadMode": "0",
+        "HydroMechDrainage": "0",
+        "HydroMechFreeSeepage": "1"
+      },
+      "public_schema": false,
+      "disposition": "keep original XML and runtime",
+      "model_tag_value": null,
+      "externalload": null,
+      "drainage": null,
+      "prior_evidence": "C08 sealed per-version receiver/preload"
+    }
+  ],
+  "BATs_and_transitive_commands": [
+    {
+      "bat": "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario1_win64_CPU.bat",
+      "invocations": [
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario1_win64_CPU.bat",
+          9,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario1_win64_CPU.bat",
+          10,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario1_win64_CPU.bat",
+          11,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario1_win64_CPU.bat",
+          12,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario1_win64_CPU.bat",
+          30,
+          "py support\\postprocess_self_weight_scenario1.py"
+        ]
+      ]
+    },
+    {
+      "bat": "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_FreshPR_win64_GPU.bat",
+      "invocations": [
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_FreshPR_win64_GPU.bat",
+          6,
+          "set name=CaseSelfWeightConsolidation_Scenario2_FreshPR"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_FreshPR_win64_GPU.bat",
+          9,
+          "set dirbin=support/bin"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_FreshPR_win64_GPU.bat",
+          10,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_FreshPR_win64_GPU.bat",
+          11,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_FreshPR_win64_GPU.bat",
+          21,
+          "if not exist \"%dirbin%/DualSPHysics5.2_GEO_win64.exe\" goto fail"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_FreshPR_win64_GPU.bat",
+          35,
+          "if not exist \"support/postprocess_selfweight_freshpr_r1.py\" goto fail"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_FreshPR_win64_GPU.bat",
+          45,
+          "\"%PYTHON%\" \"support/postprocess_selfweight_freshpr_r1.py\" --config \"%name%_Def.xml\" --data-dir \"%diroutdata%\" --figures-dir figures --label \"%name%\" --reader \"%dirbin%/ReadSelfWeightNative.exe\" %legacy%"
+        ]
+      ]
+    },
+    {
+      "bat": "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_CPU.bat",
+      "invocations": [
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_CPU.bat",
+          20,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_CPU.bat",
+          21,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_CPU.bat",
+          22,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_CPU.bat",
+          23,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+          9,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+          10,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+          11,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+          12,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+          32,
+          "py support\\postprocess_stage1_history.py"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_CPU.bat",
+          65,
+          "py support\\postprocess_self_weight_consolidation.py"
+        ]
+      ]
+    },
+    {
+      "bat": "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_GPU.bat",
+      "invocations": [
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_GPU.bat",
+          24,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_GPU.bat",
+          25,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_GPU.bat",
+          26,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_GPU.bat",
+          18,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_GPU.bat",
+          19,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_GPU.bat",
+          20,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_GPU.bat",
+          55,
+          "py support\\postprocess_stage1_history.py"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_GPU.bat",
+          72,
+          "py support\\postprocess_self_weight_consolidation.py"
+        ]
+      ]
+    },
+    {
+      "bat": "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+      "invocations": [
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+          9,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+          10,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+          11,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+          12,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+          32,
+          "py support\\postprocess_stage1_history.py"
+        ]
+      ]
+    },
+    {
+      "bat": "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_GPU.bat",
+      "invocations": [
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_GPU.bat",
+          18,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_GPU.bat",
+          19,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_GPU.bat",
+          20,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_GPU.bat",
+          55,
+          "py support\\postprocess_stage1_history.py"
+        ]
+      ]
+    },
+    {
+      "bat": "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_win64_CPU.bat",
+      "invocations": [
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_win64_CPU.bat",
+          5,
+          "call xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+          9,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+          10,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+          11,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+          12,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+          32,
+          "py support\\postprocess_stage1_history.py"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_win64_CPU.bat",
+          8,
+          "call xCaseSelfWeightConsolidation_Scenario2_win64_CPU.bat -force"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_CPU.bat",
+          20,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_CPU.bat",
+          21,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_CPU.bat",
+          22,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_CPU.bat",
+          23,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_CPU.bat",
+          65,
+          "py support\\postprocess_self_weight_consolidation.py"
+        ]
+      ]
+    },
+    {
+      "bat": "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_win64_GPU.bat",
+      "invocations": [
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_win64_GPU.bat",
+          5,
+          "call xCaseSelfWeightConsolidation_Stage1_win64_GPU.bat -force"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_GPU.bat",
+          18,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_GPU.bat",
+          19,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_GPU.bat",
+          20,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Stage1_win64_GPU.bat",
+          55,
+          "py support\\postprocess_stage1_history.py"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_win64_GPU.bat",
+          8,
+          "call xCaseSelfWeightConsolidation_Scenario2_win64_GPU.bat -force"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_GPU.bat",
+          24,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_GPU.bat",
+          25,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_GPU.bat",
+          26,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "01_SelfWeightConsolidation_PR/xCaseSelfWeightConsolidation_Scenario2_win64_GPU.bat",
+          72,
+          "py support\\postprocess_self_weight_consolidation.py"
+        ]
+      ]
+    },
+    {
+      "bat": "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em3_win64_CPU.bat",
+      "invocations": [
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em3_win64_CPU.bat",
+          5,
+          "set case=CaseTerzaghiConsolidation_q0_PR_full_k1em3"
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em3_win64_CPU.bat",
+          10,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em3_win64_CPU.bat",
+          11,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em3_win64_CPU.bat",
+          12,
+          "set dualsphysics=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em3_win64_CPU.bat",
+          37,
+          "\"%python%\" -B support/release_case.py --output \"%dirout%\" --label full_validation_release_k1em3_CPU"
+        ]
+      ]
+    },
+    {
+      "bat": "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em3_win64_GPU.bat",
+      "invocations": [
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em3_win64_GPU.bat",
+          5,
+          "set case=CaseTerzaghiConsolidation_q0_PR_full_k1em3"
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em3_win64_GPU.bat",
+          10,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em3_win64_GPU.bat",
+          11,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em3_win64_GPU.bat",
+          12,
+          "set dualsphysics=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em3_win64_GPU.bat",
+          37,
+          "\"%python%\" -B support/release_case.py --output \"%dirout%\" --label full_validation_release_k1em3_GPU"
+        ]
+      ]
+    },
+    {
+      "bat": "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em4_win64_CPU.bat",
+      "invocations": [
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em4_win64_CPU.bat",
+          5,
+          "set case=CaseTerzaghiConsolidation_q0_PR_full_k1em4"
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em4_win64_CPU.bat",
+          10,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em4_win64_CPU.bat",
+          11,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em4_win64_CPU.bat",
+          12,
+          "set dualsphysics=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em4_win64_CPU.bat",
+          37,
+          "\"%python%\" -B support/release_case.py --output \"%dirout%\" --label full_validation_release_k1em4_CPU"
+        ]
+      ]
+    },
+    {
+      "bat": "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em4_win64_GPU.bat",
+      "invocations": [
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em4_win64_GPU.bat",
+          5,
+          "set case=CaseTerzaghiConsolidation_q0_PR_full_k1em4"
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em4_win64_GPU.bat",
+          10,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em4_win64_GPU.bat",
+          11,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em4_win64_GPU.bat",
+          12,
+          "set dualsphysics=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em4_win64_GPU.bat",
+          37,
+          "\"%python%\" -B support/release_case.py --output \"%dirout%\" --label full_validation_release_k1em4_GPU"
+        ]
+      ]
+    },
+    {
+      "bat": "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em5_win64_CPU.bat",
+      "invocations": [
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em5_win64_CPU.bat",
+          5,
+          "set case=CaseTerzaghiConsolidation_q0_PR_full_k1em5"
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em5_win64_CPU.bat",
+          10,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em5_win64_CPU.bat",
+          11,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em5_win64_CPU.bat",
+          12,
+          "set dualsphysics=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em5_win64_CPU.bat",
+          37,
+          "\"%python%\" -B support/release_case.py --output \"%dirout%\" --label full_validation_release_k1em5_CPU"
+        ]
+      ]
+    },
+    {
+      "bat": "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em5_win64_GPU.bat",
+      "invocations": [
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em5_win64_GPU.bat",
+          5,
+          "set case=CaseTerzaghiConsolidation_q0_PR_full_k1em5"
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em5_win64_GPU.bat",
+          10,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em5_win64_GPU.bat",
+          11,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em5_win64_GPU.bat",
+          12,
+          "set dualsphysics=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em5_win64_GPU.bat",
+          37,
+          "\"%python%\" -B support/release_case.py --output \"%dirout%\" --label full_validation_release_k1em5_GPU"
+        ]
+      ]
+    },
+    {
+      "bat": "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k5em5_win64_CPU.bat",
+      "invocations": [
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k5em5_win64_CPU.bat",
+          5,
+          "set case=CaseTerzaghiConsolidation_q0_PR_full_k5em5"
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k5em5_win64_CPU.bat",
+          10,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k5em5_win64_CPU.bat",
+          11,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k5em5_win64_CPU.bat",
+          12,
+          "set dualsphysics=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k5em5_win64_CPU.bat",
+          37,
+          "\"%python%\" -B support/release_case.py --output \"%dirout%\" --label full_validation_release_k5em5_uniform_CPU --reader \"%dirbin%/ReadHydroMechGridPart_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k5em5_win64_GPU.bat",
+      "invocations": [
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k5em5_win64_GPU.bat",
+          5,
+          "set case=CaseTerzaghiConsolidation_q0_PR_full_k5em5"
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k5em5_win64_GPU.bat",
+          10,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k5em5_win64_GPU.bat",
+          11,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k5em5_win64_GPU.bat",
+          12,
+          "set dualsphysics=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k5em5_win64_GPU.bat",
+          37,
+          "\"%python%\" -B support/release_case.py --output \"%dirout%\" --label full_validation_release_k5em5_uniform_GPU --reader \"%dirbin%/ReadHydroMechGridPart_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_CPU.bat",
+      "invocations": [
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_CPU.bat",
+          19,
+          "set name=CaseRetroSlope8m_u_pw_failure"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_CPU.bat",
+          25,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_CPU.bat",
+          26,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_CPU.bat",
+          27,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_CPU.bat",
+          28,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          14,
+          "set name=CaseRetroSlope8m_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          19,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          20,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          14,
+          "set name=CaseRetroSlope8m_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          19,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_GPU.bat",
+      "invocations": [
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_GPU.bat",
+          19,
+          "set name=CaseRetroSlope8m_u_pw_failure"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_GPU.bat",
+          25,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_GPU.bat",
+          26,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_GPU.bat",
+          27,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          14,
+          "set name=CaseRetroSlope8m_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          19,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          20,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          14,
+          "set name=CaseRetroSlope8m_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          19,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+      "invocations": [
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          14,
+          "set name=CaseRetroSlope8m_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          19,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          20,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+      "invocations": [
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          14,
+          "set name=CaseRetroSlope8m_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          19,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_CPU.bat",
+      "invocations": [
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_CPU.bat",
+          19,
+          "set name=CaseRetroSlope_u_pw_failure"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_CPU.bat",
+          25,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_CPU.bat",
+          26,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_CPU.bat",
+          27,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_CPU.bat",
+          28,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          14,
+          "set name=CaseRetroSlope_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          19,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          20,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          14,
+          "set name=CaseRetroSlope_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          19,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_GPU.bat",
+      "invocations": [
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_GPU.bat",
+          19,
+          "set name=CaseRetroSlope_u_pw_failure"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_GPU.bat",
+          25,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_GPU.bat",
+          26,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_GPU.bat",
+          27,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          14,
+          "set name=CaseRetroSlope_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          19,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          20,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          14,
+          "set name=CaseRetroSlope_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          19,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+      "invocations": [
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          14,
+          "set name=CaseRetroSlope_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          19,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          20,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+      "invocations": [
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          14,
+          "set name=CaseRetroSlope_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          19,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "03_RetrogressiveSlopeFailure_u_pw/xRunRetroSlope8m_u_pw_two_stage_win64_CPU.bat",
+      "invocations": [
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xRunRetroSlope8m_u_pw_two_stage_win64_CPU.bat",
+          5,
+          "call xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat -force"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          14,
+          "set name=CaseRetroSlope8m_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          19,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          20,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xRunRetroSlope8m_u_pw_two_stage_win64_CPU.bat",
+          8,
+          "call xCaseRetroSlope8m_u_pw_failure_win64_CPU.bat -force 50"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_CPU.bat",
+          19,
+          "set name=CaseRetroSlope8m_u_pw_failure"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_CPU.bat",
+          25,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_CPU.bat",
+          26,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_CPU.bat",
+          27,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_CPU.bat",
+          28,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          14,
+          "set name=CaseRetroSlope8m_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          19,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "03_RetrogressiveSlopeFailure_u_pw/xRunRetroSlope8m_u_pw_two_stage_win64_GPU.bat",
+      "invocations": [
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xRunRetroSlope8m_u_pw_two_stage_win64_GPU.bat",
+          5,
+          "call xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat -force"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          14,
+          "set name=CaseRetroSlope8m_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+          19,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xRunRetroSlope8m_u_pw_two_stage_win64_GPU.bat",
+          8,
+          "call xCaseRetroSlope8m_u_pw_failure_win64_GPU.bat -force 50"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_GPU.bat",
+          19,
+          "set name=CaseRetroSlope8m_u_pw_failure"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_GPU.bat",
+          25,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_GPU.bat",
+          26,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_failure_win64_GPU.bat",
+          27,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          14,
+          "set name=CaseRetroSlope8m_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          19,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+          20,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "03_RetrogressiveSlopeFailure_u_pw/xRunRetroSlope_u_pw_two_stage_win64_CPU.bat",
+      "invocations": [
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xRunRetroSlope_u_pw_two_stage_win64_CPU.bat",
+          5,
+          "call xCaseRetroSlope_u_pw_prestress_win64_CPU.bat -force"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          14,
+          "set name=CaseRetroSlope_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          19,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          20,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xRunRetroSlope_u_pw_two_stage_win64_CPU.bat",
+          8,
+          "call xCaseRetroSlope_u_pw_failure_win64_CPU.bat -force 50"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_CPU.bat",
+          19,
+          "set name=CaseRetroSlope_u_pw_failure"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_CPU.bat",
+          25,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_CPU.bat",
+          26,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_CPU.bat",
+          27,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_CPU.bat",
+          28,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          14,
+          "set name=CaseRetroSlope_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          19,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "03_RetrogressiveSlopeFailure_u_pw/xRunRetroSlope_u_pw_two_stage_win64_GPU.bat",
+      "invocations": [
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xRunRetroSlope_u_pw_two_stage_win64_GPU.bat",
+          5,
+          "call xCaseRetroSlope_u_pw_prestress_win64_GPU.bat -force"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          14,
+          "set name=CaseRetroSlope_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+          19,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xRunRetroSlope_u_pw_two_stage_win64_GPU.bat",
+          8,
+          "call xCaseRetroSlope_u_pw_failure_win64_GPU.bat -force 50"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_GPU.bat",
+          19,
+          "set name=CaseRetroSlope_u_pw_failure"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_GPU.bat",
+          25,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_GPU.bat",
+          26,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_failure_win64_GPU.bat",
+          27,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          14,
+          "set name=CaseRetroSlope_u_pw_prestress"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          19,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ],
+        [
+          "03_RetrogressiveSlopeFailure_u_pw/xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+          20,
+          "if not exist %dualsphysicscpu% set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64_debug.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryer_TPI_nu030_1Tv_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryer_TPI_nu030_1Tv_win64_GPU.bat",
+          4,
+          "set \"case=CaseCryer_TPI_nu030_1Tv\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryer_TPI_nu030_1Tv_win64_GPU.bat",
+          5,
+          "set \"bin=%~dp0bin\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryer_TPI_nu030_1Tv_win64_GPU.bat",
+          6,
+          "if not exist \"%bin%\\GenCase_win64.exe\" set \"bin=%~dp0..\\..\\..\\bin\\windows\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryer_TPI_nu030_1Tv_win64_GPU.bat",
+          18,
+          "for %%P in (GenCase_win64.exe DualSPHysics5.2_GEO_win64.exe PartVTK_win64.exe) do if not exist \"%bin%\\%%P\" ("
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryer_TPI_nu030_1Tv_win64_GPU.bat",
+          24,
+          "\"%bin%\\DualSPHysics5.2_GEO_win64.exe\" -gpu -stable \"%out%\\%case%\" \"%out%\" -dirdataout data -svres -nsteps:%steps% || goto fail"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryer_TPI_nu030_1Tv_win64_GPU.bat",
+          28,
+          "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"%~dp0support\\check_public_cryer_tpi.ps1\" \"%out%\" %steps% || goto fail"
+        ],
+        [
+          "04_CryerProblem_PR/support/check_public_cryer_tpi.ps1",
+          22,
+          "$name = $series[1]+('{0:D4}' -f $i)+'.'+$series[2]"
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryer_TPI_P3_nu030_full_r1_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryer_TPI_P3_nu030_full_r1_win64_GPU.bat",
+          8,
+          "if not \"%~2\"==\"\" exit /b 2"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryer_TPI_P3_nu030_full_r1_win64_GPU.bat",
+          9,
+          "if not \"%~1\"==\"\" if \"%pause_at_end%\"==\"1\" exit /b 2"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryer_TPI_P3_nu030_full_r1_win64_GPU.bat",
+          10,
+          "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"%~dp0support\\run_cryer_tpi_p3_r1.ps1\" -Stage full %mode%"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_tpi_p3_r1.ps1",
+          10,
+          "$solver = Join-Path $PSScriptRoot 'bin_cryer_tpi_p3_r1\\DualSPHysics5.2_GEO_win64.exe'"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_tpi_p3_r1.ps1",
+          17,
+          "$rec = [ordered]@{profile=$Stage; solver=$solver; arguments=$solverArgs; started_utc=$null; ended_utc=$null"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_tpi_p3_r1.ps1",
+          40,
+          "[xml]$case = [IO.File]::ReadAllText(\"$seed.xml\")"
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryer_TPI_P3_nu030_peak_r1_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryer_TPI_P3_nu030_peak_r1_win64_GPU.bat",
+          8,
+          "if not \"%~2\"==\"\" exit /b 2"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryer_TPI_P3_nu030_peak_r1_win64_GPU.bat",
+          9,
+          "if not \"%~1\"==\"\" if \"%pause_at_end%\"==\"1\" exit /b 2"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryer_TPI_P3_nu030_peak_r1_win64_GPU.bat",
+          10,
+          "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"%~dp0support\\run_cryer_tpi_p3_r1.ps1\" -Stage peak %mode%"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_tpi_p3_r1.ps1",
+          10,
+          "$solver = Join-Path $PSScriptRoot 'bin_cryer_tpi_p3_r1\\DualSPHysics5.2_GEO_win64.exe'"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_tpi_p3_r1.ps1",
+          17,
+          "$rec = [ordered]@{profile=$Stage; solver=$solver; arguments=$solverArgs; started_utc=$null; ended_utc=$null"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_tpi_p3_r1.ps1",
+          40,
+          "[xml]$case = [IO.File]::ReadAllText(\"$seed.xml\")"
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu010_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu010_win64_GPU.bat",
+          9,
+          "set name=CaseCryerProblem_PR_dp002_rampclosed_nu010"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu010_win64_GPU.bat",
+          15,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu010_win64_GPU.bat",
+          16,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu010_win64_GPU.bat",
+          17,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu020_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu020_win64_GPU.bat",
+          9,
+          "set name=CaseCryerProblem_PR_dp002_rampclosed_nu020"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu020_win64_GPU.bat",
+          15,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu020_win64_GPU.bat",
+          16,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu020_win64_GPU.bat",
+          17,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu030_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu030_win64_GPU.bat",
+          9,
+          "set name=CaseCryerProblem_PR_dp002_rampclosed_nu030"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu030_win64_GPU.bat",
+          15,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu030_win64_GPU.bat",
+          16,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu030_win64_GPU.bat",
+          17,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu045_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu045_win64_GPU.bat",
+          9,
+          "set name=CaseCryerProblem_PR_dp002_rampclosed_nu045"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu045_win64_GPU.bat",
+          15,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu045_win64_GPU.bat",
+          16,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_dp002_rampclosed_nu045_win64_GPU.bat",
+          17,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryerProblem_PR_nu010_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_nu010_win64_GPU.bat",
+          9,
+          "set name=CaseCryerProblem_PR_nu010"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_nu010_win64_GPU.bat",
+          15,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_nu010_win64_GPU.bat",
+          16,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_nu010_win64_GPU.bat",
+          17,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryerProblem_PR_nu020_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_nu020_win64_GPU.bat",
+          9,
+          "set name=CaseCryerProblem_PR_nu020"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_nu020_win64_GPU.bat",
+          15,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_nu020_win64_GPU.bat",
+          16,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_nu020_win64_GPU.bat",
+          17,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryerProblem_PR_nu045_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_nu045_win64_GPU.bat",
+          9,
+          "set name=CaseCryerProblem_PR_nu045"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_nu045_win64_GPU.bat",
+          15,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_nu045_win64_GPU.bat",
+          16,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_nu045_win64_GPU.bat",
+          17,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryerProblem_PR_release_nu010_r1_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_release_nu010_r1_win64_GPU.bat",
+          25,
+          "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"support\\run_cryer_nu_release_r1.ps1\" -Nu 010 %smoke%"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_nu_release_r1.ps1",
+          5,
+          "$name = 'CaseCryerProblem_PR_release_nu' + $Nu + '_r1'"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_nu_release_r1.ps1",
+          58,
+          "$required = @('support/run_cryer_nu_release_r1.ps1','support/README_cryer_nu_release_r1.md','LICENSE')"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_nu_release_r1.ps1",
+          73,
+          "$required += @('DualSPHysics5.2_GEO_win64.exe','GenCase_win64.exe','ChronoEngine.dll','dsphchrono.dll','vcomp140.dll','DsphConfig.xml','msvcp140.dll','vcruntime140.dll','vcruntime140_1.dll') | ForEach-Object {'support/bin/'+$_}"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_nu_release_r1.ps1",
+          82,
+          "$solver = Payload-Path 'support/bin/DualSPHysics5.2_GEO_win64.exe'"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_nu_release_r1.ps1",
+          83,
+          "$gencase = Payload-Path 'support/bin/GenCase_win64.exe'"
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryerProblem_PR_release_nu020_r1_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_release_nu020_r1_win64_GPU.bat",
+          25,
+          "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"support\\run_cryer_nu_release_r1.ps1\" -Nu 020 %smoke%"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_nu_release_r1.ps1",
+          5,
+          "$name = 'CaseCryerProblem_PR_release_nu' + $Nu + '_r1'"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_nu_release_r1.ps1",
+          58,
+          "$required = @('support/run_cryer_nu_release_r1.ps1','support/README_cryer_nu_release_r1.md','LICENSE')"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_nu_release_r1.ps1",
+          73,
+          "$required += @('DualSPHysics5.2_GEO_win64.exe','GenCase_win64.exe','ChronoEngine.dll','dsphchrono.dll','vcomp140.dll','DsphConfig.xml','msvcp140.dll','vcruntime140.dll','vcruntime140_1.dll') | ForEach-Object {'support/bin/'+$_}"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_nu_release_r1.ps1",
+          82,
+          "$solver = Payload-Path 'support/bin/DualSPHysics5.2_GEO_win64.exe'"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_nu_release_r1.ps1",
+          83,
+          "$gencase = Payload-Path 'support/bin/GenCase_win64.exe'"
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryerProblem_PR_release_nu045_r1_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_release_nu045_r1_win64_GPU.bat",
+          25,
+          "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"support\\run_cryer_nu_release_r1.ps1\" -Nu 045 %smoke%"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_nu_release_r1.ps1",
+          5,
+          "$name = 'CaseCryerProblem_PR_release_nu' + $Nu + '_r1'"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_nu_release_r1.ps1",
+          58,
+          "$required = @('support/run_cryer_nu_release_r1.ps1','support/README_cryer_nu_release_r1.md','LICENSE')"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_nu_release_r1.ps1",
+          73,
+          "$required += @('DualSPHysics5.2_GEO_win64.exe','GenCase_win64.exe','ChronoEngine.dll','dsphchrono.dll','vcomp140.dll','DsphConfig.xml','msvcp140.dll','vcruntime140.dll','vcruntime140_1.dll') | ForEach-Object {'support/bin/'+$_}"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_nu_release_r1.ps1",
+          82,
+          "$solver = Payload-Path 'support/bin/DualSPHysics5.2_GEO_win64.exe'"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_nu_release_r1.ps1",
+          83,
+          "$gencase = Payload-Path 'support/bin/GenCase_win64.exe'"
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryerProblem_PR_release_r2_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_release_r2_win64_GPU.bat",
+          25,
+          "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"support\\run_cryer_release_r2.ps1\" %smoke%"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_release_r2.ps1",
+          5,
+          "$name = 'CaseCryerProblem_PR_release_r2'"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_release_r2.ps1",
+          56,
+          "$required = @(($name+'_Def.xml'),('x'+$name+'_win64_GPU.bat'),'support/run_cryer_release_r2.ps1','support/README_cryer_release_r2.md','LICENSE')"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_release_r2.ps1",
+          57,
+          "$required += @('DualSPHysics5.2_GEO_win64.exe','GenCase_win64.exe','ChronoEngine.dll','dsphchrono.dll','vcomp140.dll','DsphConfig.xml','msvcp140.dll','vcruntime140.dll','vcruntime140_1.dll') | ForEach-Object {'support/bin/'+$_}"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_release_r2.ps1",
+          66,
+          "$solver = Payload-Path 'support/bin/DualSPHysics5.2_GEO_win64.exe'"
+        ],
+        [
+          "04_CryerProblem_PR/support/run_cryer_release_r2.ps1",
+          67,
+          "$gencase = Payload-Path 'support/bin/GenCase_win64.exe'"
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryerProblem_PR_symc_nu030_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_symc_nu030_win64_GPU.bat",
+          6,
+          "set name=CaseCryerProblem_PR_symc_nu030"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_symc_nu030_win64_GPU.bat",
+          8,
+          "set dirbin=support/bin"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_symc_nu030_win64_GPU.bat",
+          9,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_symc_nu030_win64_GPU.bat",
+          10,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_symc_nu030_win64_GPU.bat",
+          33,
+          "if not exist \"%dirbin%/DualSPHysics5.2_GEO_win64.exe\" goto fail"
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryerProblem_PR_win64_CPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_win64_CPU.bat",
+          9,
+          "set name=CaseCryerProblem_PR"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_win64_CPU.bat",
+          15,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_win64_CPU.bat",
+          16,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_win64_CPU.bat",
+          17,
+          "set dualsphysicscpu=\"%dirbin%/DualSPHysics5.2CPU_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryerProblem_PR_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_win64_GPU.bat",
+          9,
+          "set name=CaseCryerProblem_PR"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_win64_GPU.bat",
+          15,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_win64_GPU.bat",
+          16,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_PR_win64_GPU.bat",
+          17,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryerProblem_u_pl_nu030_r1_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_u_pl_nu030_r1_win64_GPU.bat",
+          6,
+          "set \"name=CaseCryerProblem_u_pl_nu030_r1\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_u_pl_nu030_r1_win64_GPU.bat",
+          9,
+          "set \"solver=support\\bin_upl_r1\\DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "04_CryerProblem_PR/xCaseCryerProblem_u_pl_nu030_win64_GPU.bat",
+      "invocations": [
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_u_pl_nu030_win64_GPU.bat",
+          4,
+          "set \"case=CaseCryerProblem_u_pl_nu030\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_u_pl_nu030_win64_GPU.bat",
+          6,
+          "set \"bin=..\\..\\..\\bin\\windows\""
+        ],
+        [
+          "04_CryerProblem_PR/xCaseCryerProblem_u_pl_nu030_win64_GPU.bat",
+          21,
+          "\"%bin%\\DualSPHysics5.2_GEO_win64.exe\" -gpu -stable \"%out%\\%case%\" \"%out%\" -dirdataout data -svres -nsteps:%steps% || goto fail"
+        ]
+      ]
+    },
+    {
+      "bat": "05_LianFlexibleStrip2D_PR/xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat",
+      "invocations": [
+        [
+          "05_LianFlexibleStrip2D_PR/xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat",
+          6,
+          "set name=CaseLianFlexibleStrip2D_PR_release"
+        ],
+        [
+          "05_LianFlexibleStrip2D_PR/xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat",
+          9,
+          "set dirbin=support/bin"
+        ],
+        [
+          "05_LianFlexibleStrip2D_PR/xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat",
+          10,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "05_LianFlexibleStrip2D_PR/xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat",
+          11,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ],
+        [
+          "05_LianFlexibleStrip2D_PR/xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat",
+          15,
+          "if not exist \"%dirbin%/DualSPHysics5.2_GEO_win64.exe\" goto fail"
+        ]
+      ]
+    },
+    {
+      "bat": "05_LianFlexibleStrip2D_PR/xCaseLianFlexibleStrip2D_PR_win64_GPU.bat",
+      "invocations": [
+        [
+          "05_LianFlexibleStrip2D_PR/xCaseLianFlexibleStrip2D_PR_win64_GPU.bat",
+          9,
+          "set name=CaseLianFlexibleStrip2D_PR"
+        ],
+        [
+          "05_LianFlexibleStrip2D_PR/xCaseLianFlexibleStrip2D_PR_win64_GPU.bat",
+          17,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "05_LianFlexibleStrip2D_PR/xCaseLianFlexibleStrip2D_PR_win64_GPU.bat",
+          18,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "05_LianFlexibleStrip2D_PR/xCaseLianFlexibleStrip2D_PR_win64_GPU.bat",
+          19,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_damp000_win64_GPU.bat",
+      "invocations": [
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_damp000_win64_GPU.bat",
+          9,
+          "set name=CaseYao2DConsolidation_PR_damp000"
+        ],
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_damp000_win64_GPU.bat",
+          15,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_damp000_win64_GPU.bat",
+          16,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_damp000_win64_GPU.bat",
+          17,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_damp001_win64_GPU.bat",
+      "invocations": [
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_damp001_win64_GPU.bat",
+          9,
+          "set name=CaseYao2DConsolidation_PR_damp001"
+        ],
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_damp001_win64_GPU.bat",
+          15,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_damp001_win64_GPU.bat",
+          16,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_damp001_win64_GPU.bat",
+          17,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_damp002_win64_GPU.bat",
+      "invocations": [
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_damp002_win64_GPU.bat",
+          9,
+          "set name=CaseYao2DConsolidation_PR_damp002"
+        ],
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_damp002_win64_GPU.bat",
+          15,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_damp002_win64_GPU.bat",
+          16,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_damp002_win64_GPU.bat",
+          17,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_SPR_win64_GPU.bat",
+      "invocations": [
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_SPR_win64_GPU.bat",
+          7,
+          "set name=CaseYao2DConsolidation_PR_SPR"
+        ],
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_SPR_win64_GPU.bat",
+          12,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_SPR_win64_GPU.bat",
+          13,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_SPR_win64_GPU.bat",
+          14,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_win64_GPU.bat",
+      "invocations": [
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_win64_GPU.bat",
+          9,
+          "set name=CaseYao2DConsolidation_PR"
+        ],
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_win64_GPU.bat",
+          15,
+          "set dirbin=../../../bin/windows"
+        ],
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_win64_GPU.bat",
+          16,
+          "set gencase=\"%dirbin%/GenCase_win64.exe\""
+        ],
+        [
+          "06_Yao2DConsolidation_PR/xCaseYao2DConsolidation_PR_win64_GPU.bat",
+          17,
+          "set dualsphysicsgpu=\"%dirbin%/DualSPHysics5.2_GEO_win64.exe\""
+        ]
+      ]
+    },
+    {
+      "bat": "07_Selborne3D_u_pw/xCaseSelborne3D_u_pw_failure_win64_CPU.bat",
+      "invocations": [
+        [
+          "07_Selborne3D_u_pw/xCheckSelborne3D_geometry_win64_CPU.bat",
+          4,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"tests\\support\\check_geometry.ps1\""
+        ],
+        [
+          "07_Selborne3D_u_pw/xCaseSelborne3D_u_pw_failure_win64_CPU.bat",
+          11,
+          "exit /b 2"
+        ]
+      ]
+    },
+    {
+      "bat": "07_Selborne3D_u_pw/xCaseSelborne3D_u_pw_prestress_win64_CPU.bat",
+      "invocations": [
+        [
+          "07_Selborne3D_u_pw/xCheckSelborne3D_geometry_win64_CPU.bat",
+          4,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"tests\\support\\check_geometry.ps1\""
+        ],
+        [
+          "07_Selborne3D_u_pw/xCaseSelborne3D_u_pw_prestress_win64_CPU.bat",
+          11,
+          "exit /b 2"
+        ]
+      ]
+    },
+    {
+      "bat": "07_Selborne3D_u_pw/xCheckSelborne3D_geometry_win64_CPU.bat",
+      "invocations": [
+        [
+          "07_Selborne3D_u_pw/xCheckSelborne3D_geometry_win64_CPU.bat",
+          4,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"tests\\support\\check_geometry.ps1\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi0_shared_r3_win64_CPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi0_shared_r3_win64_CPU.bat",
+          3,
+          "call \"%~dp0support\\run_lian_collapse_shared_r3_win64.bat\" psi0 CPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          16,
+          "if /i \"%~1\" == \"PRELOAD\" set name=CaseLianSaturatedColumnCollapse_shared_preload_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          19,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          25,
+          "set solver=DualSPHysics5.2CPU_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          30,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          43,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          52,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          66,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          76,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          79,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          88,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          90,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          95,
+          "if not exist \"support\\postprocess_lian_collapse_r3.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          97,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          106,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          110,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi0_shared_r3_win64_GPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi0_shared_r3_win64_GPU.bat",
+          5,
+          "call \"%~dp0support\\run_lian_collapse_shared_r3_win64.bat\" psi0 GPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          16,
+          "if /i \"%~1\" == \"PRELOAD\" set name=CaseLianSaturatedColumnCollapse_shared_preload_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          19,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          25,
+          "set solver=DualSPHysics5.2CPU_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          30,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          43,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          52,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          66,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          76,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          79,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          88,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          90,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          95,
+          "if not exist \"support\\postprocess_lian_collapse_r3.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          97,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          106,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          110,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi0_shared_r4_win64_CPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi0_shared_r4_win64_CPU.bat",
+          5,
+          "call \"%~dp0support\\run_lian_collapse_shared_r4_win64.bat\" psi0 CPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          16,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          21,
+          "set solver=DualSPHysics5.2CPU_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          27,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          39,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          46,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          60,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          68,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          70,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          75,
+          "if not exist \"support\\postprocess_lian_collapse_r4.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          77,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r4.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          86,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r4.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          90,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi0_shared_r4_win64_GPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi0_shared_r4_win64_GPU.bat",
+          5,
+          "call \"%~dp0support\\run_lian_collapse_shared_r4_win64.bat\" psi0 GPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          16,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          21,
+          "set solver=DualSPHysics5.2CPU_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          27,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          39,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          46,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          60,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          68,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          70,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          75,
+          "if not exist \"support\\postprocess_lian_collapse_r4.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          77,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r4.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          86,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r4.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          90,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi0_shared_r5_win64_GPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi0_shared_r5_win64_GPU.bat",
+          5,
+          "call \"%~dp0support\\run_lian_collapse_shared_r5_win64.bat\" psi0 GPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r5"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r5"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r5"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          19,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r5"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          25,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          37,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          44,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          58,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          66,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          68,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          73,
+          "if not exist \"support\\postprocess_lian_collapse_r5.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          75,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r5.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          84,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r5.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          88,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi0_shared_r6_win64_GPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi0_shared_r6_win64_GPU.bat",
+          5,
+          "call \"%~dp0support\\run_lian_collapse_shared_r6_win64.bat\" psi0 GPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r6_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r6"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r6_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r6_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r6_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r6"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r6_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r6"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r6_win64.bat",
+          19,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r6"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r6_win64.bat",
+          25,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r6_win64.bat",
+          37,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r6_win64.bat",
+          44,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r6_win64.bat",
+          58,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r6_win64.bat",
+          66,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r6_win64.bat",
+          68,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r6_win64.bat",
+          73,
+          "if not exist \"support\\postprocess_lian_collapse_r6.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r6_win64.bat",
+          75,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r6.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r6_win64.bat",
+          84,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r6.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r6_win64.bat",
+          88,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi2p5_shared_r3_win64_CPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi2p5_shared_r3_win64_CPU.bat",
+          3,
+          "call \"%~dp0support\\run_lian_collapse_shared_r3_win64.bat\" psi2p5 CPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          16,
+          "if /i \"%~1\" == \"PRELOAD\" set name=CaseLianSaturatedColumnCollapse_shared_preload_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          19,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          25,
+          "set solver=DualSPHysics5.2CPU_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          30,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          43,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          52,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          66,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          76,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          79,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          88,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          90,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          95,
+          "if not exist \"support\\postprocess_lian_collapse_r3.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          97,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          106,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          110,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi2p5_shared_r3_win64_GPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi2p5_shared_r3_win64_GPU.bat",
+          5,
+          "call \"%~dp0support\\run_lian_collapse_shared_r3_win64.bat\" psi2p5 GPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          16,
+          "if /i \"%~1\" == \"PRELOAD\" set name=CaseLianSaturatedColumnCollapse_shared_preload_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          19,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          25,
+          "set solver=DualSPHysics5.2CPU_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          30,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          43,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          52,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          66,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          76,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          79,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          88,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          90,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          95,
+          "if not exist \"support\\postprocess_lian_collapse_r3.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          97,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          106,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          110,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi2p5_shared_r4_win64_CPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi2p5_shared_r4_win64_CPU.bat",
+          5,
+          "call \"%~dp0support\\run_lian_collapse_shared_r4_win64.bat\" psi2p5 CPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          16,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          21,
+          "set solver=DualSPHysics5.2CPU_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          27,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          39,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          46,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          60,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          68,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          70,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          75,
+          "if not exist \"support\\postprocess_lian_collapse_r4.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          77,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r4.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          86,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r4.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          90,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi2p5_shared_r4_win64_GPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi2p5_shared_r4_win64_GPU.bat",
+          5,
+          "call \"%~dp0support\\run_lian_collapse_shared_r4_win64.bat\" psi2p5 GPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          16,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          21,
+          "set solver=DualSPHysics5.2CPU_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          27,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          39,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          46,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          60,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          68,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          70,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          75,
+          "if not exist \"support\\postprocess_lian_collapse_r4.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          77,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r4.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          86,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r4.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          90,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi2p5_shared_r5_win64_GPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psi2p5_shared_r5_win64_GPU.bat",
+          5,
+          "call \"%~dp0support\\run_lian_collapse_shared_r5_win64.bat\" psi2p5 GPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r5"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r5"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r5"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          19,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r5"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          25,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          37,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          44,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          58,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          66,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          68,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          73,
+          "if not exist \"support\\postprocess_lian_collapse_r5.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          75,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r5.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          84,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r5.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          88,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psim5_shared_r3_win64_CPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psim5_shared_r3_win64_CPU.bat",
+          3,
+          "call \"%~dp0support\\run_lian_collapse_shared_r3_win64.bat\" psim5 CPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          16,
+          "if /i \"%~1\" == \"PRELOAD\" set name=CaseLianSaturatedColumnCollapse_shared_preload_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          19,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          25,
+          "set solver=DualSPHysics5.2CPU_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          30,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          43,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          52,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          66,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          76,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          79,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          88,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          90,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          95,
+          "if not exist \"support\\postprocess_lian_collapse_r3.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          97,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          106,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          110,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psim5_shared_r3_win64_GPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psim5_shared_r3_win64_GPU.bat",
+          5,
+          "call \"%~dp0support\\run_lian_collapse_shared_r3_win64.bat\" psim5 GPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          16,
+          "if /i \"%~1\" == \"PRELOAD\" set name=CaseLianSaturatedColumnCollapse_shared_preload_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          19,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          25,
+          "set solver=DualSPHysics5.2CPU_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          30,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          43,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          52,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          66,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          76,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          79,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          88,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          90,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          95,
+          "if not exist \"support\\postprocess_lian_collapse_r3.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          97,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          106,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          110,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psim5_shared_r4_win64_CPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psim5_shared_r4_win64_CPU.bat",
+          5,
+          "call \"%~dp0support\\run_lian_collapse_shared_r4_win64.bat\" psim5 CPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          16,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          21,
+          "set solver=DualSPHysics5.2CPU_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          27,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          39,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          46,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          60,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          68,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          70,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          75,
+          "if not exist \"support\\postprocess_lian_collapse_r4.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          77,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r4.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          86,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r4.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          90,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psim5_shared_r4_win64_GPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psim5_shared_r4_win64_GPU.bat",
+          5,
+          "call \"%~dp0support\\run_lian_collapse_shared_r4_win64.bat\" psim5 GPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          16,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r4"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          21,
+          "set solver=DualSPHysics5.2CPU_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          27,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          39,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          46,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          60,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          68,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          70,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          75,
+          "if not exist \"support\\postprocess_lian_collapse_r4.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          77,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r4.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          86,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r4.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r4_win64.bat",
+          90,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psim5_shared_r5_win64_GPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_psim5_shared_r5_win64_GPU.bat",
+          5,
+          "call \"%~dp0support\\run_lian_collapse_shared_r5_win64.bat\" psim5 GPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r5"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r5"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r5"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          19,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r5"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          25,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          37,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          44,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          58,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          66,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          68,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          73,
+          "if not exist \"support\\postprocess_lian_collapse_r5.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          75,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r5.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          84,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r5.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r5_win64.bat",
+          88,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_shared_preload_r3_win64_CPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_shared_preload_r3_win64_CPU.bat",
+          3,
+          "call \"%~dp0support\\run_lian_collapse_shared_r3_win64.bat\" PRELOAD CPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          16,
+          "if /i \"%~1\" == \"PRELOAD\" set name=CaseLianSaturatedColumnCollapse_shared_preload_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          19,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          25,
+          "set solver=DualSPHysics5.2CPU_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          30,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          43,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          52,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          66,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          76,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          79,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          88,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          90,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          95,
+          "if not exist \"support\\postprocess_lian_collapse_r3.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          97,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          106,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          110,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_shared_preload_r3_win64_GPU.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCaseLianSaturatedColumnCollapse_shared_preload_r3_win64_GPU.bat",
+          3,
+          "call \"%~dp0support\\run_lian_collapse_shared_r3_win64.bat\" PRELOAD GPU %*"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          4,
+          "set dirbin=support\\runtime_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          6,
+          "set name="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          7,
+          "set solver="
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          16,
+          "if /i \"%~1\" == \"PRELOAD\" set name=CaseLianSaturatedColumnCollapse_shared_preload_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          17,
+          "if /i \"%~1\" == \"psi0\" set name=CaseLianSaturatedColumnCollapse_psi0_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          18,
+          "if /i \"%~1\" == \"psi2p5\" set name=CaseLianSaturatedColumnCollapse_psi2p5_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          19,
+          "if /i \"%~1\" == \"psim5\" set name=CaseLianSaturatedColumnCollapse_psim5_shared_r3"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          25,
+          "set solver=DualSPHysics5.2CPU_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          30,
+          "set solver=DualSPHysics5.2_GEO_win64.exe"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          43,
+          "call :checkposttools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          52,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          66,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          76,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          79,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          88,
+          "call :checksource"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          90,
+          "call :postprocess"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          95,
+          "if not exist \"support\\postprocess_lian_collapse_r3.py\" exit /b 1"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          97,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --check-tools"
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          106,
+          "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/support/run_lian_collapse_shared_r3_win64.bat",
+          110,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%sourceout%\""
+        ]
+      ]
+    },
+    {
+      "bat": "08_LianSaturatedColumnCollapse_u_pl/xCheckLianSaturatedColumnCollapse_preload_win64.bat",
+      "invocations": [
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCheckLianSaturatedColumnCollapse_preload_win64.bat",
+          7,
+          "for %%V in (r2 r3) do for %%B in (CPU GPU) do call :checkexisting \"CaseLianSaturatedColumnCollapse_shared_preload_%%V_%%B_out\""
+        ],
+        [
+          "08_LianSaturatedColumnCollapse_u_pl/xCheckLianSaturatedColumnCollapse_preload_win64.bat",
+          21,
+          "powershell -NoProfile -ExecutionPolicy Bypass -File \"support\\check_lian_preload_schedule_r1.ps1\" -SourceOut \"%~1\""
+        ]
+      ]
+    }
+  ],
+  "support_source_keys": [
+    {
+      "script": "02_TerzaghiConsolidation_q0_PR/support/compare_precision_q0.py",
+      "source_keys": [
+        {
+          "line": 59,
+          "keys": [
+            "externalload"
+          ]
+        },
+        {
+          "line": 62,
+          "keys": [
+            "HydroMechTopLoadQ0",
+            "HydroMechTopLoadRampTime"
+          ]
+        },
+        {
+          "line": 70,
+          "keys": [
+            "special/drainage"
+          ]
+        },
+        {
+          "line": 81,
+          "keys": [
+            "HydroMechDrainage"
+          ]
+        },
+        {
+          "line": 84,
+          "keys": [
+            "HydroMechDrainage",
+            "HydroMechDrainageStartTime"
+          ]
+        },
+        {
+          "line": 239,
+          "keys": [
+            "HydroMechDrainage"
+          ]
+        },
+        {
+          "line": 241,
+          "keys": [
+            "HydroMechDrainage",
+            "HydroMechDrainageFixedGrid"
+          ]
+        },
+        {
+          "line": 249,
+          "keys": [
+            "HydroMechDrainage",
+            "HydroMechDrainageStartTime"
+          ]
+        },
+        {
+          "line": 250,
+          "keys": [
+            "HydroMechDrainage",
+            "HydroMechDrainageFixedGrid"
+          ]
+        },
+        {
+          "line": 251,
+          "keys": [
+            "HydroMechTopLoadMode",
+            "HydroMechTopLoadQ0",
+            "externalload"
+          ]
+        },
+        {
+          "line": 252,
+          "keys": [
+            "HydroMechTopLoadRampTime"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "04_CryerProblem_PR/support/diagnose_cryer_theory_load.py",
+      "source_keys": [
+        {
+          "line": 117,
+          "keys": [
+            "externalload"
+          ]
+        },
+        {
+          "line": 118,
+          "keys": [
+            "HydroMechTopLoadQ0"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "04_CryerProblem_PR/support/plot_cryer_formal_four_nu_r1.py",
+      "source_keys": [
+        {
+          "line": 46,
+          "keys": [
+            "externalload"
+          ]
+        },
+        {
+          "line": 48,
+          "keys": [
+            "HydroMechTopLoadQ0",
+            "HydroMechTopLoadRampTime"
+          ]
+        },
+        {
+          "line": 51,
+          "keys": [
+            "special/drainage"
+          ]
+        },
+        {
+          "line": 53,
+          "keys": [
+            "HydroMechDrainage",
+            "HydroMechDrainageFixedGrid",
+            "HydroMechDrainageStartTime"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "04_CryerProblem_PR/support/plot_cryer_poisson_sweep.py",
+      "source_keys": [
+        {
+          "line": 52,
+          "keys": [
+            "externalload"
+          ]
+        },
+        {
+          "line": 67,
+          "keys": [
+            "HydroMechTopLoadQ0"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "04_CryerProblem_PR/support/plot_cryer_poisson_sweep_dp002_rampclosed.py",
+      "source_keys": [
+        {
+          "line": 55,
+          "keys": [
+            "externalload"
+          ]
+        },
+        {
+          "line": 67,
+          "keys": [
+            "HydroMechTopLoadRampTime"
+          ]
+        },
+        {
+          "line": 68,
+          "keys": [
+            "special/drainage"
+          ]
+        },
+        {
+          "line": 70,
+          "keys": [
+            "HydroMechDrainage",
+            "HydroMechDrainageStartTime"
+          ]
+        },
+        {
+          "line": 74,
+          "keys": [
+            "HydroMechTopLoadQ0"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "04_CryerProblem_PR/support/plot_public_cryer_tpi.py",
+      "source_keys": [
+        {
+          "line": 31,
+          "keys": [
+            "HydroMechDynamicSeepage",
+            "HydroMechModel"
+          ]
+        },
+        {
+          "line": 57,
+          "keys": [
+            "HydroMechModel"
+          ]
+        },
+        {
+          "line": 59,
+          "keys": [
+            "HydroMechModel"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "04_CryerProblem_PR/support/run_cryer_refinement.py",
+      "source_keys": [
+        {
+          "line": 72,
+          "keys": [
+            "externalload"
+          ]
+        },
+        {
+          "line": 73,
+          "keys": [
+            "special/drainage"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "04_CryerProblem_PR/support/run_cryer_undrained_then_drained.py",
+      "source_keys": [
+        {
+          "line": 74,
+          "keys": [
+            "externalload"
+          ]
+        },
+        {
+          "line": 78,
+          "keys": [
+            "special/drainage"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "04_CryerProblem_PR/support/run_damping_sweep_20260622.py",
+      "source_keys": [
+        {
+          "line": 91,
+          "keys": [
+            "externalload"
+          ]
+        },
+        {
+          "line": 94,
+          "keys": [
+            "special/drainage"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "04_CryerProblem_PR/support/run_k1e5_convergence_20260622.py",
+      "source_keys": [
+        {
+          "line": 95,
+          "keys": [
+            "externalload"
+          ]
+        },
+        {
+          "line": 98,
+          "keys": [
+            "special/drainage"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "04_CryerProblem_PR/support/run_ramp_drain_closed_sweep_20260624.py",
+      "source_keys": [
+        {
+          "line": 118,
+          "keys": [
+            "externalload"
+          ]
+        },
+        {
+          "line": 122,
+          "keys": [
+            "special/drainage"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "07_Selborne3D_u_pw/support/prepare_case.py",
+      "source_keys": [
+        {
+          "line": 119,
+          "keys": [
+            "externalload"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "08_LianSaturatedColumnCollapse_u_pl/support/postprocess_lian_collapse_r5.py",
+      "source_keys": [
+        {
+          "line": 59,
+          "keys": [
+            "HydroMechDynamicSeepage",
+            "HydroMechDrainage",
+            "HydroMechFreeSeepage"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "08_LianSaturatedColumnCollapse_u_pl/support/postprocess_lian_collapse_r6.py",
+      "source_keys": [
+        {
+          "line": 59,
+          "keys": [
+            "HydroMechDynamicSeepage",
+            "HydroMechDrainage",
+            "HydroMechFreeSeepage"
+          ]
+        }
+      ]
+    }
+  ],
+  "current_C08_build_intermediates": [
+    {
+      "directory": "08_LianSaturatedColumnCollapse_u_pl/tests/outputs/c08_m0_coupled_baseline_gpu_r1_build",
+      "logical_B": 20635377,
+      "allocated_B": 20643840,
+      "files": [
+        {
+          "name": "C08Collapse.iobj",
+          "logical_B": 9214829,
+          "allocated_B": 9216000
+        },
+        {
+          "name": "C08Collapse.ipdb",
+          "logical_B": 4884080,
+          "allocated_B": 4886528
+        },
+        {
+          "name": "JSph.obj",
+          "logical_B": 4240817,
+          "allocated_B": 4243456
+        },
+        {
+          "name": "JSphGpuSingle.obj",
+          "logical_B": 874339,
+          "allocated_B": 876544
+        },
+        {
+          "name": "private.pdb",
+          "logical_B": 1421312,
+          "allocated_B": 1421312
+        }
+      ]
+    },
+    {
+      "directory": "08_LianSaturatedColumnCollapse_u_pl/tests/outputs/c08_m0_coupled_deformed_r1_build",
+      "logical_B": 13216005,
+      "allocated_B": 13221888,
+      "files": [
+        {
+          "name": "C08.pdb",
+          "logical_B": 1996800,
+          "allocated_B": 1998848
+        },
+        {
+          "name": "JSph.obj",
+          "logical_B": 4236570,
+          "allocated_B": 4239360
+        },
+        {
+          "name": "JSphCpu.obj",
+          "logical_B": 6982635,
+          "allocated_B": 6983680
+        }
+      ]
+    },
+    {
+      "directory": "08_LianSaturatedColumnCollapse_u_pl/tests/outputs/c08_m0_coupled_deformed_r1_build_r2",
+      "logical_B": 27977607,
+      "allocated_B": 27983872,
+      "files": [
+        {
+          "name": "C08.pdb",
+          "logical_B": 1445888,
+          "allocated_B": 1445888
+        },
+        {
+          "name": "C08Pressure.iobj",
+          "logical_B": 9181721,
+          "allocated_B": 9183232
+        },
+        {
+          "name": "C08Pressure.ipdb",
+          "logical_B": 4883776,
+          "allocated_B": 4886528
+        },
+        {
+          "name": "JSph.obj",
+          "logical_B": 4238936,
+          "allocated_B": 4239360
+        },
+        {
+          "name": "JSphCpu.obj",
+          "logical_B": 6982604,
+          "allocated_B": 6983680
+        },
+        {
+          "name": "JSphCpuSingle.obj",
+          "logical_B": 1244682,
+          "allocated_B": 1245184
+        }
+      ]
+    },
+    {
+      "directory": "08_LianSaturatedColumnCollapse_u_pl/tests/outputs/c08_m0_coupled_hold_r1_build",
+      "logical_B": 27785674,
+      "allocated_B": 27795456,
+      "files": [
+        {
+          "name": "C08.pdb",
+          "logical_B": 1413120,
+          "allocated_B": 1413120
+        },
+        {
+          "name": "C08Pressure.iobj",
+          "logical_B": 9181721,
+          "allocated_B": 9183232
+        },
+        {
+          "name": "C08Pressure.ipdb",
+          "logical_B": 4883776,
+          "allocated_B": 4886528
+        },
+        {
+          "name": "JSph.obj",
+          "logical_B": 4216357,
+          "allocated_B": 4218880
+        },
+        {
+          "name": "JSphCpu.obj",
+          "logical_B": 7040710,
+          "allocated_B": 7041024
+        },
+        {
+          "name": "JSphCpuSingle.obj",
+          "logical_B": 1049990,
+          "allocated_B": 1052672
+        }
+      ]
+    },
+    {
+      "directory": "08_LianSaturatedColumnCollapse_u_pl/tests/outputs/c08_m0_coupled_r1_build",
+      "logical_B": 27723363,
+      "allocated_B": 27734016,
+      "files": [
+        {
+          "name": "C08.pdb",
+          "logical_B": 1413120,
+          "allocated_B": 1413120
+        },
+        {
+          "name": "C08Pressure.iobj",
+          "logical_B": 9181721,
+          "allocated_B": 9183232
+        },
+        {
+          "name": "C08Pressure.ipdb",
+          "logical_B": 4883776,
+          "allocated_B": 4886528
+        },
+        {
+          "name": "JSph.obj",
+          "logical_B": 4234050,
+          "allocated_B": 4235264
+        },
+        {
+          "name": "JSphCpu.obj",
+          "logical_B": 6981413,
+          "allocated_B": 6983680
+        },
+        {
+          "name": "JSphCpuSingle.obj",
+          "logical_B": 1029283,
+          "allocated_B": 1032192
+        }
+      ]
+    },
+    {
+      "directory": "08_LianSaturatedColumnCollapse_u_pl/tests/outputs/c08_m0_gpu_coupled_r1_build",
+      "logical_B": 40161335,
+      "allocated_B": 40173568,
+      "files": [
+        {
+          "name": "C08.pdb",
+          "logical_B": 1421312,
+          "allocated_B": 1421312
+        },
+        {
+          "name": "C08GpuPressure.iobj",
+          "logical_B": 9214829,
+          "allocated_B": 9216000
+        },
+        {
+          "name": "C08GpuPressure.ipdb",
+          "logical_B": 4884128,
+          "allocated_B": 4886528
+        },
+        {
+          "name": "JSph.obj",
+          "logical_B": 4219245,
+          "allocated_B": 4222976
+        },
+        {
+          "name": "JSphGpu.obj",
+          "logical_B": 1420503,
+          "allocated_B": 1421312
+        },
+        {
+          "name": "JSphGpuSingle.obj",
+          "logical_B": 694303,
+          "allocated_B": 696320
+        },
+        {
+          "name": "JSphGpu_ker.cu.obj",
+          "logical_B": 18307015,
+          "allocated_B": 18309120
+        }
+      ]
+    },
+    {
+      "directory": "08_LianSaturatedColumnCollapse_u_pl/tests/outputs/c08_m0_release_gpu_r1_build",
+      "logical_B": 20555782,
+      "allocated_B": 20566016,
+      "files": [
+        {
+          "name": "C08GpuReleaseWall.iobj",
+          "logical_B": 9214829,
+          "allocated_B": 9216000
+        },
+        {
+          "name": "C08GpuReleaseWall.ipdb",
+          "logical_B": 4884128,
+          "allocated_B": 4886528
+        },
+        {
+          "name": "JSph.obj",
+          "logical_B": 4240106,
+          "allocated_B": 4243456
+        },
+        {
+          "name": "JSphGpuSingle.obj",
+          "logical_B": 787215,
+          "allocated_B": 790528
+        },
+        {
+          "name": "private.pdb",
+          "logical_B": 1429504,
+          "allocated_B": 1429504
+        }
+      ]
+    },
+    {
+      "directory": "08_LianSaturatedColumnCollapse_u_pl/tests/outputs/c08_m0_release_history_r1",
+      "logical_B": 3067423,
+      "allocated_B": 3080192,
+      "files": [
+        {
+          "name": "c08_m0_release_history_r1.obj",
+          "logical_B": 665384,
+          "allocated_B": 667648
+        },
+        {
+          "name": "Functions.obj",
+          "logical_B": 897781,
+          "allocated_B": 901120
+        },
+        {
+          "name": "JBinaryData.obj",
+          "logical_B": 900289,
+          "allocated_B": 901120
+        },
+        {
+          "name": "JException.obj",
+          "logical_B": 79238,
+          "allocated_B": 81920
+        },
+        {
+          "name": "JObject.obj",
+          "logical_B": 36153,
+          "allocated_B": 36864
+        },
+        {
+          "name": "JPartDataBi4.obj",
+          "logical_B": 262055,
+          "allocated_B": 262144
+        },
+        {
+          "name": "JPartDataHead.obj",
+          "logical_B": 226523,
+          "allocated_B": 229376
+        }
+      ]
+    },
+    {
+      "directory": "08_LianSaturatedColumnCollapse_u_pl/tests/outputs/c08_m0_release_mature_gpu_r1_build",
+      "logical_B": 20644395,
+      "allocated_B": 20652032,
+      "files": [
+        {
+          "name": "C08MatureWall.iobj",
+          "logical_B": 9214829,
+          "allocated_B": 9216000
+        },
+        {
+          "name": "C08MatureWall.ipdb",
+          "logical_B": 4884080,
+          "allocated_B": 4886528
+        },
+        {
+          "name": "JSph.obj",
+          "logical_B": 4240844,
+          "allocated_B": 4243456
+        },
+        {
+          "name": "JSphGpuSingle.obj",
+          "logical_B": 875138,
+          "allocated_B": 876544
+        },
+        {
+          "name": "private.pdb",
+          "logical_B": 1429504,
+          "allocated_B": 1429504
+        }
+      ]
+    },
+    {
+      "directory": "08_LianSaturatedColumnCollapse_u_pl/tests/outputs/c08_m0_release_short_r1_build",
+      "logical_B": 27760472,
+      "allocated_B": 27766784,
+      "files": [
+        {
+          "name": "C08.pdb",
+          "logical_B": 1429504,
+          "allocated_B": 1429504
+        },
+        {
+          "name": "C08Pressure.iobj",
+          "logical_B": 9181721,
+          "allocated_B": 9183232
+        },
+        {
+          "name": "C08Pressure.ipdb",
+          "logical_B": 4883776,
+          "allocated_B": 4886528
+        },
+        {
+          "name": "JSph.obj",
+          "logical_B": 4238035,
+          "allocated_B": 4239360
+        },
+        {
+          "name": "JSphCpu.obj",
+          "logical_B": 6975461,
+          "allocated_B": 6975488
+        },
+        {
+          "name": "JSphCpuSingle.obj",
+          "logical_B": 1051975,
+          "allocated_B": 1052672
+        }
+      ]
+    }
+  ],
+  "build_intermediate_logical_B": 229527433,
+  "build_intermediate_allocated_B": 229617664,
+  "removed_B": 0,
+  "notes": [
+    "Actual allocation for named build intermediates only; retain all until dependencies and formal packaging are complete.",
+    "Launch evidence includes explicit path, variable expressions and case wrappers. A script that name-checks an executable is not itself a version test.",
+    "Original source inputs and saved generated XML/BI4, packages, PDBs needed for ongoing debugging, source capture and active link inputs remain protected."
+  ]
+}

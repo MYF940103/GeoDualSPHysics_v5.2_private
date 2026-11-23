@@ -1,29 +1,8 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-
-rem Independent Poisson-ratio candidate. Never delete, overwrite or restart data.
-set smoke=
-set unattended=0
-:arguments
-if "%~1" == "" goto run
-if "%~1" == "--smoke" (
-    set smoke=-Smoke
-    shift
-    goto arguments
-)
-if "%~1" == "--unattended" (
-    set unattended=1
-    shift
-    goto arguments
-)
-echo Unknown argument: %~1
-set result=1
-goto end
-
-:run
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "support\run_cryer_nu_release_r1.ps1" -Nu 020 %smoke%
-set result=%ERRORLEVEL%
-:end
-if "%unattended%" == "0" pause
-exit /b %result%
+if not "%~3"=="" exit /b 2
+powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "support\hydro_frozen_runtime_r2.ps1" -Definition "CaseCryerProblem_PR_release_nu020_r1_Def.xml" -Portable -Option1 "opt=%~1" -Option2 "opt=%~2"
+set "rc=%ERRORLEVEL%"
+if not "%rc%"=="0" if "%~1"=="" pause
+exit /b %rc%

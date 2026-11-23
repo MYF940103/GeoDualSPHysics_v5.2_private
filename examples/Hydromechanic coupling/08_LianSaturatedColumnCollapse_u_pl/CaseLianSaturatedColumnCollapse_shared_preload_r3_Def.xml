@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version='1.0' encoding='utf-8'?>
 <case>
     <!-- r3 server validation candidate: unified DP v2 and bounded shared-PRE handoff checked; actual 10 s elasticity and full collapse remain unaccepted. -->
     <casedef>
@@ -125,7 +125,7 @@
             </soils>
             <hydromechanics>
                 <HydroMech value="1" comment="Enable saturated hydromechanical coupling" />
-                <HydroMechDynamicSeepage value="1" comment="Experimental dynamic u-pl; bounded compatibility checked, full13s physical review pending" />
+                <HydroMechModel value="1" />
                 <HydroMechConductivityModel value="1" comment="Existing void-ratio exponential k(J); explicit Ck=2" />
                 <HydroMechConductivityCk value="2" comment="Explicit Lian 2023 conductivity index for the existing k(J) law" />
                 <PoreWaterRho value="1000" comment="Water density" units_comment="kg/m^3" />
@@ -141,9 +141,6 @@
                 <HydroMechInitMode value="ConstantZ" comment="Initialize hydrostatic pressure only; effective stress starts at zero" />
                 <HydroMechInitZ value="2.0" comment="Physical fully saturated soil-top water table" units_comment="m" />
                 <PoreShepardInterval value="40" comment="Preload excess-pressure filtering every 40 completed steps" />
-                <HydroMechTopLoadMode value="0" comment="No prescribed surcharge; gravity is active" />
-                <HydroMechDrainage value="0" comment="Legacy fixed-zero drainage disabled; independent free-seepage policy below" />
-                <HydroMechFreeSeepage value="1" comment="Completed finite positive surface p becomes zero; negative p retained and predictor unprojected" />
             </hydromechanics>
             <gravitypreload time="10.0" release_mkbound="2" elastic_source="true" comment="Certify every preload material trial as Elastic; source BAT stops at complete PRE before release" units_comment="seconds" />
             <mdbcslip>
@@ -151,6 +148,7 @@
                 <bound mkbound="1" slipmode="2" comment="Bottom: no-slip" />
                 <bound mkbound="2" slipmode="3" comment="Right wall: free-slip during preload; retired at t=10 s" />
             </mdbcslip>
+            <drainage mode="freeSeepage" />
         </special>
         <parameters>
             <parameter key="SavePosDouble" value="1" comment="Save double-precision particle positions" />

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version='1.0' encoding='utf-8'?>
 <case app="GenCase v5.0.197 (18-07-2020)" date="27-10-2026 00:00:00">
     <casedef>
         <constantsdef>
@@ -39,7 +39,6 @@
                     <shapeout file="hdp" />
                     <setmkvoid />
                     <redraw />
-
                     <setdrawmode mode="full" />
                     <setboxlimitmode mode="full" />
                     <setmkfluid mk="0" />
@@ -48,7 +47,6 @@
                         <point x="#-Dp/2" y="-1" z="#-Dp/2" />
                         <size x="#(sizefx)" y="2" z="#(sizefz)" />
                     </fillbox>
-
                     <setshapemode>actual | bound</setshapemode>
                     <setdrawmode mode="full" />
                     <setmkbound mk="1" />
@@ -109,6 +107,7 @@
             </soils>
             <hydromechanics>
                 <HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation" />
+                <HydroMechModel value="0" />
                 <PoreWaterRho value="1000" comment="Pore-water density rho_l" units_comment="kg/m^3" />
                 <PoreWaterBulkModulus value="1e9" comment="Pore-water bulk modulus K_l" units_comment="Pa" />
                 <Porosity value="0.4" comment="Porosity n" />
@@ -117,17 +116,14 @@
                 <PoreShepardRegularization value="0" comment="Lian 2023 strip-footing case did not require pore-pressure regularization" />
                 <PoreShepardInterval value="30" comment="Unused when regularization is disabled" />
                 <HydroMechInitMode value="0" comment="No initial hydrostatic pore pressure because gravity is ignored" />
-                <HydroMechTopLoadMode value="4" comment="4=LianFlexibleStrip; physical strip x=[0,1.25] m, mirrored as abs(x)&lt;=1.25 across the x=0 free-slip wall" />
-                <HydroMechTopLoadQ0 value="10000" comment="Compressive surcharge q0=10 kPa" units_comment="Pa" />
-                <HydroMechTopLoadRampTime value="1.0" comment="Ramp load duration tL=1 s" units_comment="seconds" />
-                <HydroMechDrainage value="1" comment="After tL, drain only the open top free surface outside the strip footprint; strip footing and other boundaries remain impermeable" />
-                <HydroMechDrainageStartTime value="1.0" comment="Drainage starts when q0 reaches its target value" units_comment="seconds" />
             </hydromechanics>
             <mdbcslip>
                 <bound mkbound="0" slipmode="3" comment="Left wall: free-slip" />
                 <bound mkbound="2" slipmode="3" comment="Right wall: free-slip" />
                 <bound mkbound="1" slipmode="2" comment="Bottom wall: fixed/no-slip" />
             </mdbcslip>
+            <externalload mode="4" q0="10000" ramptime="1.0" />
+            <drainage mode="drained" start="1.0" clock="time" />
         </special>
         <parameters>
             <parameter key="SoilStressRateGradCorr" value="1" comment="Stress-rate gradient correction; same as the completed HG+SPR 3-s comparison" />

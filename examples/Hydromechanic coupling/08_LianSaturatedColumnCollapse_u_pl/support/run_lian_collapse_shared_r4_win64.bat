@@ -8,8 +8,11 @@ set solver=
 set runmode=
 set "c08postgroup=%~1"
 set "c08postonly=0"
+set "c08prepare=0"
 set "c08unattended=0"
 for %%A in ("%~3" "%~4") do (
+    if /i "%%~A" == "--prepare-only" set "c08prepare=1"
+    if /i "%%~A" == "--prepare-only" set "c08unattended=1"
     if /i "%%~A" == "--postprocess" set "c08postonly=1"
     if /i "%%~A" == "--unattended" set "c08unattended=1"
 )
@@ -31,6 +34,8 @@ if /i "%backend%" == "GPU" (
 if not defined name goto fail
 if not defined solver goto fail
 set dirout=%name%_%backend%_out
+if "%c08prepare%" == "1" set "dirout=%name%_%backend%_prepare"
+if "%c08prepare%%c08postonly%" == "11" goto fail
 rem Root wrappers bind the original same-backend PRE; no new PRELOAD is provided.
 if defined C08_PRELOAD_SOURCE set "sourceout=%C08_PRELOAD_SOURCE%"
 set "prestate=%CD%\%sourceout%\data\Part_1000.bi4"
@@ -47,13 +52,16 @@ call :checksource
 if errorlevel 1 goto fail
 mkdir "%dirout%"
 if not "%ERRORLEVEL%" == "0" goto fail
-set template=%CD%\%name%_Def.xml
+powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "support\hydro_frozen_runtime_r2.ps1" -Definition "%name%_Def.xml" -OutFile "%dirout%\legacy_Def.xml"
+if errorlevel 1 goto fail
+set template=%CD%\%dirout%\legacy_Def.xml
 set prepared=%CD%\%dirout%\%name%_Def.xml
 powershell -NoProfile -Command "try { $t=[IO.File]::ReadAllText($env:template); if(([regex]::Matches($t,'__GRAVITY_PRELOAD_STATE__')).Count -ne 1){throw 'Statefile marker differs'}; $t=$t.Replace('__GRAVITY_PRELOAD_STATE__',[Security.SecurityElement]::Escape($env:prestate)); [IO.File]::WriteAllText($env:prepared,$t,(New-Object Text.UTF8Encoding($false))) } catch { Write-Error $_; exit 1 }"
 if not "%ERRORLEVEL%" == "0" goto fail
 "%dirbin%\GenCase_win64.exe" "%dirout%\%name%_Def" "%dirout%\%name%" -save:all
 if not "%ERRORLEVEL%" == "0" goto fail
 rem One receiver through TimeMax13, retaining actual source time and all material state.
+if "%c08prepare%" == "1" exit /b 0
 "%dirbin%\%solver%" %runmode% -stable -mdbc_freeslip:1 "%dirout%\%name%" "%dirout%" -dirdataout data -svres
 if not "%ERRORLEVEL%" == "0" goto fail
 echo Receiver exited normally. Full collapse and paper comparison still require review.

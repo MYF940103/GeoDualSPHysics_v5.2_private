@@ -1,0 +1,157 @@
+{
+  "restricted_child_environment": {
+    "path": "Windows system directories only",
+    "python": "absent",
+    "where_python": null
+  },
+  "original_root_launchers": {
+    "01": {
+      "xCaseSelfWeightConsolidation_Scenario2_FreshPR_win64_GPU.bat": [
+        "if not defined PYTHON set PYTHON=python",
+        "\"%PYTHON%\" \"support/postprocess_selfweight_freshpr_r1.py\" --config \"%name%_Def.xml\" --data-dir \"%diroutdata%\" --figures-dir figures --label \"%name%\" --reader \"%dirbin%/ReadSelfWeightNative.exe\" %legacy%"
+      ]
+    },
+    "05": {
+      "xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat": []
+    },
+    "08": {
+      "run_lian_collapse_shared_r3_win64.bat": [
+        "set \"c08python=D:\\anaconda3\\python.exe\"",
+        "if not exist \"%c08python%\" set \"c08python=python\"",
+        "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --check-tools",
+        "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r3.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+      ],
+      "run_lian_collapse_shared_r4_win64.bat": [
+        "set \"c08python=D:\\anaconda3\\python.exe\"",
+        "if not exist \"%c08python%\" set \"c08python=python\"",
+        "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r4.py\" --check-tools",
+        "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r4.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+      ],
+      "run_lian_collapse_shared_r5_win64.bat": [
+        "set \"c08python=D:\\anaconda3\\python.exe\"",
+        "if not exist \"%c08python%\" set \"c08python=python\"",
+        "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r5.py\" --check-tools",
+        "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r5.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+      ],
+      "run_lian_collapse_shared_r6_win64.bat": [
+        "set \"c08python=D:\\anaconda3\\python.exe\"",
+        "if not exist \"%c08python%\" set \"c08python=python\"",
+        "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r6.py\" --check-tools",
+        "\"%c08python%\" -X utf8 -B \"support\\postprocess_lian_collapse_r6.py\" --group \"%c08postgroup%\" --outdir \"%CD%\\%dirout%\" --source-pre \"%prestate%\""
+      ]
+    }
+  },
+  "actual_original_portables": [
+    {
+      "package": "Cryer_TPI_P3_nu030_Windows_RTXA6000_r1.zip",
+      "launch_components_checked": [
+        "xCaseCryer_TPI_P3_nu030_peak_r1_win64_GPU.bat",
+        "xCaseCryer_TPI_P3_nu030_full_r1_win64_GPU.bat",
+        "support/run_cryer_tpi_p3_r1.ps1"
+      ],
+      "python_commands": 0
+    },
+    {
+      "package": "Cryer_release_nu010_020_045_r1_Windows_RTXA6000.zip",
+      "launch_components_checked": [
+        "support/run_cryer_nu_release_r1.ps1",
+        "xCaseCryerProblem_PR_release_nu010_r1_win64_GPU.bat",
+        "xCaseCryerProblem_PR_release_nu020_r1_win64_GPU.bat",
+        "xCaseCryerProblem_PR_release_nu045_r1_win64_GPU.bat"
+      ],
+      "python_commands": 0
+    },
+    {
+      "package": "Cryer_release_r2_Windows_RTXA6000.zip",
+      "launch_components_checked": [
+        "xCaseCryerProblem_PR_release_r2_win64_GPU.bat",
+        "support/run_cryer_release_r2.ps1"
+      ],
+      "python_commands": 0
+    },
+    {
+      "package": "Cryer_symC_nu030_Windows_RTXA6000_r1.zip",
+      "launch_components_checked": [
+        "xCaseCryerProblem_PR_symc_nu030_win64_GPU.bat"
+      ],
+      "python_commands": 0
+    },
+    {
+      "package": "Cryer_upl_nu030_Windows_RTXA6000_r1.zip",
+      "launch_components_checked": [
+        "xCaseCryerProblem_u_pl_nu030_r1_win64_GPU.bat"
+      ],
+      "python_commands": 0
+    },
+    {
+      "package": "Lian_HGSPR_Windows_RTXA6000.zip",
+      "launch_components_checked": [
+        "xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat"
+      ],
+      "python_commands": 0
+    },
+    {
+      "package": "LianCollapse_upl_win64_r1.zip",
+      "launch_components_checked": [
+        "LianCollapse_upl_win64_r1/xCaseLianSaturatedColumnCollapse_psi0_r1_win64_CPU.bat",
+        "LianCollapse_upl_win64_r1/xCaseLianSaturatedColumnCollapse_psi0_r1_win64_GPU.bat",
+        "LianCollapse_upl_win64_r1/xCaseLianSaturatedColumnCollapse_psi2p5_r1_win64_CPU.bat",
+        "LianCollapse_upl_win64_r1/xCaseLianSaturatedColumnCollapse_psi2p5_r1_win64_GPU.bat",
+        "LianCollapse_upl_win64_r1/xCaseLianSaturatedColumnCollapse_psim5_r1_win64_CPU.bat",
+        "LianCollapse_upl_win64_r1/xCaseLianSaturatedColumnCollapse_psim5_r1_win64_GPU.bat",
+        "LianCollapse_upl_win64_r1/support/run_lian_collapse_upl_r1_win64.bat"
+      ],
+      "python_commands": 0
+    },
+    {
+      "package": "LianCollapse_upl_win64_r2.zip",
+      "launch_components_checked": [
+        "LianCollapse_upl_win64_r2/xCaseLianSaturatedColumnCollapse_shared_preload_r2_win64_CPU.bat",
+        "LianCollapse_upl_win64_r2/xCaseLianSaturatedColumnCollapse_shared_preload_r2_win64_GPU.bat",
+        "LianCollapse_upl_win64_r2/xCaseLianSaturatedColumnCollapse_psi0_shared_r2_win64_CPU.bat",
+        "LianCollapse_upl_win64_r2/xCaseLianSaturatedColumnCollapse_psi0_shared_r2_win64_GPU.bat",
+        "LianCollapse_upl_win64_r2/xCaseLianSaturatedColumnCollapse_psi2p5_shared_r2_win64_CPU.bat",
+        "LianCollapse_upl_win64_r2/xCaseLianSaturatedColumnCollapse_psi2p5_shared_r2_win64_GPU.bat",
+        "LianCollapse_upl_win64_r2/xCaseLianSaturatedColumnCollapse_psim5_shared_r2_win64_CPU.bat",
+        "LianCollapse_upl_win64_r2/xCaseLianSaturatedColumnCollapse_psim5_shared_r2_win64_GPU.bat",
+        "LianCollapse_upl_win64_r2/support/run_lian_collapse_shared_r2_win64.bat"
+      ],
+      "python_commands": 0
+    },
+    {
+      "package": "LianCollapse_upl_win64_r3.zip",
+      "launch_components_checked": [
+        "LianCollapse_upl_win64_r3/xCaseLianSaturatedColumnCollapse_shared_preload_r3_win64_CPU.bat",
+        "LianCollapse_upl_win64_r3/xCaseLianSaturatedColumnCollapse_shared_preload_r3_win64_GPU.bat",
+        "LianCollapse_upl_win64_r3/xCaseLianSaturatedColumnCollapse_psi0_shared_r3_win64_CPU.bat",
+        "LianCollapse_upl_win64_r3/xCaseLianSaturatedColumnCollapse_psi0_shared_r3_win64_GPU.bat",
+        "LianCollapse_upl_win64_r3/xCaseLianSaturatedColumnCollapse_psi2p5_shared_r3_win64_CPU.bat",
+        "LianCollapse_upl_win64_r3/xCaseLianSaturatedColumnCollapse_psi2p5_shared_r3_win64_GPU.bat",
+        "LianCollapse_upl_win64_r3/xCaseLianSaturatedColumnCollapse_psim5_shared_r3_win64_CPU.bat",
+        "LianCollapse_upl_win64_r3/xCaseLianSaturatedColumnCollapse_psim5_shared_r3_win64_GPU.bat",
+        "LianCollapse_upl_win64_r3/support/run_lian_collapse_shared_r3_win64.bat"
+      ],
+      "python_commands": 0
+    }
+  ],
+  "raw_legacy_bytes_verified_by_windows_runtime": [
+    "CaseSelfWeightConsolidation_Scenario2_FreshPR_Def.xml",
+    "CaseLianFlexibleStrip2D_PR_release_Def.xml",
+    "CaseLianSaturatedColumnCollapse_psi0_shared_r3_Def.xml",
+    "CaseLianSaturatedColumnCollapse_psi0_shared_r4_Def.xml",
+    "CaseLianSaturatedColumnCollapse_psi0_shared_r5_Def.xml",
+    "CaseLianSaturatedColumnCollapse_psi0_shared_r6_Def.xml",
+    "CaseLianSaturatedColumnCollapse_psi2p5_shared_r3_Def.xml",
+    "CaseLianSaturatedColumnCollapse_psi2p5_shared_r4_Def.xml",
+    "CaseLianSaturatedColumnCollapse_psi2p5_shared_r5_Def.xml",
+    "CaseLianSaturatedColumnCollapse_psim5_shared_r3_Def.xml",
+    "CaseLianSaturatedColumnCollapse_psim5_shared_r4_Def.xml",
+    "CaseLianSaturatedColumnCollapse_psim5_shared_r5_Def.xml",
+    "CaseLianSaturatedColumnCollapse_shared_preload_r3_Def.xml"
+  ],
+  "C04_P3_real_BAT_with_CRLF_BOM": true,
+  "C05_unsupported_model_and_attribute_rejected_before_file_creation": true,
+  "no_python_full_count": 9,
+  "no_python_preprocessing_total": 10,
+  "solver_launches": 0
+}

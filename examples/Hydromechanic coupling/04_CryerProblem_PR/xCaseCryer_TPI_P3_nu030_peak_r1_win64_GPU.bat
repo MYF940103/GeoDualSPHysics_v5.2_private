@@ -1,13 +1,8 @@
 @echo off
 setlocal
-set "mode="
-set "pause_at_end=1"
-if /i "%~1"=="--check-only" set "mode=-CheckOnly"
-if /i "%~1"=="--check-only" set "pause_at_end=0"
-if /i "%~1"=="--unattended" set "pause_at_end=0"
-if not "%~2"=="" exit /b 2
-if not "%~1"=="" if "%pause_at_end%"=="1" exit /b 2
-powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0support\run_cryer_tpi_p3_r1.ps1" -Stage peak %mode%
+cd /d "%~dp0"
+if not "%~3"=="" exit /b 2
+powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "support\hydro_frozen_runtime_r2.ps1" -Definition "CaseCryer_TPI_P3_nu030_peak_r1_Def.xml" -Portable -Option1 "opt=%~1" -Option2 "opt=%~2"
 set "rc=%ERRORLEVEL%"
-if "%pause_at_end%"=="1" pause
+if not "%rc%"=="0" if "%~1"=="" pause
 exit /b %rc%
