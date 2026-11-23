@@ -137,9 +137,13 @@ def conditional_evidence(backend):
     raise ValueError('Conditional 6.25 us lane requires a reviewed 4 us pass and 10 us accuracy failure')
 
 
-def run(name,backend,exe_override=None):
+def run(name,backend,exe_override=None,last_part=None):
     cfg=PLAN['lanes'][name]
     root,n,_=setup_xml(name)
+    if last_part is not None:
+        clocks=planned_clock(name)
+        need(0<last_part<len(clocks),'Execution cap must be an original planned save')
+        n=clocks[last_part][0]
     need(xml_path(name).read_bytes()==ET.tostring(root.getroot(),encoding='utf-8',xml_declaration=True), 'Prepared input differs')
     exe=exe_override or ROOT/'bin/windows'/('DualSPHysics5.2_GEO_win64.exe' if backend=='gpu' else 'DualSPHysics5.2CPU_win64.exe')
     exe=exe.resolve(strict=True)

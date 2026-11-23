@@ -11,9 +11,11 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
+import numpy as np
 
 from c02_tpi_cost_r1 import OPTIONAL, PLAN, PREFIX, REFERENCES, TESTS, directory, need, planned_clock
 from c02_tpi_cost_ref_review_r1 import against_reference
+from c02_tpi_cost_review_r1 import read_native, theory
 
 LANES=('kw10','kw125','kw25','kw40','tpi25','tpi40','tpi625','tpi100')
 BACKENDS=('cpu','gpu')
@@ -182,6 +184,38 @@ def summarize(runs,sources,cross):
     return history,cost
 
 
+def layer_errors(runs):
+    """Compare pressure at the same 100 material layers used for target RMS."""
+    records=[]
+    for (backend,lane),run in runs.items():
+        cfg=PLAN['lanes'][lane]
+        data=directory(lane,backend)/'result/data'
+        def saved(part):
+            _,meta,fields,_=read_native(data/f'Part_{part:04d}.bi4',part,run['model'],cfg.get('R',1.))
+            need(meta['TimeStep']==run['rows'][part]['t_s'] and
+                 meta['Step']==max(0,run['rows'][part]['completed']-1),'Reviewed PART clock')
+            order=np.argsort(fields['Idp'])
+            need(np.array_equal(fields['Idp'][order],np.arange(1040)),'Material labels')
+            return fields,order[40:]
+        initial,soil=saved(0)
+        z=initial['Posd'][soil,2]
+        layer=np.rint(z/.01-.5).astype(int)
+        need(np.array_equal(np.bincount(layer),np.full(100,10)),'Native 100-layer column')
+        zmean=np.bincount(layer,z)/10
+        for part in (3,12):
+            fields,soil=saved(part)
+            row=run['rows'][part]
+            p=np.bincount(layer,fields['PorePress'][soil])/10
+            ref,_=theory(row['t_s'],zmean,run['model'])
+            error=p-ref
+            need(np.isclose(np.sqrt(np.mean(error**2)),row['pressure_RMS_Pa'],atol=1e-8,rtol=0),'Reproduced pressure RMS')
+            for i in range(100):
+                records.append(dict(backend=backend,lane=lane,part=part,target_Tv=(part-2)*PLAN['save_delta_Tv'],
+                                    time_s=row['t_s'],actual_Tv=row['actual_Tv'],initial_layer=i,initial_z_m=zmean[i],
+                                    material_particles=10,pressure_Pa=p[i],theory_Pa=ref[i],error_Pa=error[i]))
+    return records
+
+
 def figures(history,cost,statuses):
     available={f.name for f in font_manager.fontManager.ttflist}
     names=[f for f in ('Microsoft YaHei','Noto Sans CJK SC','SimHei','Yu Gothic') if f in available]
@@ -273,6 +307,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix=PREFIX+'_',dir=dest.parent) as tmp:
         bundle=Path(tmp)/PREFIX;bundle.mkdir()
         write_csv(bundle/'history.csv',history);write_csv(bundle/'timing.csv',cost);write_csv(bundle/'status.csv',statuses)
+        write_csv(bundle/'pressure_layers.csv',layer_errors(runs))
         a,b=figures(history,cost,statuses)
         try:
             a.savefig(bundle/'accuracy.png',dpi=175);b.savefig(bundle/'timing.png',dpi=175)

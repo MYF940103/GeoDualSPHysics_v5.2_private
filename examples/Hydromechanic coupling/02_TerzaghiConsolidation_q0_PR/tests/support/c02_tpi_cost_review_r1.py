@@ -82,7 +82,7 @@ def check_model_header(m,types,model,factor):
         need(types['HydroMechTpiR']==12 and m['HydroMechTpiR']==factor,'Native double hydraulic multiplier')
 
 
-def one(lane,backend,frame_sink=None):
+def one(lane,backend,frame_sink=None,last_part=None):
     cfg=PLAN['lanes'][lane]
     model=cfg['model'];dt=cfg['dt_s']
     out=directory(lane,backend)
@@ -90,6 +90,9 @@ def one(lane,backend,frame_sink=None):
     start=json.loads((out/'start.json').read_text())
     ex=json.loads((out/'exit.json').read_text())
     plan=planned_clock(lane)
+    if last_part is not None:
+        need(0<last_part<len(plan),'Review cap must be an original planned save')
+        plan=plan[:last_part+1]
     args=[ex['program']]+(['-gpu'] if backend=='gpu' else ['-cpu','-ompthreads:1'])
     seed=out/'seed'/PLAN['seed_name']
     args+=['-stable','-mdbc_freeslip',str(seed),str(res),'-dirdataout','data','-svres','-nsteps:'+str(plan[-1][0])]
@@ -181,18 +184,25 @@ def one(lane,backend,frame_sink=None):
     return dict(lane=lane,model=model,backend=backend,host=ex['host'],hardware=rr['Hardware'],cuda_driver_runtime=driver.group(1).strip() if driver else None,
                 program_identity={key:ex[key] for key in ('program','size','mtime_ns')},steps=plan[-1][0],wall_s=ex['wall_seconds'],loop_s=float(rr['TSimul']),
                 total_s=float(rr['TTotal']),io_bytes=sizes,save_timer_s=None if not rr.get('SU-SavePart') else float(rr['SU-SavePart']),
-                hg_limits=hg,early_100Pa_stress_pass=bool(max_layer<=100 and max_gap<=100),post01_max_layer_Pa=float(max_layer),post01_max_topgap_Pa=float(max_gap),rows=rows)
+                hg_limits=hg,early_100Pa_stress_pass=(bool(max_layer<=100 and max_gap<=100) if plan[-1][1]>=.1 else None),
+                post01_max_layer_Pa=(float(max_layer) if plan[-1][1]>=.1 else None),
+                post01_max_topgap_Pa=(float(max_gap) if plan[-1][1]>=.1 else None),rows=rows)
 
 
-def target_budgets(a,b):
+def target_rows(a,b,indices):
     results=[]
-    # Within Tv<=.05, the original ten declared targets represented are .005 and .05.
-    for index in (3,12):
+    for index in indices:
         x,y=a['rows'][index],b['rows'][index]
         results.append(dict(target_Tv=(index-2)*PLAN['save_delta_Tv'],time_difference_s=y['t_s']-x['t_s'],
                             pressure_ok=y['pressure_RMS_Pa']<=x['pressure_RMS_Pa']+10,
                             top_ok=abs(y['top_error_mm'])<=abs(x['top_error_mm'])+.001*1e7/MC,
                             bottom_ok=abs(x['bottom_error_mm'])<=.005 and abs(y['bottom_error_mm'])<=min(.005,abs(x['bottom_error_mm'])+.002)))
+    return results
+
+
+def target_budgets(a,b):
+    # The two predeclared targets included in the full cost window are .005 and .05.
+    results=target_rows(a,b,(3,12))
     passed=a['early_100Pa_stress_pass'] and b['early_100Pa_stress_pass'] and all(v['pressure_ok'] and v['top_ok'] and v['bottom_ok'] for v in results)
     return dict(reference=a['lane'],candidate=b['lane'],passed=passed,targets=results)
 
