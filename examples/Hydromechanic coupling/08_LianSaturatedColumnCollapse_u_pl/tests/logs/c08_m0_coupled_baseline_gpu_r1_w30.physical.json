@@ -1,0 +1,136 @@
+{
+  "paper_coloured_extent_m": 4.067796610169491,
+  "raster_allowance_m": 0.03615819209039548,
+  "particle_centre_offset_scale_m": 0.02,
+  "fields": "Raw values, matched ranges across all three methods",
+  "initial_conditions": "Both M0 trajectories held the finite-Kw PRE with closed wall for 1 ms after a cold pressure-history switch; finite-Kw released at its original source endpoint.",
+  "pressure_history_observed_at_0p01_s": {
+    "finite Kw": {
+      "all_particle_sampled_second_difference_RMS_Pa": 1759.6380657989123,
+      "particle_nonmonotone_pressure_travel_mean_Pa": 14747.393040591913,
+      "particle_nonmonotone_pressure_travel_p99_Pa": 29165.986523437507,
+      "particle_increment_direction_reversals_mean": 12.5348,
+      "native_sample_interval_s": 0.01,
+      "samples": 30
+    },
+    "TPI \u03b2=0": {
+      "all_particle_sampled_second_difference_RMS_Pa": 587.9399798906162,
+      "particle_nonmonotone_pressure_travel_mean_Pa": 8027.141721653363,
+      "particle_nonmonotone_pressure_travel_p99_Pa": 17057.284921875,
+      "particle_increment_direction_reversals_mean": 9.9174,
+      "native_sample_interval_s": 0.01,
+      "samples": 30
+    },
+    "TPI \u03b2=0.04": {
+      "all_particle_sampled_second_difference_RMS_Pa": 614.6748424004711,
+      "particle_nonmonotone_pressure_travel_mean_Pa": 8373.782464522774,
+      "particle_nonmonotone_pressure_travel_p99_Pa": 18407.555742187516,
+      "particle_increment_direction_reversals_mean": 10.499,
+      "native_sample_interval_s": 0.01,
+      "samples": 30
+    }
+  },
+  "upper_envelope_in_common_native_raster_bins": {
+    "finite Kw": {
+      "overlap_bins": 102,
+      "total_paper_bins": 102,
+      "signed_mean_m": -0.03419272091148959,
+      "rms_m": 0.08178452216472984,
+      "bin_width_m": 0.04
+    },
+    "TPI \u03b2=0": {
+      "overlap_bins": 102,
+      "total_paper_bins": 102,
+      "signed_mean_m": -0.03403031780289055,
+      "rms_m": 0.08170468827850925,
+      "bin_width_m": 0.04
+    },
+    "TPI \u03b2=0.04": {
+      "overlap_bins": 102,
+      "total_paper_bins": 102,
+      "signed_mean_m": -0.03295788124020428,
+      "rms_m": 0.08084015607974077,
+      "bin_width_m": 0.04
+    }
+  },
+  "finite_Kw_time_offset_s": 4.999999999810711e-06,
+  "paired_endpoint": [
+    {
+      "reference": "finite Kw",
+      "candidate": "TPI \u03b2=0",
+      "matched_soil_ids": 5000,
+      "actual_tau_offset_s": -4.999999999810711e-06,
+      "pressure_difference_rms_Pa": 1624.4517656732146,
+      "pressure_difference_max_abs_Pa": 76947.9697265625,
+      "common_negative_ids": 1080,
+      "reference_only_negative_ids": 2,
+      "candidate_only_negative_ids": 31,
+      "position_difference_rms_mm": 0.2686136986835649,
+      "position_difference_max_mm": 1.1561449177526955,
+      "plastic_history_difference_rms": 0.0010495163834468228,
+      "effective_shear_xz_difference_rms_Pa": 84.785221865901
+    },
+    {
+      "reference": "TPI \u03b2=0",
+      "candidate": "TPI \u03b2=0.04",
+      "matched_soil_ids": 5000,
+      "actual_tau_offset_s": 0.0,
+      "pressure_difference_rms_Pa": 1344.4889276668232,
+      "pressure_difference_max_abs_Pa": 11552.684814453125,
+      "common_negative_ids": 614,
+      "reference_only_negative_ids": 497,
+      "candidate_only_negative_ids": 123,
+      "position_difference_rms_mm": 8.19925704657983,
+      "position_difference_max_mm": 50.57016636961536,
+      "plastic_history_difference_rms": 0.0532836940855503,
+      "effective_shear_xz_difference_rms_Pa": 1113.7248306243962
+    },
+    {
+      "reference": "finite Kw",
+      "candidate": "TPI \u03b2=0.04",
+      "matched_soil_ids": 5000,
+      "actual_tau_offset_s": -4.999999999810711e-06,
+      "pressure_difference_rms_Pa": 1970.1681634984607,
+      "pressure_difference_max_abs_Pa": 76049.85205078125,
+      "common_negative_ids": 589,
+      "reference_only_negative_ids": 493,
+      "candidate_only_negative_ids": 148,
+      "position_difference_rms_mm": 8.258246439710978,
+      "position_difference_max_mm": 51.09347999632003,
+      "plastic_history_difference_rms": 0.053445065993876835,
+      "effective_shear_xz_difference_rms_Pa": 1113.1644182239306
+    }
+  ],
+  "final": [
+    {
+      "method": "finite Kw",
+      "tau_s": 0.3000049999886425,
+      "front_m": 4.1227175235604046,
+      "front_minus_paper_m": 0.054920913390913206,
+      "min_p_Pa": -7419.16162109375,
+      "near_IDs": 52,
+      "nn_min_dp": 0.393345927995015,
+      "kappa_max": 1.8681317567825317
+    },
+    {
+      "method": "TPI \u03b2=0",
+      "tau_s": 0.2999999999886427,
+      "front_m": 4.122368718279568,
+      "front_minus_paper_m": 0.054572108110076734,
+      "min_p_Pa": -12351.1005859375,
+      "near_IDs": 51,
+      "nn_min_dp": 0.3926690107542327,
+      "kappa_max": 1.85805082321167
+    },
+    {
+      "method": "TPI \u03b2=0.04",
+      "tau_s": 0.2999999999886427,
+      "front_m": 4.115206380517012,
+      "front_minus_paper_m": 0.04740977034752092,
+      "min_p_Pa": -7389.25830078125,
+      "near_IDs": 37,
+      "nn_min_dp": 0.5370828468705411,
+      "kappa_max": 1.5902386903762817
+    }
+  ]
+}
