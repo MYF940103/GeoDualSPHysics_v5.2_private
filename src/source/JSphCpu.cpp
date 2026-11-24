@@ -2356,6 +2356,7 @@ void JSphCpu::ComputeSymplecticPre(double dt){
   memcpy(Posc,PosPrec,sizeof(tdouble3)*Npb);
 
   Timersc->TmStop(TMC_SuComputeStep);
+  if(HourglassCpu)HourglassCpu->PredictorUpdate(dt);
 }
 
 //==============================================================================

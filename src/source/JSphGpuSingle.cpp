@@ -849,7 +849,6 @@ double JSphGpuSingle::ComputeStep_Sym(){
   const double ddt_p=DtVariable(false);        //-Calculate dt of predictor step.
   if(Shifting)RunShifting(dt*.5);              //-Shifting.
   ComputeSymplecticPre(dt);                    //-Apply Symplectic-Predictor to particles (periodic particles become invalid).
-  if(HourglassGpu)HourglassGpu->PredictorUpdate(dt);
   if(CaseNfloat)RunFloating(dt*.5,true);       //-Control of floating bodies.
   PosInteraction_Forces();                     //-Free memory used for interaction.
   //-Corrector

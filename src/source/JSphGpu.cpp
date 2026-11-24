@@ -1835,6 +1835,7 @@ void JSphGpu::ComputeSymplecticPre(double dt){
   cudaMemcpy(Posxyg,PosxyPreg,sizeof(double2)*Npb,cudaMemcpyDeviceToDevice);
   cudaMemcpy(Poszg,PoszPreg,sizeof(double)*Npb,cudaMemcpyDeviceToDevice);
   Timersg->TmStop(TMG_SuComputeStep,false);
+  if(HourglassGpu)HourglassGpu->PredictorUpdate(dt);
 }
 
 //==============================================================================
