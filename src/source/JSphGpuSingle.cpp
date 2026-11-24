@@ -629,8 +629,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
   ApplyBoundaryCorrection(interstep);
   PreInteraction_Forces();
   unsigned *dynamicridpg=PreLoopProcedure();
-  Interaction_Forces();
-  FinishInteractionForces(dynamicridpg);
+  Interaction_Forces(dynamicridpg);
 }
 
 //==============================================================================
@@ -666,9 +665,9 @@ unsigned* JSphGpuSingle::PreLoopProcedure(){
 }
 
 //==============================================================================
-/// Evaluates fluid-fluid and fluid-boundary SPH interactions.
+/// Computes particle forces, pressure rates and the force-based timestep limits.
 //==============================================================================
-void JSphGpuSingle::Interaction_Forces(){
+void JSphGpuSingle::Interaction_Forces(unsigned *dynamicridpg){
   Timersg->TmStart(TMG_CfForces,true);
   float3 *dengradcorr=NULL;
   const bool lamsps=(TVisco==VISCO_LaminarSPS);
@@ -699,12 +698,7 @@ void JSphGpuSingle::Interaction_Forces(){
     ,ShiftPosfsg
     ,NULL,NULL,BoundDerivativeVelg,PoroThetag,PorosityFeedback? PoroJg: NULL);
   cusph::Interaction_Forces(parms);
-}
 
-//==============================================================================
-/// Completes the acceleration, pressure rate and timestep reductions.
-//==============================================================================
-void JSphGpuSingle::FinishInteractionForces(unsigned *dynamicridpg){
   if(SoilDamping)cusph::AddSoilDamping(Np,Npb,Codeg,Velrhopg,Aceg,(DynamicPorePressure? GetDynamicSoilDampingRate(): 0.f));
   NormalizeHydroMechTopBandLoad();
   if(HourglassGpu){
@@ -725,7 +719,7 @@ void JSphGpuSingle::FinishInteractionForces(unsigned *dynamicridpg){
   if(DynamicPorePressure)ComputeDynamicPorePressureRateGpu(dynamicridpg);
 
   //-Computes Tau for Laminar+SPS.
-  if(TVisco==VISCO_LaminarSPS)cusph::ComputeSpsTau(Np,Npb,SpsSmag,SpsBlin,Velrhopg,SpsGradvelg,SpsTaug);
+  if(lamsps)cusph::ComputeSpsTau(Np,Npb,SpsSmag,SpsBlin,Velrhopg,SpsGradvelg,SpsTaug);
 
   //-Applies DDT.
   if(Deltag)cusph::AddDelta(Np-Npb,Deltag+Npb,Arg+Npb);//-Adds the Delta-SPH correction for the density. | Anhade correccion de Delta-SPH a Arg[]. 
@@ -824,8 +818,7 @@ double JSphGpuSingle::ComputeStep_Ver(){
   ApplyBoundaryCorrection(INTERSTEP_Verlet);
   PreInteraction_Forces();
   unsigned *periodicids=PreLoopProcedure();
-  Interaction_Forces();
-  FinishInteractionForces(periodicids);
+  Interaction_Forces(periodicids);
   const double dt=DtVariable(true);        //-Calculate new dt.
   if(CaseNmoving)CalcMotion(dt);           //-Calculate motion for moving bodies.
   DemDtForce=dt;                           //(DEM)
@@ -854,8 +847,7 @@ double JSphGpuSingle::ComputeStep_Sym(){
   ApplyBoundaryCorrection(INTERSTEP_SymPredictor);
   PreInteraction_Forces();
   unsigned *predictorids=PreLoopProcedure();
-  Interaction_Forces();
-  FinishInteractionForces(predictorids);
+  Interaction_Forces(predictorids);
   const double ddt_p=DtVariable(false);        //-Calculate dt of predictor step.
   if(Shifting)RunShifting(dt*.5);              //-Shifting.
   ComputeSymplecticPre(dt);                    //-Apply Symplectic-Predictor to particles (periodic particles become invalid).
@@ -869,8 +861,7 @@ double JSphGpuSingle::ComputeStep_Sym(){
   ApplyBoundaryCorrection(INTERSTEP_SymCorrector);
   PreInteraction_Forces();
   unsigned *correctorids=PreLoopProcedure();
-  Interaction_Forces();
-  FinishInteractionForces(correctorids);
+  Interaction_Forces(correctorids);
   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
   if(Shifting)RunShifting(dt);                 //-Shifting.
   ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
@@ -1233,8 +1224,7 @@ void JSphGpuSingle::CorrectTpiPressure(double dt){
       ApplyBoundaryCorrection(INTERSTEP_SymCorrector);
       PreInteraction_Forces();
       unsigned *periodicids=PreLoopProcedure();
-      Interaction_Forces();
-      FinishInteractionForces(periodicids);
+      Interaction_Forces(periodicids);
       if(DtVariable(false)!=dt || (HourglassGpu && dt>HourglassGpu->GetDtLimit()))
         Run_Exceptioon("TPI endpoint exceeds the fixed step or hourglass limit.");
       PosInteraction_Forces();

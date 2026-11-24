@@ -58,8 +58,7 @@ protected:
   void Interaction_Forces(TpInterStep interstep);
   void ApplyBoundaryCorrection(TpInterStep interstep);
   unsigned* PreLoopProcedure();
-  void Interaction_Forces();
-  void FinishInteractionForces(unsigned *dynamicridpg);
+  void Interaction_Forces(unsigned *dynamicridpg);
   void MdbcBoundCorrection();
   void CdbcBoundCorrection();
 

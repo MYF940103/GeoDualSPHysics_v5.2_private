@@ -2,6 +2,8 @@
 
 基线为 `upl-dev` 的 `994b0f1`，对照采用当时发布的 Win64 程序。重构采用相同的 VS2022 工程、MSVC 和 CUDA 构建配置。四个历史程序只在留存时核验了一次文件指纹。[基线程序](baseline_programs.json)
 
+后续版本把求力收尾并入 `Interaction_Forces`。下面记录的是第一次拆分时的对照；最新的原生回归和三版本 GPU 复测另行记录。[求力收尾合并与 GPU 复测](finishmerge_r1.md)
+
 ## 求力和积分的顺序
 
 CPU 和 GPU 的 `ComputeStep_Ver()`、`ComputeStep_Sym()` 均直接调用 `Interaction_Forces()`。Verlet 每步求力一次，Symplectic 在预测和校正各求力一次。模型 2 的 `CorrectTpiPressure()` 在端点的三轮压力循环里逐轮显式求力。一次评估先处理边界，再分配和初始化本阶段的数组，准备自由表面、载荷和孔压，运行邻域相互作用，最后完成加速度、Darcy 压力率和步长统计。积分器仍在求力和计算步长后调用通常的 shifting。各后端保留其原有的加法、归约、计时范围及临时数组生命周期。

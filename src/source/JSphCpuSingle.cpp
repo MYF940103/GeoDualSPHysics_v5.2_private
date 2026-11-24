@@ -686,8 +686,7 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   ApplyBoundaryCorrection(interstep);
   PreInteraction_Forces();
   PreLoopProcedure();
-  const float viscdt=Interaction_Forces();
-  FinishInteractionForces(viscdt);
+  Interaction_Forces();
 }
 
 //==============================================================================
@@ -719,9 +718,9 @@ void JSphCpuSingle::PreLoopProcedure(){
 }
 
 //==============================================================================
-/// Runs the main neighbour interaction and returns its viscous time-step rate.
+/// Computes neighbour forces, completes the stage acceleration and evaluates its step limits.
 //==============================================================================
-float JSphCpuSingle::Interaction_Forces(){
+void JSphCpuSingle::Interaction_Forces(){
   tfloat3 *dengradcorr=NULL;
   const stinterparmsc parms=StInterparmsc(Np,Npb,NpbOk
     ,DivData,Dcellc
@@ -737,13 +736,7 @@ float JSphCpuSingle::Interaction_Forces(){
   StInterResultc res;
   res.viscdt=0;
   JSphCpu::Interaction_Forces_ct(parms,res);
-  return res.viscdt;
-}
 
-//==============================================================================
-/// Completes the stage acceleration before evaluating the Darcy rate and step limit.
-//==============================================================================
-void JSphCpuSingle::FinishInteractionForces(float viscdt){
   if(SoilDamping)AddSoilDampingCpu(Np,Npb,Codec,Velrhopc,Acec);
 
   //-For 2-D simulations zero the 2nd component. | Para simulaciones 2D anula siempre la 2nd componente.
@@ -765,7 +758,7 @@ void JSphCpuSingle::FinishInteractionForces(float viscdt){
   }
 
   //-Calculates maximum value of ViscDt.
-  ViscDtMax=viscdt;
+  ViscDtMax=res.viscdt;
   //-Reuse raw loading from the main neighbour pass, then add the GNOG history.
   //-Both precede the single final acceleration maximum reduction.
   if(HydroMechTopLoadMode==HMLOAD_TopKernelBand)NormalizeHydroMechTopBandLoad();
@@ -793,8 +786,7 @@ void JSphCpuSingle::CorrectTpiPressure(double dt){
       ApplyBoundaryCorrection(INTERSTEP_SymCorrector);
       PreInteraction_Forces();
       PreLoopProcedure();
-      const float viscdt=Interaction_Forces();
-      FinishInteractionForces(viscdt);
+      Interaction_Forces();
       if(DtVariable(false)!=dt)Run_Exceptioon("TPI requires the same fixed time step in every pressure round.");
       PosInteraction_Forces();
       for(unsigned p=Npb;p<Np;p++)if(CODE_IsFluid(Codec[p]))PorePressc[p]=TpiNext[Idpc[p]];
@@ -942,8 +934,7 @@ double JSphCpuSingle::ComputeStep_Ver(){
   ApplyBoundaryCorrection(INTERSTEP_Verlet);
   PreInteraction_Forces();
   PreLoopProcedure();
-  const float viscdt=Interaction_Forces();
-  FinishInteractionForces(viscdt);
+  Interaction_Forces();
   const double dt=DtVariable(true);        //-Calculate new dt.
   if(CaseNmoving)CalcMotion(dt);           //-Calculate motion for moving bodies.
   DemDtForce=dt;                           //(DEM)
@@ -972,8 +963,7 @@ double JSphCpuSingle::ComputeStep_Sym(){
   ApplyBoundaryCorrection(INTERSTEP_SymPredictor);
   PreInteraction_Forces();
   PreLoopProcedure();
-  const float viscdt_pre=Interaction_Forces();
-  FinishInteractionForces(viscdt_pre);
+  Interaction_Forces();
   const double ddt_p=DtVariable(false);        //-Calculate dt of predictor step.
   if(Shifting)RunShifting(dt*.5);              //-Shifting.
   ComputeSymplecticPre(dt);                    //-Apply Symplectic-Predictor to particles (periodic particles become invalid).
@@ -987,8 +977,7 @@ double JSphCpuSingle::ComputeStep_Sym(){
   ApplyBoundaryCorrection(INTERSTEP_SymCorrector);
   PreInteraction_Forces();
   PreLoopProcedure();
-  const float viscdt_corr=Interaction_Forces();
-  FinishInteractionForces(viscdt_corr);
+  Interaction_Forces();
   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
   if(Shifting)RunShifting(dt);                 //-Shifting.
   ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).

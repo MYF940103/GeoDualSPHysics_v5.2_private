@@ -1,0 +1,945 @@
+{
+  "mode": "pinned",
+  "steps": 192,
+  "host_affinity": [
+    2
+  ],
+  "cpu_efficiency_classes": {
+    "0": 1,
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1,
+    "5": 1,
+    "6": 1,
+    "7": 1,
+    "8": 1,
+    "9": 1,
+    "10": 1,
+    "11": 1,
+    "12": 1,
+    "13": 1,
+    "14": 1,
+    "15": 1,
+    "16": 0,
+    "17": 0,
+    "18": 0,
+    "19": 0
+  },
+  "versions": [
+    "old",
+    "validated",
+    "merged"
+  ],
+  "warmup": {
+    "old": {
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\old\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu",
+        "-stable",
+        "-mdbc_freeslip",
+        "-tout:0.001",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_old_bench0_finishmerge_r1_warm48",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-nsteps:48"
+      ],
+      "exit": 0,
+      "wall_s": 1.5366912000463344,
+      "start_utc": "2026-11-24T06:47:10.554491+00:00",
+      "end_utc": "2026-11-24T06:47:12.091580+00:00",
+      "executable_bytes": 28946944,
+      "executable_mtime_ns": 1795442882744326400,
+      "loop_s": 0.793516,
+      "steps": 48,
+      "parts": 2,
+      "parts_out": 0,
+      "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+      "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)"
+    },
+    "validated": {
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\validated\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu",
+        "-stable",
+        "-mdbc_freeslip",
+        "-tout:0.001",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_validated_bench0_finishmerge_r1_warm48",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-nsteps:48"
+      ],
+      "exit": 0,
+      "wall_s": 1.8089438999886625,
+      "start_utc": "2026-11-24T06:47:12.132718+00:00",
+      "end_utc": "2026-11-24T06:47:13.942431+00:00",
+      "executable_bytes": 28948480,
+      "executable_mtime_ns": 1795500173129057500,
+      "loop_s": 0.793902,
+      "steps": 48,
+      "parts": 2,
+      "parts_out": 0,
+      "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+      "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)"
+    },
+    "merged": {
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\merged\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu",
+        "-stable",
+        "-mdbc_freeslip",
+        "-tout:0.001",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_merged_bench0_finishmerge_r1_warm48",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-nsteps:48"
+      ],
+      "exit": 0,
+      "wall_s": 1.4726687999791466,
+      "start_utc": "2026-11-24T06:47:13.954941+00:00",
+      "end_utc": "2026-11-24T06:47:15.427226+00:00",
+      "executable_bytes": 28948480,
+      "executable_mtime_ns": 1795502369960505500,
+      "loop_s": 0.768521,
+      "steps": 48,
+      "parts": 2,
+      "parts_out": 0,
+      "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+      "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)"
+    }
+  },
+  "blocks": [
+    {
+      "old": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\old\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_old_bench0_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 3.8694177999859676,
+        "start_utc": "2026-11-24T06:47:15.448995+00:00",
+        "end_utc": "2026-11-24T06:47:19.318812+00:00",
+        "executable_bytes": 28946944,
+        "executable_mtime_ns": 1795442882744326400,
+        "loop_s": 3.153402,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1927,
+            1927.0,
+            1927
+          ],
+          "pstates": [
+            "P0",
+            "P2"
+          ],
+          "median_utilization_pct": 77.0
+        }
+      },
+      "validated": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\validated\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_validated_bench0_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 4.1322534999926575,
+        "start_utc": "2026-11-24T06:47:19.327326+00:00",
+        "end_utc": "2026-11-24T06:47:23.459479+00:00",
+        "executable_bytes": 28948480,
+        "executable_mtime_ns": 1795500173129057500,
+        "loop_s": 3.194982,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1927,
+            1927.0,
+            1927
+          ],
+          "pstates": [
+            "P0",
+            "P2"
+          ],
+          "median_utilization_pct": 72.5
+        }
+      },
+      "merged": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\merged\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_merged_bench0_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 4.061827600002289,
+        "start_utc": "2026-11-24T06:47:23.541128+00:00",
+        "end_utc": "2026-11-24T06:47:27.604007+00:00",
+        "executable_bytes": 28948480,
+        "executable_mtime_ns": 1795502369960505500,
+        "loop_s": 3.209967,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1927,
+            1927.0,
+            1927
+          ],
+          "pstates": [
+            "P0",
+            "P2"
+          ],
+          "median_utilization_pct": 69.5
+        }
+      }
+    },
+    {
+      "merged": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\merged\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_merged_bench1_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 3.959359000029508,
+        "start_utc": "2026-11-24T06:47:27.629102+00:00",
+        "end_utc": "2026-11-24T06:47:31.588691+00:00",
+        "executable_bytes": 28948480,
+        "executable_mtime_ns": 1795502369960505500,
+        "loop_s": 3.225373,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1920,
+            1920.0,
+            1920
+          ],
+          "pstates": [
+            "P2"
+          ],
+          "median_utilization_pct": 70.0
+        }
+      },
+      "validated": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\validated\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_validated_bench1_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 3.95805630000541,
+        "start_utc": "2026-11-24T06:47:31.598994+00:00",
+        "end_utc": "2026-11-24T06:47:35.557837+00:00",
+        "executable_bytes": 28948480,
+        "executable_mtime_ns": 1795500173129057500,
+        "loop_s": 3.175418,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1920,
+            1920.0,
+            1920
+          ],
+          "pstates": [
+            "P0",
+            "P2"
+          ],
+          "median_utilization_pct": 70.0
+        }
+      },
+      "old": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\old\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_old_bench1_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 4.018412799981888,
+        "start_utc": "2026-11-24T06:47:35.564839+00:00",
+        "end_utc": "2026-11-24T06:47:39.583908+00:00",
+        "executable_bytes": 28946944,
+        "executable_mtime_ns": 1795442882744326400,
+        "loop_s": 3.20857,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1920,
+            1920.0,
+            1920
+          ],
+          "pstates": [
+            "P2"
+          ],
+          "median_utilization_pct": 73.5
+        }
+      }
+    },
+    {
+      "validated": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\validated\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_validated_bench2_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 3.9920788999879733,
+        "start_utc": "2026-11-24T06:47:39.632207+00:00",
+        "end_utc": "2026-11-24T06:47:43.624704+00:00",
+        "executable_bytes": 28948480,
+        "executable_mtime_ns": 1795500173129057500,
+        "loop_s": 3.168783,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1920,
+            1920.0,
+            1920
+          ],
+          "pstates": [
+            "P0",
+            "P2"
+          ],
+          "median_utilization_pct": 73.5
+        }
+      },
+      "merged": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\merged\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_merged_bench2_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 4.172711499966681,
+        "start_utc": "2026-11-24T06:47:43.648869+00:00",
+        "end_utc": "2026-11-24T06:47:47.821462+00:00",
+        "executable_bytes": 28948480,
+        "executable_mtime_ns": 1795502369960505500,
+        "loop_s": 3.225673,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1920,
+            1920.0,
+            1920
+          ],
+          "pstates": [
+            "P0",
+            "P2"
+          ],
+          "median_utilization_pct": 72.0
+        }
+      },
+      "old": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\old\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_old_bench2_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 4.086730799986981,
+        "start_utc": "2026-11-24T06:47:47.868946+00:00",
+        "end_utc": "2026-11-24T06:47:51.956125+00:00",
+        "executable_bytes": 28946944,
+        "executable_mtime_ns": 1795442882744326400,
+        "loop_s": 3.246904,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1920,
+            1920.0,
+            1920
+          ],
+          "pstates": [
+            "P0",
+            "P2"
+          ],
+          "median_utilization_pct": 72.0
+        }
+      }
+    },
+    {
+      "old": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\old\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_old_bench3_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 3.834698999999091,
+        "start_utc": "2026-11-24T06:47:51.969015+00:00",
+        "end_utc": "2026-11-24T06:47:55.803902+00:00",
+        "executable_bytes": 28946944,
+        "executable_mtime_ns": 1795442882744326400,
+        "loop_s": 3.212201,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1920,
+            1920.0,
+            1920
+          ],
+          "pstates": [
+            "P0",
+            "P2"
+          ],
+          "median_utilization_pct": 73.0
+        }
+      },
+      "merged": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\merged\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_merged_bench3_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 3.8248145999968983,
+        "start_utc": "2026-11-24T06:47:55.822414+00:00",
+        "end_utc": "2026-11-24T06:47:59.647306+00:00",
+        "executable_bytes": 28948480,
+        "executable_mtime_ns": 1795502369960505500,
+        "loop_s": 3.227279,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1920,
+            1920.0,
+            1920
+          ],
+          "pstates": [
+            "P0",
+            "P2"
+          ],
+          "median_utilization_pct": 69.5
+        }
+      },
+      "validated": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\validated\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_validated_bench3_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 3.9923455999814905,
+        "start_utc": "2026-11-24T06:47:59.673506+00:00",
+        "end_utc": "2026-11-24T06:48:03.666015+00:00",
+        "executable_bytes": 28948480,
+        "executable_mtime_ns": 1795500173129057500,
+        "loop_s": 3.227893,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1920,
+            1920.0,
+            1920
+          ],
+          "pstates": [
+            "P0",
+            "P2"
+          ],
+          "median_utilization_pct": 65.0
+        }
+      }
+    },
+    {
+      "merged": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\merged\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_merged_bench4_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 3.950184100016486,
+        "start_utc": "2026-11-24T06:48:03.686038+00:00",
+        "end_utc": "2026-11-24T06:48:07.637054+00:00",
+        "executable_bytes": 28948480,
+        "executable_mtime_ns": 1795502369960505500,
+        "loop_s": 3.200172,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1920,
+            1920.0,
+            1920
+          ],
+          "pstates": [
+            "P0",
+            "P2"
+          ],
+          "median_utilization_pct": 71.5
+        }
+      },
+      "old": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\old\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_old_bench4_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 4.078165400016587,
+        "start_utc": "2026-11-24T06:48:07.660555+00:00",
+        "end_utc": "2026-11-24T06:48:11.739538+00:00",
+        "executable_bytes": 28946944,
+        "executable_mtime_ns": 1795442882744326400,
+        "loop_s": 3.2572,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1920,
+            1920.0,
+            1920
+          ],
+          "pstates": [
+            "P0",
+            "P2"
+          ],
+          "median_utilization_pct": 69.5
+        }
+      },
+      "validated": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\validated\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_validated_bench4_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 4.124585400044452,
+        "start_utc": "2026-11-24T06:48:11.750196+00:00",
+        "end_utc": "2026-11-24T06:48:15.874151+00:00",
+        "executable_bytes": 28948480,
+        "executable_mtime_ns": 1795500173129057500,
+        "loop_s": 3.303984,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1920,
+            1920.0,
+            1920
+          ],
+          "pstates": [
+            "P2"
+          ],
+          "median_utilization_pct": 71.5
+        }
+      }
+    },
+    {
+      "validated": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\validated\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_validated_bench5_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 4.01848319999408,
+        "start_utc": "2026-11-24T06:48:15.888714+00:00",
+        "end_utc": "2026-11-24T06:48:19.906635+00:00",
+        "executable_bytes": 28948480,
+        "executable_mtime_ns": 1795500173129057500,
+        "loop_s": 3.201506,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1920,
+            1920.0,
+            1920
+          ],
+          "pstates": [
+            "P2"
+          ],
+          "median_utilization_pct": 73.5
+        }
+      },
+      "old": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\old\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_old_bench5_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 3.9048561000381596,
+        "start_utc": "2026-11-24T06:48:19.926900+00:00",
+        "end_utc": "2026-11-24T06:48:23.831909+00:00",
+        "executable_bytes": 28946944,
+        "executable_mtime_ns": 1795442882744326400,
+        "loop_s": 3.173742,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1920,
+            1920.0,
+            1920
+          ],
+          "pstates": [
+            "P2"
+          ],
+          "median_utilization_pct": 74.5
+        }
+      },
+      "merged": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\merged\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu",
+          "-stable",
+          "-mdbc_freeslip",
+          "-tout:0.001",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2_bench\\upl_bigstep_2tv_CPU1_r1",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_merged_bench5_finishmerge_r1_pinned",
+          "-dirdataout",
+          "data",
+          "-svres",
+          "-nsteps:192"
+        ],
+        "exit": 0,
+        "wall_s": 4.479698599956464,
+        "start_utc": "2026-11-24T06:48:23.847396+00:00",
+        "end_utc": "2026-11-24T06:48:28.326376+00:00",
+        "executable_bytes": 28948480,
+        "executable_mtime_ns": 1795502369960505500,
+        "loop_s": 3.141102,
+        "steps": 192,
+        "parts": 3,
+        "parts_out": 0,
+        "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+        "configuration": "upl_bigstep_2tv_CPU1_r1 - 2D - SvPosDouble - mDBC(Free slip - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "device_samples": {
+          "count": 4,
+          "clock_MHz_min_median_max": [
+            1920,
+            1920.0,
+            1920
+          ],
+          "pstates": [
+            "P2"
+          ],
+          "median_utilization_pct": 76.5
+        }
+      }
+    }
+  ],
+  "version_medians": {
+    "old": {
+      "loop_s": 3.2103855,
+      "wall_s": 3.961634450010024
+    },
+    "validated": {
+      "loop_s": 3.198244,
+      "wall_s": 4.005414399987785
+    },
+    "merged": {
+      "loop_s": 3.21767,
+      "wall_s": 4.010593300015898
+    }
+  },
+  "comparisons": {
+    "validated/old": {
+      "loop_s": {
+        "paired_ratios": [
+          1.0131857593798699,
+          0.9896676712678858,
+          0.9759398491609238,
+          1.0048851239383836,
+          1.0143632567849685,
+          1.0087480330789333
+        ],
+        "median_ratio": 1.0068165785086585
+      },
+      "wall_s": {
+        "paired_ratios": [
+          1.067926420353895,
+          0.9849800150007608,
+          0.9768392133880438,
+          1.0411105539137326,
+          1.0113825692375489,
+          1.0290989212009143
+        ],
+        "median_ratio": 1.0202407452192315
+      }
+    },
+    "merged/old": {
+      "loop_s": {
+        "paired_ratios": [
+          1.0179377700654721,
+          1.0052369123939948,
+          0.9934611556116227,
+          1.0046939777429869,
+          0.9824917106717425,
+          0.9897156101535665
+        ],
+        "median_ratio": 0.9990775666773049
+      },
+      "wall_s": {
+        "paired_ratios": [
+          1.049725775287698,
+          0.9853041977288529,
+          1.0210389928252612,
+          0.9974223791744293,
+          0.9686179231476043,
+          1.1472122109474627
+        ],
+        "median_ratio": 1.0092306859998452
+      }
+    },
+    "merged/validated": {
+      "loop_s": {
+        "paired_ratios": [
+          1.004690167268548,
+          1.0157317871221994,
+          1.0179532647076182,
+          0.9998097830380375,
+          0.9685797509915303,
+          0.9811326294562621
+        ],
+        "median_ratio": 1.0022499751532927
+      },
+      "wall_s": {
+        "paired_ratios": [
+          0.9829570233310968,
+          1.0003291261986587,
+          1.045247752988863,
+          0.9580369495102405,
+          0.9577166471020125,
+          1.114773504580799
+        ],
+        "median_ratio": 0.9916430747648777
+      }
+    }
+  },
+  "native_parts_byte_exact_within_each_block": true,
+  "telemetry": "finishmerge_r1_gpu_pinned.csv",
+  "telemetry_cmd": [
+    "C:\\Windows\\system32\\nvidia-smi.EXE",
+    "-i",
+    "0",
+    "--query-gpu=timestamp,pstate,clocks.current.graphics,clocks.current.memory,power.draw,utilization.gpu",
+    "--format=csv,noheader,nounits",
+    "-l",
+    "1"
+  ],
+  "telemetry_samples": 77
+}

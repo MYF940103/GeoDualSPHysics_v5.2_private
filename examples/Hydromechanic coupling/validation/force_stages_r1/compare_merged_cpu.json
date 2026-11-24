@@ -1,0 +1,747 @@
+{
+  "control": "validated",
+  "candidate": "merged",
+  "backend": "cpu",
+  "common": [
+    {
+      "lane": "dry_verlet",
+      "backend": "cpu",
+      "frames": 17,
+      "array_comparisons": 187,
+      "history_frames": 0,
+      "scalar_comparisons": 952,
+      "saved_steps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "saved_times_s": [
+        0.0,
+        9.178991413074926e-06,
+        1.835798282614985e-05,
+        2.7536974239224777e-05,
+        3.67159656522997e-05,
+        4.589495706537463e-05,
+        5.5073948478449555e-05,
+        6.425293989152448e-05,
+        7.34319313045994e-05,
+        8.261092271767433e-05,
+        9.178991413074926e-05,
+        0.00010096890554382418,
+        0.00011014789695689911,
+        0.00011932688836997404,
+        0.00012850587978304896,
+        0.00013768487119612387,
+        0.0001468638626091988
+      ],
+      "exact_part_bytes": 14850741,
+      "native_arrays": [
+        "Idp",
+        "Pos",
+        "Vel",
+        "Rhop",
+        "Sigma_kk",
+        "Sigma_ij",
+        "Kplastic",
+        "SigmaState_kk",
+        "SigmaState_ij",
+        "FSType",
+        "FSNormal"
+      ],
+      "active_ids": 7028,
+      "hourglass_final_summary": []
+    },
+    {
+      "lane": "dry_cdbc",
+      "backend": "cpu",
+      "frames": 7,
+      "array_comparisons": 77,
+      "history_frames": 0,
+      "scalar_comparisons": 399,
+      "saved_steps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "saved_times_s": [
+        0.0,
+        0.00018357982552594593,
+        0.00019275881693902084,
+        0.00020193780835209578,
+        0.00021111679976517072,
+        0.00022029579117824566,
+        0.0002294747825913206
+      ],
+      "exact_part_bytes": 6115228,
+      "native_arrays": [
+        "Idp",
+        "Pos",
+        "Vel",
+        "Rhop",
+        "Sigma_kk",
+        "Sigma_ij",
+        "Kplastic",
+        "SigmaState_kk",
+        "SigmaState_ij",
+        "FSType",
+        "FSNormal"
+      ],
+      "active_ids": 7028,
+      "hourglass_final_summary": []
+    },
+    {
+      "lane": "column0",
+      "backend": "cpu",
+      "frames": 8,
+      "array_comparisons": 120,
+      "history_frames": 0,
+      "scalar_comparisons": 464,
+      "saved_steps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7
+      ],
+      "saved_times_s": [
+        0.0,
+        1e-05,
+        2e-05,
+        3.0000000000000004e-05,
+        4e-05,
+        5e-05,
+        7.000000000000001e-05,
+        8e-05
+      ],
+      "exact_part_bytes": 1250024,
+      "native_arrays": [
+        "Idp",
+        "Pos",
+        "Vel",
+        "Rhop",
+        "Sigma_kk",
+        "Sigma_ij",
+        "Kplastic",
+        "SigmaState_kk",
+        "SigmaState_ij",
+        "FSType",
+        "FSNormal",
+        "PorePress",
+        "PorePress0",
+        "ExcessPorePress",
+        "HydroMechLoadAce"
+      ],
+      "active_ids": 1040,
+      "hourglass_final_summary": [
+        "SoilHourglass: forcecalls=16 predictorupdates=8 correctorupdates=8 ratecalls=16",
+        "SoilHourglass: ratecalculations=9 endpoint_rate_reuses=7",
+        "SoilHourglass: max|sum(m*H)|=7.37257e-18 max|sum(m*deltaAce)|=3.14968e-05 max(dt/tau)=0.00796107 spinbound=2.78927e-09"
+      ],
+      "top_pressure_range_Pa_by_completed_step": {
+        "1": [
+          0.0,
+          0.0
+        ],
+        "2": [
+          339.2668762207031,
+          339.2668762207031
+        ],
+        "3": [
+          1494.5147705078125,
+          1494.5147705078125
+        ],
+        "4": [
+          0.0,
+          0.0
+        ],
+        "5": [
+          0.0,
+          0.0
+        ],
+        "7": [
+          0.0,
+          0.0
+        ],
+        "8": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "lane": "column1",
+      "backend": "cpu",
+      "frames": 8,
+      "array_comparisons": 176,
+      "history_frames": 0,
+      "scalar_comparisons": 496,
+      "saved_steps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7
+      ],
+      "saved_times_s": [
+        0.0,
+        1e-06,
+        2e-06,
+        3e-06,
+        4e-06,
+        4.9999999999999996e-06,
+        6.999999999999999e-06,
+        8e-06
+      ],
+      "exact_part_bytes": 1786328,
+      "native_arrays": [
+        "Idp",
+        "Posd",
+        "Vel",
+        "Rhop",
+        "Sigma_kk",
+        "Sigma_ij",
+        "Kplastic",
+        "SigmaState_kk",
+        "SigmaState_ij",
+        "FSType",
+        "FSNormal",
+        "PoroVolumeRatio",
+        "PoroPorosity",
+        "PoroThetaLastStage",
+        "PosDiv",
+        "PoroCurrentVolume",
+        "PoroMixtureDensity",
+        "PoroHydraulicConductivity",
+        "PorePress",
+        "PorePress0",
+        "ExcessPorePress",
+        "HydroMechLoadAce"
+      ],
+      "active_ids": 1040,
+      "hourglass_final_summary": [
+        "SoilHourglass: forcecalls=16 predictorupdates=8 correctorupdates=8 ratecalls=16",
+        "SoilHourglass: ratecalculations=9 endpoint_rate_reuses=7",
+        "SoilHourglass: max|sum(M0*Href)|=4.40457e-20 max|sum(mi*deltaAce)|=3.80494e-05 max(dt/tau)=0.000796107 spinbound=1.32392e-16"
+      ],
+      "top_pressure_range_Pa_by_completed_step": {
+        "1": [
+          0.0,
+          0.0
+        ],
+        "2": [
+          63.28391647338867,
+          63.28391647338867
+        ],
+        "3": [
+          190.86346435546875,
+          190.86346435546875
+        ],
+        "4": [
+          0.0,
+          0.0
+        ],
+        "5": [
+          0.0,
+          0.0
+        ],
+        "7": [
+          0.0,
+          0.0
+        ],
+        "8": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "lane": "column2",
+      "backend": "cpu",
+      "frames": 9,
+      "array_comparisons": 214,
+      "history_frames": 8,
+      "scalar_comparisons": 631,
+      "saved_steps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "saved_times_s": [
+        0.0,
+        1.0000228881835938e-05,
+        2.0000457763671876e-05,
+        3.0000686645507814e-05,
+        4.000091552734375e-05,
+        5.0001144409179694e-05,
+        6.0001373291015636e-05,
+        7.000160217285158e-05,
+        8.000183105468752e-05
+      ],
+      "exact_part_bytes": 2076861,
+      "native_arrays": [
+        "Idp",
+        "Posd",
+        "Vel",
+        "Rhop",
+        "Sigma_kk",
+        "Sigma_ij",
+        "Kplastic",
+        "SigmaState_kk",
+        "SigmaState_ij",
+        "FSType",
+        "FSNormal",
+        "PoroVolumeRatio",
+        "PoroPorosity",
+        "PoroThetaLastStage",
+        "PosDiv",
+        "PoroCurrentVolume",
+        "PoroMixtureDensity",
+        "PoroHydraulicConductivity",
+        "PorePress",
+        "PorePress0",
+        "ExcessPorePress",
+        "HydroMechLoadAce"
+      ],
+      "active_ids": 1040,
+      "hourglass_final_summary": [
+        "SoilHourglass: forcecalls=16 predictorupdates=8 correctorupdates=8 ratecalls=16",
+        "SoilHourglass: ratecalculations=9 endpoint_rate_reuses=7",
+        "SoilHourglass: max|sum(M0*Href)|=2.60209e-18 max|sum(mi*deltaAce)|=4.02391e-05 max(dt/tau)=0.00796126 spinbound=9.73845e-14"
+      ],
+      "top_pressure_range_Pa_by_completed_step": {
+        "1": [
+          0.0,
+          0.0
+        ],
+        "2": [
+          2163.679931640625,
+          2163.679931640625
+        ],
+        "3": [
+          6341.431640625,
+          6341.431640625
+        ],
+        "4": [
+          0.0,
+          0.0
+        ],
+        "5": [
+          0.0,
+          0.0
+        ],
+        "6": [
+          0.0,
+          0.0
+        ],
+        "7": [
+          0.0,
+          0.0
+        ],
+        "8": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "lane": "sphere2",
+      "backend": "cpu",
+      "frames": 5,
+      "array_comparisons": 118,
+      "history_frames": 4,
+      "scalar_comparisons": 347,
+      "saved_steps": [
+        0,
+        0,
+        1,
+        2,
+        3
+      ],
+      "saved_times_s": [
+        0.0,
+        1.9073486328125e-06,
+        3.814697265625e-06,
+        5.7220458984375e-06,
+        7.62939453125e-06
+      ],
+      "exact_part_bytes": 40617105,
+      "native_arrays": [
+        "Idp",
+        "Posd",
+        "Vel",
+        "Rhop",
+        "Sigma_kk",
+        "Sigma_ij",
+        "Kplastic",
+        "SigmaState_kk",
+        "SigmaState_ij",
+        "FSType",
+        "FSNormal",
+        "PoroVolumeRatio",
+        "PoroPorosity",
+        "PoroThetaLastStage",
+        "PosDiv",
+        "PoroCurrentVolume",
+        "PoroMixtureDensity",
+        "PoroHydraulicConductivity",
+        "PorePress",
+        "PorePress0",
+        "ExcessPorePress",
+        "HydroMechLoadAce"
+      ],
+      "active_ids": 37181,
+      "hourglass_final_summary": []
+    }
+  ],
+  "c08": [
+    {
+      "comparison": {
+        "lane": "plastic",
+        "backend": "cpu",
+        "frames": 6,
+        "array_comparisons": 132,
+        "history_frames": 0,
+        "scalar_comparisons": 486,
+        "saved_steps": [
+          2000000,
+          2000400,
+          2000800,
+          2001200,
+          2001600,
+          2002000
+        ],
+        "saved_times_s": [
+          10.000004999706007,
+          10.002004999705932,
+          10.004004999705856,
+          10.00600499970578,
+          10.008004999705705,
+          10.010004999705629
+        ],
+        "exact_part_bytes": 8678472,
+        "native_arrays": [
+          "Idp",
+          "Posd",
+          "Vel",
+          "Rhop",
+          "Sigma_kk",
+          "Sigma_ij",
+          "Kplastic",
+          "SigmaState_kk",
+          "SigmaState_ij",
+          "FSType",
+          "FSNormal",
+          "PoroVolumeRatio",
+          "PoroPorosity",
+          "PoroThetaLastStage",
+          "PosDiv",
+          "PoroCurrentVolume",
+          "PoroMixtureDensity",
+          "PoroHydraulicConductivity",
+          "PorePress",
+          "PorePress0",
+          "ExcessPorePress",
+          "HydroMechLoadAce"
+        ],
+        "active_ids": 6805,
+        "hourglass_final_summary": []
+      },
+      "profiles": {
+        "source": "c08_h18_wend_psi0_pre_r2",
+        "pre_schema": 2,
+        "source_step": 2000000,
+        "source_actual_time_s": 9.999999999706008,
+        "pre_kappa_max": 0.0,
+        "retired_begin": 1805,
+        "retired_count": 255,
+        "frames": [
+          {
+            "step": 2000001,
+            "time_s": 10.000004999706007,
+            "active_ids": 6805,
+            "soil": 5000,
+            "free_surface": 149,
+            "positive_on_fs": 0,
+            "kappa_positive": 0,
+            "kappa_max": 0.0,
+            "min_z": 0.019981423917877994,
+            "min_x": 0.019991554115997345,
+            "pmin_pa": -31.422277450561523,
+            "pmax_pa": 19666.427734375,
+            "Jmin": 0.9992938364050854,
+            "Jmax": 0.9999770777225575,
+            "signed_dterror": -3.88974429064071e-06
+          },
+          {
+            "step": 2000401,
+            "time_s": 10.002004999705932,
+            "active_ids": 6805,
+            "soil": 5000,
+            "free_surface": 149,
+            "positive_on_fs": 0,
+            "kappa_positive": 0,
+            "kappa_max": 0.0,
+            "min_z": 0.019981423798529106,
+            "min_x": 0.019991553921611355,
+            "pmin_pa": -8126.9404296875,
+            "pmax_pa": 19561.158203125,
+            "Jmin": 0.9992862562272603,
+            "Jmax": 0.9999771104845708,
+            "signed_dterror": -3.889670657699308e-06
+          },
+          {
+            "step": 2000801,
+            "time_s": 10.004004999705856,
+            "active_ids": 6805,
+            "soil": 5000,
+            "free_surface": 149,
+            "positive_on_fs": 0,
+            "kappa_positive": 1,
+            "kappa_max": 5.664734271704219e-05,
+            "min_z": 0.019981670082072613,
+            "min_x": 0.019991716786528474,
+            "pmin_pa": -7058.66015625,
+            "pmax_pa": 20082.001953125,
+            "Jmin": 0.9992884677029035,
+            "Jmax": 0.9999757409726935,
+            "signed_dterror": -3.889667159169381e-06
+          },
+          {
+            "step": 2001201,
+            "time_s": 10.00600499970578,
+            "active_ids": 6805,
+            "soil": 5000,
+            "free_surface": 149,
+            "positive_on_fs": 0,
+            "kappa_positive": 20,
+            "kappa_max": 0.000507097749505192,
+            "min_z": 0.019981526362944656,
+            "min_x": 0.019991640281166095,
+            "pmin_pa": -6924.98486328125,
+            "pmax_pa": 26694.267578125,
+            "Jmin": 0.9991491292668675,
+            "Jmax": 0.9999753131438901,
+            "signed_dterror": -3.888339880772898e-06
+          },
+          {
+            "step": 2001601,
+            "time_s": 10.008004999705705,
+            "active_ids": 6805,
+            "soil": 5000,
+            "free_surface": 149,
+            "positive_on_fs": 0,
+            "kappa_positive": 69,
+            "kappa_max": 0.0014438150683417916,
+            "min_z": 0.019972465229566964,
+            "min_x": 0.019991678433389268,
+            "pmin_pa": -6775.69775390625,
+            "pmax_pa": 19281.552734375,
+            "Jmin": 0.9989597548097482,
+            "Jmax": 0.9999759891185703,
+            "signed_dterror": -3.886497544286123e-06
+          },
+          {
+            "step": 2002001,
+            "time_s": 10.010004999705629,
+            "active_ids": 6805,
+            "soil": 5000,
+            "free_surface": 149,
+            "positive_on_fs": 0,
+            "kappa_positive": 174,
+            "kappa_max": 0.0031655991915613413,
+            "min_z": 0.019960570932664495,
+            "min_x": 0.01999165612981522,
+            "pmin_pa": -6797.875,
+            "pmax_pa": 22061.58984375,
+            "Jmin": 0.9987876480840762,
+            "Jmax": 0.9999751397277605,
+            "signed_dterror": -3.884820873509309e-06
+          }
+        ]
+      }
+    },
+    {
+      "comparison": {
+        "lane": "short_cpu",
+        "backend": "cpu",
+        "frames": 4,
+        "array_comparisons": 88,
+        "history_frames": 0,
+        "scalar_comparisons": 296,
+        "saved_steps": [
+          389,
+          399,
+          409,
+          419
+        ],
+        "saved_times_s": [
+          0.0009750000000000023,
+          0.0010000000000000013,
+          0.0010250000000000003,
+          0.0010499999999999993
+        ],
+        "exact_part_bytes": 5780260,
+        "native_arrays": [
+          "Idp",
+          "Posd",
+          "Vel",
+          "Rhop",
+          "Sigma_kk",
+          "Sigma_ij",
+          "Kplastic",
+          "SigmaState_kk",
+          "SigmaState_ij",
+          "FSType",
+          "FSNormal",
+          "PoroVolumeRatio",
+          "PoroPorosity",
+          "PoroThetaLastStage",
+          "PosDiv",
+          "PoroCurrentVolume",
+          "PoroMixtureDensity",
+          "PoroHydraulicConductivity",
+          "PorePress",
+          "PorePress0",
+          "ExcessPorePress",
+          "HydroMechLoadAce"
+        ],
+        "active_ids": 6800,
+        "hourglass_final_summary": []
+      },
+      "profiles": {
+        "source": "upl_preload_handoff_source_CPU_r1",
+        "pre_schema": 1,
+        "source_step": 380,
+        "source_actual_time_s": 0.0009500000000000023,
+        "pre_kappa_max": 0.0,
+        "retired_begin": 1800,
+        "retired_count": 260,
+        "frames": [
+          {
+            "step": 390,
+            "time_s": 0.0009750000000000023,
+            "active_ids": 6800,
+            "soil": 5000,
+            "free_surface": 149,
+            "positive_on_fs": 0,
+            "kappa_positive": 0,
+            "kappa_max": 0.0,
+            "min_z": 0.019999254280594167,
+            "min_x": 0.019999868283857733,
+            "pmin_pa": 0.0,
+            "pmax_pa": 30840.5078125,
+            "Jmin": 0.9999887044033423,
+            "Jmax": 1.0000004936771172,
+            "signed_dterror": -1.4539927576111921e-06
+          },
+          {
+            "step": 400,
+            "time_s": 0.0010000000000000013,
+            "active_ids": 6800,
+            "soil": 5000,
+            "free_surface": 149,
+            "positive_on_fs": 0,
+            "kappa_positive": 0,
+            "kappa_max": 0.0,
+            "min_z": 0.019999230906563307,
+            "min_x": 0.019999865405547875,
+            "pmin_pa": -2.1098074913024902,
+            "pmax_pa": 31131.078125,
+            "Jmin": 0.9999888189084306,
+            "Jmax": 1.000000959597069,
+            "signed_dterror": -1.453992849001784e-06
+          },
+          {
+            "step": 410,
+            "time_s": 0.0010250000000000003,
+            "active_ids": 6800,
+            "soil": 5000,
+            "free_surface": 149,
+            "positive_on_fs": 0,
+            "kappa_positive": 0,
+            "kappa_max": 0.0,
+            "min_z": 0.01999920764760579,
+            "min_x": 0.019999862708102157,
+            "pmin_pa": -42.88701629638672,
+            "pmax_pa": 31436.09765625,
+            "Jmin": 0.9999888966052183,
+            "Jmax": 1.0000027488835235,
+            "signed_dterror": -1.4539933415929898e-06
+          },
+          {
+            "step": 420,
+            "time_s": 0.0010499999999999993,
+            "active_ids": 6800,
+            "soil": 5000,
+            "free_surface": 149,
+            "positive_on_fs": 0,
+            "kappa_positive": 0,
+            "kappa_max": 0.0,
+            "min_z": 0.01999918455497819,
+            "min_x": 0.019999860196667225,
+            "pmin_pa": -89.90301513671875,
+            "pmax_pa": 31738.666015625,
+            "Jmin": 0.9999886937061032,
+            "Jmax": 1.000004642817158,
+            "signed_dterror": -1.4539928535684919e-06
+          }
+        ]
+      }
+    }
+  ],
+  "original_guard": {
+    "command": [
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\merged\\DualSPHysics5.2CPU_win64.exe",
+      "-cpu",
+      "-stable",
+      "-ompthreads:1",
+      "-mdbc_freeslip",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column1\\upl_bigstep_2tv_CPU1_r1",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column1_cpu_merged_rejected",
+      "-dirdataout",
+      "data",
+      "-svres",
+      "-nsteps:8"
+    ],
+    "exit": 1,
+    "original_cause": "Text: Dynamic current step or DtMin exceeds its necessary bound: step=0 current=1.0000228881835938e-05 bound=6.3765033579337421e-06 DtMin=1e-08; final=0 force=3.5953862697246315e+307 wave_visc=6.3765033579337421e-06 pore=4.766031799450808e-05 k_gradient=1.7976931348623157e+308 AceMax=0 VelMax=0 ViscDtMax=0 conductivity_speed=0.",
+    "new_cause": "Text: Dynamic current step or DtMin exceeds its necessary bound: step=0 current=1.0000228881835938e-05 bound=6.3765033579337421e-06 DtMin=1e-08; final=0 force=3.5953862697246315e+307 wave_visc=6.3765033579337421e-06 pore=4.766031799450808e-05 k_gradient=1.7976931348623157e+308 AceMax=0 VelMax=0 ViscDtMax=0 conductivity_speed=0.",
+    "initial_frame_exact": true
+  },
+  "totals": {
+    "frames": 64,
+    "array_comparisons": 1112,
+    "scalar_comparisons": 4071,
+    "exact_part_bytes": 81155019
+  }
+}

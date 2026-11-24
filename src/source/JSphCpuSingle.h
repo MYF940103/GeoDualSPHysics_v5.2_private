@@ -64,8 +64,7 @@ protected:
   void Interaction_Forces(TpInterStep interstep);
   void ApplyBoundaryCorrection(TpInterStep interstep);
   void PreLoopProcedure();
-  float Interaction_Forces();
-  void FinishInteractionForces(float viscdt);
+  void Interaction_Forces();
   void MdbcBoundCorrection();
   void CdbcBoundCorrection();
 
