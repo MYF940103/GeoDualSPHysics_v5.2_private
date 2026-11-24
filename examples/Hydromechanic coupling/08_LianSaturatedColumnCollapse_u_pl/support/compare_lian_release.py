@@ -7,6 +7,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
+from plot_lian_release_fields import plot_group
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -124,6 +125,42 @@ def plot_all(groups, histories, matches):
                for g in groups for row in histories[g]])
 
 
+def write_report(rows, comparisons):
+    lines = [
+        "# 饱和土柱塌陷三组显式 u-pl 验证",
+        "",
+        "三组在本组重力预载后撤去右墙，各计算 3 s。下表使用固定材料 ID 和实际保存时钟。"
+        "顶层沉降相对于本组撤墙前的状态，向下为正。末秒前缘推进量为 2 s 附近保存帧至末帧的位移。",
+        "",
+        "| 初始剪胀角 | 末帧前缘 x (m) | 末秒前缘推进 (m) | 末帧顶层沉降 (mm) | 全程孔压范围 (kPa) | 最小近邻距离 / dp |",
+        "|---|---:|---:|---:|---:|---:|",
+    ]
+    for row in rows:
+        angle = GROUPS[row["group"]][0]
+        lines.append(f"| {angle} | {row['final_front_x_m']:.3f} | {row['front_advance_last_second_m']:+.4f} | "
+                     f"{row['final_top_settlement_mm']:.2f} | {row['min_p_kPa']:.2f} 至 {row['max_p_kPa']:.2f} | "
+                     f"{row['min_nn_in_dp']:.3f} |")
+    lines.extend(["", "## 与 Lian 等数值结果的几何对比", "",
+        "模拟前缘为最右土粒中心，论文读数为图中连续土体的可见边缘。"
+        "两种几何表示的尺度差约为半个粒子间距 0.02 m。表中差值保留原坐标。"
+        "论文中负角组有两幅图在 8 m 处截断，差值只能给出上界。",
+        "", "| 初始剪胀角 | 图号 | 撤墙后时刻 (s) | 模拟前缘 (m) | 论文图读数 (m) | 模拟减论文 (m) |",
+        "|---|---:|---:|---:|---:|---:|"])
+    for group, matches in comparisons.items():
+        for item in matches:
+            bounded = item["published_kind"] == "lower_bound"
+            delta = item["upper_bound_sph_minus_paper_m"] if bounded else item["sph_minus_visible_m"]
+            lines.append(f"| {GROUPS[group][0]} | {item['figure']} | {item['requested_tau_s']:.1f} | "
+                         f"{item['sph_front_x_m']:.3f} | {'≥' if bounded else ''}{item['published_extent_m']:.3f} | "
+                         f"{'≤' if bounded else ''}{delta:+.3f} |")
+    lines.extend(["", "三组使用本组实际材料历史。负角组峰值黏聚力为 7.5 kPa，另外两组为 5 kPa。"
+        "组间差异包含黏聚力与剪胀规律的共同影响。图中保留团聚和孔压尖峰；"
+        "逐帧极值、极值时刻、运动速度和塑性应变见配套 CSV。",
+        "", "[三组前缘图](paper_fronts.png) · [材料历史](material_histories.png) · "
+        "[汇总数据](release_summary.csv) · [前缘读图说明](reference/README.md)"])
+    (FIGURES/"README.md").write_text("\n".join(lines)+"\n", encoding="utf-8")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     what = parser.add_mutually_exclusive_group(required=True)
@@ -143,10 +180,13 @@ def main():
         plt.close(fig)
         save_rows(dest/"paper_front.csv", comparisons[g])
         save_rows(dest/"release_summary.csv", [summarize(g, histories[g])])
+        plot_group(g, dest)
     if args.all:
         plot_all(groups, histories, comparisons)
         save_rows(FIGURES/"paper_fronts.csv", [row for g in groups for row in comparisons[g]])
-        save_rows(FIGURES/"release_summary.csv", [summarize(g, histories[g]) for g in groups])
+        summaries = [summarize(g, histories[g]) for g in groups]
+        save_rows(FIGURES/"release_summary.csv", summaries)
+        write_report(summaries, comparisons)
 
 
 if __name__ == "__main__":

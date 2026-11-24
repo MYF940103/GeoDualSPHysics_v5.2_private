@@ -45,6 +45,20 @@ def native(path):
     frame = read_bi4(path)
     meta = frame["part"]["values"]
     source = frame["arrays"]
+    types = {8: ("Idp", "FSType"), 22: ("Vel", "Sigma_kk", "Sigma_ij", "FSNormal", "HydroMechLoadAce"),
+             23: ("Posd", "SigmaState_kk", "SigmaState_ij"),
+             11: ("Rhop", "Kplastic", "PorePress", "PorePress0", "ExcessPorePress", "PosDiv"),
+             12: ("PoroVolumeRatio", "PoroPorosity", "PoroThetaLastStage", "PoroCurrentVolume",
+                  "PoroMixtureDensity", "PoroHydraulicConductivity")}
+    require(all(frame["types"][name]["type_id"] == typ for typ, names in types.items() for name in names),
+            f"Native 22-array layout differs in {path.name}")
+    header = frame["root"]["values"]
+    require(header["Npiece"] == 1 and header["Piece"] == 0 and header["CaseNfixed"] == 2060
+            and header["CaseNp"] == 7060 and header["CaseNfluid"] == 5000 and header["Data2d"]
+            and not header["PeriMode"] and not header["CaseNmoving"] and not header["CaseNfloat"]
+            and header["Dp"] == DP and header["H"] == np.float32(.072)
+            and header["Rhop0"] == 2072.5 and header["MassFluid"] == np.float32(3.316),
+            f"Native registry or reference geometry differs in {path.name}")
     order = np.argsort(source["Idp"])
     fields = {key: value[order] for key, value in source.items()}
     return meta, fields
@@ -91,7 +105,8 @@ def check_frame(meta, a, idx, pre, ref, prev_kappa, stage0, group):
     require(np.array_equal(a["Idp"], native_ids) and len(a) == 22, f"IDs or field count, PART {idx}")
     require(meta["Cpart"] == idx and meta["Nout"] == 0 and meta["GravityPreloadPhase"] == int(not pre)
             and meta["MaterialLawVersion"] == 2 and meta["SymplecticDtPre"] == DT
-            and meta["dterror"] <= 1e-14 and np.isfinite(meta["dterror"]),
+            and -np.finfo(np.float64).max < meta["dterror"] <= 1e-14
+            and meta["DilationDecay"] == np.float32(GROUPS[group][2]),
             f"Native phase/clock/step diagnostic, PART {idx}")
     require(all(np.isfinite(arr).all() for arr in a.values()), f"Nonfinite native field, PART {idx}")
     require(int(meta.get("HydroMechModel", meta.get("HydroMechDynamicSeepage", -1))) == 1
@@ -112,8 +127,19 @@ def check_frame(meta, a, idx, pre, ref, prev_kappa, stage0, group):
                             rtol=2e-14, atol=0),
             f"Volume/porosity/density state, PART {idx}")
     require(np.array_equal(a["PorePress0"].view("u4"), ref["PorePress0"][native_ids].view("u4"))
-            and np.array_equal(a["ExcessPorePress"][soil], (a["PorePress"] - a["PorePress0"])[soil]),
+            and np.array_equal(a["ExcessPorePress"], a["PorePress"] - a["PorePress0"]),
             f"Frozen P0 or native excess, PART {idx}")
+    fixed = slice(None, -5000)
+    require(np.all((a["Rhop"] >= 700) & (a["Rhop"] <= 3000)) and np.all(a["FSType"] <= 4)
+            and np.all(a["Posd"][:, 1] == 0) and np.all(a["HydroMechLoadAce"] == 0)
+            and np.array_equal(a["Sigma_kk"], a["SigmaState_kk"].astype("f4"))
+            and np.array_equal(a["Sigma_ij"], a["SigmaState_ij"].astype("f4")),
+            f"Density, free surface, plane or stress display, PART {idx}")
+    require(np.array_equal(a["Posd"][fixed], ref["Posd"][native_ids[fixed]]) and not np.any(a["Vel"][fixed])
+            and np.all(a["PoroVolumeRatio"][fixed] > 1-float(np.float32(.35)))
+            and not any(np.any(a[name][fixed]) for name in ("PoroThetaLastStage", "PoroPorosity",
+                "PoroCurrentVolume", "PoroMixtureDensity", "PoroHydraulicConductivity")),
+            f"Fixed-boundary state, PART {idx}")
     kap = a["Kplastic"][soil]
     require(np.all(kap >= prev_kappa) and np.all(a["Kplastic"][:-5000] == 0),
             f"Plastic history decreased or fixed history changed, PART {idx}")
