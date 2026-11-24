@@ -62,7 +62,6 @@ using namespace std;
 JSphGpuSingle::JSphGpuSingle():JSphGpu(false){
   ClassName="JSphGpuSingle";
   CellDivSingle=NULL;
-  HourglassGpu=NULL;
 }
 
 //==============================================================================
@@ -71,7 +70,6 @@ JSphGpuSingle::JSphGpuSingle():JSphGpu(false){
 JSphGpuSingle::~JSphGpuSingle(){
   DestructorActive=true;
   delete CellDivSingle; CellDivSingle=NULL;
-  delete HourglassGpu; HourglassGpu=NULL;
 }
 
 //==============================================================================
@@ -865,7 +863,6 @@ double JSphGpuSingle::ComputeStep_Sym(){
   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
   if(Shifting)RunShifting(dt);                 //-Shifting.
   ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
-  if(HourglassGpu)HourglassGpu->CorrectorUpdate(Np,Npb,Idpg,Codeg,Posxyg,Poszg,Velrhopg,Kplasticg,dt,(PorosityFeedback? PoroJg: NULL));
   if(CaseNfloat)RunFloating(dt,false);         //-Control of floating bodies.
   PosInteraction_Forces();                     //-Free memory used for interaction.
   if(Damping)RunDamping(dt,Np,Npb,Posxyg,Poszg,Codeg,Velrhopg); //-Aplies Damping.

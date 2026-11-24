@@ -1,0 +1,120 @@
+{
+  "backend": "cpu",
+  "passed": true,
+  "models": [
+    {
+      "model": 0,
+      "reference": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column0_cpu_validated",
+      "steps": 8,
+      "ids": 1040,
+      "frames": [
+        {
+          "part": "Part_0000.bi4",
+          "time_s": 0.0,
+          "signed_dt_s": 0.0,
+          "arrays": 15,
+          "history": false,
+          "exact_file": true
+        },
+        {
+          "part": "Part_0001.bi4",
+          "time_s": 1e-05,
+          "signed_dt_s": -9.054252290976052e-05,
+          "arrays": 15,
+          "history": false,
+          "exact_file": true
+        },
+        {
+          "part": "Part_0002.bi4",
+          "time_s": 2e-05,
+          "signed_dt_s": -9.054252290954798e-05,
+          "arrays": 15,
+          "history": false,
+          "exact_file": true
+        },
+        {
+          "part": "Part_0003.bi4",
+          "time_s": 3.0000000000000004e-05,
+          "signed_dt_s": -9.054252290976052e-05,
+          "arrays": 15,
+          "history": false,
+          "exact_file": true
+        },
+        {
+          "part": "Part_0004.bi4",
+          "time_s": 4e-05,
+          "signed_dt_s": -9.054199952017572e-05,
+          "arrays": 15,
+          "history": false,
+          "exact_file": true
+        },
+        {
+          "part": "Part_0005.bi4",
+          "time_s": 5e-05,
+          "signed_dt_s": -9.054248252389965e-05,
+          "arrays": 15,
+          "history": false,
+          "exact_file": true
+        },
+        {
+          "part": "Part_0006.bi4",
+          "time_s": 7.000000000000001e-05,
+          "signed_dt_s": -9.054168438335733e-05,
+          "arrays": 15,
+          "history": false,
+          "exact_file": true
+        },
+        {
+          "part": "Part_0007.bi4",
+          "time_s": 8e-05,
+          "signed_dt_s": -9.054039543139235e-05,
+          "arrays": 15,
+          "history": false,
+          "exact_file": true
+        }
+      ],
+      "hourglass": [
+        "SoilHourglass: forcecalls=16 predictorupdates=8 correctorupdates=8 ratecalls=16",
+        "SoilHourglass: ratecalculations=9 endpoint_rate_reuses=7",
+        "SoilHourglass: max|sum(m*H)|=7.37257e-18 max|sum(m*deltaAce)|=3.14968e-05 max(dt/tau)=0.00796107 spinbound=2.78927e-09"
+      ]
+    },
+    {
+      "model": 2,
+      "reference": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\tpi_variable_k_r1_cpu_column_archive\\result",
+      "steps": 25,
+      "ids": 1040,
+      "frames": [
+        {
+          "part": "Part_0000.bi4",
+          "time_s": 0.0,
+          "signed_dt_s": 0.0,
+          "arrays": 22,
+          "history": false,
+          "exact_file": true
+        },
+        {
+          "part": "Part_0001.bi4",
+          "time_s": 0.00013000297546386723,
+          "signed_dt_s": -3.76600817876192e-05,
+          "arrays": 22,
+          "history": true,
+          "exact_file": true
+        },
+        {
+          "part": "Part_0002.bi4",
+          "time_s": 0.00025000572204589836,
+          "signed_dt_s": -3.766007420076645e-05,
+          "arrays": 22,
+          "history": true,
+          "exact_file": true
+        }
+      ],
+      "hourglass": [
+        "SoilHourglass: forcecalls=50 predictorupdates=25 correctorupdates=25 ratecalls=50",
+        "SoilHourglass: ratecalculations=26 endpoint_rate_reuses=24",
+        "SoilHourglass: max|sum(M0*Href)|=5.54807e-20 max|sum(mi*deltaAce)|=2.19072e-07 max(dt/tau)=0.00796126 spinbound=4.49916e-14"
+      ]
+    }
+  ]
+}

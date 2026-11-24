@@ -98,6 +98,7 @@ typedef struct{
 
 class JDsPartsOut;
 class JArraysCpu;
+class JSphHourglassCpu;
 class JCellDivCpu;
 
 //##############################################################################
@@ -136,6 +137,7 @@ protected:
 
   //-List of particle arrays on CPU. | Lista de arrays en CPU para particulas.
   JArraysCpu* ArraysCpu;
+  JSphHourglassCpu* HourglassCpu; ///<Native-ID elastic HG history; absent when xi=0.
 
   //-Execution Variables for particles (size=ParticlesSize). | Variables con datos de las particulas para ejecucion (size=ParticlesSize).
   unsigned *Idpc;    ///<Identifier of particle | Identificador de particula.

@@ -26,7 +26,6 @@
 #include <string>
 
 class JCellDivCpuSingle;
-class JSphHourglassCpu;
 
 //##############################################################################
 //# JSphCpuSingle
@@ -37,7 +36,6 @@ class JSphCpuSingle : public JSphCpu
 {
 protected:
   JCellDivCpuSingle* CellDivSingle;
-  JSphHourglassCpu* HourglassCpu;
 
   llong GetAllocMemoryCpu()const;
   void UpdateMaxValues();

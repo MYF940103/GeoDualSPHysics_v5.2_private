@@ -19,6 +19,7 @@
 /// \file JSphGpu.cpp \brief Implements the class \ref JSphGpu.
 
 #include "JSphGpu.h"
+#include "JSphHourglassGpu.h"
 #include "JException.h"
 #include "JSphGpu_ker.h"
 #include "JSphGpuSimple_ker.h"
@@ -246,6 +247,7 @@ JSphGpu::JSphGpu(bool withmpi):JSph(false,false,withmpi),DivAxis(MGDIV_None){
   PoroJ=NULL; PoroTheta=NULL;
   AuxPos=NULL; AuxVel=NULL; AuxRhop=NULL; AuxFSType=NULL; AuxFSNormal=NULL; AuxPosDiv=NULL;
   CellDiv=NULL;
+  HourglassGpu=NULL;
   FtoAuxDouble6=NULL; FtoAuxFloat15=NULL; //-Calculates forces on floating bodies.
   GpuInfo=new JDsGpuInfo;
   ArraysGpu=new JArraysGpu;
@@ -258,6 +260,7 @@ JSphGpu::JSphGpu(bool withmpi):JSph(false,false,withmpi),DivAxis(MGDIV_None){
 //==============================================================================
 JSphGpu::~JSphGpu(){
   DestructorActive=true;
+  delete HourglassGpu; HourglassGpu=NULL;
   //-Release gauge device buffers before destroying the CUDA context.
   delete GaugeSystem; GaugeSystem=NULL;
   FreeCpuMemoryParticles();
@@ -1914,6 +1917,7 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
   ArraysGpu->Free(PorePressPreg); PorePressPreg=NULL;
   //====
   Timersg->TmStop(TMG_SuComputeStep,false);
+  if(HourglassGpu)HourglassGpu->CorrectorUpdate(Np,Npb,Idpg,Codeg,Posxyg,Poszg,Velrhopg,Kplasticg,dt,(PorosityFeedback? PoroJg: NULL));
 }
 
 //==============================================================================

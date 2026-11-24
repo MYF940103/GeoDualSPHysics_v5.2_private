@@ -32,6 +32,7 @@
 class JDsGpuInfo;
 class JDsPartsOut;
 class JArraysGpu;
+class JSphHourglassGpu;
 class JCellDivGpu;
 
 //##############################################################################
@@ -140,6 +141,7 @@ protected:
 
   //-List of particle arrays on GPU. | Lista de arrays en GPU para particulas.
   JArraysGpu* ArraysGpu;
+  JSphHourglassGpu* HourglassGpu; ///<Native-ID elastic HG history; absent when xi=0.
   //-Variables holding particle data for the execution (size=ParticlesSize).
   //-Variables con datos de las particulas para ejecucion (size=ParticlesSize).
   unsigned *Idpg;   ///<Identifier of particle | Identificador de particula.

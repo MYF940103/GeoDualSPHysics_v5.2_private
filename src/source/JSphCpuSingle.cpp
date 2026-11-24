@@ -57,7 +57,6 @@ using namespace std;
 JSphCpuSingle::JSphCpuSingle():JSphCpu(false){
   ClassName="JSphCpuSingle";
   CellDivSingle=NULL;
-  HourglassCpu=NULL;
 }
 
 //==============================================================================
@@ -66,7 +65,6 @@ JSphCpuSingle::JSphCpuSingle():JSphCpu(false){
 JSphCpuSingle::~JSphCpuSingle(){
   DestructorActive=true;
   delete CellDivSingle; CellDivSingle=NULL;
-  delete HourglassCpu; HourglassCpu=NULL;
 }
 
 //==============================================================================
@@ -981,7 +979,6 @@ double JSphCpuSingle::ComputeStep_Sym(){
   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
   if(Shifting)RunShifting(dt);                 //-Shifting.
   ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
-  if(HourglassCpu)HourglassCpu->CorrectorUpdate(Np,Npb,Idpc,Codec,Posc,Velrhopc,Kplasticc,dt,(PorosityFeedback? PoroJc: NULL));
   if(CaseNfloat)RunFloating(dt,false);         //-Control of floating bodies.
   PosInteraction_Forces();                     //-Free memory used for interaction.
   if(Damping)RunDamping(dt,Np,Npb,Posc,Codec,Velrhopc); //-Applies Damping.

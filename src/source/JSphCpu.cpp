@@ -19,6 +19,7 @@
 /// \file JSphCpu.cpp \brief Implements the class \ref JSphCpu.
 
 #include "JSphCpu.h"
+#include "JSphHourglassCpu.h"
 #include "JCellSearch_inline.h"
 #include "JCellDivCpu.h"
 #include "JPartFloatBi4.h"
@@ -59,6 +60,7 @@ static void ComputeArtificialStressArray(unsigned np,const typecode *code,const 
 JSphCpu::JSphCpu(bool withmpi):JSph(true,false,withmpi){
   ClassName="JSphCpu";
   CellDiv=NULL;
+  HourglassCpu=NULL;
   ArraysCpu=new JArraysCpu;
   Timersc=new JDsTimersCpu;
   InitVars();
@@ -69,6 +71,7 @@ JSphCpu::JSphCpu(bool withmpi):JSph(true,false,withmpi){
 //==============================================================================
 JSphCpu::~JSphCpu(){
   DestructorActive=true;
+  delete HourglassCpu; HourglassCpu=NULL;
   FreeCpuMemoryParticles();
   FreeCpuMemoryFixed();
   delete ArraysCpu; ArraysCpu=NULL;
@@ -2521,6 +2524,7 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
   ArraysCpu->Free(SigmaPrec);    SigmaPrec=NULL;//mdbr
   ArraysCpu->Free(PorePressPrec); PorePressPrec=NULL;
   Timersc->TmStop(TMC_SuComputeStep);
+  if(HourglassCpu)HourglassCpu->CorrectorUpdate(Np,Npb,Idpc,Codec,Posc,Velrhopc,Kplasticc,dt,(PorosityFeedback? PoroJc: NULL));
 }
 
 
