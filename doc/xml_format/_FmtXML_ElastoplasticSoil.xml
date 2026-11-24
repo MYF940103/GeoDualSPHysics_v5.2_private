@@ -89,7 +89,7 @@
 			<!-- HG: 2D Wendland/Symplectic, small-rotation elastic soil; no plasticity or history restart. -->
 			<parameter key="SoilDamping" value="0" comment="Bui-Fukagawa soil damping 0=off, 1=on; default=0" />
 			<parameter key="SoilDampingCoef" value="0.02" comment="Damping coefficient; default=0.02; >=0 (dynamic: at most0.1)" />
-			<parameter key="DensityDT" value="0" comment="Soil stress diffusion 0=off, 1=Molteni, 2=Feng/Fourtakas, 3=internal-fluid only; default=0" />
+			<parameter key="DensityDT" value="0" comment="Soil stress diffusion: 0=off (default), 1=Molteni, 2=Feng/Fourtakas, 3=soil-soil only. Explicit u-pl supports 0 and 3; mode 3 diffuses effective stress." />
 			<parameter key="DensityDTvalue" value="0.1" comment="Stress-diffusion coefficient; default=0.1" />
 
 			<!-- Mechanical mDBC settings are separate from pore-pressure boundary conditions. -->

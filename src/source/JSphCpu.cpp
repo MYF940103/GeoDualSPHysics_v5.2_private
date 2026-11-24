@@ -1604,18 +1604,20 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
       pore_ratep1+=kwn*(double(arp1)/double(rhopp1));
     if(poreratep1)porepressrate[p1]+=float(pore_ratep1);
     if(observeporosity)PoroThetac[p1]+=porosity_thetap1;
-    if(shift||arp1||acep1.x||acep1.y||acep1.z||visc){
+    const bool writeforces=(shift||arp1||acep1.x||acep1.y||acep1.z||visc);
+    //-Soil stress can diffuse at rest with zero net force and continuity rate.
+    if((writeforces || (tdensity==DDT_DDT2Full && PorosityFeedback && !boundp2)) && dsigmap1.xx!=FLT_MAX){
+      rsigmap1.xx+=dsigmap1.xx;
+      rsigmap1.xy+=dsigmap1.xy;
+      rsigmap1.xz+=dsigmap1.xz;
+      rsigmap1.yy+=dsigmap1.yy;
+      rsigmap1.yz+=dsigmap1.yz;
+      rsigmap1.zz+=dsigmap1.zz;
+    }
+    if(writeforces){
       if(tdensity!=DDT_None){
         if(delta)delta[p1]=(delta[p1]==FLT_MAX || deltap1==FLT_MAX? FLT_MAX: delta[p1]+deltap1);
         else if(deltap1!=FLT_MAX)arp1+=deltap1;
-      }
-      if(dsigmap1.xx!=FLT_MAX){
-        rsigmap1.xx+=dsigmap1.xx;
-        rsigmap1.xy+=dsigmap1.xy;
-        rsigmap1.xz+=dsigmap1.xz;
-        rsigmap1.yy+=dsigmap1.yy;
-        rsigmap1.yz+=dsigmap1.yz;
-        rsigmap1.zz+=dsigmap1.zz;
       }
       ar[p1]+=arp1;
       ace[p1]=ace[p1]+acep1;
@@ -2089,10 +2091,11 @@ void JSphCpu::InitPorosityObserverCpu(){
     || (!DynamicPorePressure && (SoilCte.HydraulicConductivity!=0 || Gravity.x || Gravity.y || Gravity.z))
     || (!loadedcolumn && !freebody && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None))
     || (SoilDamping && !loadedcolumn && !freebody && !gravitycontainer)
-    || (Visco!=0 && !allowartvisco) || TVisco!=VISCO_Artificial || TDensity!=DDT_None || (ArtificialStress && !gravitycontainer)
+    || (Visco!=0 && !allowartvisco) || TVisco!=VISCO_Artificial
+    || (TDensity!=DDT_None && !IsDynamicPoreSoilStressDiffusionConfig()) || (ArtificialStress && !gravitycontainer)
     || (SoilBoundaryDerivativeSPR && !allowcolumnstabilization)
     || !SoilStressRateGradCorr || (PoreShepardRegularization && !gravitycontainer) || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
-    Run_Exceptioon("Porosity feedback requires bounded CPU fixtures without acceleration input/DDT; artificial stress is restricted to the staged gravity-preload container, damping also permits the fixed gravity container, Shepard is restricted to its hydrostatic preload, and HG/SPR remain column-only.");
+    Run_Exceptioon("Porosity feedback requires bounded CPU fixtures without acceleration input; full soil stress diffusion requires explicit u-pl; artificial stress is restricted to the staged gravity-preload container, damping also permits the fixed gravity container, Shepard is restricted to its hydrostatic preload, and HG/SPR remain column-only.");
   if(DynamicPorePressure && ((TKernel!=KERNEL_Wendland && TKernel!=KERNEL_Cubic)
     || !std::isfinite(SoilCte.HydraulicConductivity) || SoilCte.HydraulicConductivity<0
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)))

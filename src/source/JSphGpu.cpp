@@ -1962,13 +1962,14 @@ void JSphGpu::InitPorosityObserverGpu(){
   if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))
     Run_Exceptioon("GPU variable conductivity exponent scale must be representable.");
   if(PorosityFeedback && ((TKernel!=KERNEL_Wendland && TKernel!=KERNEL_Cubic) || (!DynamicPorePressure && SoilCte.HydraulicConductivity!=0) || (Visco!=0 && !allowartvisco)
-    || TVisco!=VISCO_Artificial || TDensity!=DDT_None || (ArtificialStress && !container)
+    || TVisco!=VISCO_Artificial
+    || (TDensity!=DDT_None && !IsDynamicPoreSoilStressDiffusionConfig()) || (ArtificialStress && !container)
     || (SoilBoundaryDerivativeSPR && !allowcolumnstabilization) || !SoilStressRateGradCorr
     || (PoreShepardRegularization && !(container && HydroMechInitMode==HMINIT_ConstantZ))
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)
     || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
     Run_Exceptioon(DynamicPorePressure?
-      "GPU porosity feedback requires bounded complete Darcy Wendland/Cubic elastic fixtures; artificial viscosity permits the loaded column, free body or fixed gravity container; HG/SPR remain column-only, with corrected stress gradients and positive mixture inertia.":
+      "GPU porosity feedback requires bounded complete Darcy Wendland/Cubic fixtures; full soil stress diffusion requires explicit u-pl; artificial viscosity permits the loaded column, free body or fixed gravity container; HG/SPR remain column-only, with corrected stress gradients and positive mixture inertia.":
       "GPU porosity feedback requires a private k=0 Wendland/Cubic elastic fixture without viscosity/DDT/artificial stress/SPR/Shepard, with corrected stress gradients and positive mixture inertia.");
   if(PorosityFeedback && (CaseNfloat || (!DynamicPoreWall && !freebody && (!PeriX || !PeriZ))
     || !std::isfinite(SoilCte.PoreWaterBulkModulus) || !std::isfinite(SoilCte.PoreWaterRho)

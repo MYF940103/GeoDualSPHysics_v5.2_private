@@ -2342,21 +2342,23 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
       pore_ratep1+=double(CTE.porekwn)*double(arp1)/double(velrhop1.w);
     if(poreratep1)porepressrate[p1]+=float(pore_ratep1);
     if(observeporosity)porotheta[p1]+=porosity_thetap1;
-    if(shift||arp1||acep1.x||acep1.y||acep1.z||visc){
+    const bool writeforces=(shift||arp1||acep1.x||acep1.y||acep1.z||visc);
+    //-Soil stress can diffuse at rest with zero net force and continuity rate.
+    if(tdensity!=DDT_None && (writeforces || (tdensity==DDT_DDT2Full && poroj)) && dsigmap1_xx_xy.x!=FLT_MAX){
+      rsigmap1_xx_xy.x+=dsigmap1_xx_xy.x;
+      rsigmap1_xx_xy.y+=dsigmap1_xx_xy.y;
+      rsigmap1_xz_yy.x+=dsigmap1_xz_yy.x;
+      rsigmap1_xz_yy.y+=dsigmap1_xz_yy.y;
+      rsigmap1_yz_zz.x+=dsigmap1_yz_zz.x;
+      rsigmap1_yz_zz.y+=dsigmap1_yz_zz.y;
+    }
+    if(writeforces){
       if(tdensity!=DDT_None){
         if(delta){
           const float rdelta=delta[p1];
           delta[p1]=(rdelta==FLT_MAX || deltap1==FLT_MAX? FLT_MAX: rdelta+deltap1);
         }
         else if(deltap1!=FLT_MAX)arp1+=deltap1;
-        if(dsigmap1_xx_xy.x!=FLT_MAX){
-        rsigmap1_xx_xy.x+=dsigmap1_xx_xy.x;
-        rsigmap1_xx_xy.y+=dsigmap1_xx_xy.y;
-        rsigmap1_xz_yy.x+=dsigmap1_xz_yy.x;
-        rsigmap1_xz_yy.y+=dsigmap1_xz_yy.y;
-        rsigmap1_yz_zz.x+=dsigmap1_yz_zz.x;
-        rsigmap1_yz_zz.y+=dsigmap1_yz_zz.y;
-        }
       }
       ar[p1]+=arp1;
       float3 r=ace[p1]; r.x+=acep1.x; r.y+=acep1.y; r.z+=acep1.z; ace[p1]=r;

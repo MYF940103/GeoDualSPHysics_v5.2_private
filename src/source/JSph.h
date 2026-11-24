@@ -626,6 +626,7 @@ protected:
   void RestoreGravityPreloadClock(const JGravityPreloadState &state);
   bool IsDynamicPorePlasticMaterialConfig()const;
   bool IsDynamicPoreContainerConfig()const;
+  bool IsDynamicPoreSoilStressDiffusionConfig()const;
   bool IsDynamicPorePlasticConfig()const;
   void CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *pos,const typecode *code
     ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const byte *boundslipmode,const unsigned *idp);

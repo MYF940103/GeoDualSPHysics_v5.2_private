@@ -1,0 +1,70 @@
+{
+  "tag": "c08_ddt3_psi2p5",
+  "solver": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+    "bytes": 5422592,
+    "mtime_ns": 1795513961147104600
+  },
+  "gencase": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+    "bytes": 2304000,
+    "mtime_ns": 1698723526000000000
+  },
+  "test_scope": "current public CPU startup with DensityDT=3; full DDT3-on PRE and collapse are separate outputs",
+  "git_head": "292a7d8ee86a3df6dce2139d1ce790fd0a0d8e46",
+  "calls": [
+    {
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\c08_ddt3_psi2p5_pre_r1_Def",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_ddt3_psi2p5_preflight_r1\\pre\\c08_ddt3_psi2p5_pre_r1",
+        "-save:all"
+      ],
+      "pid": 39452,
+      "start_utc": "2026-11-24T13:21:05.131379+00:00",
+      "end_utc": "2026-11-24T13:21:09.851508+00:00",
+      "returncode": 0,
+      "log": "tests\\outputs\\c08_ddt3_psi2p5_preflight_r1\\pre\\gencase_console.log"
+    },
+    {
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\c08_ddt3_psi2p5_r1_Def",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_ddt3_psi2p5_preflight_r1\\collapse\\c08_ddt3_psi2p5_r1",
+        "-save:all"
+      ],
+      "pid": 48756,
+      "start_utc": "2026-11-24T13:21:09.893732+00:00",
+      "end_utc": "2026-11-24T13:21:12.892766+00:00",
+      "returncode": 0,
+      "log": "tests\\outputs\\c08_ddt3_psi2p5_preflight_r1\\collapse\\gencase_console.log"
+    },
+    {
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-ompthreads:1",
+        "-stable",
+        "-mdbc_freeslip",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_ddt3_psi2p5_preflight_r1\\pre\\c08_ddt3_psi2p5_pre_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_ddt3_psi2p5_preflight_r1\\pre",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-nsteps:1"
+      ],
+      "pid": 27892,
+      "start_utc": "2026-11-24T13:21:12.894282+00:00",
+      "end_utc": "2026-11-24T13:21:21.204634+00:00",
+      "returncode": 1,
+      "log": "tests\\outputs\\c08_ddt3_psi2p5_preflight_r1\\pre\\cpu_console.log",
+      "diagnostics": [
+        " Dr Georgios Fourtakas, Prof. Peter Stansby,",
+        "*** Exception (JSphCpuSingle::LoadConfig) at DualSPHysics/source/JSph.cpp:622",
+        "Text: Drainage mode=freeSeepage requires the supported fresh dynamic gravity container.",
+        "Finished execution (code=1)."
+      ],
+      "native_partcount": 0
+    }
+  ]
+}

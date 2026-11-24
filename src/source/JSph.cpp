@@ -631,6 +631,8 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
     if(!std::isfinite(steps) || rounded<1 || rounded>=double((std::numeric_limits<int>::max)())
       || fabs(steps-rounded)>16.*std::numeric_limits<double>::epsilon()*max(1.,fabs(steps)))
       Run_Exceptioon("gravitypreload time must lie on the constant-dt completed-step grid.");
+    if(TDensity==DDT_DDT2Full && (GravityPreloadElasticSource || DDTRamp.x))
+      Run_Exceptioon("Soil stress diffusion in a gravity preload requires a same-material source and a constant diffusion coefficient.");
     if(GravityPreloadElasticSource || IsGravityPreloadHandoff()){
       if((GravityPreloadElasticSource && IsGravityPreloadHandoff()) || PartBegin
         || HydroMechConductivityModel!=1 || !Stable || !SvPosDouble
@@ -3834,8 +3836,9 @@ std::string JSph::GetGravityPreloadContract()const{
 /// Contract2 adds exact material/history policies; contract1 remains unchanged.
 //==============================================================================
 std::string JSph::GetGravityPreloadContract2()const{
-  std::ostringstream out;out<<std::setprecision(17)<<"gravity-preload-2 "<<GetGravityPreloadContract()
-    <<" material "<<unsigned(DPCtes)<<' '<<SoilCte.ModulusK<<' '<<SoilCte.ModulusG<<' '
+  std::ostringstream out;out<<std::setprecision(17)<<"gravity-preload-2 "<<GetGravityPreloadContract();
+  if(TDensity==DDT_DDT2Full)out<<" stressdiffusion "<<unsigned(TDensity)<<' '<<DDTValue;
+  out<<" material "<<unsigned(DPCtes)<<' '<<SoilCte.ModulusK<<' '<<SoilCte.ModulusG<<' '
     <<SoilCte.coh<<' '<<SoilCte.coh_r<<' '<<SoilCte.n_coh<<' '<<SoilCte.dlt<<' '
     <<SoilCte.psiDecay<<' '<<StrainSoftening
     <<" law 2 trigger PartBeginSoftening "<<(PartBegin && StrainSoftening)
@@ -3857,6 +3860,8 @@ void JSph::LoadGravityPreloadState(JGravityPreloadState &state)const{
       MassFluid,SoilCte.HydraulicConductivity,HydroMechConductivityCk,GetGravityPreloadContract2());
   }
   catch(const std::exception &e){Run_Exceptioon(e.what());}
+  if(TDensity==DDT_DDT2Full && state.Schema!=2)
+    Run_Exceptioon("Soil stress diffusion requires a matching same-material preload (schema 2).");
   if(state.RetireBegin!=GravityPreloadIdBegin || state.RetireCount!=GravityPreloadIdCount
     || state.MkBound!=GravityPreloadMkBound)
     Run_Exceptioon("Shared preload target MK/ID range differs from the validated fixed geometry.");
@@ -3892,6 +3897,14 @@ bool JSph::IsDynamicPorePlasticMaterialConfig()const{
 }
 
 //==============================================================================
+/// Full soil stress diffusion uses the existing effective-stress rate on explicit u-pl.
+//==============================================================================
+bool JSph::IsDynamicPoreSoilStressDiffusionConfig()const{
+  return(HydroMechDynamicSeepage && !HydroMechTpi
+    && TDensity==DDT_DDT2Full && std::isfinite(DDTValue) && DDTValue>=0.f);
+}
+
+//==============================================================================
 /// Narrow gravity warmup scope; actual fixed-face geometry is checked after loading.
 //==============================================================================
 bool JSph::IsDynamicPoreContainerConfig()const{
@@ -3905,7 +3918,7 @@ bool JSph::IsDynamicPoreContainerConfig()const{
     && !HydroMechDrainage && !HydroMechDrainageFixedGrid
     && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && (!StrainSoftening || IsDynamicPorePlasticMaterialConfig())
     && !InOut && !Shifting && !Damping && !RelaxZones && !AccInput && !UseDEM && !Symmetry
-    && !ViscoTime && TVisco==VISCO_Artificial && TDensity==DDT_None
+    && !ViscoTime && TVisco==VISCO_Artificial && (TDensity==DDT_None || IsDynamicPoreSoilStressDiffusionConfig())
     && (!ArtificialStress || (GravityPreload && std::isfinite(ArtificialStressCoef)
       && ArtificialStressCoef>=0.f && ArtificialStressCoef<=1.f
       && std::isfinite(ArtificialStressExp) && ArtificialStressExp>0.f))

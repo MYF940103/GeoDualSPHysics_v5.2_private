@@ -163,8 +163,8 @@ void JSphGpuSingle::ConfigDomain(){
       for(const auto &wall:MdbcSlipModeMk)slipok=slipok && (wall.SlipMode==SLIP_NoSlip || wall.SlipMode==SLIP_FreeSlip);
     }
     if(TBoundary!=BC_MDBC || !slipok || !UseNormals
-      || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress)
-      Run_Exceptioon("SoilBoundaryDerivativeSPR requires uniform mDBC SlipMode 1/2/3 or per-mk NoSlip/FreeSlip faces, normals, artificial viscosity, DensityDT=0 and no artificial stress; NoPen requires NoSlip or FreeSlip.");
+      || TVisco!=VISCO_Artificial || (TDensity!=DDT_None && !IsDynamicPoreSoilStressDiffusionConfig()) || ArtificialStress)
+      Run_Exceptioon("SoilBoundaryDerivativeSPR requires uniform mDBC SlipMode 1/2/3 or per-mk NoSlip/FreeSlip faces, normals, artificial viscosity, DensityDT=0 (or full soil stress diffusion for explicit u-pl) and no artificial stress; NoPen requires NoSlip or FreeSlip.");
     if(!SoilStressRateGradCorr || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0 || (Simulate2D && PeriY))
       Run_Exceptioon("SoilBoundaryDerivativeSPR requires corrected stress/pore gradients, PairDivergence and no y periodicity in 2-D.");
   }
