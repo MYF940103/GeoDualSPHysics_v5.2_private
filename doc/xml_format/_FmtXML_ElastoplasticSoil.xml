@@ -39,7 +39,7 @@
 				<Porosity value="0.3" comment="Reference porosity n0; default=0; must be in (0,1) when HydroMech=1" />
 				<HydraulicConductivity value="1.0e-4" comment="Initial hydraulic conductivity k0; default=0; must be >=0" units_comment="m/s" />
 
-				<PoreDtSafety value="0.1" comment="Pore-diffusion step safety factor; default=0.1; must be >0" />
+				<!-- Pore-diffusion step coefficient defaults to the effective global cflnumber. Optional positive override: <PoreDtSafety value="0.1" /> -->
 				<!-- DtFixed bypasses legacy automatic pore limiting; dynamic necessary-step checks remain active. -->
 				<PoreShepardRegularization value="0" comment="Excess-pressure Shepard regularization 0=off, 1=on; default=0" />
 				<PoreShepardInterval value="30" comment="Regularization interval in steps; default=30; positive when enabled" />

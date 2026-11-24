@@ -1,0 +1,183 @@
+{
+  "source_base": "d4c550999e881c0688a6bf7b6fac061805e57be1",
+  "started": "2026-11-24T07:31:04.122695+00:00",
+  "seed": "examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2\\upl_bigstep_2tv_CPU1_r1.xml",
+  "source_edit": "Use final global CFLnumber as the default for omitted PoreDtSafety.",
+  "records": [
+    {
+      "backend": "cpu",
+      "variant": "historical_explicit",
+      "exit": 0,
+      "global_cfl": 0.2,
+      "pore_dt_safety": 1.0,
+      "executable": "DualSPHysics5.2CPU_win64.exe",
+      "executable_bytes": 5424128,
+      "xml": "1",
+      "cli_cfl": null,
+      "steps": 8,
+      "excluded": 0,
+      "frames": 9
+    },
+    {
+      "backend": "cpu",
+      "variant": "inherit_xml",
+      "exit": 1,
+      "global_cfl": 0.2,
+      "pore_dt_safety": 0.2,
+      "executable": "DualSPHysics5.2CPU_win64.exe",
+      "executable_bytes": 5424128,
+      "xml": null,
+      "cli_cfl": null,
+      "step": 0,
+      "requested_dt_s": 1.0000228881835938e-05,
+      "hydraulic_bound_s": 9.532063740940433e-06
+    },
+    {
+      "backend": "cpu",
+      "variant": "inherit_cli",
+      "exit": 0,
+      "global_cfl": 0.25,
+      "pore_dt_safety": 0.25,
+      "executable": "DualSPHysics5.2CPU_win64.exe",
+      "executable_bytes": 5424128,
+      "xml": null,
+      "cli_cfl": ".25",
+      "steps": 8,
+      "excluded": 0,
+      "frames": 9
+    },
+    {
+      "backend": "cpu",
+      "variant": "override_lower",
+      "exit": 1,
+      "global_cfl": 0.25,
+      "pore_dt_safety": 0.2,
+      "executable": "DualSPHysics5.2CPU_win64.exe",
+      "executable_bytes": 5424128,
+      "xml": "0.2",
+      "cli_cfl": ".25",
+      "step": 0,
+      "requested_dt_s": 1.0000228881835938e-05,
+      "hydraulic_bound_s": 9.532063740940433e-06
+    },
+    {
+      "backend": "cpu",
+      "variant": "override_equal",
+      "exit": 0,
+      "global_cfl": 0.25,
+      "pore_dt_safety": 0.25,
+      "executable": "DualSPHysics5.2CPU_win64.exe",
+      "executable_bytes": 5424128,
+      "xml": "0.25",
+      "cli_cfl": ".25",
+      "steps": 8,
+      "excluded": 0,
+      "frames": 9
+    },
+    {
+      "backend": "gpu",
+      "variant": "historical_explicit",
+      "exit": 0,
+      "global_cfl": 0.2,
+      "pore_dt_safety": 1.0,
+      "executable": "DualSPHysics5.2_GEO_win64.exe",
+      "executable_bytes": 28948480,
+      "xml": "1",
+      "cli_cfl": null,
+      "steps": 8,
+      "excluded": 0,
+      "frames": 9
+    },
+    {
+      "backend": "gpu",
+      "variant": "inherit_xml",
+      "exit": 1,
+      "global_cfl": 0.2,
+      "pore_dt_safety": 0.2,
+      "executable": "DualSPHysics5.2_GEO_win64.exe",
+      "executable_bytes": 28948480,
+      "xml": null,
+      "cli_cfl": null,
+      "step": 0,
+      "requested_dt_s": 1.0000228881835938e-05,
+      "hydraulic_bound_s": 9.532063740940433e-06
+    },
+    {
+      "backend": "gpu",
+      "variant": "inherit_cli",
+      "exit": 0,
+      "global_cfl": 0.25,
+      "pore_dt_safety": 0.25,
+      "executable": "DualSPHysics5.2_GEO_win64.exe",
+      "executable_bytes": 28948480,
+      "xml": null,
+      "cli_cfl": ".25",
+      "steps": 8,
+      "excluded": 0,
+      "frames": 9
+    },
+    {
+      "backend": "gpu",
+      "variant": "override_lower",
+      "exit": 1,
+      "global_cfl": 0.25,
+      "pore_dt_safety": 0.2,
+      "executable": "DualSPHysics5.2_GEO_win64.exe",
+      "executable_bytes": 28948480,
+      "xml": "0.2",
+      "cli_cfl": ".25",
+      "step": 0,
+      "requested_dt_s": 1.0000228881835938e-05,
+      "hydraulic_bound_s": 9.532063740940433e-06
+    },
+    {
+      "backend": "gpu",
+      "variant": "override_equal",
+      "exit": 0,
+      "global_cfl": 0.25,
+      "pore_dt_safety": 0.25,
+      "executable": "DualSPHysics5.2_GEO_win64.exe",
+      "executable_bytes": 28948480,
+      "xml": "0.25",
+      "cli_cfl": ".25",
+      "steps": 8,
+      "excluded": 0,
+      "frames": 9
+    }
+  ],
+  "comparisons": [
+    {
+      "backend": "cpu",
+      "comparison": "unchanged_explicit_vs_prior_release",
+      "frames": 9,
+      "all_native_bytes_equal": true,
+      "bytes": 2076861,
+      "reference": "examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_cpu_merged"
+    },
+    {
+      "backend": "cpu",
+      "comparison": "inherited_vs_explicit_same_cfl",
+      "frames": 9,
+      "all_native_bytes_equal": true,
+      "bytes": 2076861,
+      "reference": "examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\pore_dt_cfl_r1\\cpu_override_equal"
+    },
+    {
+      "backend": "gpu",
+      "comparison": "unchanged_explicit_vs_prior_release",
+      "frames": 9,
+      "all_native_bytes_equal": true,
+      "bytes": 2077689,
+      "reference": "examples\\Hydromechanic coupling\\validation\\force_stages_r1\\runs\\column2_gpu_merged"
+    },
+    {
+      "backend": "gpu",
+      "comparison": "inherited_vs_explicit_same_cfl",
+      "frames": 9,
+      "all_native_bytes_equal": true,
+      "bytes": 2077689,
+      "reference": "examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\pore_dt_cfl_r1\\gpu_override_equal"
+    }
+  ],
+  "completed": "2026-11-24T07:31:12.149048+00:00"
+}

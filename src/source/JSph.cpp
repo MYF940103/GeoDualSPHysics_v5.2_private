@@ -240,7 +240,7 @@ void JSph::InitVars(){
   HydroMechTopLoadMode=HMLOAD_None;
   HydroMechTopLoadQ0=0;
   HydroMechTopLoadRampTime=0;
-  PoreDtSafety=0.1f;
+  PoreDtSafety=0;
   PoreShepardRegularization=false;
   PoreShepardInterval=30;
   PoreMdbcInterpolationMode=0;
@@ -4290,7 +4290,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   SoilCte.PoreWaterBulkModulus=sxml->ReadElementFloat(hydroReadNode,"PoreWaterBulkModulus","value",true,0.f);
   SoilCte.Porosity=sxml->ReadElementFloat(hydroReadNode,"Porosity","value",true,0.f);
   SoilCte.HydraulicConductivity=sxml->ReadElementFloat(hydroReadNode,"HydraulicConductivity","value",true,0.f);
-  PoreDtSafety=sxml->ReadElementFloat(hydroReadNode,"PoreDtSafety","value",true,0.1f);
+  PoreDtSafety=sxml->ReadElementFloat(hydroReadNode,"PoreDtSafety","value",true,float(CFLnumber));
   PoreShepardRegularization=sxml->ReadElementBool(hydroReadNode,"PoreShepardRegularization","value",true,false);
   PoreShepardInterval=sxml->ReadElementUnsigned(hydroReadNode,"PoreShepardInterval","value",true,30);
   const string poremdbcstr=fun::StrLower(sxml->ReadElementStr(hydroReadNode,"PoreMdbcInterpolationMode","value",true,"0"));

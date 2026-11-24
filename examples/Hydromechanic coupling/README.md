@@ -2,6 +2,8 @@
 
 公共源码在 `execution/special/hydromechanics` 中读取 `HydroMechModel`。打开 `HydroMech` 后，缺省或 0 使用 u-pw，1 使用有限水体积模量的显式 u-pl，2 使用零储水的三轮 TPI u-pl。旧配置中 `HydroMechDynamicSeepage` 的 false/0 和 true/1 分别迁至模型 0 和 1。复现历史计算时使用原 BAT 配套的程序与 XML。
 
+省略 `PoreDtSafety` 时，孔压扩散步长系数取本次运行的全局 `cflnumber`，包括命令行 `-cfl` 的覆盖值。显式填写 `PoreDtSafety` 时使用 XML 中的数值。
+
 模型 2 采用 α=0.5、β=0。`HydroMechTpiR` 缺省为 1，仅对模型 2 的水力步长上限生效。首次预测以初始孔压作为上一时刻压力，各轮在施加边界后的压力场上重算端点力和渗流残差。公共实现覆盖从头计算的 C02 周期弹性柱和 C04 均布围压球体，采用恒渗透率、固定步长、Wendland 核和固定步数排水。C08 撤墙接续、自由渗流、变渗透率与一般 PART 重启的适用范围见发布说明。Cryer 的真实四面体表面积分使用独立研究程序。[公共 TPI 的验证与限制](validation/public_tpi_release_r1.md) · [R 的选取与实测](validation/upl_tpi_r_selection_r1.md)
 
 模型 2 每个非初始 PART 的 `TpiPressureHistory` 按材料 ID 保存预测器实际使用的上一整步源孔压及其时钟。首次开启排水时，受控表面点的源压力已经归零，而上一闭态 PART 仍可有非零压力。两次常规输出之间可能包含多个积分步。
