@@ -28,9 +28,7 @@
 				<!-- Hydraulic walls require mDBC; checked wall-free configurations are exempt. -->
 				<HydroMechModel value="0" comment="0=u-pw (default), 1=explicit u-pl, 2=three-round TPI u-pl (see the model 2 example below)" />
 				<!-- Dynamic plasticity: fresh 2D fixed-phi plane strain only; generic PART restart unsupported. -->
-				<HydroMechConductivityModel value="0" comment="Dynamic seepage: 0=constant k0, 1=void-ratio exponential k(J); default=0" />
-				<!-- Model1: k=k0*exp((J-1)/((1-n0)*Ck)); requires dynamic seepage and explicit Ck>0. -->
-				<!-- HG, loaded-column and 3D dynamic configurations require Model0. -->
+				<HydroMechConductivityModel value="0" comment="Explicit and TPI u-pl: 0=constant k0 (default), 1=k0*exp((J-1)/((1-n0)*Ck))" />
 				<HydroMechConductivityCk value="0" comment="Natural-log conductivity index; default=0; specify a positive material value for conductivity model 1" />
 
 				<PoreWaterRho value="1000" comment="Reference water density; default=1000" units_comment="kg/m^3" />
@@ -39,7 +37,7 @@
 				<HydraulicConductivity value="1.0e-4" comment="Initial hydraulic conductivity k0; default=0; must be >=0" units_comment="m/s" />
 
 				<PoreDtSafety value="0.1" comment="Pore-diffusion step coefficient; default=effective global cflnumber (including -cfl); must be positive" />
-				<!-- DtFixed bypasses legacy automatic pore limiting; dynamic necessary-step checks remain active. -->
+				<!-- u-pl checks fixed steps using k0 and current porosity for diffusion and the current field for the conductivity-gradient limit. u-pw DtFixed bypasses automatic pore limiting. -->
 				<PoreShepardRegularization value="0" comment="Excess-pressure Shepard regularization 0=off, 1=on; default=0" />
 				<PoreShepardInterval value="30" comment="Regularization interval in steps; default=30; positive when enabled" />
 				<!-- Dynamic Shepard requires the fixed gravity container with mode2 initialization. -->
@@ -62,10 +60,10 @@
 			</mdbcslip>
 		</special>
 
-		<_special comment="TPI example for a fresh constant-k column or confined sphere. In special/hydromechanics, replace the model entry and add HydroMechTpiR.">
+		<_special comment="TPI example for a fresh loaded column or confined sphere. In special/hydromechanics, replace the model entry and add HydroMechTpiR.">
 			<hydromechanics>
 				<HydroMechModel value="2" comment="Three-round TPI u-pl; model default=0; public TPI uses fixed alpha=0.5 and beta=0" />
-				<HydroMechTpiR value="1" comment="Hydraulic time-step multiplier; default=1; finite and >=1; allowed only with HydroMechModel=2" />
+				<HydroMechTpiR value="1" comment="Scales only the k0 diffusion step estimate in model 2. Default=1, finite and >=1." />
 			</hydromechanics>
 		</_special>
 

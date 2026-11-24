@@ -2060,7 +2060,7 @@ void JSphCpu::InitPorosityObserverCpu(){
     Run_Exceptioon("Porosity feedback fixture requires the J observer state.");
   if(!PorosityObserver)return;
   const bool loadedcolumn=(DynamicPorePressure && Simulate2D && DynamicPoreWall
-    && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
+    && !Gravity.x && !Gravity.y && !Gravity.z
     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
     && HydroMechDrainage && HydroMechDrainageFixedGrid);
   const bool allowcolumnstabilization=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
@@ -2069,7 +2069,7 @@ void JSphCpu::InitPorosityObserverCpu(){
   const bool gravitycontainer=IsDynamicPoreContainerConfig();
   const bool allowartvisco=(allowcolumnstabilization || freebody || gravitycontainer);
   if(SoilHourglassXi!=0 && !allowcolumnstabilization)
-    Run_Exceptioon("Dynamic HG requires the public constant-k loaded CPU column; observer-only and private-flag HG combinations remain unsupported.");
+    Run_Exceptioon("Dynamic HG requires the public loaded CPU column; observer-only and private-flag HG combinations remain unsupported.");
   if(allowartvisco && Visco!=0.f && (!std::isfinite(Visco) || Visco<0.f
     || !std::isfinite(ViscoBoundFactor) || ViscoBoundFactor<0.f))
     Run_Exceptioon("Dynamic artificial viscosity requires finite nonnegative constant coefficients.");
@@ -2526,30 +2526,27 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
 
 
 //==============================================================================
-/// Necessary current-state step scales; not a complete coupled-spectrum proof.
+/// Current-state wave scale and diffusion estimate with initial conductivity and current porosity.
 /// The wave scale excludes CFLnumber; the pore scale includes PoreDtSafety.
 //==============================================================================
 void JSphCpu::GetDynamicStepScalesCpu(double &wave,double &pore)const{
   const double m=double(SoilCte.ModulusK)+4.*double(SoilCte.ModulusG)/3.;
   const double kw=SoilCte.PoreWaterBulkModulus,rhow=SoilCte.PoreWaterRho;
-  const double gamma=rhow*9.80665; //-Same material mobility as the complete dynamic rate and GPU.
+  const double k0=SoilCte.HydraulicConductivity,gamma=rhow*9.80665;
   double cu2max=0,dmax=0;
   for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p])){
     double n,volume,rho;
     GetPorosityFeedbackStateCpu(p,n,volume,rho);
-    const double k=GetDynamicConductivityCpu(p);
-    if(!std::isfinite(k) || k<0 || (SoilCte.HydraulicConductivity>0 && k==0))
-      Run_Exceptioon("Dynamic conductivity must remain finite and positive for positive k0; no overflow/underflow clipping.");
     const double b=kw/n,cu2=(HydroMechTpi? m/rho: (m+b)/rho);
     if(!(n>0 && n<1 && rho>0 && cu2>0) || !std::isfinite(cu2))
       Run_Exceptioon("Dynamic step scales require a finite saturated physical state.");
-    if(k>0){
+    if(k0>0){
       //-The finite-Kw low-frequency continuum must be inside its strict decay domain.
       const double margin=rho*b/(m+b)-rhow;
       if(margin<=64.*std::numeric_limits<double>::epsilon()*max(rho,rhow))
         Run_Exceptioon(fun::PrintStr("Dynamic continuous decay domain failed: id=%u J=%g n=%g rho=%g margin=%g; reducing dt does not repair it.",Idpc[p],PoroJc[p],n,rho,margin));
     }
-    cu2max=max(cu2max,cu2);dmax=max(dmax,b*k/gamma);
+    cu2max=max(cu2max,cu2);dmax=max(dmax,b*k0/gamma);
   }
   wave=double(KernelH)/(max(sqrt(cu2max),VelMax*10.)+double(KernelH)*ViscDtMax);
   pore=(dmax>0? double(PoreDtSafety)*double(KernelH)*KernelH/dmax: DBL_MAX);

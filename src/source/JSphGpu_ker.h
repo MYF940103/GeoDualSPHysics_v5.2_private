@@ -305,7 +305,7 @@ void UpdatePorosityObserver(unsigned np,unsigned npb,bool corrector,double dt,do
 //-Current native J-derived undrained speed squared; caller initializes maxcu2=0 and invalid=np.
 void ComputePorosityWaveSpeed2(unsigned np,unsigned npb,double solid0,double rho0,double rhow,double m,double kw
   ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid
-  ,double khyd=0,double gamma=1,double *maxdiffusion=NULL,bool conductivity=false,double ck=0,bool skeletonwave=false);
+  ,double k0=0,double gamma=1,double *maxdiffusion=NULL,bool skeletonwave=false);
 //-Extend only requested fields from normal-fluid native owners; caller initializes invalid=np.
 void ExtendDynamicPorePeriodic(unsigned np,unsigned npb,unsigned idini,unsigned idfin
   ,const typecode *code,const unsigned *idp,const unsigned *ridp

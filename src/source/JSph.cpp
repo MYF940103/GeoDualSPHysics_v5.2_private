@@ -650,7 +650,6 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
   if(HydroMechDynamicSeepage){
     DynamicPoreFreeBody=(!Simulate2D && !PeriActive && TBoundary==BC_DBC
       && CaseNpb>0 && CaseNpb==CaseNfixed && !CaseNmoving && !CaseNfloat
-      && HydroMechConductivityModel==0 && HydroMechConductivityCk==0
       && HydroMechTopLoadMode==HMLOAD_FlexibleConfinement && HydroMechDrainage && HydroMechDrainageFixedGrid
       && !SoilBoundaryDerivativeSPR && SoilHourglassXi==0 && !ViscoTime);
     if(HydroMechTpi){
@@ -658,10 +657,10 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
         && HydroMechTopLoadMode==HMLOAD_TopKernelBand;
       if(TStep!=STEP_Symplectic || TKernel!=KERNEL_Wendland || PartBegin || WithMpi || InOut || CaseNmoving || CaseNfloat
         || GravityPreload || HydroMechFreeSeepage || NoPenetration || PoreShepardRegularization
-        || ArtificialStress || ShiftingMode!=SHIFT_None || HydroMechConductivityModel!=0
+        || ArtificialStress || ShiftingMode!=SHIFT_None
         || !(SoilCte.HydraulicConductivity>0.f) || !HydroMechDrainageFixedGrid
         || !(column || DynamicPoreFreeBody))
-        Run_Exceptioon("HydroMechModel=2 supports fresh symplectic constant-k columns (fixed mDBC, X-periodic, kernel-band load) and confined 3-D free bodies with Wendland kernels and fixed-step drainage. Preload handoff, changing material sets and free seepage are unsupported.");
+        Run_Exceptioon("HydroMechModel=2 requires positive initial conductivity, a fresh symplectic column (fixed mDBC, X-periodic, kernel-band load) or a confined 3-D free body, a Wendland kernel and fixed-step drainage. Preload handoff, changing material sets and free seepage are unsupported.");
     }
     if(!HydroMech || (!Simulate2D && !DynamicPoreFreeBody) || PartBegin
       || ((Gravity.x || Gravity.y || Gravity.z) && !gravitycontainer)
@@ -678,17 +677,16 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
       Run_Exceptioon("Dynamic seepage without walls currently requires XZ periodicity.");
     if(PoreDarcySymmetricCorr || PoreMdbcInterpolationMode)
       Run_Exceptioon("Dynamic seepage has its own Darcy/wall operator; legacy PoreDarcySymmetricCorr and PoreMdbcInterpolationMode must remain zero.");
-    if(SoilHourglassXi>0 && (HydroMechConductivityModel!=0 || HydroMechConductivityCk!=0
-      || !CaseNpb || HydroMechTopLoadMode!=HMLOAD_TopKernelBand || !HydroMechDrainage
+    if(SoilHourglassXi>0 && (!CaseNpb || HydroMechTopLoadMode!=HMLOAD_TopKernelBand || !HydroMechDrainage
       || !HydroMechDrainageFixedGrid || !PeriX || PeriY || PeriZ || ViscoTime))
-      Run_Exceptioon("Experimental dynamic HG requires the constant-k X-periodic loaded column without time-dependent viscosity; actual FreeSlip bottom geometry is checked after loading particles.");
+      Run_Exceptioon("Dynamic HG requires the X-periodic loaded column without time-dependent viscosity; actual FreeSlip bottom geometry is checked after loading particles.");
     if(!DynamicPoreFreeBody && (HydroMechTopLoadMode!=HMLOAD_None || HydroMechDrainage)
-      && (HydroMechConductivityModel!=0 || HydroMechConductivityCk!=0 || !CaseNpb
+      && (!CaseNpb
         || HydroMechTopLoadMode!=HMLOAD_TopKernelBand || !HydroMechDrainage || !HydroMechDrainageFixedGrid
         || !std::isfinite(HydroMechTopLoadQ0) || HydroMechTopLoadQ0<=0
         || !std::isfinite(HydroMechTopLoadRampTime) || HydroMechTopLoadRampTime<0
         || !std::isfinite(HydroMechDrainageStartTime) || HydroMechDrainageStartTime<0))
-      Run_Exceptioon("Experimental dynamic loading requires the constant-k TopKernelBand column, finite positive q0, finite nonnegative ramp/drain times and fixed-grid drainage; bottom FreeSlip geometry is checked after loading particles.");
+      Run_Exceptioon("Dynamic loading requires the TopKernelBand column, finite positive q0, finite nonnegative ramp/drain times and fixed-grid drainage; bottom FreeSlip geometry is checked after loading particles.");
     if(DynamicPoreFreeBody && (!std::isfinite(HydroMechTopLoadQ0) || HydroMechTopLoadQ0<=0
       || !std::isfinite(HydroMechTopLoadRampTime) || HydroMechTopLoadRampTime<0
       || !std::isfinite(HydroMechDrainageStartTime) || HydroMechDrainageStartTime<HydroMechTopLoadRampTime))

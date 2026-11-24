@@ -1477,7 +1477,7 @@ static __device__ __forceinline__ double KerDynamicConductivity(double k0,double
 /// Reduces the current native J-derived undrained speed without float narrowing.
 //==============================================================================
 __global__ void KerComputePorosityWaveSpeed2(unsigned np,unsigned npb,double solid0,double rho0,double rhow,double m,double kw
-  ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid,double khyd,double gamma,double *maxdiffusion,bool conductivity,double ck,bool skeletonwave)
+  ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid,double k0,double gamma,double *maxdiffusion,bool skeletonwave)
 {
   extern __shared__ double speed2[];
   const unsigned tid=threadIdx.x;
@@ -1493,14 +1493,13 @@ __global__ void KerComputePorosityWaveSpeed2(unsigned np,unsigned npb,double sol
       if(valid){
         value=(skeletonwave? m/rho: (m+kw/n)/rho);
         valid=(isfinite(value) && value>0.);
-        if(valid && (khyd!=0 || maxdiffusion)){
-          valid=(isfinite(khyd) && khyd>=0 && isfinite(gamma) && gamma>0);
-          if(valid && khyd>0){
-            const double ki=KerDynamicConductivity(khyd,jp,solid0,conductivity,ck);
+        if(valid && (k0!=0 || maxdiffusion)){
+          valid=(isfinite(k0) && k0>=0 && isfinite(gamma) && gamma>0);
+          if(valid && k0>0){
             const double b=kw/n;
             const double margin=rho*b/(m+b)-rhow;
-            diffusion=b*ki/gamma;
-            valid=(isfinite(ki) && ki>0. && margin>64.*DBL_EPSILON*fmax(rho,rhow) && isfinite(diffusion) && diffusion>0.);
+            diffusion=b*k0/gamma;
+            valid=(margin>64.*DBL_EPSILON*fmax(rho,rhow) && isfinite(diffusion) && diffusion>0.);
           }
         }
       }
@@ -1521,11 +1520,11 @@ __global__ void KerComputePorosityWaveSpeed2(unsigned np,unsigned npb,double sol
 }
 
 void ComputePorosityWaveSpeed2(unsigned np,unsigned npb,double solid0,double rho0,double rhow,double m,double kw
-  ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid,double khyd,double gamma,double *maxdiffusion,bool conductivity,double ck,bool skeletonwave)
+  ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid,double k0,double gamma,double *maxdiffusion,bool skeletonwave)
 {
   if(np){
     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
-    KerComputePorosityWaveSpeed2 <<<sgrid,SPHBSIZE,SPHBSIZE*sizeof(double)*(maxdiffusion? 2: 1)>>> (np,npb,solid0,rho0,rhow,m,kw,code,j,maxcu2,invalid,khyd,gamma,maxdiffusion,conductivity,ck,skeletonwave);
+    KerComputePorosityWaveSpeed2 <<<sgrid,SPHBSIZE,SPHBSIZE*sizeof(double)*(maxdiffusion? 2: 1)>>> (np,npb,solid0,rho0,rhow,m,kw,code,j,maxcu2,invalid,k0,gamma,maxdiffusion,skeletonwave);
   }
 }
 
@@ -1582,14 +1581,14 @@ template<TpKernel tker,bool tpirows> __global__ void KerComputeDynamicPorePressu
       if(!isfinite(r2) || r2>=bodyradius2){atomicMin(invalid,p1);return;}
     }
     if(tpirows && tpi.idp[p1]>=tpi.total){atomicMin(invalid,p1);return;}
-    if(drainfs && KerHydroMechIsDrainedParticle(p1,loadmode,posxy,code,fstype)){
-      if(tpirows)tpi.next[tpi.idp[p1]]=0.f;
-      rate[p1]=0.f;return;
-    }
     const double jp=j[p1],n=1.-solid0/jp;
     if(!isfinite(jp) || jp<=solid0 || !isfinite(n) || !(n>0 && n<1)){atomicMin(invalid,p1);return;}
     const double ki=KerDynamicConductivity(khyd,jp,solid0,conductivity,ck);
     if(!isfinite(ki) || ki<0 || (khyd>0 && ki==0)){atomicMin(invalid,p1);return;}
+    if(drainfs && KerHydroMechIsDrainedParticle(p1,loadmode,posxy,code,fstype)){
+      if(tpirows)tpi.next[tpi.idp[p1]]=0.f;
+      rate[p1]=0.f;return;
+    }
     double lp=0.,da=0.,sumw=0.;
     double3 lx=make_double3(0,0,0),gp=make_double3(0,0,0),gjstate=make_double3(0,0,0);
     if(khyd>0){
@@ -1642,25 +1641,21 @@ template<TpKernel tker,bool tpirows> __global__ void KerComputeDynamicPorePressu
       lp+rhow*(double(ace[p1].x)*lx.x+double(ace[p1].y)*lx.y+double(ace[p1].z)*lx.z+da):
       lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da);
     double value=kw/n*(-theta[p1]+khyd/gamma*lap);
-    double speed=0.;
-#ifdef C08_STAGE_TRACE
-    double c08chain=0.;
-#endif
+    double speed=0.,chain=0.;
     if(conductivity && khyd>0){
       const double scale=ki/(solid0*ck);
-      const double chain=scale*(gjstate.x*(gpcorr.x+rhow*ace[p1].x)
+      chain=scale*(gjstate.x*(gpcorr.x+rhow*ace[p1].x)
         +gjstate.y*(gpcorr.y+rhow*ace[p1].y)+gjstate.z*(gpcorr.z+rhow*ace[p1].z));
-#ifdef C08_STAGE_TRACE
-      c08chain=chain;
-#endif
       value=kw/n*(-theta[p1]+ki/gamma*lap+chain/gamma);
       speed=kw/n/gamma*scale*sqrt(gjstate.x*gjstate.x+gjstate.y*gjstate.y+gjstate.z*gjstate.z);
       if(!isfinite(speed) || speed<0){atomicMin(invalid,p1);return;}
     }
     if(!isfinite(value) || fabs(value)>FLT_MAX){atomicMin(invalid,p1);return;}
     if(tpirows){
-      const double diagonal=-__dmul_rn(khyd,sumw);
-      const double residual=__dadd_rn(-__dmul_rn(gamma,theta[p1]),__dmul_rn(khyd,lap));
+      //-Use the principal Laplacian diagonal with the current Taylor and grad(k) defects.
+      const double diagonal=-__dmul_rn(ki,sumw);
+      double residual=__dadd_rn(-__dmul_rn(gamma,theta[p1]),__dmul_rn(ki,lap));
+      if(conductivity)residual=__dadd_rn(residual,chain);
       float next=0.f;
       if(!tpi_pressure::Endpoint(false,porepress[p1],diagonal,residual,next)){atomicMin(invalid,p1);return;}
       tpi.next[tpi.idp[p1]]=next;
@@ -1675,7 +1670,7 @@ template<TpKernel tker,bool tpirows> __global__ void KerComputeDynamicPorePressu
 #ifdef C08_STAGE_TRACE
     if(c08slot>=0){
       auto& r=C08TraceTake(p1,c08slot);r.p_before=r.p_after=porepress[p1];r.rate_before=c08rate;r.rate_after=rate[p1];
-      r.J=jp;r.n=n;r.theta=theta[p1];r.ki=ki;r.lp=lp;r.da=da;r.lap=lap;r.chain=c08chain;r.value=value;
+      r.J=jp;r.n=n;r.theta=theta[p1];r.ki=ki;r.lp=lp;r.da=da;r.lap=lap;r.chain=chain;r.value=value;
       r.pos[0]=posxy[p1].x;r.pos[1]=posxy[p1].y;r.pos[2]=posz[p1];
       if(fsnormal){r.fsnormal[0]=fsnormal[p1].x;r.fsnormal[1]=fsnormal[p1].y;r.fsnormal[2]=fsnormal[p1].z;}
       const tmatrix3d ci=corrmat[p1];r.C[0]=ci.a11;r.C[1]=ci.a12;r.C[2]=ci.a13;r.C[3]=ci.a21;r.C[4]=ci.a22;r.C[5]=ci.a23;r.C[6]=ci.a31;r.C[7]=ci.a32;r.C[8]=ci.a33;

@@ -1930,7 +1930,7 @@ void JSphGpu::InitPorosityObserverGpu(){
     Run_Exceptioon("GPU porosity feedback requires the J observer state.");
   if(!PorosityObserver)return;
   const bool loadedcolumn=(DynamicPorePressure && Simulate2D && DynamicPoreWall
-    && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
+    && !Gravity.x && !Gravity.y && !Gravity.z
     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
     && HydroMechDrainage && HydroMechDrainageFixedGrid);
   const bool allowcolumnstabilization=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
@@ -1939,7 +1939,7 @@ void JSphGpu::InitPorosityObserverGpu(){
   const bool container=IsDynamicPoreContainerConfig();
   const bool allowartvisco=(allowcolumnstabilization || freebody || container);
   if(SoilHourglassXi!=0 && !allowcolumnstabilization)
-    Run_Exceptioon("Dynamic HG requires the public constant-k loaded GPU column; observer-only and private-flag HG combinations remain unsupported.");
+    Run_Exceptioon("Dynamic HG requires the public loaded GPU column; observer-only and private-flag HG combinations remain unsupported.");
   if(allowartvisco && Visco!=0.f && (!std::isfinite(Visco) || Visco<0.f
     || !std::isfinite(ViscoBoundFactor) || ViscoBoundFactor<0.f))
     Run_Exceptioon("Dynamic artificial viscosity requires finite nonnegative constant coefficients.");
@@ -1951,7 +1951,7 @@ void JSphGpu::InitPorosityObserverGpu(){
     || (!loadedcolumn && !freebody && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None))
     || (HydroMechInitMode!=HMINIT_None && !(container && HydroMechInitMode==HMINIT_ConstantZ))
     || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0 || PeriY)
-    Run_Exceptioon("GPU porosity observer requires fresh bounded elastic Symplectic corrected-pair fixtures without shifting; damping/load/drainage require the constant-k column or admitted 3-D free body; in-plane gravity with feedback requires the complete dynamic-rate model.");
+    Run_Exceptioon("GPU porosity observer requires fresh bounded elastic Symplectic corrected-pair fixtures without shifting; damping/load/drainage require the supported column or admitted 3-D free body; in-plane gravity with feedback requires the complete dynamic-rate model.");
   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJg || !PoroThetag)
     Run_Exceptioon("GPU porosity observer requires 0<n0<1 and allocated double state.");
   if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))
@@ -1963,7 +1963,7 @@ void JSphGpu::InitPorosityObserverGpu(){
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)
     || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
     Run_Exceptioon(DynamicPorePressure?
-      "GPU porosity feedback requires bounded complete Darcy Wendland/Cubic elastic fixtures; artificial viscosity permits the constant-k column, free body or fixed gravity container; HG/SPR remain column-only, with corrected stress gradients and positive mixture inertia.":
+      "GPU porosity feedback requires bounded complete Darcy Wendland/Cubic elastic fixtures; artificial viscosity permits the loaded column, free body or fixed gravity container; HG/SPR remain column-only, with corrected stress gradients and positive mixture inertia.":
       "GPU porosity feedback requires a private k=0 Wendland/Cubic elastic fixture without viscosity/DDT/artificial stress/SPR/Shepard, with corrected stress gradients and positive mixture inertia.");
   if(PorosityFeedback && (CaseNfloat || (!DynamicPoreWall && !freebody && (!PeriX || !PeriZ))
     || !std::isfinite(SoilCte.PoreWaterBulkModulus) || !std::isfinite(SoilCte.PoreWaterRho)
@@ -2150,9 +2150,10 @@ void JSphGpu::GetDynamicStepScalesGpu(double &wave,double &pore){
   cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);
   const double m=double(SoilCte.ModulusK)+4.*double(SoilCte.ModulusG)/3.;
   const double gamma=double(SoilCte.PoreWaterRho)*9.80665;
+  //-Use initial conductivity only for the diffusion step estimate; n and rho remain current.
   cusph::ComputePorosityWaveSpeed2(Np,Npb,1.-double(SoilCte.Porosity),double(RhopZero)
     ,double(SoilCte.PoreWaterRho),m,double(SoilCte.PoreWaterBulkModulus),Codeg,PoroJg,maxg,invalidg
-    ,double(SoilCte.HydraulicConductivity),gamma,maxg+1,DynamicPoreConductivity,DynamicPoreConductivityCk,HydroMechTpi);
+    ,double(SoilCte.HydraulicConductivity),gamma,maxg+1,HydroMechTpi);
   cudaMemcpy(values,maxg,sizeof(values),cudaMemcpyDeviceToHost);
   cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
   ArraysGpu->Free(maxg);ArraysGpu->Free(invalidg);

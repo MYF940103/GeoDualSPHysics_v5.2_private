@@ -1,0 +1,329 @@
+{
+  "passed": true,
+  "implementation": "Actual CPU dynamic rate and CUDA pressure endpoint; nine material particles, one row update per scenario",
+  "baseline_git_revision": "831688b4f84aca77614f7db0d8663508a759ebaa",
+  "source_files": [
+    "src/source/JSphCpu_porepressure.cpp",
+    "src/source/JSphGpu_ker.cu"
+  ],
+  "programs": [
+    "outputs\\tpi_rows_177791a0/rows.exe",
+    "outputs\\tpi_rows_f7e22d7e/rows.exe"
+  ],
+  "checks": [
+    {
+      "component": "tpi_variable_k_rows",
+      "configuration": "ReleaseCPU",
+      "passed": true,
+      "rows": 30,
+      "scenarios": [
+        "quadratic_fixed",
+        "quadratic_uniform_J1",
+        "quadratic_uniform_J1125",
+        "affine_p_J",
+        "affine_J_acceleration",
+        "affine_J_balanced"
+      ],
+      "max_cpu_error_Pa": 7.429999982377922e-06,
+      "max_gpu_error_Pa": null,
+      "minimum_omitted_chain_error_Pa": 0.7556446860000108,
+      "max_wrong_k_diagonal_and_residual_error_Pa": 3.7928590491000023,
+      "per_row_threshold_Pa": 0.0002,
+      "output": "outputs\\tpi_rows_177791a0"
+    },
+    {
+      "component": "tpi_variable_k_rows",
+      "configuration": "Release",
+      "passed": true,
+      "rows": 30,
+      "scenarios": [
+        "quadratic_fixed",
+        "quadratic_uniform_J1",
+        "quadratic_uniform_J1125",
+        "affine_p_J",
+        "affine_J_acceleration",
+        "affine_J_balanced"
+      ],
+      "max_cpu_error_Pa": 7.429999982377922e-06,
+      "max_gpu_error_Pa": 3.138000005264985e-05,
+      "minimum_omitted_chain_error_Pa": 0.7556446860000108,
+      "max_wrong_k_diagonal_and_residual_error_Pa": 3.7928590491000023,
+      "per_row_threshold_Pa": 0.0002,
+      "output": "outputs\\tpi_rows_f7e22d7e"
+    }
+  ],
+  "max_CPU_GPU_difference_Pa": 3.0518000016854785e-05,
+  "all_uniform_J1_rows_equal_to_fixed_k": true,
+  "rows": [
+    {
+      "field": "quadratic_fixed",
+      "id": "4",
+      "reference_Pa": "82.6350343501",
+      "cpu_Pa": "82.6350326538",
+      "gpu_Pa": "82.6350326538",
+      "omit_chain_Pa": "82.6350343501",
+      "constant_k_row_Pa": "82.6350343501"
+    },
+    {
+      "field": "quadratic_uniform_J1",
+      "id": "4",
+      "reference_Pa": "82.6350343501",
+      "cpu_Pa": "82.6350326538",
+      "gpu_Pa": "82.6350326538",
+      "omit_chain_Pa": "82.6350343501",
+      "constant_k_row_Pa": "82.6350343501"
+    },
+    {
+      "field": "quadratic_uniform_J1125",
+      "id": "4",
+      "reference_Pa": "86.4278933992",
+      "cpu_Pa": "86.4278945923",
+      "gpu_Pa": "86.4278945923",
+      "omit_chain_Pa": "86.4278933992",
+      "constant_k_row_Pa": "82.6350343501"
+    },
+    {
+      "field": "affine_p_J",
+      "id": "0",
+      "reference_Pa": "-27.2013170334",
+      "cpu_Pa": "-27.2013168335",
+      "gpu_Pa": "-27.2013339996",
+      "omit_chain_Pa": "-28.25",
+      "constant_k_row_Pa": "-27.1452507428"
+    },
+    {
+      "field": "affine_p_J",
+      "id": "1",
+      "reference_Pa": "3.82926607222",
+      "cpu_Pa": "3.82926607132",
+      "gpu_Pa": "3.82925462723",
+      "omit_chain_Pa": "3",
+      "constant_k_row_Pa": "3.89199250131"
+    },
+    {
+      "field": "affine_p_J",
+      "id": "2",
+      "reference_Pa": "35.2930042422",
+      "cpu_Pa": "35.2930030823",
+      "gpu_Pa": "35.2929954529",
+      "omit_chain_Pa": "34.25",
+      "constant_k_row_Pa": "35.3955160605"
+    },
+    {
+      "field": "affine_p_J",
+      "id": "3",
+      "reference_Pa": "97.5803998345",
+      "cpu_Pa": "97.5803985596",
+      "gpu_Pa": "97.5803985596",
+      "omit_chain_Pa": "96.75",
+      "constant_k_row_Pa": "97.6339560225"
+    },
+    {
+      "field": "affine_p_J",
+      "id": "4",
+      "reference_Pa": "128.755644686",
+      "cpu_Pa": "128.755645752",
+      "gpu_Pa": "128.755645752",
+      "omit_chain_Pa": "128",
+      "constant_k_row_Pa": "128.82131327"
+    },
+    {
+      "field": "affine_p_J",
+      "id": "5",
+      "reference_Pa": "160.076331114",
+      "cpu_Pa": "160.076324463",
+      "gpu_Pa": "160.076339722",
+      "omit_chain_Pa": "159.25",
+      "constant_k_row_Pa": "160.16705021"
+    },
+    {
+      "field": "affine_p_J",
+      "id": "6",
+      "reference_Pa": "222.795857085",
+      "cpu_Pa": "222.795852661",
+      "gpu_Pa": "222.79586792",
+      "omit_chain_Pa": "221.75",
+      "constant_k_row_Pa": "222.874966652"
+    },
+    {
+      "field": "affine_p_J",
+      "id": "7",
+      "reference_Pa": "253.827234533",
+      "cpu_Pa": "253.82723999",
+      "gpu_Pa": "253.82723999",
+      "omit_chain_Pa": "253",
+      "constant_k_row_Pa": "253.908539395"
+    },
+    {
+      "field": "affine_p_J",
+      "id": "8",
+      "reference_Pa": "285.290129753",
+      "cpu_Pa": "285.290130615",
+      "gpu_Pa": "285.290161133",
+      "omit_chain_Pa": "284.25",
+      "constant_k_row_Pa": "285.416407837"
+    },
+    {
+      "field": "affine_J_acceleration",
+      "id": "0",
+      "reference_Pa": "129.048682967",
+      "cpu_Pa": "129.048675537",
+      "gpu_Pa": "129.048675537",
+      "omit_chain_Pa": "128",
+      "constant_k_row_Pa": "129.104749257"
+    },
+    {
+      "field": "affine_J_acceleration",
+      "id": "1",
+      "reference_Pa": "128.829266072",
+      "cpu_Pa": "128.829269409",
+      "gpu_Pa": "128.829269409",
+      "omit_chain_Pa": "128",
+      "constant_k_row_Pa": "128.891992501"
+    },
+    {
+      "field": "affine_J_acceleration",
+      "id": "2",
+      "reference_Pa": "129.043004242",
+      "cpu_Pa": "129.042999268",
+      "gpu_Pa": "129.042999268",
+      "omit_chain_Pa": "128",
+      "constant_k_row_Pa": "129.14551606"
+    },
+    {
+      "field": "affine_J_acceleration",
+      "id": "3",
+      "reference_Pa": "128.830399835",
+      "cpu_Pa": "128.83039856",
+      "gpu_Pa": "128.83039856",
+      "omit_chain_Pa": "128",
+      "constant_k_row_Pa": "128.883956023"
+    },
+    {
+      "field": "affine_J_acceleration",
+      "id": "4",
+      "reference_Pa": "128.755644686",
+      "cpu_Pa": "128.755645752",
+      "gpu_Pa": "128.755645752",
+      "omit_chain_Pa": "128",
+      "constant_k_row_Pa": "128.82131327"
+    },
+    {
+      "field": "affine_J_acceleration",
+      "id": "5",
+      "reference_Pa": "128.826331114",
+      "cpu_Pa": "128.826324463",
+      "gpu_Pa": "128.826324463",
+      "omit_chain_Pa": "128",
+      "constant_k_row_Pa": "128.91705021"
+    },
+    {
+      "field": "affine_J_acceleration",
+      "id": "6",
+      "reference_Pa": "129.045857085",
+      "cpu_Pa": "129.045852661",
+      "gpu_Pa": "129.045852661",
+      "omit_chain_Pa": "128",
+      "constant_k_row_Pa": "129.124966652"
+    },
+    {
+      "field": "affine_J_acceleration",
+      "id": "7",
+      "reference_Pa": "128.827234533",
+      "cpu_Pa": "128.82723999",
+      "gpu_Pa": "128.82723999",
+      "omit_chain_Pa": "128",
+      "constant_k_row_Pa": "128.908539395"
+    },
+    {
+      "field": "affine_J_acceleration",
+      "id": "8",
+      "reference_Pa": "129.040129753",
+      "cpu_Pa": "129.040130615",
+      "gpu_Pa": "129.040130615",
+      "omit_chain_Pa": "128",
+      "constant_k_row_Pa": "129.166407837"
+    },
+    {
+      "field": "affine_J_balanced",
+      "id": "0",
+      "reference_Pa": "-28.25",
+      "cpu_Pa": "-28.25",
+      "gpu_Pa": "-28.2500171661",
+      "omit_chain_Pa": "-28.25",
+      "constant_k_row_Pa": "-28.25"
+    },
+    {
+      "field": "affine_J_balanced",
+      "id": "1",
+      "reference_Pa": "3",
+      "cpu_Pa": "3",
+      "gpu_Pa": "2.99998831749",
+      "omit_chain_Pa": "3",
+      "constant_k_row_Pa": "3"
+    },
+    {
+      "field": "affine_J_balanced",
+      "id": "2",
+      "reference_Pa": "34.25",
+      "cpu_Pa": "34.25",
+      "gpu_Pa": "34.2499885559",
+      "omit_chain_Pa": "34.25",
+      "constant_k_row_Pa": "34.25"
+    },
+    {
+      "field": "affine_J_balanced",
+      "id": "3",
+      "reference_Pa": "96.75",
+      "cpu_Pa": "96.75",
+      "gpu_Pa": "96.75",
+      "omit_chain_Pa": "96.75",
+      "constant_k_row_Pa": "96.75"
+    },
+    {
+      "field": "affine_J_balanced",
+      "id": "4",
+      "reference_Pa": "128",
+      "cpu_Pa": "128",
+      "gpu_Pa": "128",
+      "omit_chain_Pa": "128",
+      "constant_k_row_Pa": "128"
+    },
+    {
+      "field": "affine_J_balanced",
+      "id": "5",
+      "reference_Pa": "159.25",
+      "cpu_Pa": "159.25",
+      "gpu_Pa": "159.25",
+      "omit_chain_Pa": "159.25",
+      "constant_k_row_Pa": "159.25"
+    },
+    {
+      "field": "affine_J_balanced",
+      "id": "6",
+      "reference_Pa": "221.75",
+      "cpu_Pa": "221.75",
+      "gpu_Pa": "221.750015259",
+      "omit_chain_Pa": "221.75",
+      "constant_k_row_Pa": "221.75"
+    },
+    {
+      "field": "affine_J_balanced",
+      "id": "7",
+      "reference_Pa": "253",
+      "cpu_Pa": "253",
+      "gpu_Pa": "253.000015259",
+      "omit_chain_Pa": "253",
+      "constant_k_row_Pa": "253"
+    },
+    {
+      "field": "affine_J_balanced",
+      "id": "8",
+      "reference_Pa": "284.25",
+      "cpu_Pa": "284.25",
+      "gpu_Pa": "284.250030518",
+      "omit_chain_Pa": "284.25",
+      "constant_k_row_Pa": "284.25"
+    }
+  ]
+}

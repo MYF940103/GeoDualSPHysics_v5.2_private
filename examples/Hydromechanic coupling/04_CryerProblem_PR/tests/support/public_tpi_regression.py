@@ -20,7 +20,7 @@ from hydro_public_xml_r1 import read_part as read_plain_part
 
 CASES={"02":HYDRO/"02_TerzaghiConsolidation_q0_PR/tests","04":HYDRO/"04_CryerProblem_PR/tests"}
 PROFILES=("column","column25","column2mem","sphere","sphere64","sphere4hist","upw","upl","changing_k","restart")
-REJECT="HydroMechModel=2 supports fresh symplectic constant-k columns"
+REJECT="Preload handoff, changing material sets and free seepage are unsupported."
 
 def need(check,message):
     if not check:raise ValueError(message)
@@ -74,7 +74,7 @@ def setup(profile,backend,tag):
     dest=area/f"public_tpi_{profile}_{backend}_{tag}"
     return mode,steps,threads,golden,seed,dest
 
-def public_xml(raw,negative):
+def public_xml(raw,changing_k):
     tree=ET.fromstring(raw);hydro=tree.find("execution/special/hydromechanics")
     text=raw.decode("utf-8-sig");nl="\r\n" if "\r\n" in text else "\n"
     def pop(tag):
@@ -91,7 +91,7 @@ def public_xml(raw,negative):
     need(text.count(anchor)==1,"One hydromechanics block")
     text=text.replace(anchor,anchor+nl+f'            <externalload mode="{mode}" q0="{q}" ramptime="{ramp}" />'+nl+
                       f'            <drainage mode="drained" start="{start}" clock="fixedStep" />')
-    if negative:
+    if changing_k:
         for tag in ("HydroMechConductivityModel","HydroMechConductivityCk"):
             text,n=re.subn("(<"+tag+' value=")0(")',r"\g<1>1\2",text)
             need(n==1,"One changing-permeability input "+tag)
@@ -206,7 +206,7 @@ def run(profile,backend,tag,exe,sanitizer=None):
                 code=checked_gpu_launch(args,sanitizer,dest,env,stream,info)
             else:code=subprocess.run(args,cwd=folder,env=env,stdout=stream,stderr=subprocess.STDOUT).returncode
         info.update(exit=code,wall_s=time.perf_counter()-start)
-        if profile in ("changing_k","restart"):
+        if profile=="restart":
             msg=(dest/"console.log").read_text(errors="replace")
             info["diagnostic"]=next((line.strip() for line in msg.splitlines() if REJECT in line),"")
             need(code==1 and info["diagnostic"] and not list((folder/"data").glob("Part_*.bi4")),"Expected normal solver rejection (exit 1) with zero particle frames")
@@ -223,7 +223,28 @@ def run(profile,backend,tag,exe,sanitizer=None):
                 frames.append(compare_one(p,old,mode))
             info["fields_and_clock_bitwise"]=all(not r["different"] and all(r["clock_exact"].values()) for r in frames)
             need(code==0,"Solver returned "+str(code))
-            need(info["fields_and_clock_bitwise"] and all(r["marker_ok"] for r in frames),"Native fields, clocks or model marker differ; inspect per-frame report")
+            need(all(r["marker_ok"] for r in frames),"Wrong native hydromechanical model")
+            if profile=="changing_k":
+                hydro=ET.parse(prefix.with_suffix(".xml")).find("execution/special/hydromechanics")
+                k0=float(np.float32(hydro.find("HydraulicConductivity").get("value")))
+                solid0=1.-float(np.float32(hydro.find("Porosity").get("value")))
+                ck=float(hydro.find("HydroMechConductivityCk").get("value"))
+                span=0.
+                for path,frame in zip(files,frames):
+                    root,meta,a,hist=read_with_history(path)
+                    need(meta["HydroMechConductivityModel"]==1 and meta["HydroMechConductivityCk"]==ck,
+                         "Incorrect conductivity model or material index")
+                    need(all(v for k,v in frame["clock_exact"].items() if k!="dterror")
+                         and meta["dterror"]<=1e-14 and bool(hist)==bool(frame["part"]), "Clock or pressure history")
+                    soil=a["Idp"]>=root["CaseNfixed"]
+                    k=a["PoroHydraulicConductivity"][soil]
+                    k_expected=k0*np.exp((a["PoroVolumeRatio"][soil]-1.)/(solid0*ck))
+                    need(np.all(k>0) and np.allclose(k,k_expected,rtol=2e-14,atol=0.), "Conductivity ledger")
+                    span=max(span,float(np.ptp(k))/k0)
+                need(span>0., "No evolving conductivity in saved material")
+                info["max_spatial_k_span_over_k0"]=span
+            else:
+                need(info["fields_and_clock_bitwise"],"Native fields or clocks differ; inspect per-frame report")
         info["passed"]=True
     except Exception as exc:info["error"]=str(exc);raise
     finally:write(dest/"review.json",info)
@@ -301,7 +322,7 @@ def history_audit(profile,backend,tag,archived=False):
                         fs=np.isin(a["FSType"][owner][soil],(2,3))
                         # At the real C02 drainage event the predictor reads the boundary
                         # projection of committed p_n. Keep both sides of this jump.
-                        need(profile=="column" and step==1001 and np.array_equal(unequal,fs) and
+                        need(profile in ("column","changing_k") and step==1001 and np.array_equal(unequal,fs) and
                              np.all(p[fs]==0) and p[~fs].tobytes()==previous[~fs].tobytes(),
                              "Unexpected discrepancy with the preceding full field")
                         record["boundary_jump"]=dict(ids=soil[fs].tolist(),preceding_native_p_Pa=previous[fs].tolist(),

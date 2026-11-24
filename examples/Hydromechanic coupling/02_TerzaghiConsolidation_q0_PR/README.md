@@ -2,6 +2,8 @@
 
 ## 公共版外载配置
 
+显式 u-pl 和三轮 TPI 都可用 `HydroMechConductivityModel=1` 和正值 `HydroMechConductivityCk` 开启随体积比演化的渗透系数。扩散步长使用 XML 中的初始 `HydraulicConductivity` 与当前孔隙率；压力方程使用当前局部渗透系数及其梯度。本文所列正式常渗透率工况沿用 `HydroMechConductivityModel=0`。见[变渗透率短窗验证](tests/notes/tpi_variable_k.md)。
+
 根目录公共 Release 算例在 `execution/special/externalload` 指定 `mode`、`q0`（Pa）和 `ramptime`（s），水力模型默认 0（u-pw）。已完成的三组正式结果各自保留原生输入，后处理可读取这些历史数据。
 
 ## 2026-11-03：u-pl 受限开发测试（不是新的正式发行）

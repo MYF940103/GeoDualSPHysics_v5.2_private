@@ -1052,7 +1052,7 @@ static tdouble3 DynamicPoreWallParity(const tfloat3 &raw){
 void JSphCpu::InitDynamicPoreWallCpu(){
   if(!DynamicPoreWall)return;
   const bool loadedcolumn=(DynamicPorePressure && Simulate2D && DynamicPoreWall
-    && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
+    && !Gravity.x && !Gravity.y && !Gravity.z
     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
     && HydroMechDrainage && HydroMechDrainageFixedGrid);
   const bool allowcolumnspr=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn

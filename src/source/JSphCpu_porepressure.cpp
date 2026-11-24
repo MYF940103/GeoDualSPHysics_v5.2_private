@@ -468,6 +468,8 @@ template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){
       const double r2=d.x*d.x+d.y*d.y+d.z*d.z;
       if(!std::isfinite(r2) || r2>=DynamicPoreBodyRadius2){invalid++;continue;}
     }
+    const double ki=GetDynamicConductivityCpu(unsigned(p1));
+    if(!std::isfinite(ki) || ki<0 || (khyd>0 && ki==0)){invalid++;continue;}
     if(drainfs && IsHydroMechDrainedParticle(unsigned(p1),Posc,Codec,FSTypec)){
       if(TpiEndpoint)TpiNext[Idpc[p1]]=0.f;
       PorePressRatec[p1]=0; //-Dirichlet p is constrained; theta and J still evolve normally.
@@ -475,8 +477,6 @@ template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){
     }
     double porosity,volume,rhot;
     GetPorosityFeedbackStateCpu(unsigned(p1),porosity,volume,rhot);
-    const double ki=GetDynamicConductivityCpu(unsigned(p1));
-    if(!std::isfinite(ki) || ki<0 || (khyd>0 && ki==0)){invalid++;continue;}
     double lp=0,da=0,sumweights=0;
     tdouble3 lx=TDouble3(0),gp=TDouble3(0),gjstate=TDouble3(0);
     if(khyd>0){
@@ -522,22 +522,25 @@ template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){
     const double lap=(HydroMechFreeSeepage && IsFreeSurfaceParticle(unsigned(p1),Codec,FSTypec)?
       lp+rhow*(double(Acec[p1].x)*lx.x+double(Acec[p1].y)*lx.y+double(Acec[p1].z)*lx.z+da):
       lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da);
-    if(TpiEndpoint){
-      //-The complete M=0 pressure row uses the actual force-stage acceleration.
-      const double diagonal=-khyd*sumweights,residual=-gamma*PoroThetac[p1]+khyd*lap;
-      if(!tpi_pressure::Endpoint(false,PorePressc[p1],diagonal,residual,TpiNext[Idpc[p1]]))invalid++;
-    }
     double rate=kw/porosity*(-PoroThetac[p1]+khyd/gamma*lap);
+    double chain=0.;
     if(DynamicPoreConductivity && khyd>0){
       //-Smooth scalar k: div(k*(grad p+rho_w*Ace)); not a conservative interface flux.
       const double scale=ki/((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk);
-      const double chain=scale*(gjstate.x*(gpcorr.x+rhow*Acec[p1].x)
+      chain=scale*(gjstate.x*(gpcorr.x+rhow*Acec[p1].x)
         +gjstate.y*(gpcorr.y+rhow*Acec[p1].y)+gjstate.z*(gpcorr.z+rhow*Acec[p1].z));
       rate=kw/porosity*(-PoroThetac[p1]+ki/gamma*lap+chain/gamma);
       const double speed=kw/porosity/gamma*scale*sqrt(gjstate.x*gjstate.x+gjstate.y*gjstate.y+gjstate.z*gjstate.z);
       if(!std::isfinite(speed)){invalid++;continue;}
       const int th=omp_get_thread_num();
       if(speedth[th*OMP_STRIDE]<speed)speedth[th*OMP_STRIDE]=speed;
+    }
+    if(TpiEndpoint){
+      //-Invert the principal Laplacian diagonal; Taylor and grad(k) terms use this round's fields.
+      const double diagonal=-ki*sumweights;
+      double residual=-gamma*PoroThetac[p1]+ki*lap;
+      if(DynamicPoreConductivity)residual+=chain;
+      if(!tpi_pressure::Endpoint(false,PorePressc[p1],diagonal,residual,TpiNext[Idpc[p1]]))invalid++;
     }
     if(!std::isfinite(rate) || fabs(rate)>FLT_MAX)invalid++;
     PorePressRatec[p1]=float(rate); //-Replace the complete old rate; never add compression twice.

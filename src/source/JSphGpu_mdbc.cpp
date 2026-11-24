@@ -146,7 +146,7 @@ void JSphGpu::ComputeBoundaryDerivativeVelocity(){
 void JSphGpu::InitDynamicPoreWallGpu(const tfloat3 *boundnormal,const byte *boundslipmode){
   if(!DynamicPoreWall)return;
   const bool loadedcolumn=(DynamicPorePressure && Simulate2D && DynamicPoreWall
-    && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
+    && !Gravity.x && !Gravity.y && !Gravity.z
     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
     && HydroMechDrainage && HydroMechDrainageFixedGrid);
   const bool allowcolumnspr=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
