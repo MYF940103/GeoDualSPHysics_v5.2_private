@@ -1,0 +1,186 @@
+<?xml version='1.0' encoding='utf-8'?>
+<case>
+    <casedef>
+        <constantsdef>
+            <gravity x="0" y="0" z="-9.81" units_comment="m/s^2" />
+            <rhop0 value="2072.5" units_comment="kg/m^3" />
+            <hswl value="0" auto="true" units_comment="metres (m)" />
+            <gamma value="7" />
+            <speedsystem value="0" auto="true" />
+            <coefsound value="20" />
+            <speedsound value="0" auto="true" />
+            <hdp value="1.8" />
+            <cflnumber value="0.2" />
+        </constantsdef>
+        <mkconfig boundcount="240" fluidcount="9" />
+        <geometry>
+            <predefinition>
+                <newvarcte Dp="0.04" _rem="Lian 2023 Section 4.4 particle spacing" />
+                <newvarcte ColumnLength="4.0" _rem="Lian 2023 Fig.13" />
+                <newvarcte ColumnHeight="2.0" _rem="Lian 2023 Fig.13" />
+                <newvarcte BedLength="12.0" _rem="Numerical runout margin, not a dimension stated in Fig.13; paper plots show x=0..8" />
+                <newvarcte WallLayers="4" _rem="Numerical boundary thickness; not specified by the paper" />
+            </predefinition>
+            <definition dp="#Dp" units_comment="metres (m)">
+                <pointmin x="#Dp/2-12*Dp" y="0" z="#Dp/2-12*Dp" />
+                <pointmax x="#BedLength+12*Dp+Dp/2" y="0" z="#ColumnHeight+12*Dp+Dp/2" />
+            </definition>
+            <commands>
+                <list name="GeometryForNormals">
+                    <setactive drawpoints="0" drawshapes="1" />
+                    <setshapemode>actual | bound</setshapemode>
+                    <setnormalinvert invert="true" />
+                    <setmkbound mk="0" />
+                    <drawbox>
+                        <boxfill>left</boxfill>
+                        <point x="0" y="-0.1" z="0" />
+                        <size x="#ColumnLength" y="0.2" z="#ColumnHeight" />
+                    </drawbox>
+                    <setmkbound mk="1" />
+                    <drawbox>
+                        <boxfill>bottom</boxfill>
+                        <point x="0" y="-0.1" z="0" />
+                        <size x="#BedLength" y="0.2" z="#ColumnHeight" />
+                    </drawbox>
+                    <setmkbound mk="2" />
+                    <drawbox>
+                        <boxfill>right</boxfill>
+                        <point x="0" y="-0.1" z="0" />
+                        <size x="#ColumnLength" y="0.2" z="#ColumnHeight" />
+                    </drawbox>
+                    <shapeout file="hdp" />
+                    <resetdraw />
+                </list>
+                <mainlist>
+                    <runlist name="GeometryForNormals" />
+                    <setdrawmode mode="full" />
+                    <setmkbound mk="0" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#-WallLayers*Dp" y="-1" z="0" />
+                        <size x="#WallLayers*Dp" y="2" z="#ColumnHeight" />
+                    </drawbox>
+                    <setmkbound mk="2" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#ColumnLength" y="-1" z="0" />
+                        <size x="#WallLayers*Dp" y="2" z="#ColumnHeight" />
+                    </drawbox>
+                    <setmkbound mk="1" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#-WallLayers*Dp" y="-1" z="#-WallLayers*Dp" />
+                        <size x="#BedLength+2*WallLayers*Dp" y="2" z="#WallLayers*Dp" />
+                    </drawbox>
+                    <setmkfluid mk="0" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#Dp/2" y="-1" z="#Dp/2" />
+                        <size x="#ColumnLength-Dp" y="2" z="#ColumnHeight-Dp" />
+                    </drawbox>
+                    <shapeout file="" />
+                </mainlist>
+            </commands>
+        </geometry>
+        <normals>
+            <distanceh value="2.0" />
+            <geometryfile file="[CaseName]_hdp_Actual.vtk" />
+            <svshapes value="1" />
+        </normals>
+    </casedef>
+    <execution>
+        <special>
+            <initialize>
+                <boundnormal_plane mkbound="0">
+                    <point x="0" y="0" z="0" />
+                    <normal x="1" y="0" z="0" />
+                    <maxdisth v="0" />
+                    <clear v="true" />
+                </boundnormal_plane>
+                <boundnormal_plane mkbound="1">
+                    <point x="0" y="0" z="0" />
+                    <normal x="0" y="0" z="1" />
+                    <maxdisth v="0" />
+                    <clear v="true" />
+                </boundnormal_plane>
+                <boundnormal_plane mkbound="2">
+                    <point x="#ColumnLength" y="0" z="0" />
+                    <normal x="-1" y="0" z="0" />
+                    <maxdisth v="0" />
+                    <clear v="true" />
+                </boundnormal_plane>
+            </initialize>
+            <soils>
+                <phi value="25" />
+                <coh value="5000" units_comment="Pa" />
+                <dlt value="2.5" units_comment="degrees" />
+                <DilationDecay value="0.2" comment="Dilation softening index in psi=psi0*exp(-sf*kappa)" />
+                <ModulusE value="20e6" units_comment="Pa" />
+                <PRvs value="0.33" />
+                <phi_r value="25" />
+                <n_phi value="0" />
+                <coh_r value="1000" units_comment="Pa" />
+                <n_coh value="5" />
+            </soils>
+            <hydromechanics>
+                <HydroMech value="1" />
+                <HydroMechModel value="1" comment="Explicit finite-Kw u-pl" />
+                <HydroMechConductivityModel value="1" />
+                <HydroMechConductivityCk value="2" comment="Void-ratio conductivity index" />
+                <PoreWaterRho value="1000" units_comment="kg/m^3" />
+                <PoreWaterBulkModulus value="1e9" units_comment="Pa" />
+                <Porosity value="0.35" />
+                <HydraulicConductivity value="2e-4" units_comment="m/s" />
+                <PoreDtSafety value="0.1" />
+                <PoreShepardRegularization value="1" />
+                <PoreDarcySymmetricCorr value="0" />
+                <PoreMdbcInterpolationMode value="0" />
+                <PoreCompressionSourceMode value="0" />
+                <PoreCompressionGradCorr value="1" />
+                <HydroMechInitMode value="ConstantZ" />
+                <HydroMechInitZ value="2.0" units_comment="m" />
+                <PoreShepardInterval value="40" />
+            </hydromechanics>
+            <gravitypreload time="10.0" release_mkbound="2" keep_bed_overlap="false" statefile="../CaseLianCollapse_psi2p5_pre_GPU_out/data/Part_1000.bi4" units_comment="seconds" elastic_source="false" comment="Import the closed-wall state of this material and retire the right wall" />
+            <mdbcslip>
+                <bound mkbound="0" slipmode="3" />
+                <bound mkbound="1" slipmode="2" />
+                <bound mkbound="2" slipmode="3" />
+            </mdbcslip>
+            <drainage mode="freeSeepage" />
+        </special>
+        <parameters>
+            <parameter key="SavePosDouble" value="1" />
+            <parameter key="DPCtes" value="3" />
+            <parameter key="Boundary" value="2" />
+            <parameter key="SlipMode" value="3" />
+            <parameter key="NoPenetration" value="1" />
+            <parameter key="ArtificialStress" value="1" />
+            <parameter key="ArtificialStressCoef" value="0.3" />
+            <parameter key="ArtificialStressExp" value="2.55" />
+            <parameter key="StepAlgorithm" value="2" />
+            <parameter key="Kernel" value="2" />
+            <parameter key="ViscoTreatment" value="1" />
+            <parameter key="Visco" value="0.1" />
+            <parameter key="SoilDamping" value="1" />
+            <parameter key="SoilDampingCoef" value="0.03" />
+            <parameter key="SoilStressRateGradCorr" value="1" />
+            <parameter key="SoilBoundaryDerivativeSPR" value="0" />
+            <parameter key="SoilHourglassXi" value="0" />
+            <parameter key="DensityDT" value="0" />
+            <parameter key="Shifting" value="0" />
+            <parameter key="DtIni" value="0.000005" units_comment="seconds" />
+            <parameter key="DtMin" value="1e-8" units_comment="seconds" />
+            <parameter key="DtFixed" value="0.000005" units_comment="seconds" />
+            <parameter key="TimeMax" value="13.0" units_comment="seconds" comment="Physical end time including 10 s gravity preload" />
+            <parameter key="TimeOut" value="0.01" units_comment="seconds" comment="Physical save interval" />
+            <parameter key="PartsOutMax" value="0" units_comment="decimal" />
+            <parameter key="RhopOutMin" value="700" units_comment="kg/m^3" />
+            <parameter key="RhopOutMax" value="3000" units_comment="kg/m^3" />
+            <simulationdomain>
+                <posmin x="default" y="default" z="default" />
+                <posmax x="default" y="default" z="default + 2" />
+            </simulationdomain>
+        </parameters>
+    </execution>
+</case>
