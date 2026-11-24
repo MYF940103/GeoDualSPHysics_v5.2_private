@@ -54,7 +54,12 @@ protected:
   void RunGravityPreloadHandoffGpu();
   void AbortBoundOut();
 
+  //-Existing component tests use the staged overload for a complete force evaluation.
   void Interaction_Forces(TpInterStep interstep);
+  void ApplyBoundaryCorrection(TpInterStep interstep);
+  unsigned* PreLoopProcedure();
+  void Interaction_Forces();
+  void FinishInteractionForces(unsigned *dynamicridpg);
   void MdbcBoundCorrection();
   void CdbcBoundCorrection();
 

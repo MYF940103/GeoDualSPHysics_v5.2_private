@@ -308,7 +308,9 @@ protected:
   void PreInteraction_Forces();
   void PrepareArtificialStress();
   void PosInteraction_Forces();
-  void ComputeFreeSurfaceTracking();
+  void UpdateWallAndFreeSurfaceState();
+  //-Existing component tests refresh wall fields and free-surface geometry together.
+  void ComputeFreeSurfaceTracking(){ UpdateWallAndFreeSurfaceState(); }
   void ApplyFreeSurfacePorePressure();
   void ApplyHydroMechTopLoadAcceleration();
   void NormalizeHydroMechTopBandLoad();

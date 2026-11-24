@@ -1337,9 +1337,11 @@ void JSphGpu::InitRunGpu(){
 }
 
 //==============================================================================
-/// Computes free-surface classification with the lightweight umbrella algorithm.
+/// Refreshes the stage wall state, classifies the free surface and builds material C.
+/// Periodic images receive material C before it is reconstructed on the wall.
+/// Initialisation and pore-boundary updates also call this outside force evaluation.
 //==============================================================================
-void JSphGpu::ComputeFreeSurfaceTracking(){
+void JSphGpu::UpdateWallAndFreeSurfaceState(){
   if(!Np || !DivData.beginendcell || !CorrMatg || !FSTypeg || !FSNormalg || !PosDivg)return;
   if(DynamicPoreWall)ComputeDynamicPoreWallStateGpu();
   const bool marknearfs=false; //-Near-free-surface search is retained but disabled for the global pair-wise confinement path.
@@ -1422,7 +1424,7 @@ void JSphGpu::NormalizeHydroMechTopBandLoad(){
 //==============================================================================
 void JSphGpu::ApplyPorePressureBoundaries(){
   if(!HydroMech || !PorePressg || !DivData.beginendcell)return;
-  ComputeFreeSurfaceTracking();
+  UpdateWallAndFreeSurfaceState();
   ApplyFreeSurfacePorePressure();
   if(HydroMechFreeSeepage && !PorePressPreg){
 #ifdef C08_STAGE_TRACE

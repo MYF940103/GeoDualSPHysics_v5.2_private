@@ -312,7 +312,7 @@ void JSphGpuSingle::ConfigDomain(){
   BoundChanged=true;
   RunCellDivide(true);
   if(HydroMech && HydroMechInitMode!=HMINIT_None){
-    ComputeFreeSurfaceTracking();
+    UpdateWallAndFreeSurfaceState();
     InitHydroMechPorePressure();
     if(DynamicPorePressure && HydroMechInitMode==HMINIT_ConstantZ)ApplyPorePressureBoundaries();
   }
@@ -623,32 +623,54 @@ void JSphGpuSingle::AbortBoundOut(){
 }
 
 //==============================================================================
-/// Interaction for force computation.
-/// Interaccion para el calculo de fuerzas.
+/// Full stage evaluation for callers using the original protected overload.
 //==============================================================================
 void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
-  if(DynamicPoreWall){
-    //-Same-stage state/C closure runs below through free-surface tracking.
+  ApplyBoundaryCorrection(interstep);
+  PreInteraction_Forces();
+  unsigned *dynamicridpg=PreLoopProcedure();
+  Interaction_Forces();
+  FinishInteractionForces(dynamicridpg);
+}
+
+//==============================================================================
+/// Applies the boundary policy, then sets the stage and its device load constants.
+//==============================================================================
+void JSphGpuSingle::ApplyBoundaryCorrection(TpInterStep interstep){
+  //-Dynamic wall state and its matrix are reconstructed in UpdateWallAndFreeSurfaceState.
+  if(!DynamicPoreWall){
+    if(HydroMechNoWall)CheckHydroMechNoWallSupportGpu();
+    else if(TBoundary==BC_MDBC){
+      if(MdbcCorrector || interstep!=INTERSTEP_SymCorrector)MdbcBoundCorrection();
+    }
+    else CdbcBoundCorrection();
   }
-  else if(HydroMechNoWall)CheckHydroMechNoWallSupportGpu();
-  else if(TBoundary==BC_MDBC){
-    if(MdbcCorrector || interstep!=INTERSTEP_SymCorrector)MdbcBoundCorrection(); //-Boundary correction for mDBC.
-  }
-  else CdbcBoundCorrection(); //Corrected dummy boundary condition
   InterStep=interstep;
   if(HydroMech && (HydroMechTopLoadMode==HMLOAD_FlexibleConfinement || HydroMechTopLoadMode==HMLOAD_TopKernelBand))ConstantDataUp();
-  PreInteraction_Forces();
+}
+
+//==============================================================================
+/// Prepares surface, pressure and load fields for the neighbour interaction.
+/// The dynamic pressure-rate calculation consumes the returned periodic ID map.
+//==============================================================================
+unsigned* JSphGpuSingle::PreLoopProcedure(){
   ComputeBoundaryDerivativeVelocity();
-  ComputeFreeSurfaceTracking();
+  UpdateWallAndFreeSurfaceState();
   unsigned *dynamicridpg=(DynamicPorePressure? PrepareDynamicPorePeriodicGpu(): NULL);
   if(HydroMech){
     ApplyFreeSurfacePorePressure();
     if(HydroMechTopLoadMode!=HMLOAD_FlexibleConfinement)ApplyHydroMechTopLoadAcceleration();
   }
   if(ArtificialStressg && PorosityFeedback)PrepareArtificialStress();
-  float3 *dengradcorr=NULL;
+  return(dynamicridpg);
+}
 
+//==============================================================================
+/// Evaluates fluid-fluid and fluid-boundary SPH interactions.
+//==============================================================================
+void JSphGpuSingle::Interaction_Forces(){
   Timersg->TmStart(TMG_CfForces,true);
+  float3 *dengradcorr=NULL;
   const bool lamsps=(TVisco==VISCO_LaminarSPS);
   unsigned bsfluid=BlockSizes.forcesfluid;
   unsigned bsbound=BlockSizes.forcesbound;
@@ -677,11 +699,17 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ,ShiftPosfsg
     ,NULL,NULL,BoundDerivativeVelg,PoroThetag,PorosityFeedback? PoroJg: NULL);
   cusph::Interaction_Forces(parms);
+}
+
+//==============================================================================
+/// Completes the acceleration, pressure rate and timestep reductions.
+//==============================================================================
+void JSphGpuSingle::FinishInteractionForces(unsigned *dynamicridpg){
   if(SoilDamping)cusph::AddSoilDamping(Np,Npb,Codeg,Velrhopg,Aceg,(DynamicPorePressure? GetDynamicSoilDampingRate(): 0.f));
   NormalizeHydroMechTopBandLoad();
   if(HourglassGpu){
     if(TpiEndpoint)HourglassGpu->EndpointForce(Np,Npb,Idpg,Codeg,Aceg,PoroJg);
-    else if(interstep==INTERSTEP_SymPredictor)
+    else if(InterStep==INTERSTEP_SymPredictor)
       HourglassGpu->PredictorForce(Np,Npb,Idpg,Codeg,Posxyg,Poszg,Velrhopg,Kplasticg,Aceg,SymplecticDtPre,(PorosityFeedback? PoroJg: NULL));
     else HourglassGpu->CorrectorForce(Np,Npb,Idpg,Codeg,Aceg,(PorosityFeedback? PoroJg: NULL));
   }
@@ -697,7 +725,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
   if(DynamicPorePressure)ComputeDynamicPorePressureRateGpu(dynamicridpg);
 
   //-Computes Tau for Laminar+SPS.
-  if(lamsps)cusph::ComputeSpsTau(Np,Npb,SpsSmag,SpsBlin,Velrhopg,SpsGradvelg,SpsTaug);
+  if(TVisco==VISCO_LaminarSPS)cusph::ComputeSpsTau(Np,Npb,SpsSmag,SpsBlin,Velrhopg,SpsGradvelg,SpsTaug);
 
   //-Applies DDT.
   if(Deltag)cusph::AddDelta(Np-Npb,Deltag+Npb,Arg+Npb);//-Adds the Delta-SPH correction for the density. | Anhade correccion de Delta-SPH a Arg[]. 
@@ -707,8 +735,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
   //-Calculates maximum value of ViscDt.
   if(Np)ViscDtMax=cusph::ReduMaxFloat(Np,0,ViscDtg,CellDivSingle->GetAuxMem(cusph::ReduMaxFloatSize(Np)));
   //-Calculates maximum value of Ace (periodic particles are ignored). ViscDtg is used like auxiliary memory.
-  AceMax=ComputeAceMax(ViscDtg); 
-
+  AceMax=ComputeAceMax(ViscDtg);
   Timersg->TmStop(TMG_CfForces,true);
   Check_CudaErroor("Failed in reduction of viscdt.");
 }
@@ -794,7 +821,11 @@ void JSphGpuSingle::RunInitialDDTRamp(){
 /// calculadas en la interaccion usando Verlet.
 //==============================================================================
 double JSphGpuSingle::ComputeStep_Ver(){
-  Interaction_Forces(INTERSTEP_Verlet);    //-Interaction.
+  ApplyBoundaryCorrection(INTERSTEP_Verlet);
+  PreInteraction_Forces();
+  unsigned *periodicids=PreLoopProcedure();
+  Interaction_Forces();
+  FinishInteractionForces(periodicids);
   const double dt=DtVariable(true);        //-Calculate new dt.
   if(CaseNmoving)CalcMotion(dt);           //-Calculate motion for moving bodies.
   DemDtForce=dt;                           //(DEM)
@@ -820,7 +851,11 @@ double JSphGpuSingle::ComputeStep_Sym(){
   //-Predictor
   //-----------
   DemDtForce=dt*0.5f;                          //(DEM)
-  Interaction_Forces(INTERSTEP_SymPredictor);  //-Interaction.
+  ApplyBoundaryCorrection(INTERSTEP_SymPredictor);
+  PreInteraction_Forces();
+  unsigned *predictorids=PreLoopProcedure();
+  Interaction_Forces();
+  FinishInteractionForces(predictorids);
   const double ddt_p=DtVariable(false);        //-Calculate dt of predictor step.
   if(Shifting)RunShifting(dt*.5);              //-Shifting.
   ComputeSymplecticPre(dt);                    //-Apply Symplectic-Predictor to particles (periodic particles become invalid).
@@ -831,7 +866,11 @@ double JSphGpuSingle::ComputeStep_Sym(){
   //-----------
   DemDtForce=dt;                               //(DEM)
   RunCellDivide(true);
-  Interaction_Forces(INTERSTEP_SymCorrector);  //-Interaction.
+  ApplyBoundaryCorrection(INTERSTEP_SymCorrector);
+  PreInteraction_Forces();
+  unsigned *correctorids=PreLoopProcedure();
+  Interaction_Forces();
+  FinishInteractionForces(correctorids);
   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
   if(Shifting)RunShifting(dt);                 //-Shifting.
   ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
@@ -1191,7 +1230,11 @@ void JSphGpuSingle::CorrectTpiPressure(double dt){
   try{
     for(unsigned round=0;round<3;round++){
       //-The physical load and drainage use the source clock through all five forces.
-      Interaction_Forces(INTERSTEP_SymCorrector);
+      ApplyBoundaryCorrection(INTERSTEP_SymCorrector);
+      PreInteraction_Forces();
+      unsigned *periodicids=PreLoopProcedure();
+      Interaction_Forces();
+      FinishInteractionForces(periodicids);
       if(DtVariable(false)!=dt || (HourglassGpu && dt>HourglassGpu->GetDtLimit()))
         Run_Exceptioon("TPI endpoint exceeds the fixed step or hourglass limit.");
       PosInteraction_Forces();
@@ -1308,7 +1351,7 @@ void JSphGpuSingle::SaveData(){
   const unsigned npsave=Np-NpbPer-NpfPer; //-Subtracts the periodic particles if they exist. | Resta las periodicas si las hubiera.
   //-Retrieves particle data from the GPU. | Recupera datos de particulas en GPU.
   if(save){
-    ComputeFreeSurfaceTracking();
+    UpdateWallAndFreeSurfaceState();
     Timersg->TmStart(TMG_SuDownData,false);
     unsigned npnormal=ParticlesDataDown(Np,0,false,PeriActive!=0);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");

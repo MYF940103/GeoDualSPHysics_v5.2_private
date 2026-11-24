@@ -1,0 +1,290 @@
+[
+  {
+    "lane": "dry_verlet",
+    "backend": "gpu",
+    "frames": 17,
+    "array_comparisons": 187,
+    "history_frames": 0,
+    "scalar_comparisons": 1020,
+    "saved_steps": [
+      0,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "saved_times_s": [
+      0.0,
+      9.178991413074926e-06,
+      1.835798282614985e-05,
+      2.7536974239224777e-05,
+      3.67159656522997e-05,
+      4.589495706537463e-05,
+      5.5073948478449555e-05,
+      6.425293989152448e-05,
+      7.34319313045994e-05,
+      8.261092271767433e-05,
+      9.178991413074926e-05,
+      0.00010096890554382418,
+      0.00011014789695689911,
+      0.00011932688836997404,
+      0.00012850587978304896,
+      0.00013768487119612387,
+      0.0001468638626091988
+    ],
+    "exact_part_bytes": 14852305,
+    "native_arrays": [
+      "Idp",
+      "Pos",
+      "Vel",
+      "Rhop",
+      "Sigma_kk",
+      "Sigma_ij",
+      "Kplastic",
+      "SigmaState_kk",
+      "SigmaState_ij",
+      "FSType",
+      "FSNormal"
+    ],
+    "active_ids": 7028,
+    "hourglass_final_summary": []
+  },
+  {
+    "lane": "column0",
+    "backend": "gpu",
+    "frames": 8,
+    "array_comparisons": 120,
+    "history_frames": 0,
+    "scalar_comparisons": 496,
+    "saved_steps": [
+      0,
+      0,
+      1,
+      2,
+      3,
+      4,
+      6,
+      7
+    ],
+    "saved_times_s": [
+      0.0,
+      1e-05,
+      2e-05,
+      3.0000000000000004e-05,
+      4e-05,
+      5e-05,
+      7.000000000000001e-05,
+      8e-05
+    ],
+    "exact_part_bytes": 1250760,
+    "native_arrays": [
+      "Idp",
+      "Pos",
+      "Vel",
+      "Rhop",
+      "Sigma_kk",
+      "Sigma_ij",
+      "Kplastic",
+      "SigmaState_kk",
+      "SigmaState_ij",
+      "FSType",
+      "FSNormal",
+      "PorePress",
+      "PorePress0",
+      "ExcessPorePress",
+      "HydroMechLoadAce"
+    ],
+    "active_ids": 1040,
+    "hourglass_final_summary": [
+      "SoilHourglass: forcecalls=16 predictorupdates=8 correctorupdates=8 ratecalls=16",
+      "SoilHourglass: ratecalculations=9 endpoint_rate_reuses=7",
+      "SoilHourglass: max|sum(m*H)|=5.20417e-18 max|sum(m*deltaAce)|=3.14968e-05 max(dt/tau)=0.00796107 spinbound=2.78932e-09"
+    ],
+    "top_pressure_range_Pa_by_completed_step": {
+      "1": [
+        0.0,
+        0.0
+      ],
+      "2": [
+        339.2667236328125,
+        339.2667541503906
+      ],
+      "3": [
+        1494.5147705078125,
+        1494.514892578125
+      ],
+      "4": [
+        0.0,
+        0.0
+      ],
+      "5": [
+        0.0,
+        0.0
+      ],
+      "7": [
+        0.0,
+        0.0
+      ],
+      "8": [
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "lane": "column2",
+    "backend": "gpu",
+    "frames": 9,
+    "array_comparisons": 214,
+    "history_frames": 8,
+    "scalar_comparisons": 667,
+    "saved_steps": [
+      0,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "saved_times_s": [
+      0.0,
+      1.0000228881835938e-05,
+      2.0000457763671876e-05,
+      3.0000686645507814e-05,
+      4.000091552734375e-05,
+      5.0001144409179694e-05,
+      6.0001373291015636e-05,
+      7.000160217285158e-05,
+      8.000183105468752e-05
+    ],
+    "exact_part_bytes": 2077689,
+    "native_arrays": [
+      "Idp",
+      "Posd",
+      "Vel",
+      "Rhop",
+      "Sigma_kk",
+      "Sigma_ij",
+      "Kplastic",
+      "SigmaState_kk",
+      "SigmaState_ij",
+      "FSType",
+      "FSNormal",
+      "PoroVolumeRatio",
+      "PoroPorosity",
+      "PoroThetaLastStage",
+      "PosDiv",
+      "PoroCurrentVolume",
+      "PoroMixtureDensity",
+      "PoroHydraulicConductivity",
+      "PorePress",
+      "PorePress0",
+      "ExcessPorePress",
+      "HydroMechLoadAce"
+    ],
+    "active_ids": 1040,
+    "hourglass_final_summary": [
+      "SoilHourglass: forcecalls=16 predictorupdates=8 correctorupdates=8 ratecalls=16",
+      "SoilHourglass: ratecalculations=9 endpoint_rate_reuses=7",
+      "SoilHourglass: max|sum(M0*Href)|=4.77049e-18 max|sum(mi*deltaAce)|=4.02391e-05 max(dt/tau)=0.00796126 spinbound=7.90109e-13"
+    ],
+    "top_pressure_range_Pa_by_completed_step": {
+      "1": [
+        0.0,
+        0.0
+      ],
+      "2": [
+        2163.6796875,
+        2163.679931640625
+      ],
+      "3": [
+        6341.431640625,
+        6341.43212890625
+      ],
+      "4": [
+        0.0,
+        0.0
+      ],
+      "5": [
+        0.0,
+        0.0
+      ],
+      "6": [
+        0.0,
+        0.0
+      ],
+      "7": [
+        0.0,
+        0.0
+      ],
+      "8": [
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "lane": "sphere2",
+    "backend": "gpu",
+    "frames": 5,
+    "array_comparisons": 118,
+    "history_frames": 4,
+    "scalar_comparisons": 367,
+    "saved_steps": [
+      0,
+      0,
+      1,
+      2,
+      3
+    ],
+    "saved_times_s": [
+      0.0,
+      1.9073486328125e-06,
+      3.814697265625e-06,
+      5.7220458984375e-06,
+      7.62939453125e-06
+    ],
+    "exact_part_bytes": 40617565,
+    "native_arrays": [
+      "Idp",
+      "Posd",
+      "Vel",
+      "Rhop",
+      "Sigma_kk",
+      "Sigma_ij",
+      "Kplastic",
+      "SigmaState_kk",
+      "SigmaState_ij",
+      "FSType",
+      "FSNormal",
+      "PoroVolumeRatio",
+      "PoroPorosity",
+      "PoroThetaLastStage",
+      "PosDiv",
+      "PoroCurrentVolume",
+      "PoroMixtureDensity",
+      "PoroHydraulicConductivity",
+      "PorePress",
+      "PorePress0",
+      "ExcessPorePress",
+      "HydroMechLoadAce"
+    ],
+    "active_ids": 37181,
+    "hourglass_final_summary": []
+  }
+]

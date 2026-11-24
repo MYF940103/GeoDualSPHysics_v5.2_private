@@ -60,7 +60,12 @@ protected:
   void RunGravityPreloadHandoffCpu();
   void AbortBoundOut();
 
-  void Interaction_Forces(TpInterStep tinterstep);
+  //-Existing component tests use the staged overload for a complete force evaluation.
+  void Interaction_Forces(TpInterStep interstep);
+  void ApplyBoundaryCorrection(TpInterStep interstep);
+  void PreLoopProcedure();
+  float Interaction_Forces();
+  void FinishInteractionForces(float viscdt);
   void MdbcBoundCorrection();
   void CdbcBoundCorrection();
 

@@ -1,0 +1,33 @@
+{
+  "command": [
+    "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.3\\compute-sanitizer\\compute-sanitizer.exe",
+    "--tool",
+    "memcheck",
+    "--error-exitcode",
+    "87",
+    "--log-file",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\gpu_tools\\validated_debug2\\memcheck.log",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\validated\\DualSPHysics5.2_win64_debug.exe",
+    "-gpu",
+    "-stable",
+    "-mdbc_freeslip",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\seeds\\column2\\upl_bigstep_2tv_CPU1_r1",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\force_stages_r1\\gpu_tools\\validated_debug2\\result",
+    "-dirdataout",
+    "data",
+    "-svres",
+    "-nsteps:2"
+  ],
+  "tool_exit": 0,
+  "requested_steps": 2,
+  "exe_bytes": 199323648,
+  "exe_mtime_ns": 1795500194241023700,
+  "actual_steps": 2,
+  "saved_parts": 3,
+  "exclusions": 0,
+  "hardware": "Gpu_0?=\"NVIDIA GeForce RTX 3050\"",
+  "sanitizer_summary": [
+    "========= ERROR SUMMARY: 0 errors"
+  ],
+  "passed": true
+}

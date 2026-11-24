@@ -893,6 +893,8 @@ rem %CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -
     <ClCompile Include="..\source\JSph.cpp" />
     <ClCompile Include="..\source\JSphCpu.cpp" />
     <ClCompile Include="..\source\JSphCpu_mdbc.cpp" />
+    <ClCompile Include="..\source\JSphCpu_preloop.cpp" />
+    <ClCompile Include="..\source\JSphCpu_porepressure.cpp" />
     <ClCompile Include="..\source\JSphGpu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugCPU|x64'">true</ExcludedFromBuild>

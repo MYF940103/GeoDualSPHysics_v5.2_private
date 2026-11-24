@@ -259,7 +259,7 @@ void JSphCpuSingle::ConfigDomain(){
   BoundChanged=true;
   RunCellDivide(true);
   if(HydroMech && HydroMechInitMode!=HMINIT_None){
-    ComputeFreeSurfaceTracking();
+    UpdateWallAndFreeSurfaceState();
     InitHydroMechState();
     if(HydroMechDynamicSeepage && HydroMechInitMode==HMINIT_ConstantZ)ApplyPorePressureBoundaries();
   }
@@ -680,29 +680,49 @@ void JSphCpuSingle::AbortBoundOut(){
 }
 
 //==============================================================================
-/// Interaction to calculate forces.
-/// Interaccion para el calculo de fuerzas.
+/// Runs a complete force stage for callers of the original protected interface.
 //==============================================================================
 void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
-  if(DynamicPoreWall){
-    //-Its same-stage J/p/stress/velocity closure runs in free-surface tracking below.
-  }
-  else if(HydroMechNoWall)CheckHydroMechNoWallSupportCpu();
-  else if(TBoundary==BC_MDBC){
-    if(MdbcCorrector || interstep!=INTERSTEP_SymCorrector)MdbcBoundCorrection(); //-Boundary correction for mDBC.
-  }
-  else CdbcBoundCorrection(); //Corrected dummy boundary condition
-  InterStep=interstep;
+  ApplyBoundaryCorrection(interstep);
   PreInteraction_Forces();
-  ComputeBoundaryDerivativeVelocity();
-  ComputeFreeSurfaceTracking();
-  ApplyHydroMechTopLoadAcceleration();
-  tfloat3 *dengradcorr=NULL;
+  PreLoopProcedure();
+  const float viscdt=Interaction_Forces();
+  FinishInteractionForces(viscdt);
+}
 
+//==============================================================================
+/// Dynamic seepage walls need the stage arrays allocated by PreInteraction_Forces.
+//==============================================================================
+void JSphCpuSingle::ApplyBoundaryCorrection(TpInterStep interstep){
+  if(!DynamicPoreWall){
+    if(HydroMechNoWall)CheckHydroMechNoWallSupportCpu();
+    else if(TBoundary==BC_MDBC){
+      if(MdbcCorrector || interstep!=INTERSTEP_SymCorrector)MdbcBoundCorrection();
+    }
+    else CdbcBoundCorrection();
+  }
+  InterStep=interstep;
+}
+
+//==============================================================================
+/// Prepares wall velocities, surface classification, loads and pressure for this stage.
+//==============================================================================
+void JSphCpuSingle::PreLoopProcedure(){
+  ComputeBoundaryDerivativeVelocity();
+  UpdateWallAndFreeSurfaceState();
+  ApplyHydroMechTopLoadAcceleration();
+
+  //-The CPU force timer also covers the pressure boundary and feedback artificial stress.
   Timersc->TmStart(TMC_CfForces);
-  //-Interaction of Fluid-Fluid/Bound & Bound-Fluid (forces and DEM). | Interaccion Fluid-Fluid/Bound & Bound-Fluid (forces and DEM).
   if(HydroMech)ApplyFreeSurfacePorePressure();
   if(ArtificialStressc && PorosityFeedback)PrepareArtificialStress();
+}
+
+//==============================================================================
+/// Runs the main neighbour interaction and returns its viscous time-step rate.
+//==============================================================================
+float JSphCpuSingle::Interaction_Forces(){
+  tfloat3 *dengradcorr=NULL;
   const stinterparmsc parms=StInterparmsc(Np,Npb,NpbOk
     ,DivData,Dcellc
     ,Posc,Velrhopc,Idpc,Codec,Pressc,(HydroMech? PorePressc: NULL)
@@ -717,6 +737,13 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   StInterResultc res;
   res.viscdt=0;
   JSphCpu::Interaction_Forces_ct(parms,res);
+  return res.viscdt;
+}
+
+//==============================================================================
+/// Completes the stage acceleration before evaluating the Darcy rate and step limit.
+//==============================================================================
+void JSphCpuSingle::FinishInteractionForces(float viscdt){
   if(SoilDamping)AddSoilDampingCpu(Np,Npb,Codec,Velrhopc,Acec);
 
   //-For 2-D simulations zero the 2nd component. | Para simulaciones 2D anula siempre la 2nd componente.
@@ -738,20 +765,19 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   }
 
   //-Calculates maximum value of ViscDt.
-  ViscDtMax=res.viscdt;
+  ViscDtMax=viscdt;
   //-Reuse raw loading from the main neighbour pass, then add the GNOG history.
   //-Both precede the single final acceleration maximum reduction.
   if(HydroMechTopLoadMode==HMLOAD_TopKernelBand)NormalizeHydroMechTopBandLoad();
   if(HourglassCpu){
     if(TpiEndpoint)HourglassCpu->EndpointForce(Np,Npb,Idpc,Codec,Acec,PoroJc);
-    else if(interstep==INTERSTEP_SymPredictor)
+    else if(InterStep==INTERSTEP_SymPredictor)
       HourglassCpu->PredictorForce(Np,Npb,Idpc,Codec,Posc,Velrhopc,Kplasticc,Acec,SymplecticDtPre,(PorosityFeedback? PoroJc: NULL));
     else HourglassCpu->CorrectorForce(Np,Npb,Idpc,Codec,Acec,(PorosityFeedback? PoroJc: NULL));
   }
   if(DynamicPorePressure)ComputeDynamicPorePressureRateCpu();
   //-Calculates maximum value of Ace (periodic particles are ignored).
   AceMax=ComputeAceMax(Np-Npb,Acec+Npb,Codec+Npb);
-
   Timersc->TmStop(TMC_CfForces);
 }
 
@@ -764,7 +790,11 @@ void JSphCpuSingle::CorrectTpiPressure(double dt){
   try{
     for(unsigned round=0;round<3;round++){
       //-All neighbouring rows read the previous iterate before any pressure is replaced.
-      Interaction_Forces(INTERSTEP_SymCorrector);
+      ApplyBoundaryCorrection(INTERSTEP_SymCorrector);
+      PreInteraction_Forces();
+      PreLoopProcedure();
+      const float viscdt=Interaction_Forces();
+      FinishInteractionForces(viscdt);
       if(DtVariable(false)!=dt)Run_Exceptioon("TPI requires the same fixed time step in every pressure round.");
       PosInteraction_Forces();
       for(unsigned p=Npb;p<Np;p++)if(CODE_IsFluid(Codec[p]))PorePressc[p]=TpiNext[Idpc[p]];
@@ -909,7 +939,11 @@ void JSphCpuSingle::RunInitialDDTRamp(){
 /// calculadas en la interaccion usando Verlet.
 //==============================================================================
 double JSphCpuSingle::ComputeStep_Ver(){
-  Interaction_Forces(INTERSTEP_Verlet);    //-Interaction.
+  ApplyBoundaryCorrection(INTERSTEP_Verlet);
+  PreInteraction_Forces();
+  PreLoopProcedure();
+  const float viscdt=Interaction_Forces();
+  FinishInteractionForces(viscdt);
   const double dt=DtVariable(true);        //-Calculate new dt.
   if(CaseNmoving)CalcMotion(dt);           //-Calculate motion for moving bodies.
   DemDtForce=dt;                           //(DEM)
@@ -935,7 +969,11 @@ double JSphCpuSingle::ComputeStep_Sym(){
   //-Predictor
   //-----------
   DemDtForce=dt*0.5f;                          //(DEM)
-  Interaction_Forces(INTERSTEP_SymPredictor);  //-Interaction.
+  ApplyBoundaryCorrection(INTERSTEP_SymPredictor);
+  PreInteraction_Forces();
+  PreLoopProcedure();
+  const float viscdt_pre=Interaction_Forces();
+  FinishInteractionForces(viscdt_pre);
   const double ddt_p=DtVariable(false);        //-Calculate dt of predictor step.
   if(Shifting)RunShifting(dt*.5);              //-Shifting.
   ComputeSymplecticPre(dt);                    //-Apply Symplectic-Predictor to particles (periodic particles become invalid).
@@ -946,7 +984,11 @@ double JSphCpuSingle::ComputeStep_Sym(){
   //-----------
   DemDtForce=dt;                               //(DEM)
   RunCellDivide(true);
-  Interaction_Forces(INTERSTEP_SymCorrector);  //-Interaction.
+  ApplyBoundaryCorrection(INTERSTEP_SymCorrector);
+  PreInteraction_Forces();
+  PreLoopProcedure();
+  const float viscdt_corr=Interaction_Forces();
+  FinishInteractionForces(viscdt_corr);
   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
   if(Shifting)RunShifting(dt);                 //-Shifting.
   ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
@@ -1496,7 +1538,7 @@ void JSphCpuSingle::SaveData(){
   double *poroj=NULL,*porotheta=NULL;
   //==========
   if(save){
-    ComputeFreeSurfaceTracking();
+    UpdateWallAndFreeSurfaceState();
     //-Assign memory and collect particle values. | Asigna memoria y recupera datos de las particulas.
     idp=ArraysCpu->ReserveUint();
     pos=ArraysCpu->ReserveDouble3();
