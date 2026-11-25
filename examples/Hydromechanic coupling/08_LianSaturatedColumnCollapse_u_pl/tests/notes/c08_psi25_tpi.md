@@ -35,3 +35,20 @@ Lian 等（2023，DOI 10.1016/j.cma.2023.115967）表 1 的材料量与本组相
 材料契约、指数软化及受压号已按实际有效应力复核。1.2 s 显式基准的最大 κ=0.2302，对应剪胀角 2.3875°，多数材料仍接近 2.5°。原文式（13）字面符号与当前隐式一致性返回在软化分母上有一处差异；在记录的单点算例下，两者的塑性乘子差约 0.26%。单点结果不能代替滑带沿程验证。[材料核对和单点算例](c08_psi25_tpi_material.md)
 
 独立构建 r1 缺 CUDA 头文件路径，停在编译阶段。r2 显式使用原工程 CUDA 11.7 头文件，编译和链接通过。共 113 个对象，112 个沿用已验证的接收程序，1 个主机配置对象更换。实际 RTX 3050 短测验证了新组材料的加载、墙面切换和压力更新。
+
+为检查提前停滑的力学过程，按预载坐标固定右缘与左内区各 950 个材料点。显式基准右缘在 0.10→0.20 s 的孔压降中位数从 12.90 增至 16.84 kPa，有效平均压应力增量从 7.49 增至 10.83 kPa。剪应力与当时屈服剪强度的比值中位数从 1.000 降至 0.715，水平速度中位数从向外 0.0851 m/s 转为向内 0.0177 m/s。1.2 s 右缘水平位移中位数为 12.07 mm。这描述了剪胀、吸力、卸载与回弹的时间顺序。两支 TPI 计算须复核同一批材料点。[六时刻力学统计](../figures/c08_psi25_mobilization_explicit.csv)
+
+### 1.2 s 数据就绪后的复核
+
+两支接收按 β=0.04、0 的顺序在同一 GPU 独立计算和读取。两支各自的前 12 帧与同一 β 的短窗逐字节比较，再对照论文。总控会生成固定坐标的轮廓图与图 16 总压图。以下命令补充图 15 和固定材料区的数据，须从本算例根目录执行。
+
+```powershell
+D:/anaconda3/python.exe -B -X utf8 tests/support/c08_psi25_tpi_fields.py --tag paper_pair_r1 --run "TPI beta=0" tests/outputs/c08_psi25_tpi_paper_b0_r1 --run "TPI beta=0.04" tests/outputs/c08_psi25_tpi_paper_b004_r1
+D:/anaconda3/python.exe -B -X utf8 tests/support/c08_psi25_tpi_mobilization.py --run explicit CaseLianCollapse_psi2p5_GPU_out --run beta0 tests/outputs/c08_psi25_tpi_paper_b0_r1 --run beta004 tests/outputs/c08_psi25_tpi_paper_b004_r1 --output tests/figures/c08_psi25_mobilization_three.csv
+```
+
+## 初态和超孔压定义
+
+实测预载另与图 13 独立对照。中央 45 层的孔压、竖向总压应力和竖向有效压应力相对印刷色标的 RMS 差依次为 0.147、0.280 和 0.185 kPa。论文没有发表横向应力场，不能由图 13 判断侧壁反力分布。[预载对照与读图限制](c08_psi25_tpi_initial.md)
+
+图 15 描述由塑性剪胀产生的超孔压。本地固定材料 p−P0 还包含撤墙排水。在 0.01 s 的右缘 950 粒中，0° 和 +2.5° 显式基准均已相对预载下降约 8.2 kPa，而相同 ID 两组总压差的中位数仅约 0.03 kPa。到 1.2 s，两组右缘材料位置的配对距离中位数已达 0.854 m，此时配对压力差还包含两条不同的运动和排水路径。图 16 可同时用总孔压与完整轮廓对照。[相同材料 ID 统计与限制](c08_psi25_dilation_reference.md)
