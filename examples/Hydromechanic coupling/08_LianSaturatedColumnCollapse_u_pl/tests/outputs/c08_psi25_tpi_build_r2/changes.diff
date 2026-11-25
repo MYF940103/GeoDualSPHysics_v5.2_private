@@ -1,0 +1,16 @@
+--- original/JSph.cpp
++++ psi25/JSph.cpp
+@@ -666,10 +666,11 @@
+       && GravityPreload && GravityPreloadTime==10. && !GravityPreloadReleased && IsGravityPreloadHandoff()
+       && !GravityPreloadKeepBedOverlap && !GravityPreloadElasticSource
+       && HydroMechFreeSeepage && !HydroMechDrainage && NoPenetration && ArtificialStress && ArtificialStressCoef==.3f && ArtificialStressExp==2.55f && !SoilHourglassXi
+-      && HydroMechConductivityModel==1 && HydroMechConductivityCk==2. && SoilCte.dlt==0
++      && HydroMechConductivityModel==1 && HydroMechConductivityCk==2. && SoilCte.dlt==float(TORAD*2.5)
++      && SoilCte.psiDecay==.2f && SoilCte.coh==5000.f && SoilCte.coh_r==1000.f && SoilCte.n_coh==5.f
+       && PoreShepardRegularization && PoreShepardInterval==40 && SoilDamping && HydroMechInitMode==HMINIT_ConstantZ
+       && CaseNfluid==5000 && CaseNfixed==2060 && CaseNp==7060 && FixedDt->GetFixedValue()==5e-6
+-      && (cfg->NstepsBreak==2000208 || cfg->NstepsBreak==2060200);
++      && (cfg->NstepsBreak==2000208 || cfg->NstepsBreak==2060200 || cfg->NstepsBreak==2240200);
+     if(!c08Probe)Run_Exceptioon("Private C08 check requires its bounded same-material PRE plus 200-step M0 hold and bounded release.");
+     if(HydroMechTpi && !c08Probe){
+       const bool column=Simulate2D && TBoundary==BC_MDBC && PeriX && !PeriY && !PeriZ
