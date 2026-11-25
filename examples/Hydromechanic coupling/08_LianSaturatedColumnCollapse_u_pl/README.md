@@ -18,6 +18,7 @@
 - [本版图和数据](figures/validation_explicit/) 包含各组孔压、形态、运动历史及按论文图 14–17 时刻整理的前缘对比。按组的 `history.csv` 保留实际保存时间。总孔压与固定材料的超孔压 `p−p₀` 单列。
 - 本机三组均已完成 10 s 同材料预载。0° 和 +2.5° 已完成撤墙后 3 s。−5° 的 GPU 求解在撤墙后约 0.679 s 的底床镜像拟合中退出，最后完整保存到 0.670005 s。可分别打开该组已保存的 [Fluid 序列](CaseLianCollapse_psim5_GPU_out/validation_partial/particles/PartFluid/PartFluid.vtk.series) 和 [Bound 序列](CaseLianCollapse_psim5_GPU_out/validation_partial/particles/PartBound/PartBound.vtk.series)。[三组实测对照及失败诊断](figures/validation_explicit/saved_comparison/README.md)
 - 文献给出数值模拟的可见外形和场图。论文前缘取填色主体边缘，本算例取土粒中心的最大横坐标。滑带局部团聚、孔压尖峰、滑移终止过早等误差均随结果保存。固定平面接触使用分步投影，接触反力与同一子步 Darcy 方程尚未闭合。
+- +2.5° 已完成 `DensityDT=0/3` 的同参数对照。两阶段均开启应力扩散时，10 s 预载末平均孔压从 9.826 降到 3.225 kPa，撤墙 3 s 的前缘推进从 24.99 降到 15.90 mm。三组正式输入保留 `DensityDT=0`。[完整对照、论文图 15–16 及数据](figures/validation_explicit/psi2p5_ddt3_comparison/README.md)
 
 旧版本的配置、运行方式和证据分别见 [r5 说明](README_server_r5.md)、[r6 说明](README_server_r6.md) 和 [历史运行记录](support/STATUS_current.md)。这些版本使用各自的程序和预载。论文参考范围及已有数字化方法见 [图 14–17 对照说明](tests/notes/c08_h18_paper_comparison_scope_r1.md)。
 
