@@ -89,7 +89,7 @@ def inspect_log(path, cap):
     return dict(dt_checks=dt_rows, min_allowed_dt_s=min_bound, pressure_rounds=rounds, pre_shepard_calls=filters)
 
 
-def check_state(m, a, source, prior_kappa, active):
+def check_state(m, a, source, prior_kappa, active, surface_zero=False):
     ids = RELEASE_IDS if active else PRE_IDS
     b = len(ids) - len(SOIL_IDS)
     soil = slice(b,None)
@@ -115,14 +115,21 @@ def check_state(m, a, source, prior_kappa, active):
             and not np.any(a["Kplastic"][:b]) and np.all(a["Kplastic"][soil]>=prior_kappa),
             "Density, geometry, load or material history differs")
     fs = np.isin(a["FSType"][soil],[2,3])
-    require(np.all(a["PorePress"][soil][fs]<=0) and np.all(a["Posd"][soil][:,[0,2]]>=-4e-8),
+    surface_p = a["PorePress"][soil][fs]
+    require(np.all(surface_p==0 if surface_zero else surface_p<=0)
+            and np.all(a["Posd"][soil][:,[0,2]]>=-4e-8),
             "Free seepage or plane geometry failed")
     return fs
 
 
-def run(tag, window, beta, prefix):
+def run(tag, window, beta, prefix, surface_zero=False):
     label = "b004" if beta else "b0"
-    require(tag == f"c08_psi25_tpi_{window}_{label}_r1", "Tag does not match the selected window/branch")
+    control = f"c08_psi25_tpi_{window}_{label}_r1"
+    if surface_zero:
+        require((tag, window, beta, prefix) == ("c08_psi25_tpi_surface_zero_r1", "paper", .04, control),
+                "The surface-zero test requires its paired paper-window control")
+    else:
+        require(tag == control, "Tag does not match the selected window/branch")
     folder = TESTS/"outputs"/tag
     callpath = TESTS/"logs"/(tag+".call.json")
     result = TESTS/"logs"/(tag+".native_review.json")
@@ -131,6 +138,10 @@ def run(tag, window, beta, prefix):
     steps = expected_steps(cap)
     files = sorted((folder/"data").glob("Part_????.bi4"))
     bound = [PRE, callpath, folder/"Run.out", *files]
+    if surface_zero:
+        initial_path = PRE.with_name("Part_0000.bi4")
+        build = TESTS/"outputs"/(tag+"_build_r2")/"build.json"
+        bound.extend([initial_path, build])
     def binding():
         return [[str(f.relative_to(CASE)), f.stat().st_size, f.stat().st_mtime_ns] for f in bound]
     first = binding()
@@ -145,13 +156,18 @@ def run(tag, window, beta, prefix):
     require(call["returncode"] == 0 and call["cap"] == cap and call["beta"] == beta
             and Path(call["PRE"]).resolve()==PRE and "-nsteps:"+str(cap) in call["command"]
             and str(folder) in call["command"], "Wrong completed call, branch, cap or PRE")
+    if surface_zero:
+        proof = json.loads(build.read_text())
+        require(call.get("surface_zero") is True and call.get("build") == str(build)
+                and call["exe"]["path"] == proof["program"] == call["command"][0],
+                "Wrong isolated executable or boundary policy")
     require([f.name for f in files] == [f"Part_{i:04d}.bi4" for i in range(1,len(steps)+1)], "Incomplete save plan")
     sm, source = native(PRE)
     verify_source_material(sm, "psi2p5")
     require(sm["Step"]+1 == SOURCE and np.array_equal(source["Idp"], PRE_IDS), "Wrong time or owners in PRE")
     clock = np.cumsum(np.r_[sm["TimeStep"], np.full(cap-SOURCE, DT)])
     release_time = clock[OPEN-SOURCE]
-    if window != "short":
+    if window != "short" and not surface_zero:
         allowed = [f"c08_psi25_tpi_short_{label}_r1"]
         if window == "paper":
             allowed.append(f"c08_psi25_tpi_w30_{label}_r1")
@@ -165,6 +181,14 @@ def run(tag, window, beta, prefix):
         require(len(prefix_parts)==previous["frames"] and all(
             sealed.get(str(f.relative_to(CASE)))==(f.stat().st_size,f.stat().st_mtime_ns) for f in prefix_parts),
             "Incomplete or changed prefix")
+        if surface_zero:
+            prefix_parts = prefix_parts[:sum(step<=OPEN for step in steps)]
+    if surface_zero:
+        _, initial = native(initial_path)
+        require(np.array_equal(initial["Idp"], PRE_IDS), "Wrong initial source IDs")
+        origin_x = initial["Posd"][SOIL_IDS,0]
+        right = np.isclose(origin_x, origin_x.max(), atol=1e-8, rtol=0)
+        require(right.sum()==50, "Wrong original rightmost material column")
     prior_p = source["PorePress"][SOIL_IDS]
     prior_kappa = source["Kplastic"][SOIL_IDS]
     last_step = SOURCE
@@ -197,7 +221,10 @@ def run(tag, window, beta, prefix):
         if last_step+1==step:
             require(prev.tobytes()==prior_p.tobytes(), f"Previous pressure does not match adjacent native save at {step}")
             adjacent += 1
-        fs = check_state(m, a, source, prior_kappa, active)
+        fs = check_state(m, a, source, prior_kappa, active, surface_zero)
+        if surface_zero:
+            require(fs.any() and (step != OPEN+1 or fs[right].all()),
+                    "Free-surface classification failed, including the newly exposed right column")
         if i < len(prefix_parts):
             om, oa, oh, op = read_frame(prefix_parts[i])
             require(om["Step"]==m["Step"] and struct.pack("<dd",om["TimeStep"],om["dterror"])==
@@ -214,12 +241,21 @@ def run(tag, window, beta, prefix):
                          kappa_mean=float(prior_kappa.mean(dtype=float)),front_x_m=float(x.max()),
                          advance_from_pre_m=float(x.max())-prefront,
                          speed_max_m_s=float(np.linalg.norm(a["Vel"][-5000:],axis=1).max())))
+        if surface_zero:
+            rows[-1].update(fs_zero=int(np.count_nonzero(fs & (prior_p==0))),
+                            right_fs=int(np.count_nonzero(fs & right)),
+                            right_zero=int(np.count_nonzero(right & (prior_p==0))),
+                            right_p_min_Pa=float(prior_p[right].min()),
+                            right_p_max_Pa=float(prior_p[right].max()))
         last_step = step
     log = inspect_log(folder/"Run.out", cap)
     require(binding()==first and adjacent==11, "Inputs changed or adjacent-history samples missing")
     report = dict(passed=True, tag=tag, beta=beta, source_time_s=float(clock[0]), release_time_s=float(release_time),
                   end_s=float(clock[-1]), final_completed_step=cap, frames=len(rows), adjacent_history=adjacent,
                   prefix_tag=prefix,prefix_equal_frames=len(prefix_parts),files=first,physical_acceptance=False,**log)
+    if surface_zero:
+        report["surface_zero"] = True
+        report["surface_zero_count"] = sum(row["fs_zero"] for row in rows)
     with output.open("x",encoding="utf8",newline="") as stream:
         writer=csv.DictWriter(stream,fieldnames=rows[0])
         writer.writeheader()
@@ -235,5 +271,6 @@ if __name__=="__main__":
     args.add_argument("--window",choices=tuple(CAP),required=True)
     args.add_argument("--beta",type=float,choices=(0.,.04),required=True)
     args.add_argument("--prefix")
+    args.add_argument("--surface-zero", action="store_true")
     opt=args.parse_args()
-    run(opt.tag,opt.window,opt.beta,opt.prefix)
+    run(opt.tag,opt.window,opt.beta,opt.prefix,opt.surface_zero)
