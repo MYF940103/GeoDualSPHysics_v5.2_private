@@ -6,7 +6,7 @@ from pathlib import Path
 
 import numpy as np
 
-from c08_psi25_tpi_native import TESTS, RELEASE_IDS, require
+from c08_psi25_tpi_native import TESTS, CASE, PRE_IDS, RELEASE_IDS, read_frame, require
 
 STEPS = (2060200, 2176200, 2240200)
 TARGETS = (6868, 6918, 6919, 6920, 7010)
@@ -289,6 +289,76 @@ def probe_table(data, step_limit):
     return groups
 
 
+def startup(data):
+    """Nine observed steps per ID. Retained native state exists at release and steps 1–8."""
+    probes = probe_table(data, OPEN+70)
+    tag = "c08_psi25_tpi_paper_b004_r1"
+    receipt = json.loads((TESTS/"logs"/(tag+".native_review.json")).read_text())
+    require(receipt["passed"] and receipt["beta"]==.04 and receipt["tag"]==tag,
+            "Retained original positive-only baseline was not reviewed")
+    bound = {name:(size,mtime) for name,size,mtime in receipt["files"]}
+    origin, native_states = {}, {}
+    for k in range(9):
+        part = 4+k
+        path = TESTS/"outputs"/tag/"data"/f"Part_{part:04d}.bi4"
+        stat = path.stat()
+        require(bound.get(str(path.relative_to(CASE)))==(stat.st_size,stat.st_mtime_ns),
+                "Retained baseline frame binding changed")
+        m,a,h,_ = read_frame(path)
+        require(m["Step"]+1==OPEN+k==h["CompletedUpdates"] and m["Cpart"]==part and
+                h["Scheme"]=="P3_B_alpha_half_beta_0p04" and m["TimeStep"]==h["SavedTime"] and
+                np.array_equal(a["Idp"],RELEASE_IDS if k else PRE_IDS),"Wrong baseline frame")
+        for ident in TARGETS:
+            i,=np.flatnonzero(a["Idp"]==ident)
+            pos = a["Posd"][i]
+            J = a["PoroVolumeRatio"][i]
+            kap = a["Kplastic"][i]
+            if k==0:
+                origin[ident] = (pos,J,kap)
+            dx = (pos-origin[ident][0])*1000.
+            p = float(a["PorePress"][i])
+            native_states[k,ident] = dict(part=part,t_native_s=m["TimeStep"],native_p_Pa=p,
+                J_native=J,delta_J_native=J-origin[ident][1],kappa_native=float(kap),
+                delta_kappa_native=float(kap)-float(origin[ident][2]),ux_mm=dx[0],uz_mm=dx[2])
+            if k:
+                r = probes[OPEN+k,3,ident]
+                require(r["time_start_s"]==h["PreviousTime"] and p==r["post_Pa"],
+                        "Observer and retained baseline differ in pressure or clock")
+    rows = []
+    for k in (0,*range(1,9),70):
+        for ident in TARGETS:
+            point = dict(step_after_release=k,id=ident)
+            point.update(native_states.get((k,ident),dict.fromkeys(native_states[0,ident])))
+            if k:
+                rr = [probes[OPEN+k,r,ident] for r in (1,2,3)]
+                first = rr[0]
+                pn,pm,q0 = (first[key] for key in ("p_n_Pa","p_prev_Pa","iterate_Pa"))
+                require(np.float32(pn+.5*(pn-pm))==q0, "Input is not the linear pressure predictor")
+                obs = dict(t_start_s=first["time_start_s"],fs_before=int(first["fs_before"]),
+                    pn_Pa=pn,prev_Pa=pm,q0_Pa=q0,predictor_change_Pa=q0-pn,
+                    beta_active=int(first["beta_active"]),theta_s_inv=first["theta_s_inv"],
+                    J_observer=first["J"])
+                for r in rr:
+                    j = int(r["round"])
+                    require(r["theta_s_inv"]==first["theta_s_inv"] and r["J"]==first["J"],
+                            "Volume state differs between endpoint rounds")
+                    obs[f"q{j}_change_Pa"] = r["next_Pa"]-r["iterate_Pa"]
+                    obs[f"R{j}_from_rate_Pa_m_s"] = r["residual_from_rate"]
+                obs["R_volume_Pa_m_s"] = -9806.65*first["theta_s_inv"]
+                obs["q3_raw_Pa"],obs["post_Pa"] = rr[-1]["next_Pa"],rr[-1]["post_Pa"]
+                point.update(obs)
+            rows.append(point)
+    fields = list(dict.fromkeys(key for row in rows for key in row))
+    target = OUT/"startup_material.csv"
+    OUT.mkdir(parents=True,exist_ok=True)
+    with target.open("x",encoding="utf8",newline="") as f:
+        w=csv.DictWriter(f,fieldnames=fields)
+        w.writeheader()
+        w.writerows(rows)
+    print(f"{len(rows)} material rows, including 45 native material states; "
+          "no retained native commit at step 70")
+
+
 def inspect(data,step,probes):
     rows=[]
     previous_source=previous_previous=previous_next=None
@@ -358,6 +428,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     modes=parser.add_mutually_exclusive_group(required=True)
     modes.add_argument("--fixture",action="store_true")
+    modes.add_argument("--startup",action="store_true")
     modes.add_argument("--inspect-step",type=int,choices=STEPS)
     modes.add_argument("--complete",action="store_true")
     parser.add_argument("--data",type=Path)
@@ -367,6 +438,9 @@ def main():
         print("Passed manufactured constant, linear acceleration, pressure curvature and variable-k/FS checks")
         return
     require(opts.data is not None and opts.data.is_dir(),"Provide the owned snapshot output directory")
+    if opts.startup:
+        startup(opts.data)
+        return
     if opts.complete:
         with (opts.data/"Run.out").open("rb") as f:
             f.seek(max(0,(opts.data/"Run.out").stat().st_size-65536))
