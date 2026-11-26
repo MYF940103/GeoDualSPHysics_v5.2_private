@@ -13,3 +13,5 @@ C08 专用 GPU 程序保留 113 个链接对象中的原 112 个，只更改准�
 三组短窗实际均退出 0，各有 12 帧、624 轮压力更新，末时刻 10.001039999705968 s，最紧评估步长界 8.889744 µs。正式 +2.5° 版本的短窗与历史同设置 12 帧的 22 个数组、压力历史和有符号时步诊断逐位一致。归档实场通过论文图 15–16、对应表格和独立粒子 VTK 的派生冒烟。
 
 正式根入口于日本时间 2026-11-27 00:11:56 启动，第一组 +2.5° 的 GPU PID 为 48988，直接 owner PID 为 48256。第一组运行后依次计算 0°、−5°，每组独立保存执行收据，三组齐全时生成合图。独立 owner 只尝试一次同线程终态通知。[0° 短窗](../outputs/c08_tpi_formal_psi0_short_r1/postprocess_tpi.native.json) · [+2.5° 回归](../logs/c08_tpi_formal_psi2p5_baseline_prefix.json) · [−5° 短窗](../outputs/c08_tpi_formal_psim5_short_r1/postprocess_tpi.native.json)
+
+本组三套正式计算、后处理和论文对比全部完成后，接续 [Cryer weak-full 发行与 1 Tv 验证](../../../validation/cryer_weak_full_after_c08.md)。

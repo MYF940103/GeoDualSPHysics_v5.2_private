@@ -2,6 +2,10 @@
 
 本目录保存跨 case 的回归和文件整理证据。新的算例测试应放回所属编号 case 的 `tests/`，按上级 [文件约定](../AGENTS.md) 管理。
 
+## 待执行的跨算例验证
+
+[C08 完成后的 Cryer weak-full 发行与 1 Tv 验证](cryer_weak_full_after_c08.md)。
+
 ## 当前归档与清理
 
 [编号算例归档策略](poromech_archive_policy.md) 和 [本轮执行记录](poromech_archive_cleanup_20261127.md)。
