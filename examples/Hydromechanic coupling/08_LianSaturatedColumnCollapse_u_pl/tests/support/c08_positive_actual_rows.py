@@ -6,7 +6,7 @@ from pathlib import Path
 
 import numpy as np
 
-from c08_psi25_tpi_native import TESTS, CASE, PRE_IDS, RELEASE_IDS, read_frame, require
+from c08_psi25_tpi_native import TESTS, CASE, PRE_IDS, RELEASE_IDS, expected_steps, read_frame, require
 
 STEPS = (2060200, 2176200, 2240200)
 TARGETS = (6868, 6918, 6919, 6920, 7010)
@@ -289,6 +289,38 @@ def probe_table(data, step_limit):
     return groups
 
 
+def verify_probe_clocks(data, probes):
+    """Use the native release clock and the same step-by-step addition as the solver."""
+    closed, _, _, _ = read_frame(data/"data/Part_0004.bi4")
+    require(closed["Step"]+1==OPEN, "Unexpected native release frame")
+    release_time = closed["TimeStep"]
+    time = release_time
+    step = OPEN
+    parts = {s:part for part,s in enumerate(expected_steps(STEPS[-1]), 1)}
+    sampled = sorted({s for s, _, _ in probes})
+    checked_frames = 0
+    for s in sampled:
+        while step<s-1:
+            time += 5e-6
+            step += 1
+        require(time==probes[s,1,TARGETS[0]]["time_start_s"], f"Restarted scalar clock differs at {s}")
+        if s not in parts:
+            continue
+        path = data/"data"/f"Part_{parts[s]:04d}.bi4"
+        native, arrays, history, previous = read_frame(path)
+        require(native["Step"]+1==history["CompletedUpdates"]==s and
+                native["TimeStep"]==history["SavedTime"]==time+5e-6 and history["PreviousTime"]==time,
+                f"Recorded native clock differs at {path.name}")
+        for ident in TARGETS:
+            i = np.searchsorted(arrays["Idp"], ident)
+            obs = probes[s,3,ident]
+            require(arrays["Idp"][i]==ident and arrays["FSType"][i]==obs["fs_after"] and
+                    arrays["PorePress"][i]==obs["post_Pa"] and previous[ident-2060]==obs["p_n_Pa"],
+                    f"Committed pressure, history or surface class differs for {ident} at {s}")
+        checked_frames += 1
+    return release_time, len(sampled), checked_frames
+
+
 def startup(data):
     """Nine observed steps per ID. Retained native state exists at release and steps 1–8."""
     probes = probe_table(data, OPEN+70)
@@ -404,16 +436,17 @@ def write_report(rows):
         axes[0,col].scatter(x,[r["R_sum"] for r in last],marker="_",s=65,c="black",label="Net residual")
         axes[0,col].axhline(0,linewidth=.7,color="0.3")
         axes[0,col].set_xticks(x,[str(r["id"]) for r in last],fontsize=8)
-        axes[0,col].set_title(f'{last[0]["nominal_release_s"]:.2f} s after release')
+        axes[0,col].set_title(f'{last[0]["actual_tau_s"]:.2f} s after release')
         for ident in TARGETS:
             rr=[r for r in window if r["id"]==ident]
-            axes[1,col].plot(range(4),np.array([rr[0]["iterate_Pa"]]+[r["next_native_Pa"] for r in rr])/1000,
-                             marker=".",label=str(ident))
-        axes[1,col].set_xticks(range(4),["Input","1","2","3"])
+            axes[1,col].plot(range(1,4),[r["native_round_change_Pa"] for r in rr],
+                             marker="o",label=str(ident))
+        axes[1,col].axhline(0, linewidth=.7, color="0.3")
+        axes[1,col].set_xticks(range(1,4))
         axes[1,col].grid(True,alpha=.18)
         axes[1,col].set_xlabel("Endpoint pressure iteration")
     axes[0,0].set_ylabel("Round 3 residual term [Pa/(m s)]")
-    axes[1,0].set_ylabel("Pressure before surface projection [kPa]")
+    axes[1,0].set_ylabel("Pressure change during each round [Pa]")
     fig.legend(*axes[0,0].get_legend_handles_labels(),loc="outside upper center",ncol=5,fontsize=9)
     axes[1,0].legend(ncol=2,fontsize=7,title="Material ID",title_fontsize=7)
     fig.savefig(fig_path,dpi=175)
@@ -450,6 +483,9 @@ def main():
         require((int(handle["Steps"]),int(handle["PartFiles"]),int(handle["PartsOut"]))==
                 (STEPS[-1],133,0),"Actual terminal steps, PART count or exclusions differ")
     probes=probe_table(opts.data,opts.inspect_step)
+    if opts.complete:
+        release_time, sampled, attached=verify_probe_clocks(opts.data,probes)
+        print(f"{len(probes)} scalar rows across {sampled} updates; {attached} native commits matched")
     rows=[]
     for step in ((opts.inspect_step,) if opts.inspect_step else STEPS):
         rows.extend(inspect(opts.data,step,probes))
@@ -461,6 +497,10 @@ def main():
                           ("step","round","R_vol","R_pressure","R_acceleration","R_chain_pressure",
                            "R_chain_acceleration","R_sum","next_native_Pa")))
     if opts.complete:
+        for row in rows:
+            row["time_end_s"] = row["time_start_s"]+5e-6
+            row["actual_tau_s"] = row["time_end_s"]-release_time
+            row["physical_step_change_Pa"] = row["post_projection_Pa"]-row["p_n_Pa"]
         write_report(rows)
 
 
