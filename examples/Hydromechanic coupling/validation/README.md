@@ -2,6 +2,10 @@
 
 本目录保存跨 case 的回归和文件整理证据。新的算例测试应放回所属编号 case 的 `tests/`，按上级 [文件约定](../AGENTS.md) 管理。
 
+## 当前归档与清理
+
+[编号算例归档策略](poromech_archive_policy.md) 和 [本轮执行记录](poromech_archive_cleanup_20261127.md)。
+
 ## 当前位置（2026-10-08）
 
 - [tpi_cleanup_release_20260906](tpi_cleanup_release_20260906/README.md)：早期 TPI 临时代码清理后的 u-pw 回归证据，原位保留。不是当前版本的新 TPI 验收。
