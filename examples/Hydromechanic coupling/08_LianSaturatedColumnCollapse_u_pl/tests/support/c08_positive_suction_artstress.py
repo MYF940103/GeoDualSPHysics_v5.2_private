@@ -1,4 +1,5 @@
 """Frozen Bui-AS test on positive-only C08 saved stress states; not force-stage accelerations."""
+import argparse
 import csv
 import json
 from pathlib import Path
@@ -26,7 +27,9 @@ def source_proof(tag):
     require("ArtificialStressg,PorePressg);" in host and all(s in cu for s in (
         "float(sig.xx-pw)","float(sig.yy-pw)","float(sig.zz-pw)","float(sig.xz)","1.f,CTE.artificialstresscoef",
         "rp[a]=(eval[a]>0.f? -coef*eval[a]*rrhop2: 0.f)","maxoff<=1e-6f*scale",
-        "porovol2/pororhot1*double(powf(ratio,CTE.artificialstressexp))")), "Different J-based AS source")
+        "porovol2/pororhot1*double(powf(ratio,CTE.artificialstressexp))",
+        "const tsymatrix3f sigmap2=KerStressToFloat(sigma[p2]);",
+        "double(sigmap1_xx_xy.x)+sigmap2_xx_xy.x-pw")), "Different J-based AS or material stress source")
 
 
 def spectrum(a):
@@ -119,5 +122,49 @@ def run():
         writer.writerows(out)
 
 
+def save_pair_brackets():
+    """Group the native main stress and artificial stress along each current pair direction."""
+    tag=RUNS["beta004"]
+    source_proof(tag)
+    receipt=json.loads((TESTS/"logs"/(tag+".native_review.json")).read_text())
+    require(receipt["passed"] and receipt["tag"]==tag and receipt["frames"]==132,"Different native baseline")
+    with (OUT/"frozen_pair_artstress.csv").open(encoding="utf8",newline="") as stream:
+        original=list(csv.DictReader(stream))
+    focus_ids={6918,7014,6965,6969}
+    rows=[]
+    for part in range(72,133):
+        meta,arrays,_=checked(TESTS/"outputs"/tag/"data"/f"Part_{part:04d}.bi4",receipt)
+        selected=[r for r in original if int(r["part"])==part and int(r["focus"]) in focus_ids]
+        require(len(selected)==4 and {int(r["focus"]) for r in selected}==focus_ids,"Missing pair")
+        for row in selected:
+            ids=[int(row["focus"]),int(row["partner"])]
+            pair=np.searchsorted(arrays["Idp"],ids)
+            require(np.array_equal(arrays["Idp"][pair],ids) and int(row["step"])==meta["Step"]+1,"Native clocks or IDs differ")
+            d=(arrays["Posd"][pair[1]]-arrays["Posd"][pair[0]])[[0,2]]
+            distance=np.linalg.norm(d)
+            require(abs(distance/DP-float(row["gap_dp"]))<1e-10,"Different particle positions")
+            nx,nz=d/distance
+            # The GPU momentum helper casts each effective tensor to float before subtracting gauge pressure.
+            diag=arrays["SigmaState_kk"][pair].astype(np.float32).astype(float).sum(axis=0)
+            diag-=arrays["PorePress"][pair].sum(dtype=float)
+            sxz=arrays["SigmaState_ij"][pair,2].astype(np.float32).sum(dtype=float)
+            stress=(diag[0]*nx**2 + 2*sxz*nx*nz + diag[2]*nz**2)/1000
+            artstress=float(row["AS_weighted_radial_pressure_kPa"])
+            rows.append(dict(part=part,step=row["step"],tau_s=row["tau_s"],focus=ids[0],partner=ids[1],
+                             partner_kind=row["partner_kind"],gap_dp=row["gap_dp"],nx=nx,nz=nz,
+                             stress_radial_kPa=stress,AS_radial_kPa=artstress,
+                             combined_stress_radial_kPa=stress+artstress))
+    require(len(rows)==244,"Incomplete pair history")
+    with (OUT/"pair_stress_brackets.csv").open("x",encoding="utf8",newline="") as stream:
+        writer=csv.DictWriter(stream,fieldnames=rows[0])
+        writer.writeheader()
+        writer.writerows(rows)
+
+
 if __name__=="__main__":
-    run()
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--pair-brackets",action="store_true",help="also use the retained AS radial table to compare stress contributions")
+    if parser.parse_args().pair_brackets:
+        save_pair_brackets()
+    else:
+        run()
