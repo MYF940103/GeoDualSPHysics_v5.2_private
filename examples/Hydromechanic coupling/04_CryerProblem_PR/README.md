@@ -331,6 +331,8 @@ xCaseCryerProblem_PR_dp002_rampclosed_nu045_win64_GPU.bat
 
 ## Output locations and retained records
 
+The eight completed June root runs retain their BI4 histories and six representative Fluid VTK files per group. Recover the full legacy particle series from BI4 before rerunning the old plotting scripts. See the [June VTK cleanup and restoration record](tests/notes/cryer_june_vtk_cleanup_20261127.md).
+
 The default CPU/GPU entry points both target `CaseCryerProblem_PR_out`.
 The Poisson-ratio and closed-ramp entry points use their own case-named
 `*_out` directories. The default output layout is:
