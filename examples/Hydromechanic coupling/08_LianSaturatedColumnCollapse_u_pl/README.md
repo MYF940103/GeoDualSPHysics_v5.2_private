@@ -1,4 +1,14 @@
-# C08 饱和土柱塌陷 · 显式 u-pl 三组验证
+# C08 饱和土柱塌陷
+
+## 三轮 TPI 三组正式计算
+
+打开 [三组 TPI GPU 入口](xCaseLianCollapse_TPI_win64_GPU.bat) 可依次计算 +2.5°、0° 和 −5°。命令行可追加 `--group psi2p5`、`--group psi0` 或 `--group psim5` 单独运行。三组 TPI 定义为 [0°](CaseLianCollapse_psi0_TPI_Def.xml)、[+2.5°](CaseLianCollapse_psi2p5_TPI_Def.xml) 和 [−5°](CaseLianCollapse_psim5_TPI_Def.xml)。
+
+各组继承表中对应的原生 10 s `Part_1000.bi4`。闭墙做 200 个 TPI 步以建立压力历史，再撤右墙计算 3 s。固定步长 5 µs，常规保存间隔 0.01 s，并保存 12 个建立历史与撤墙初态。自由面只截断正表压，负表压随动力学演化。三组采用 Wendland、dp=0.04 m、H=0.072 m、三轮压力更新和 β=0.04。[核范围对照](tests/notes/c08_kernel_range.md)
+
+运行依赖 `support/runtime_tpi_r1` 内的 C08 专用 GPU 程序、DLL、配置及 manifest。该构建以原 C08 TPI 程序为基础，只扩展三组材料与 3 s 入参。移植时可用 `C08_TPI_BIN` 指定该运行目录，并带上三组预载输出和仓库后处理脚本。首次运行前须有本组预载的完整结果与完成收据。入口执行 GenCase、独立撤墙短窗、正式计算及后处理。正式原生结果写入 `CaseLianCollapse_<group>_TPI_GPU_out`，图表写入 `figures/validation_tpi`。可用 `--postprocess-only` 审查已正常完成的求解，已有输出由各自收据识别。
+
+## 显式 u-pl 验证
 
 在 Windows x64、NVIDIA GPU 上双击 [三组完整流程](xCaseLianCollapse_all_win64_GPU.bat)。也可以在下表选择单组。每组用 GenCase 生成粒子，闭墙重力预载到 10 s，从本组末帧继承材料历史，撤掉右墙后再计算 3 s。最后导出粒子、绘图并生成匹配的 CSV。时间单位均为物理秒。
 
