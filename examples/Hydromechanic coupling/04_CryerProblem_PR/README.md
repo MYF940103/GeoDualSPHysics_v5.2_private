@@ -8,39 +8,20 @@
 
 当前公共版显式 u-pl 的 ν=0.30 配置为 `CaseCryerProblem_u_pl_nu030_Def.xml`（`HydroMechModel=1`）。运行 `xCaseCryerProblem_u_pl_nu030_win64_GPU.bat` 会从该 XML 调用 GenCase，使用仓库 GPU Release 按原时间步与输出计划计算，写入独立的 `CaseCryerProblem_u_pl_nu030_GPU_out`。加 `--smoke` 可按相同输入做六步检查。全程结束后导出 Fluid VTK，原生 BI4 保留完整状态。
 
-带 `release`、`symc`、`u_pl_nu030_r1`、`TPI_P3` 的冻结入口仍与其原程序及原 XML 配套。复现已发布的 r1 显式计算时，使用读取 `support/upl_seed_nu030_r1` 的原 BAT。
+带 `release`、`symc`、`u_pl_nu030_r1`、`TPI_P3` 的冻结入口各自绑定原程序及 XML。与已审查显式 u-pl 峰窗配套的 [r1 XML](CaseCryerProblem_u_pl_nu030_r1_Def.xml) 和 [r1 BAT](xCaseCryerProblem_u_pl_nu030_r1_win64_GPU.bat) 通过封存 ZIP 展开运行工作区；仓库当前公共入口只完成过六步回归。
 
-## ν=0.30 固定参考弱式 1 Tv
+## 显式 u-pl 收尾基准
 
-[弱式 XML](CaseCryerWeakFull_nu030_1Tv_Def.xml) 与 [GPU BAT](xCaseCryerWeakFull_nu030_1Tv_win64_GPU.bat) 使用封存的弱式程序、参考四面体算子、原粒子惯性质量和三轮孔压修正。输入是泊松比 0.30、粒距 2.5 mm、常渗透系数 1×10⁻⁵ m/s 和 10 kPa 围压。固定步长为 2⁻¹⁹ s，3.90625 ms 完成加载，第 4,096 步保存闭态，此后排水。保存计划以排水后 0.005 Tv 为间隔，并包含启动与峰窗锚点，共 269 个原生状态，实际终点为 481,685 步。
+选用已审查的 ν=0.30 显式 u-pl GPU 峰窗，原生记录为 `tests/outputs/upl_cryer_freebody_peak_GPU_r1`。粒距 2.5 mm，固定步长 2⁻²⁰ s，(K_w=200) MPa。73728 步、577 帧均已读回审查，覆盖排水后 0.0625 s（(T_vapprox0.06861)）。四组旧 u-pw 全周期结果继续作为独立参考。
 
-弱式 XML 由配套 Python 入口读取。Windows 运行需 Python 3.11、NumPy、SciPy、Pandas 和 Matplotlib，可通过 `CRYER_PYTHON` 指定解释器。已有封存 ZIP 位于 `tests/outputs/cryer_weak_full_server_r1.zip`，完整解到 `support/weak_full_r1` 即可复用。根 BAT 的 `--check-only` 检查配置与封存输入的绑定。
+| 已审查的 u-pl 峰窗 | 峰幅误差 | 峰时误差 | 共同时刻孔压 RMS |
+| --- | ---: | ---: | ---: |
+| 显式 u-pl | −1.4931% | +2.4708% | 186.71 Pa |
+| 三轮 TPI/P3 | −1.5177% | +2.4955% | 190.12 Pa |
 
-运行输出为 `CaseCryerWeakFull_nu030_1Tv_GPU_out`，其中 `actual_clock.csv` 记录实际保存步和时刻，`state_*.bin` 保存孔压、历史孔压、位移、速度、应力和 J。材料 ID 及参考坐标在 `support/weak_full_r1/inputs/reference_mesh.npz`。原生保存包含 37,173 个土体材料点，排水球面点属于同一批材料。粒子可视化用 `particles/PartFluid.vtk.series`。正式图表写入 `figures/formal_validation/weak_full_nu030`，分别列出弱式 M0 解析参考和旧结果的有限水体积模量参考。
+两组按各自的储存假设和同一固定 18 材料点口径计分。选定的显式 u-pl 峰值为 12,253.45 Pa，有限 (K_w) 解析参考为 12,439.18 Pa。现有结果适用于该峰窗，原峰幅 1% 和峰时 2% 门槛仍未达到。项目 u-pl 的实际 1 Tv 数据尚缺。[原始审查与适用范围](tests/notes/upl_cryer_freebody_peak_root_r1.md) · [孔压图](tests/figures/upl_cryer_freebody_peak_review_r1_pressure.png) · [位移与状态图](tests/figures/upl_cryer_freebody_peak_review_r1_state.png) · [时序 CSV](tests/figures/upl_cryer_freebody_peak_review_r1_history.csv) · [同钟对比](tests/notes/cryer_peak_iteration_and_support_r1.md)
 
-2026-11-27 本机计算由 [直接运行入口](tests/support/cryer_weak_full_local_r1.py) 使用封存程序启动，并在完成后生成与发行入口相容的原生收据。根 BAT 的 `--postprocess` 可接入已完成结果。[既有峰窗结论](tests/notes/cryer_weak_3d_peak_r1.md) · [本机全程实算与限制](tests/notes/cryer_weak_full_local_r1.md) · [正式图表](figures/formal_validation/weak_full_nu030/)
-
-## 四组泊松比弱式验证
-
-原 ν=0.30 已完成的弱式轨迹直接用于对照。[三组 GPU 入口](xCaseCryerWeakFull_nuSweep_1Tv_win64_GPU.bat) 依次执行 ν=0.45、0.10、0.20，可用 `--group 045`、`--group 010` 或 `--group 020` 选单组。每组读取根目录对应的 `CaseCryerWeakFull_nu*_1Tv_Def.xml`，新输出使用对应的 `CaseCryerWeakFull_nu*_1Tv_GPU_out`。根入口支持 `--check-only` 核对封存包和参数，`--postprocess` 接入已完成的原生输出。
-
-同一封存 CUDA DLL、参考球体网格、材料质量、载荷和三轮压力修正用于所有组。主机入口按有效 float32 泊松比换算 Lamé 参数，人工黏性按骨架纵波速度比例缩放，α 仍为 0.1。闭态沿用原四次检查与五项阈值。固定步长为 (2^{-19}) s，按各自 (C_v) 首次达到相应 (T_v) 的整步保存。每组共有 269 个完整状态，含启动与理论峰附近的附加状态。排水启动后以 32 步的标量采样间隔覆盖至 (T_v=0.12)，不足整间隔的结束步也实际保存。
-
-| 泊松比 | 1 Tv 实算目标步 | 总物理时间 / s |
-| ---: | ---: | ---: |
-| 0.10 | 632718 | 1.206813812256 |
-| 0.20 | 582714 | 1.111438751221 |
-| 0.45 | 173590 | 0.331096649170 |
-
-原弱式算子与 DLL 保持在 `support/weak_full_r1`。另用 [MSVC 构建入口](tests/support/build_cryer_weak_nu_full.ps1) 将新主机与封存 DLL 的 import library 配对，构建目录为 `support/weak_nu_sweep_r1`。逐组复核以相应 M0 参考为准，比较旧 u-pw 各自有限 Kw 参考下的峰幅、相位、共同尾段时刻及开启瞬态。公共模型的开关与默认值待四组实算评估后决定。
-
-### 弱式输入的配置分区
-
-`casedef` 说明零重力、土体参考密度、核长比和球体参考几何。`execution/special` 中的 `soils`、`hydromechanics`、`externalload`、`drainage` 描述线弹性材料、常渗透率、围压和排水事件。`weakfull` 明示固定参考网格、已封存算子、M0 压力储存假设以及三轮压力修正。该输入由弱式 BAT 配套的 Python 入口核对。参考几何直接从封存网格加载，GenCase 绘制、人工边界粒子和公共 TPI 参数属于另一条求解流程。
-
-`parameters` 下的 `DtFixed` 是积分步，`TimeOut` 是默认保存间隔。`execution/special/timeout` 是 DualSPHysics 的分段保存表，`tout@time` 是本段起算时刻，`tout@timeout` 是本段保存间隔。Cryer 在 0–0.0078125 s 每 64 步保存，随后用本组的 0.005 Tv 作保存间隔。弱式入口校验这张表与封存或生成的保存步计划一致。各组实际写盘时间以本组输出的 `actual_clock.csv` 为准。
-
-实算时使用的旧版四份 XML 的字节原样保存在 [tests/configs](tests/configs/)。当前根目录说明采用整理后的格式，物理值和日程保持一致。既有算例收据继续绑定原 XML 的 SHA，校验时可读取原样归档复现。
+固定参考弱式试验已停止。根目录入口、数据和专用图表已从正式区撤下，归入本地 `tests/outputs/retired_weakfull_20261128`。该试验的结果不计入项目 u-pl 精度。[终止及归档记录](tests/notes/cryer_weak_full_retired_20261128.md)
 
 ## Returned four-ratio formal comparison (2026-11-02)
 

@@ -4,6 +4,8 @@
 
 2026-11-27 更新：用户调整顺序，C08 −5° 的墙拟合故障留待后续排查，先执行 C04 的 ν=0.30 weak-full。C04 本机长算已用封存程序直接启动，根入口与图表脚本同时准备。
 
+2026-11-28 更新：此弱式计划已退役。用户停止 ν=0.20 并撤下 C04 根目录的弱式入口和输出，C04 收尾使用既有显式 u-pl 峰窗。以下为原历史计划。[收尾与终止记录](../04_CryerProblem_PR/tests/notes/cryer_weak_full_retired_20261128.md)
+
 ## C04 发行入口
 
 - 在 C04 根目录新增 `CaseCryerWeakFull_nu030_1Tv_Def.xml`、`xCaseCryerWeakFull_nu030_1Tv_win64_GPU.bat`，在根 README 写清计算、数据格式和恢复方式。输出使用独立的 `CaseCryerWeakFull_nu030_1Tv_GPU_out`。正式对比放 `figures/formal_validation`。
