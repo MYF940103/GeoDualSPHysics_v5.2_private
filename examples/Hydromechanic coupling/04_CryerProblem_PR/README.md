@@ -34,6 +34,14 @@
 
 原弱式算子与 DLL 保持在 `support/weak_full_r1`。另用 [MSVC 构建入口](tests/support/build_cryer_weak_nu_full.ps1) 将新主机与封存 DLL 的 import library 配对，构建目录为 `support/weak_nu_sweep_r1`。逐组复核以相应 M0 参考为准，比较旧 u-pw 各自有限 Kw 参考下的峰幅、相位、共同尾段时刻及开启瞬态。公共模型的开关与默认值待四组实算评估后决定。
 
+### 弱式输入的配置分区
+
+`casedef` 说明零重力、土体参考密度、核长比和球体参考几何。`execution/special` 中的 `soils`、`hydromechanics`、`externalload`、`drainage` 描述线弹性材料、常渗透率、围压和排水事件。`weakfull` 明示固定参考网格、已封存算子、M0 压力储存假设以及三轮压力修正。该输入由弱式 BAT 配套的 Python 入口核对。参考几何直接从封存网格加载，GenCase 绘制、人工边界粒子和公共 TPI 参数属于另一条求解流程。
+
+`parameters` 下的 `DtFixed` 是积分步，`TimeOut` 是默认保存间隔。`execution/special/timeout` 是 DualSPHysics 的分段保存表，`tout@time` 是本段起算时刻，`tout@timeout` 是本段保存间隔。Cryer 在 0–0.0078125 s 每 64 步保存，随后用本组的 0.005 Tv 作保存间隔。弱式入口校验这张表与封存或生成的保存步计划一致。各组实际写盘时间以本组输出的 `actual_clock.csv` 为准。
+
+实算时使用的旧版四份 XML 的字节原样保存在 [tests/configs](tests/configs/)。当前根目录说明采用整理后的格式，物理值和日程保持一致。既有算例收据继续绑定原 XML 的 SHA，校验时可读取原样归档复现。
+
 ## Returned four-ratio formal comparison (2026-11-02)
 
 The returned nu=.10/.20/.45 `release_nu*_r1_out` datasets are compared with the

@@ -1,5 +1,7 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <case app="Cryer weak-nu sweep r1" date="27-11-2026">
+    <!-- The weak-full BAT validates this fixed-mesh, linear-elastic profile before running the sealed solver. -->
+    <!-- The numerical settings describe the fixed operators and material for this package. -->
     <casedef>
         <constantsdef>
             <gravity x="0" y="0" z="0" comment="No body gravity; external confinement only" units_comment="m/s^2" />
@@ -7,32 +9,37 @@
             <hdp value="1.8" comment="Original h/dp for three-dimensional artificial viscosity" />
         </constantsdef>
         <geometry>
+            <!-- Metadata for the reference mesh loaded from support/weak_full_r1/inputs/reference_mesh.npz. -->
             <predefinition>
                 <newvarcte radius="0.05" _rem="Reference sphere radius" />
                 <newvarcte Dp="0.0025" _rem="Reference material spacing" />
             </predefinition>
-            <definition dp="#Dp" units_comment="metres (m)" />
         </geometry>
     </casedef>
     <execution>
         <special>
+            <!-- Native-state schedule: 64 steps during closed preload, then Delta Tv=0.005 from drainage. -->
             <timeout>
-                <tout time="0" timeout="0.0001220703125" />
-                <tout time="0.0078125" timeout="0.005995" />
+                <tout time="0" timeout="0.0001220703125" comment="Closed-preload interval, anchored at time zero" />
+                <tout time="0.0078125" timeout="0.005995" comment="Drainage-relative interval; reset the output origin at drainage" />
             </timeout>
             <soils>
+                <!-- Linear elasticity uses Young's modulus and the drained Poisson ratio. -->
                 <ModulusE value="2000000" comment="Elastic Young's modulus" units_comment="Pa" />
                 <PRvs value="0.1" comment="Original float-material Poisson ratio" />
             </soils>
             <hydromechanics>
-                <HydroMechModel value="2" comment="Private fixed-reference weak M0 pressure correction; not the public SPH TPI executable" />
                 <PoreWaterRho value="1000" units_comment="kg/m^3" />
                 <Porosity value="0.3" comment="Initial porosity; the saved J also determines the diagnostic current porosity" />
                 <HydraulicConductivity value="1e-5" comment="Constant scalar conductivity" units_comment="m/s" />
             </hydromechanics>
-            <drainage mode="drained" start="0.0078125" clock="fixedStep" />
             <externalload mode="2" q0="10000" ramptime="0.00390625" />
-            <weakfull package="support/weak_full_r1" formulation="FixedReferenceP1NativeMass" pressure_rounds="3" material_count="37173" scheduled_states="265" checkpoint_states="4" comment="Fixed reference weak GPU with four additional early or peak states. Dense peak fields are scalar reductions." dense_stride_steps="32" peak_end_Tv="0.12" />
+            <drainage mode="drained" start="0.0078125" clock="fixedStep" />
+            <weakfull package="support/weak_full_r1" formulation="FixedReferenceP1NativeMass" pressure_storage="M0"
+                      operators="inputs/operators.bin" reference_mesh="inputs/reference_mesh.npz"
+                      pressure_rounds="3" material_count="37173" scheduled_states="265" checkpoint_states="4"
+                      dense_stride_steps="32" peak_end_Tv="0.12"
+                      comment="Fixed mesh and linear elasticity; dense peak fields are scalar reductions" />
         </special>
         <parameters>
             <parameter key="StepAlgorithm" value="2" comment="Original symplectic predictor/corrector with three pressure rounds" />
@@ -40,10 +47,10 @@
             <parameter key="Visco" value="0.1" comment="Original three-dimensional artificial viscosity" />
             <parameter key="SoilDamping" value="1" />
             <parameter key="SoilDampingCoef" value="0.00004" comment="Converted to the original frozen material damping rate" />
-            <parameter key="DtIni" value="0.0000019073486328125" units_comment="seconds" />
+            <parameter key="DtIni" value="0.0000019073486328125" comment="Retained profile value equal to DtFixed; the host uses one fixed step throughout" units_comment="seconds" />
             <parameter key="DtFixed" value="0.0000019073486328125" comment="Original 2^-19 second benchmark step" units_comment="seconds" />
             <parameter key="TimeMax" value="1.2068138122558594" comment="Step 632718, first attaining drainage-relative Tv=1" units_comment="seconds" />
-            <parameter key="TimeOut" value="0.005995" comment="Drainage-relative Delta Tv=0.005; actual saved clocks are in inputs/reference.csv" units_comment="seconds" />
+            <parameter key="TimeOut" value="0.005995" comment="Default interval; special/timeout sets segment origins. Actual saves: CaseCryerWeakFull_nu010_1Tv_GPU_out/actual_clock.csv" units_comment="seconds" />
         </parameters>
     </execution>
 </case>

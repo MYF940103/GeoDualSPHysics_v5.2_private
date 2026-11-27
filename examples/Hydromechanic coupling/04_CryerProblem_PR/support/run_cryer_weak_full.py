@@ -8,7 +8,6 @@ import json
 import math
 import os
 from pathlib import Path
-import shutil
 import struct
 import subprocess
 import sys
@@ -55,13 +54,15 @@ def f32(value):
 
 
 def preflight(verify_payload=True):
-    """Bind the editable XML to the actual frozen operators, clock and material mesh."""
-    root = ET.parse(XML).getroot()
+    """Bind the fixed-profile XML to its weak operators, clock and reference mesh."""
+    xml_bytes = XML.read_bytes()
+    root = ET.fromstring(xml_bytes)
     for path, tags in (
         ("casedef/constantsdef", {"gravity", "rhop0", "hdp"}),
+        ("casedef/geometry", {"predefinition"}),
         ("execution/special", {"timeout", "soils", "hydromechanics", "drainage", "externalload", "weakfull"}),
         ("execution/special/soils", {"ModulusE", "PRvs"}),
-        ("execution/special/hydromechanics", {"HydroMechModel", "PoreWaterRho", "Porosity", "HydraulicConductivity"}),
+        ("execution/special/hydromechanics", {"PoreWaterRho", "Porosity", "HydraulicConductivity"}),
     ):
         section = root.find(path)
         need(section is not None and {e.tag for e in section} == tags,
@@ -74,7 +75,6 @@ def preflight(verify_payload=True):
         ("dp", "casedef/geometry/predefinition/newvarcte[@Dp]", "Dp"),
         ("E", "execution/special/soils/ModulusE", "value"),
         ("nu", "execution/special/soils/PRvs", "value"),
-        ("model", "execution/special/hydromechanics/HydroMechModel", "value"),
         ("water_rho", "execution/special/hydromechanics/PoreWaterRho", "value"),
         ("porosity", "execution/special/hydromechanics/Porosity", "value"),
         ("conductivity", "execution/special/hydromechanics/HydraulicConductivity", "value"),
@@ -85,7 +85,7 @@ def preflight(verify_payload=True):
         element = root.find(path)
         need(element is not None and attr in element.attrib, f"Missing XML field: {path}/@{attr}")
         values[key] = float(element.get(attr))
-    expected = dict(rho=2100., hdp=1.8, radius=.05, dp=.0025, E=2e6, nu=.3, model=2.,
+    expected = dict(rho=2100., hdp=1.8, radius=.05, dp=.0025, E=2e6, nu=.3,
                     water_rho=1000., porosity=.3, conductivity=1e-5, q0=10000.,
                     ramp_s=.00390625, drain_s=.0078125)
     parameters = {e.get("key"): float(e.get("value")) for e in root.findall("execution/parameters/parameter")}
@@ -99,14 +99,15 @@ def preflight(verify_payload=True):
     need(not differences, "XML requires a newly generated matching weak package:\n" + "\n".join(differences))
     gravity = root.find("casedef/constantsdef/gravity")
     need(gravity is not None and all(float(gravity.get(k)) == 0. for k in ("x", "y", "z")), "Frozen case has zero body gravity")
-    need(root.find("casedef/geometry/definition").get("dp") == "#Dp", "Reference spacing must use the declared Dp")
     need(root.find("execution/special/externalload").get("mode") == "2", "Frozen load is surface confinement")
     drain = root.find("execution/special/drainage")
     need(drain.get("mode") == "drained" and drain.get("clock") == "fixedStep", "Frozen drainage uses the fixed-step clock")
     profile = root.find("execution/special/weakfull")
-    wanted = dict(package="support/weak_full_r1", formulation="FixedReferenceP1NativeMass", pressure_rounds="3",
+    wanted = dict(package="support/weak_full_r1", formulation="FixedReferenceP1NativeMass", pressure_storage="M0",
+                  operators="inputs/operators.bin", reference_mesh="inputs/reference_mesh.npz", pressure_rounds="3",
                   material_count="37173", scheduled_states="265", checkpoint_states="4")
-    need(profile is not None and all(profile.get(k) == v for k,v in wanted.items()), "Weak runtime/profile differs from the sealed package")
+    need(profile is not None and set(profile.attrib)-{"comment"} == set(wanted)
+         and all(profile.get(k) == v for k,v in wanted.items()), "Weak runtime/profile differs from the sealed package")
     intervals = [(float(e.get("time")), float(e.get("timeout"))) for e in root.findall("execution/special/timeout/tout")]
     need(intervals == [(0., 64*parameters["DtFixed"]), (values["drain_s"], parameters["TimeOut"])], "XML output intervals differ from the original schedule")
 
@@ -118,14 +119,14 @@ def preflight(verify_payload=True):
         need(path.stat().st_size == entry["bytes"]
              and (not verify_payload or sha(path) == entry["sha256"]), f"Frozen package changed: {entry['name']}")
     inputs = PACKAGE / "inputs"
-    with (inputs/"operators.bin").open("rb") as stream:
+    with (PACKAGE/profile.get("operators")).open("rb") as stream:
         actual = struct.unpack("<4d", stream.read(32))
     nu, n0 = f32(values["nu"]), f32(values["porosity"])
     h = f32(values["dp"] * values["hdp"])
     damping = f32(f32(parameters["SoilDampingCoef"])*math.sqrt(values["E"]/(((values["rho"]-n0*values["water_rho"])/(1-n0))*h*h)))
     derived = (parameters["DtFixed"], values["E"]/(2*(1+nu)), values["E"]*nu/((1+nu)*(1-2*nu)), damping)
     need(actual == derived, f"XML dt/material/damping do not reproduce the packed operator header: {actual} vs {derived}")
-    with np.load(inputs/"reference_mesh.npz") as mesh:
+    with np.load(PACKAGE/profile.get("reference_mesh")) as mesh:
         radius = np.linalg.norm(mesh["x0"], axis=1)
         need(np.array_equal(mesh["native_ids"], np.arange(8, 37181))
              and abs(radius.max()-values["radius"]) < 1e-14
@@ -140,7 +141,7 @@ def preflight(verify_payload=True):
          and steps[-1]*parameters["DtFixed"] == parameters["TimeMax"], "Packed timetable differs from the XML clock")
     need(read_json(inputs/"open_completed.json")["closed_pass"]
          and read_json(inputs/"cryer_weak_3d_peak_r1_gates.json")["peak_bounds_pass"], "Missing original closed-state/peak qualification")
-    return dict(xml=str(XML), xml_sha256=sha(XML), package=MANIFEST_SHA, physical_profile=values,
+    return dict(xml=str(XML), xml_sha256=hashlib.sha256(xml_bytes).hexdigest(), package=MANIFEST_SHA, physical_profile=values,
                 parameters=parameters, operator_dt_mu_lambda_damping=list(actual), planned_steps=steps[-1], planned_frames=269)
 
 
@@ -148,6 +149,8 @@ def solve(smoke, contract):
     output = SMOKE if smoke else OUTPUT
     mode = "smoke" if smoke else "full"
     need(not output.exists(), f"Preserve existing output: {output}. Use --postprocess to inspect a completed run.")
+    xml_bytes = XML.read_bytes()
+    need(hashlib.sha256(xml_bytes).hexdigest() == contract["xml_sha256"], "XML changed after preflight; check the input again")
     output.parent.mkdir(parents=True, exist_ok=True)
     gpu = subprocess.run(["nvidia-smi", "--query-gpu=name,uuid,driver_version,memory.total", "--format=csv"],
                          text=True, encoding="utf8", errors="replace", capture_output=True, check=True).stdout.splitlines()
@@ -167,7 +170,8 @@ def solve(smoke, contract):
     if output.exists():
         save_json(output/"launch.json", receipt)
         (output/"solver.console.log").write_text("".join(lines), encoding="utf8")
-        shutil.copy2(XML, output/XML.name)
+        with (output/XML.name).open("xb") as stream:
+            stream.write(xml_bytes)
     need(code == 0, f"Weak solver exit {code}; preserve partial output and actual_clock.csv in {output}")
     raw = sorted([*output.glob("state_*.bin"), output/"complete.txt", output/"actual_clock.csv"], key=lambda p: p.name)
     seal = dict(mode=mode, package=MANIFEST_SHA, gpu_inventory=gpu,

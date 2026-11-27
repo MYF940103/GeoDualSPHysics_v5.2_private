@@ -125,7 +125,11 @@ def load_profile(tag, output):
     need(hist.step.is_unique and dense.step.is_unique, "Repeated completed steps")
     need(np.isfinite(dense[["center18_Pa", "surface_inward_mm", "p_min_Pa", "p_max_Pa",
                            "max_speed_m_s"]].to_numpy(float)).all(), "Nonfinite dense scalar fields")
-    ref = Reference(nu, finite=False)
+    # Match the actual reviewed short-time series: original .30 used 360 modes;
+    # the new profiles use 720 to resolve the first drainage step. Peak and tail
+    # scoring use this same per-run M0 reference without changing tolerances.
+    modes = 360 if legacy else 720
+    ref = Reference(nu, modes=modes, finite=False)
     full = observed(hist, nu, "weak_full", "center18_Pa", td, hist_path, ref)
     peak = observed(dense, nu, "weak_dense", "center18_Pa", td, sources[-1], ref)
     need(legacy or peak.Tv.iloc[-1] >= PEAK_END_TV-2e-12, "New dense history must cover 0.12 Tv")
@@ -146,7 +150,7 @@ def load_profile(tag, output):
     need(len(joint) and mean_delta <= 1e-8,
          "Dense scalar history disagrees with shared full-state clocks")
     return dict(tag=tag, nu=nu, output=output, report=report, hist=hist, dense=dense,
-                full=full, peak=peak, ref=ref, dt=dt, td=td, sources=sources,
+                full=full, peak=peak, ref=ref, reference_modes=modes, dt=dt, td=td, sources=sources,
                 reference_max_delta_Pa=theory_delta, surface_reference_max_delta_mm=surface_delta,
                 shared_full_dense_frames=len(joint), shared_center_max_delta_Pa=mean_delta)
 
@@ -228,6 +232,7 @@ def assemble(outputs):
         tail_surface = state[state.legacy_Tv >= .5]
         su = tail_surface.surface_error_mm.to_numpy()
         summary = dict(nu=nu, dt_s=profile["dt"], drainage_time_s=profile["td"],
+                       M0_reference_modes=profile["reference_modes"],
                        actual_last_Tv=float(profile["full"].Tv.iloc[-1]),
                        full_frames=len(hist), dense_frames=len(profile["dense"]),
                        full_dense_exact_shared_frames=profile["shared_full_dense_frames"],

@@ -30,6 +30,7 @@ TESTS = CASE / "tests"
 RUNS = TESTS / "outputs/cryer_weak_nu_sweep_r1"
 TAG = TESTS / "logs/cryer_weak_nu_sweep_r1"
 BASE_XML = CASE / "CaseCryerWeakFull_nu030_1Tv_Def.xml"
+ARCHIVED_BASE_XML = TESTS / "configs/CaseCryerWeakFull_nu030_1Tv_r1_Def.xml"
 
 
 def need(ok, message):
@@ -77,8 +78,8 @@ def define(group):
                 theory_peak_tau_s=float(peak.x), theory_peak_pressure_pa=float(-peak.fun))
 
 
-def definition(plan):
-    tree = ET.parse(BASE_XML)
+def definition(plan, template=BASE_XML):
+    tree = ET.parse(template)
     case = tree.getroot()
     case.set("app", "Cryer weak-nu sweep r1")
     case.find("execution/special/soils/PRvs").set("value", str(plan["nu"]))
@@ -92,6 +93,9 @@ def definition(plan):
         node.set("value", repr(value))
         if key == "TimeMax":
             node.set("comment", f'Step {plan["end_step"]}, first attaining drainage-relative Tv=1')
+        else:
+            node.set("comment", f'Default interval; special/timeout sets segment origins. '
+                                f'Actual saves: {plan["stem"]}_GPU_out/actual_clock.csv')
     case.findall("execution/special/timeout/tout")[-1].set("timeout",repr(plan["tv_interval_s"]))
     return tree
 
@@ -116,8 +120,16 @@ def prepare(plan, make_xml=False):
     receipt, steps = folder/"profile.json", folder/"steps.txt"
     listing = "".join(f"{step}\n" for step in plan["saved_steps"])
     if receipt.is_file():
-        need(read_json(receipt)==result and steps.read_text(encoding="ascii")==listing,
-             f"Previous profile or steps changed: {folder}")
+        prior = read_json(receipt)
+        if prior != result:
+            archived = TESTS / "configs" / f'{plan["stem"]}_r1_Def.xml'
+            need(archived.is_file() and physical_xml(ET.parse(archived).getroot()) ==
+                 physical_xml(definition(plan,ARCHIVED_BASE_XML).getroot()),
+                 f"Archived launch XML does not match the original sweep profile: {archived}")
+            need(prior == dict(result,xml_sha256=sha(archived)),
+                 f"Previous profile is not bound to the archived launch XML: {folder}")
+            result = prior
+        need(steps.read_text(encoding="ascii")==listing, f"Previous saved-step plan changed: {folder}")
     else:
         with steps.open("x",encoding="ascii") as stream:
             stream.write(listing)
