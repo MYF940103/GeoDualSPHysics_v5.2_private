@@ -42,7 +42,7 @@ def structure(node):
 
 
 def seed_review():
-    old=ET.parse(CASE/"CaseCryer_TPI_P3_nu030_full_r1_Def.xml")
+    old=ET.parse(CASE/"tests/configs/retired_frozen_20261128/CaseCryer_TPI_P3_nu030_full_r1_Def.xml")
     new=ET.parse(CASE/(NAME+"_Def.xml"))
     generated=ET.parse(SEED/(NAME+".xml"))
     for key in ("casedef","execution/parameters","execution/special/timeout","execution/special/soils"):

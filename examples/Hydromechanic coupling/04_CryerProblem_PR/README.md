@@ -2,7 +2,7 @@
 
 ## 配置与结果速查
 
-根目录有 **10 个 XML 和 4 个正式 `_out`**。其中 4 个 XML 对应已有全程结果，其余 6 个用于复现、短测或待计算的全程。`nu010`、`nu020`、`nu030`、`nu045` 表示泊松比 0.10、0.20、0.30、0.45，`r1`、`r2` 是版本。模型看 XML 的 `HydroMechModel`，`0` 为 u-pw，`1` 为显式 u-pl，`2` 为 TPI u-pl。
+根目录有 **6 个 XML、6 个 GPU BAT 和 4 个正式 `_out`**。四组正式算例共用 `CaseCryerProblem_u_pw_symc_nuXXX` 主名，`nu010`、`nu020`、`nu030`、`nu045` 表示泊松比 0.10、0.20、0.30、0.45。模型看 XML 的 `HydroMechModel`，`0` 为 u-pw，`1` 为显式 u-pl，`2` 为 TPI u-pl。
 
 ### 四组已有正式输出
 
@@ -10,27 +10,23 @@
 
 | 泊松比 | 配置文件 | GPU BAT | 原生结果目录 |
 | --- | --- | --- | --- |
-| 0.10 | [CaseCryerProblem_PR_release_nu010_r1_Def.xml](CaseCryerProblem_PR_release_nu010_r1_Def.xml) | [运行入口](xCaseCryerProblem_PR_release_nu010_r1_win64_GPU.bat) | [CaseCryerProblem_PR_release_nu010_r1_out](CaseCryerProblem_PR_release_nu010_r1_out/) |
-| 0.20 | [CaseCryerProblem_PR_release_nu020_r1_Def.xml](CaseCryerProblem_PR_release_nu020_r1_Def.xml) | [运行入口](xCaseCryerProblem_PR_release_nu020_r1_win64_GPU.bat) | [CaseCryerProblem_PR_release_nu020_r1_out](CaseCryerProblem_PR_release_nu020_r1_out/) |
-| 0.30 | [CaseCryerProblem_PR_symc_nu030_Def.xml](CaseCryerProblem_PR_symc_nu030_Def.xml) | [运行入口](xCaseCryerProblem_PR_symc_nu030_win64_GPU.bat) | [CaseCryerProblem_PR_symc_nu030_out](CaseCryerProblem_PR_symc_nu030_out/) |
-| 0.45 | [CaseCryerProblem_PR_release_nu045_r1_Def.xml](CaseCryerProblem_PR_release_nu045_r1_Def.xml) | [运行入口](xCaseCryerProblem_PR_release_nu045_r1_win64_GPU.bat) | [CaseCryerProblem_PR_release_nu045_r1_out](CaseCryerProblem_PR_release_nu045_r1_out/) |
+| 0.10 | [CaseCryerProblem_u_pw_symc_nu010_Def.xml](CaseCryerProblem_u_pw_symc_nu010_Def.xml) | [GPU BAT](xCaseCryerProblem_u_pw_symc_nu010_win64_GPU.bat) | [CaseCryerProblem_u_pw_symc_nu010_out](CaseCryerProblem_u_pw_symc_nu010_out/) |
+| 0.20 | [CaseCryerProblem_u_pw_symc_nu020_Def.xml](CaseCryerProblem_u_pw_symc_nu020_Def.xml) | [GPU BAT](xCaseCryerProblem_u_pw_symc_nu020_win64_GPU.bat) | [CaseCryerProblem_u_pw_symc_nu020_out](CaseCryerProblem_u_pw_symc_nu020_out/) |
+| 0.30 | [CaseCryerProblem_u_pw_symc_nu030_Def.xml](CaseCryerProblem_u_pw_symc_nu030_Def.xml) | [GPU BAT](xCaseCryerProblem_u_pw_symc_nu030_win64_GPU.bat) | [CaseCryerProblem_u_pw_symc_nu030_out](CaseCryerProblem_u_pw_symc_nu030_out/) |
+| 0.45 | [CaseCryerProblem_u_pw_symc_nu045_Def.xml](CaseCryerProblem_u_pw_symc_nu045_Def.xml) | [GPU BAT](xCaseCryerProblem_u_pw_symc_nu045_win64_GPU.bat) | [CaseCryerProblem_u_pw_symc_nu045_out](CaseCryerProblem_u_pw_symc_nu045_out/) |
 
-### 其余六个配置
+### 两个公共程序入口
 
 以下都用 ν=0.30。
 
 | 配置文件 | GPU BAT | 用途和已有证据 |
 | --- | --- | --- |
-| [CaseCryerProblem_PR_release_r2_Def.xml](CaseCryerProblem_PR_release_r2_Def.xml) | [运行入口](xCaseCryerProblem_PR_release_r2_win64_GPU.bat) | u-pw + symC 的独立复现入口。四组总图用的是 `symc_nu030_out`。 |
-| [CaseCryerProblem_u_pl_nu030_r1_Def.xml](CaseCryerProblem_u_pl_nu030_r1_Def.xml) | [运行入口](xCaseCryerProblem_u_pl_nu030_r1_win64_GPU.bat) | 显式 u-pl，使用选定的冻结程序。已有[独立算出的 577 帧峰窗](tests/outputs/upl_cryer_freebody_peak_GPU_r1/)。这里的 XML 是 1 Tv 配置，全程待实算。 |
 | [CaseCryerProblem_u_pl_nu030_Def.xml](CaseCryerProblem_u_pl_nu030_Def.xml) | [运行入口](xCaseCryerProblem_u_pl_nu030_win64_GPU.bat) | 显式 u-pl，使用当前公共程序。已有六步回归，1 Tv 待实算。 |
 | [CaseCryer_TPI_nu030_1Tv_Def.xml](CaseCryer_TPI_nu030_1Tv_Def.xml) | [运行入口](xCaseCryer_TPI_nu030_1Tv_win64_GPU.bat) | 公共 TPI u-pl 的 1 Tv 配置。已有启动短测，1 Tv 待实算。 |
-| [CaseCryer_TPI_P3_nu030_peak_r1_Def.xml](CaseCryer_TPI_P3_nu030_peak_r1_Def.xml) | [运行入口](xCaseCryer_TPI_P3_nu030_peak_r1_win64_GPU.bat) | 冻结 TPI/P3 的[服务器峰窗](tests/outputs/CaseCryer_TPI_P3_nu030_peak_r1_GPU_out/)，超出原峰值与峰时误差限。 |
-| [CaseCryer_TPI_P3_nu030_full_r1_Def.xml](CaseCryer_TPI_P3_nu030_full_r1_Def.xml) | [运行入口](xCaseCryer_TPI_P3_nu030_full_r1_win64_GPU.bat) | 同一冻结 TPI/P3 的全程配置。峰窗未过准入，全程未运行。 |
 
 - [四组 u-pw 全程孔压图](figures/formal_validation/cryer_formal_four_nu_r2_log.png)与[数值汇总](figures/formal_validation/cryer_formal_four_nu_r1_metrics.csv)。
 - [显式 u-pl 峰窗孔压图](tests/figures/upl_cryer_freebody_peak_review_r1_pressure.png)与[时序数据](tests/figures/upl_cryer_freebody_peak_review_r1_history.csv)。
-- [服务器 ZIP 和校验单](support/server_packages/)集中存放，根目录 BAT 会从该目录读取其绑定的包。
+- [正式 u-pw 的两份服务器 ZIP](support/server_packages/)沿用封存成员名，根目录入口按新文件名发布输出。已有 `_out` 会阻止同名重跑。四个退役入口和原新名称对应关系见[整理记录](tests/notes/cryer_formal_names_20261128.md)。
 - [加入 symC 前的 BAT、XML、原生结果和视频](olddata/)按原文件名配对。迁移映射及旧工具说明见[整理记录](tests/notes/cryer_case_organization_20261128.md)。
 
 ## 公共程序与复现入口
@@ -41,7 +37,7 @@
 
 当前公共版显式 u-pl 的 ν=0.30 配置为 `CaseCryerProblem_u_pl_nu030_Def.xml`（`HydroMechModel=1`）。运行 `xCaseCryerProblem_u_pl_nu030_win64_GPU.bat` 会从该 XML 调用 GenCase，使用仓库 GPU Release 按原时间步与输出计划计算，写入独立的 `CaseCryerProblem_u_pl_nu030_GPU_out`。加 `--smoke` 可按相同输入做六步检查。全程结束后导出 Fluid VTK，原生 BI4 保留完整状态。
 
-带 `release`、`symc`、`u_pl_nu030_r1`、`TPI_P3` 的冻结入口各自绑定原程序及 XML。与已审查显式 u-pl 峰窗配套的 [r1 XML](CaseCryerProblem_u_pl_nu030_r1_Def.xml) 和 [r1 BAT](xCaseCryerProblem_u_pl_nu030_r1_win64_GPU.bat) 通过封存 ZIP 展开运行工作区；仓库当前公共入口只完成过六步回归。
+四个 `u_pw_symc` 入口绑定原服务器包与计算参数。已审查显式 u-pl 峰窗的冻结入口已退役，峰窗数据继续供比较。
 
 ## 显式 u-pl 收尾基准
 
@@ -58,8 +54,7 @@
 
 ## Returned four-ratio formal comparison (2026-11-02)
 
-The returned nu=.10/.20/.45 `release_nu*_r1_out` datasets are compared with the
-previously reviewed nu=.30 `symc_nu030_out`, not the June legacy or dp=.002 runs.
+The four returned datasets are in `CaseCryerProblem_u_pw_symc_nu*_out`.
 All four actual GPU runs ended normally on RTX A6000, with1065 saved states each
 and fixed dt=2^-20s. No physical solver was rerun for this analysis.
 
@@ -121,7 +116,7 @@ read-only action, not part of any formal solver BAT.
 ## Three additional Poisson ratios (2026-11-01)
 
 The additional actual-state and shell-quadrature audits found no accepted low-cost
-correction. Keep the nu=.30 r2 release below unchanged. The separate
+correction. The separate
 [nu=.10/.20/.45 Windows/RTX A6000 ZIP](support/server_packages/Cryer_release_nu010_020_045_r1_Windows_RTXA6000.zip)
 contains the three new formal root XML/BAT pairs, common verified executables,
 runtime dependencies and execution receipts. See
@@ -129,9 +124,9 @@ runtime dependencies and execution receipts. See
 
 | nu | Independent root XML | GPU BAT |
 | --- | --- | --- |
-| .10 | `CaseCryerProblem_PR_release_nu010_r1_Def.xml` | `xCaseCryerProblem_PR_release_nu010_r1_win64_GPU.bat` |
-| .20 | `CaseCryerProblem_PR_release_nu020_r1_Def.xml` | `xCaseCryerProblem_PR_release_nu020_r1_win64_GPU.bat` |
-| .45 | `CaseCryerProblem_PR_release_nu045_r1_Def.xml` | `xCaseCryerProblem_PR_release_nu045_r1_win64_GPU.bat` |
+| .10 | `CaseCryerProblem_u_pw_symc_nu010_Def.xml` | `xCaseCryerProblem_u_pw_symc_nu010_win64_GPU.bat` |
+| .20 | `CaseCryerProblem_u_pw_symc_nu020_Def.xml` | `xCaseCryerProblem_u_pw_symc_nu020_win64_GPU.bat` |
+| .45 | `CaseCryerProblem_u_pw_symc_nu045_Def.xml` | `xCaseCryerProblem_u_pw_symc_nu045_win64_GPU.bat` |
 
 Each full run uses its own physical endpoint through legacy Tv approximately1
 and DeltaTv=.001 saves, with the original ramp/hold/drain history. Local RTX3050
@@ -146,15 +141,13 @@ See [new numerical review](tests/notes/cryer_actual_budget_review_r1.md) and
 If a later numerical correction is accepted, all four nu groups require a new
 version; do not silently replace these inputs or the accepted nu=.30 baseline.
 
-## Selected portable release r2 (2026-11-01)
+## Archived portable release r2 (2026-11-01)
 
 The bounded audit is complete. The selected scheme retains G1 plus Darcy symC,
 with the recorded approximately1% peak-amplitude limitation, not a new numerical fix.
-Use [the Windows/RTX A6000 package](support/server_packages/Cryer_release_r2_Windows_RTXA6000.zip),
-[server instructions](support/README_cryer_release_r2.md), and the independent root entry
-`xCaseCryerProblem_PR_release_r2_win64_GPU.bat` /
-`CaseCryerProblem_PR_release_r2_Def.xml`.
-The external ZIP checksum is in [the server package folder](support/server_packages/).
+The [Windows/RTX A6000 package](tests/outputs/retired_frozen_20261128/Cryer_release_r2_Windows_RTXA6000.zip)
+and its checksum are in the retired archive. See the original
+[server instructions](support/README_cryer_release_r2.md) for the package's own entry points.
 
 The15 ZIP entries were checked byte-for-byte. A fresh extracted local RTX3050
 smoke actually ran128 steps and saved2 native frames; original safety passed,
@@ -172,7 +165,7 @@ Old formal data and r1 payloads remain unchanged.
 
 ## Current review and root organization (2026-11-01)
 
-The returned `CaseCryerProblem_PR_symc_nu030_out` full run has been reviewed:
+The returned `CaseCryerProblem_u_pw_symc_nu030_out` full run has been reviewed:
 its actual dt is2^-20s,963370 steps,endpoint0.9187412261962891s (drainage-relative
 legacyTv about1). Its fixed18-material-point peak amplitude error is about-1.034%
 and peak timing about+3.979% against the finite-Kw,finite-radius reference.
@@ -188,10 +181,8 @@ continue, but these CSV observations do not prove the cause of the peak deficit.
 No safe, local low-cost correction has been demonstrated. The selected delivery
 baseline therefore retains G1 plus Darcy symC and records the remaining errors;
 it is not a strict1% or full-field accuracy claim and does not change any guard.
-The independent r2 formal root XML/BAT and Windows/NVIDIA package are now prepared
-with the retained baseline and explicit limitations, as described above.
-Existing r1 inputs/package/output are retained historical evidence, not silently
-upgraded or a reason to rerun completed results.
+The separate r2 reproduction entry is archived. The returned ν=.30 result is
+listed under the unified u-pw name in the table above.
 
 The old Poisson plotting scripts read the June XML and output pairs from
 `olddata/`. The corresponding launch BATs are stored alongside them. The old
@@ -205,11 +196,11 @@ support-script ZIP and public TPI checksum have separate archives. See the
 The dated sections below describe their original stages. They are not the
 current run's dt/step-count or a full physical-acceptance statement.
 
-## Current server candidate: symC, nu=0.30 (2026-10-30)
+## Original server candidate: symC, nu=0.30 (2026-10-30)
 
-Use the NEW independent entry `xCaseCryerProblem_PR_symc_nu030_win64_GPU.bat`
-and `CaseCryerProblem_PR_symc_nu030_Def.xml`. The self-contained Windows/RTX A6000
-package and copy-back instructions are described in [support/README_server.md](support/README_server.md).
+The original Windows/RTX A6000 package uses the names documented in
+[support/README_server.md](support/README_server.md). The repository entry is now
+`xCaseCryerProblem_u_pw_symc_nu030_win64_GPU.bat`.
 Old root inputs, outputs and dated descriptions below are historical and are
 preserved, not silently upgraded. Their5us/no-ramp settings and deletion menu
 are NOT this new entry. The new BAT refuses existing output and never deletes it.
@@ -436,4 +427,4 @@ CPU Debug与GPU Release的短测耗时不能作为公平性能对比。实际初
 
 在预先声明的Mandel窗legacy Tv>=.005内，固定18材料点采样峰为12253.447 Pa，有限Kw同半径参考峰12439.176 Pa：幅值误差-1.4931%、峰时误差+2.4708%。旧u-pw对应为-1.0343%、+3.9789%；新幅值略差、时刻更近，不是全面改善或1%物理通过。开启瞬态及全部实际时刻保留在 `tests/figures/upl_cryer_freebody_peak_review_r1_*` 的两张PNG和四份CSV；旧正式四组结果保持原样。
 
-服务器候选包为 [显式 u-pl ν=0.30 ZIP](support/server_packages/Cryer_upl_nu030_Windows_RTXA6000_r1.zip)，说明见[运行说明](support/README_cryer_upl_nu030_r1.md)。解压后双击 `xCaseCryerProblem_u_pl_nu030_r1_win64_GPU.bat`，运行至排水后约 1 Tv。本地已有峰窗，完整衰减待实算。包固定使用该峰窗实际运行的程序和原生几何，迁移时可核对附带的 SHA256。
+当时的 [显式 u-pl ν=0.30 ZIP](tests/outputs/retired_frozen_20261128/Cryer_upl_nu030_Windows_RTXA6000_r1.zip) 已归档，包内入口见[原运行说明](support/README_cryer_upl_nu030_r1.md)。已有显式 u-pl 峰窗，完整衰减待实算。

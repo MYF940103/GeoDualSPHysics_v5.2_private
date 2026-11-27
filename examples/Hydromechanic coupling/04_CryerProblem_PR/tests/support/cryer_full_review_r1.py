@@ -16,6 +16,9 @@ from scipy.optimize import brentq, minimize_scalar
 import cryer_radial_consistency_r1 as theory
 
 TESTS=Path(__file__).resolve().parents[1]; CASE=TESTS.parent; FIG=TESTS/'figures'; LOG=TESTS/'logs'
+sys.path.insert(0,str(CASE/'support'))
+from plot_cryer_formal_four_nu_r1 import result_folder, result_path
+
 TAG='cryer_full_review_r1'; NATIVE='cryer_full_native_r1'; TD=2.**-7; Q=10000.; R=.05; DP=.0025
 LEGACY_CV=.0027444522857366896
 CONTROLS=['cryer_preload_peak_r1','cryer_preload_peak_half_r1','cryer_symc_gpu_peak_r1','cryer_symc_gpu_peak_half_r1']
@@ -34,7 +37,8 @@ def bound(path):
 
 
 def verify(record):
-    got=bound(record['path']); assert got['bytes']==record['bytes'] and got['sha256']==record['sha256'].lower(),record['path']
+    got=bound(result_path(record['path'])); assert got['bytes']==record['bytes'] and got['sha256']==record['sha256'].lower(),record['path']
+    return got
 
 
 def modal_integrals(ref,cloud,h):
@@ -109,8 +113,8 @@ def peak_metrics(history,ref):
 
 
 def native_frame(reader,part,raw_records,inputs):
-    directory=CASE/'CaseCryerProblem_PR_symc_nu030_out/data'; record=raw_records[str((directory/f'Part_{part:04d}.bi4').resolve()).lower()]
-    verify(record); inputs.append(record); command=[reader['path'],str(directory),str(part)]
+    directory=result_folder('030')/'data'; record=raw_records[str((directory/f'Part_{part:04d}.bi4').resolve()).lower()]
+    inputs.append(verify(record)); command=[reader['path'],str(directory),str(part)]
     raw=subprocess.check_output(command,timeout=120,creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0)|getattr(subprocess,'BELOW_NORMAL_PRIORITY_CLASS',0))
     a=pd.read_csv(io.BytesIO(raw),dtype='<f8',float_precision='round_trip')
     assert len(a)==37173 and len(a.columns)==35 and np.array_equal(a.id,np.arange(8,37181)) and np.isfinite(a.to_numpy()).all()
@@ -195,7 +199,7 @@ def review():
     artifacts={Path(r['path']).name:r for r in check['artifacts']}
     for record in artifacts.values():verify(record)
     inputs += list(artifacts.values())
-    raw_records={str(Path(r['path']).resolve()).lower():r for r in read(check['inputs_manifest']['path'])['inputs']}
+    raw_records={str(result_path(r['path'])).lower():r for r in read(check['inputs_manifest']['path'])['inputs']}
     def adopted(name):
         record=artifacts[NATIVE+'_'+name]; return pd.read_csv(record['path'],float_precision='round_trip')
     summary,cloud,center,bins=[adopted(n) for n in ['summary.csv','initial_cloud.csv','center.csv','radial.csv']]

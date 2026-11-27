@@ -103,6 +103,10 @@ function Export-Legacy($spec,$raw,$unchanged) {
 function Invoke-Portable($spec, $unchanged) {
     Require $unchanged 'Frozen release: a changed seed or configuration needs an independently verified publication.'
     $stem=$Definition.Substring(0,$Definition.Length-8)
+    $archiveDefinition=if ($spec.archive_definition) {[string]$spec.archive_definition} else {$Definition}
+    Require ([IO.Path]::GetFileName($archiveDefinition) -ceq $archiveDefinition -and $archiveDefinition.EndsWith('_Def.xml')) 'Invalid frozen definition filename'
+    $archiveStem=$archiveDefinition.Substring(0,$archiveDefinition.Length-8)
+    $renamed=($archiveStem -cne $stem)
     $allowed=@('--prepare-only','--unattended')
     if ($spec.mode -eq 'p3') {$allowed+='--check-only'}
     if ($spec.mode -eq 'gen') {$allowed+='--smoke'}
@@ -115,7 +119,10 @@ function Invoke-Portable($spec, $unchanged) {
     $zip=Join-Path $root $spec.archive
     Require ((Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash -eq $spec.archive_sha256) "Changed frozen package $zip"
     Add-Type -AssemblyName System.IO.Compression.FileSystem
+    Require ([IO.Path]::GetFileName($spec.workspace) -ceq $spec.workspace) 'Invalid reproduction directory name'
     $work=Join-Path $root $spec.workspace
+    $archiveOutput=Join-Path $work ($archiveStem+$suffix)
+    Require ($prep -or !$renamed -or !(Test-Path -LiteralPath $archiveOutput)) "Frozen workspace result protected: $archiveOutput"
     if (!(Test-Path -LiteralPath $work)) {
         # Exclusive directory creation. Existing or interrupted folders are only read/verified.
         $null=New-Item -ItemType Directory -Path $work -ErrorAction Stop
@@ -134,21 +141,43 @@ function Invoke-Portable($spec, $unchanged) {
             Require ((Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash -eq $hash) "Changed frozen component $target"
         }
     } finally {$bundle.Dispose()}
-    $original=Join-Path $work ('x'+$stem+'_win64_GPU.bat')
+    $original=Join-Path $work ('x'+$archiveStem+'_win64_GPU.bat')
     Write-Host "Original release working directory: $work"
     Push-Location -LiteralPath $work
     try {
-        if (!$prep) { & $original @launchOptions | Out-Host; return $LASTEXITCODE }
+        if (!$prep) {
+            if (!$renamed) { & $original @launchOptions | Out-Host; return $LASTEXITCODE }
+            $lockPath=$archiveOutput+'.lock'
+            $lock=[IO.File]::Open($lockPath,'CreateNew','Write','None')
+            try {
+                Require (!(Test-Path -LiteralPath $existing) -and !(Test-Path -LiteralPath $archiveOutput)) 'A canonical or frozen-workspace result already exists'
+                $arguments=$launchOptions
+                if ('--unattended' -notin $arguments) {$arguments += '--unattended'}
+                & $original @arguments | Out-Host
+                $rc=$LASTEXITCODE
+                if (Test-Path -LiteralPath $archiveOutput) {
+                    $produced=Get-Item -LiteralPath $archiveOutput
+                    Require ($produced.PSIsContainer -and $produced.Parent.FullName -ieq $work -and !($produced.Attributes -band [IO.FileAttributes]::ReparsePoint)) "Unsafe output directory after frozen BAT exit $rc : $archiveOutput"
+                    Require (!(Test-Path -LiteralPath $existing)) "Output appeared after frozen BAT exit $rc ; archive result retained at $archiveOutput"
+                    [IO.Directory]::Move($produced.FullName,$existing)
+                    Write-Host "Result directory: $existing"
+                }
+                return $rc
+            } finally {
+                $lock.Dispose()
+                [IO.File]::Delete($lockPath)
+            }
+        }
         if ($spec.mode -eq 'p3') { & $original --check-only | Out-Host; return $LASTEXITCODE }
         $out=Join-Path $work ('prepare\'+$stem)
         Require (!(Test-Path -LiteralPath $out)) "Output already exists: $out"
         [void][IO.Directory]::CreateDirectory($out)
         if ($spec.mode -eq 'seed') {
             foreach($ext in @('.xml','.bi4')) {
-                [IO.File]::Copy((Join-Path $work ('support\upl_seed_nu030_r1\'+$stem+$ext)),(Join-Path $out ('Case'+$ext)))
+                [IO.File]::Copy((Join-Path $work ('support\upl_seed_nu030_r1\'+$archiveStem+$ext)),(Join-Path $out ('Case'+$ext)))
             }
         } else {
-            & (Join-Path $work 'support\bin\GenCase_win64.exe') ($stem+'_Def') ('prepare\'+$stem+'\Case') '-save:all' | Out-Host
+            & (Join-Path $work 'support\bin\GenCase_win64.exe') ($archiveStem+'_Def') ('prepare\'+$stem+'\Case') '-save:all' | Out-Host
             Require ($LASTEXITCODE -eq 0) "GenCase failed with $LASTEXITCODE"
         }
         Require ((Test-Path -LiteralPath "$out\Case.xml") -and (Test-Path -LiteralPath "$out\Case.bi4")) 'Missing generated input'

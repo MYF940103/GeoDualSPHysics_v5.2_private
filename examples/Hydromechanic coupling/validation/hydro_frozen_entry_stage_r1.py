@@ -18,8 +18,11 @@ def package_path(case, archive):
     path = case / archive
     if path.is_file() or Path(archive).name != archive:
         return path
-    moved = case / "support/server_packages" / archive
-    return moved if moved.is_file() else path
+    for directory in ("support/server_packages", "tests/outputs/retired_frozen_20261128"):
+        moved = case / directory / archive
+        if moved.is_file():
+            return moved
+    return path
 
 
 def replace_one(text, old, new):

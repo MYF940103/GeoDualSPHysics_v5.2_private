@@ -23,13 +23,27 @@ CASE=Path(__file__).resolve().parents[1]; TESTS=CASE/'tests'; DEST=CASE/'figures
 TAG='cryer_formal_four_nu_r1'; TD=2.**-7; DT=2.**-20; R=.05; Q=10000.
 GROUPS=[('010',.1,'CaseCryerProblem_PR_release_nu010_r1',1265435),('020',.2,'CaseCryerProblem_PR_release_nu020_r1',1165427),('030',.3,'CaseCryerProblem_PR_symc_nu030',963370),('045',.45,'CaseCryerProblem_PR_release_nu045_r1',347180)]
 
+def result_folder(tag):
+    return CASE / f'CaseCryerProblem_u_pw_symc_nu{tag}_out'
+
+def result_path(path):
+    # Old receipts still name the original outer run folder. Only relocate that
+    # exact prefix; the inner files and hash binding remain the originals.
+    path=Path(path).resolve()
+    for tag,_,stem,_ in GROUPS:
+        original=CASE/(stem+'_out')
+        if path.is_relative_to(original):
+            return result_folder(tag)/path.relative_to(original)
+    return path
+
 def read(p):return json.loads(Path(p).read_text(encoding='utf-8-sig'))
 def bound(p):
     p=Path(p).resolve()
     with p.open('rb') as f:d=hashlib.file_digest(f,'sha256').hexdigest()
     return dict(path=str(p),bytes=p.stat().st_size,sha256=d)
 def verify(r):
-    a=bound(r['path']);assert a['bytes']==r['bytes'] and a['sha256']==r['sha256'].lower(),r['path']
+    a=bound(result_path(r['path']));assert a['bytes']==r['bytes'] and a['sha256']==r['sha256'].lower(),r['path']
+    return a
 def seal(p,value):
     with Path(p).open('x',encoding='utf8') as f:json.dump(value,f,indent=2,allow_nan=False)
 def table_path(tag,kind):return DEST/(TAG+'_nu'+tag+'_'+kind+'.csv')
@@ -103,7 +117,7 @@ def selftest():
     return rows
 
 def extract(tag):
-    group=next(g for g in GROUPS if g[0]==tag);_,nu,stem,steps=group;folder=CASE/(stem+'_out');p=parameters(folder,stem,nu)
+    group=next(g for g in GROUPS if g[0]==tag);_,nu,stem,steps=group;folder=result_folder(tag);p=parameters(folder,stem,nu)
     check=TESTS/'logs'/(TAG+'_nu'+tag+'.native.check.json');manifest=check.with_name(check.stem+'.inputs.json');summary=table_path(tag,'summary');center=table_path(tag,'center18')
     assert not any(x.exists() for x in [check,manifest,summary,center]),'Fresh extraction only; preserve earlier data'
     buildpath=TESTS/'logs/cryer_nu_native_r2.build.json';build=read(buildpath);assert build['built'] and build['exit_code']==0 and build['typed_LASTEXITCODE_captured_immediately'];verify(build['program'])
@@ -144,8 +158,9 @@ def plot():
     peerpath=TESTS/'logs/cryer_four_nu_identity_peer_r1.check.json';peer=read(peerpath);assert peer['passed'] and peer['initial_sample_identity']['all_four_initial_decoded_35_column_numeric_tables_bit_equal'];inputs.append(bound(peerpath))
     cloudpath=TESTS/'figures/cryer_full_native_r1_initial_cloud.csv';oldcheckpath=TESTS/'logs/cryer_full_native_r1.check.json';oldcheck=read(oldcheckpath);assert oldcheck['passed']
     cloudrecord=next(r for r in oldcheck['artifacts'] if Path(r['path']).name==cloudpath.name);verify(cloudrecord);verify(oldcheck['inputs_manifest'])
-    oldmanifest=read(oldcheck['inputs_manifest']['path']);raw0=next(r for r in oldmanifest['inputs'] if r['path'].lower()==str((CASE/'CaseCryerProblem_PR_symc_nu030_out/data/Part_0000.bi4').resolve()).lower());verify(raw0)
-    inputs += [bound(oldcheckpath),oldcheck['inputs_manifest'],cloudrecord,raw0]
+    oldmanifest=read(oldcheck['inputs_manifest']['path']);raw0_path=result_folder('030')/'data/Part_0000.bi4'
+    raw0=next(r for r in oldmanifest['inputs'] if result_path(r['path'])==raw0_path)
+    inputs += [bound(oldcheckpath),oldcheck['inputs_manifest'],cloudrecord,verify(raw0)]
     cloud=pd.read_csv(cloudpath,float_precision='round_trip');radius=cloud.r0_m.to_numpy();weight=cloud.weight0.to_numpy();assert len(radius)==37173 and abs(weight.sum()-1)<1e-12
     for tag,nu,stem,steps in GROUPS:
         receipt=TESTS/'logs'/(TAG+'_nu'+tag+'.native.check.json');record=read(receipt);assert record['passed'];verify(record['source_manifest']);inputs.append(bound(receipt));inputs.append(record['source_manifest'])
