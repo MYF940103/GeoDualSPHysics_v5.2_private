@@ -28,7 +28,7 @@ def populate(case, root, overlay_path):
     if cid == "04":
         mapping = json.loads((root / "support" / stage.ARCHIVES).read_text())
         for package in {spec["archive"] for spec in mapping.values()}:
-            link_original(case / package, root / package)
+            link_original(stage.package_path(case, package), root / package)
     elif cid == "08":
         for f in (case / "support").iterdir():
             if f.is_file() and f.suffix in (".py", ".ps1") and not (root / "support" / f.name).exists():

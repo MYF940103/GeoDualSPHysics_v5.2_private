@@ -18,9 +18,9 @@ import matplotlib.pyplot as plt
 ROOT = Path(__file__).resolve().parent.parent
 REPO = ROOT.parents[2]
 BIN = REPO / "bin" / "windows"
-BASE_XML = ROOT / "CaseCryerProblem_PR_Def.xml"
+BASE_XML = ROOT / "olddata" / "CaseCryerProblem_PR_Def.xml"
 CASE = "CaseCryerProblem_PR"
-RUNROOT = ROOT / "refinement" / "ramp_drain_timing_20260624"
+RUNROOT = ROOT / "olddata" / "refinement" / "ramp_drain_timing_20260624"
 
 GENCASE = BIN / "GenCase_win64.exe"
 DUAL_GPU_RELEASE = BIN / "DualSPHysics5.2_GEO_win64.exe"

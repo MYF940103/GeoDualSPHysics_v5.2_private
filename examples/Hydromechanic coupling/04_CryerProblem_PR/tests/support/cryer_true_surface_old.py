@@ -60,7 +60,7 @@ def main():
     dest=TESTS/"figures"/(tag+".csv");receipt=TESTS/"logs"/(tag+".check.json")
     if dest.exists() or receipt.exists():raise FileExistsError(tag)
     run="CaseCryer_TPI_P3_nu030_peak_r1_GPU_out"
-    folder=TESTS.parent/run/run/"data"
+    folder=TESTS/"outputs"/run/run/"data"
     p0=part_positions(folder/"Part_0000.bi4",0);r0=np.linalg.norm(p0,axis=1)
     shell=np.rint(r0/.0025).astype(int)
     outer=r0>=.05-2*float(np.float32(.0045));surface=shell==20

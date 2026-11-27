@@ -19,8 +19,8 @@ import postprocess_cryer as cryer
 
 
 DEFAULT_CASES = [
-    ROOT / "refinement" / "sweep_corrected_20260621" / "r0000_d0_full_tout0250",
-    ROOT / "refinement" / "sweep_corrected_20260621" / "k1e5_tv008_toutTv001",
+    ROOT / "olddata" / "refinement" / "sweep_corrected_20260621" / "r0000_d0_full_tout0250",
+    ROOT / "olddata" / "refinement" / "sweep_corrected_20260621" / "k1e5_tv008_toutTv001",
 ]
 
 

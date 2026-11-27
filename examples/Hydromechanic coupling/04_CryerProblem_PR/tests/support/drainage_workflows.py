@@ -100,7 +100,7 @@ def main(tag):
     for p in sorted((matrix / "04").glob("*_dp002_rampclosed_*")):
         pars = []
         for label in ("previous","current"):
-            fieldplot.ROOT = p / label
+            fieldplot.LEGACY_RUNS = p / label
             pars.append(fieldplot.parse_xml("Case"))
         require(pars[0] == pars[1], "Cryer rampclosed plot clock changed")
         sweeps[p.name] = pars[1]["drainage_start"]

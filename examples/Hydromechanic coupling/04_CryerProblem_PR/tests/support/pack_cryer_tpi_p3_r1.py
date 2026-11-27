@@ -20,6 +20,7 @@ README = Path('README_Cryer_TPI_P3_nu030_r1.md')
 MANIFEST = Path('support/cryer_tpi_p3_package_r1.json')
 STAGE_DIR = CASE / 'tests/outputs/cryer_tpi_p3_server_inputs_r1'
 ZIP_NAME = 'Cryer_TPI_P3_nu030_Windows_RTXA6000_r1.zip'
+PACKAGE = CASE/'support/server_packages'/ZIP_NAME
 SOLVER = 'DualSPHysics5.2_GEO_win64.exe'
 BIN = Path('support/bin_cryer_tpi_p3_r1')
 RUNTIME = ('ChronoEngine.dll', 'dsphchrono.dll', 'DsphConfig.xml', 'vcomp140.dll',
@@ -182,8 +183,8 @@ def publish(path):
     files = input_files()
     match_local_seed(files)
     payload = archive_payload(exe, files)
-    name = CASE/ZIP_NAME
-    checksum = CASE/(ZIP_NAME+'.sha256')
+    name = PACKAGE
+    checksum = name.with_suffix('.zip.sha256')
     receipt = CASE/'tests/logs/cryer_tpi_p3_server_release_r1.check.json'
     # Publish only new formal artifacts. Existing root inputs used by this package remain immutable.
     for dest in (name,checksum,receipt):
@@ -212,6 +213,7 @@ def publish(path):
             if not (CASE/rel).exists():
                 write_unique(CASE/rel,data)
         checksum_text=(digest(archived.read_bytes())+'  '+name.name+'\n').encode('ascii')
+        name.parent.mkdir(parents=True, exist_ok=True)
         archived.rename(name)
     write_unique(checksum, checksum_text)
     m=json.loads(payload[MANIFEST])

@@ -31,7 +31,7 @@ def main():
     assert not target.exists(), 'Fresh offline receipt only; never overwrite evidence'
     manifest_path = CASE/'support/cryer_server_manifest_r1.json'
     manifest = read(manifest_path)
-    bundle = CASE/'Cryer_symC_nu030_Windows_RTXA6000_r1.zip'
+    bundle = CASE/'support/server_packages/Cryer_symC_nu030_Windows_RTXA6000_r1.zip'
     extracted = TESTS/'outputs/cryer_server_smoke_r1'
     output = extracted/'CaseCryerProblem_PR_symc_nu030_smoke_out'
     control = TESTS/'outputs/cryer_darcy_switch_native_r1_gpu_on'

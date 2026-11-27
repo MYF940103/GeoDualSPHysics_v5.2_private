@@ -89,7 +89,7 @@ def native_observations():
     mesh=np.load(T/"outputs/cryer_tet_reference_r1.npz")
     mask=mesh["material_shell"]
     name="CaseCryer_TPI_P3_nu030_peak_r1_GPU_out"
-    server=T.parent/name/name/"data"
+    server=T/"outputs"/name/name/"data"
     finite=np.memmap(T/"outputs/upl_cryer_freebody_peak_GPU_r1_native/common26.bin",offset=12,
                      dtype="<f8",mode="r",shape=(577,1+TOTAL*26))
     out=[]

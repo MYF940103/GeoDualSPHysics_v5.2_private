@@ -47,15 +47,16 @@ def main():
     initial=native(TESTS/'outputs/cryer_grad_peak_r1',0)
     ids=np.asarray(run['center_material_ids']);assert len(ids)==18
     oldrows=[];oldinputs=[]
+    old_run=CASE/'olddata/CaseCryerProblem_PR_out'
     for part in [49,50]:
-        old=native(CASE/'CaseCryerProblem_PR_out',part)
+        old=native(old_run,part)
         assert np.array_equal(old.id,initial.id)
         mask=old.id.isin(ids)
         oldrows.append(dict(part=part,time_s=float(old.time_s.iloc[0]),
             saved_step=int(old.saved_step.iloc[0]),tv=float(old.time_s.iloc[0])*cv/R**2,
             center_count=int(mask.sum()),center_p_over_q=float(old.pressure[mask].mean()/q),
             role='Retained peak-neighbour snapshot, not an isolated precision/gradient control'))
-        oldinputs.append(bound(CASE/'CaseCryerProblem_PR_out/data'/f'Part_{part:04d}.bi4'))
+        oldinputs.append(bound(old_run/'data'/f'Part_{part:04d}.bi4'))
     old=pd.DataFrame(oldrows);oldpoint=old.loc[old.center_p_over_q.idxmax()]
 
     # A continuous quasistatic identity evaluated with a discrete pressure average.

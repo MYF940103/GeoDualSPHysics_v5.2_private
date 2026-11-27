@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 
 ROOT = Path(__file__).resolve().parent.parent
-RUNROOT = ROOT / "refinement"
+RUNROOT = ROOT / "olddata" / "refinement"
 FIGDIR = ROOT / "figures"
 TV_LIMIT = 0.13173371
 

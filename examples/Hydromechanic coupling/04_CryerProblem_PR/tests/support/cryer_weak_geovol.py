@@ -121,7 +121,7 @@ def review():
     rows = []
     for step in (4096,4097,4160):
         part = 65 if step==4097 else step//64
-        folder = (T/"outputs/cryer_p3_gpu_drain4097_r1" if step==4097 else T.parent/original/original)
+        folder = (T/"outputs/cryer_p3_gpu_drain4097_r1" if step==4097 else T/"outputs"/original/original)
         path = folder/"data"/f"Part_{part:04d}.bi4"
         a,_ = snapshot(path,part,step,DT)
         assert np.array_equal(a["Idp"][SOIL],ids) and np.array_equal(np.isin(a["FSType"][SOIL],(2,3)),shell==20)

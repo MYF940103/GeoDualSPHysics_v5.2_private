@@ -38,7 +38,7 @@ def main():
     WORK.mkdir()
     archive_audits=[]
     cases={cid:next(stage.SUITE.glob(cid+"_*")) for cid in ("01","04","05","08")}
-    packages=[cases["04"]/p for p in sorted({z["archive"] for z in json.loads(
+    packages=[stage.package_path(cases["04"],p) for p in sorted({z["archive"] for z in json.loads(
         (OVERLAY/cases["04"].name/"support"/stage.ARCHIVES).read_text()).values()})]
     packages.extend(cases["05"].glob("Lian_HGSPR_Windows_RTXA6000.zip"))
     packages.extend(sorted(cases["08"].glob("support/LianCollapse_upl_win64_r?.zip")))

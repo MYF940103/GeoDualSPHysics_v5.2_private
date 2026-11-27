@@ -5,7 +5,7 @@ $ErrorActionPreference = 'Stop'
 $caseRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
 $repoRoot = [IO.Path]::GetFullPath((Join-Path $caseRoot '..\..\..'))
 $manifestPath = Join-Path $caseRoot 'support\cryer_server_manifest_r2.json'
-$zipPath = Join-Path $caseRoot 'Cryer_release_r2_Windows_RTXA6000.zip'
+$zipPath = Join-Path $caseRoot 'support\server_packages\Cryer_release_r2_Windows_RTXA6000.zip'
 $checkPath = Join-Path $caseRoot 'tests\logs\cryer_release_package_r2.check.json'
 $programSHA = '652baea4814ddd106b69de11e785664c83802fad04f4965dab10feb35d7e9096'
 foreach ($p in @($zipPath,$checkPath)) { if (Test-Path -LiteralPath $p) { throw "Refusing retained artifact: $p" } }
@@ -100,6 +100,7 @@ if ($AdoptManifestSHA) {
 $items = @($payload)+@([ordered]@{entry='support/cryer_server_manifest_r2.json';bytes=(Get-Item -LiteralPath $manifestPath).Length;sha256=(Binding $manifestPath).sha256})
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
+[void][IO.Directory]::CreateDirectory((Split-Path -Parent $zipPath))
 $zipStream = [IO.File]::Open($zipPath,[IO.FileMode]::CreateNew)
 $archive = [IO.Compression.ZipArchive]::new($zipStream,[IO.Compression.ZipArchiveMode]::Create,$false)
 try {

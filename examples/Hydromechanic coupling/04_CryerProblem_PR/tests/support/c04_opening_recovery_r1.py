@@ -48,7 +48,7 @@ def reconstruction():
         need(np.array_equal(frame["count"], count) and np.array_equal(frame.material_shell, np.arange(1, 21)), "20 material shells")
         tau = (step - 4096) * DT
         part = 65 if step == 4097 else step // 64
-        source = OUT / "cryer_p3_gpu_drain4097_r1" if step == 4097 else TESTS.parent / RUN / RUN
+        source = OUT / "cryer_p3_gpu_drain4097_r1" if step == 4097 else OUT / RUN / RUN
         p, fs = native(source / "data" / f"Part_{part:04d}.bi4", part, step)
         need(np.array_equal(fs, shell == 20) and (not tau or np.all(p[fs] == 0)), "Original drains")
         hashes.setdefault(source.name, hashlib.sha256()).update(p.astype("<f4").tobytes())

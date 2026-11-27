@@ -17,7 +17,7 @@ def main():
     x=mesh["x0"];t=mesh["tets"];g=mesh["Ve_gradN"];faces=mesh["faces"];av=mesh["face_area_out"]
     ve=mesh["Ve"];mass=mesh["native_mass_kg"];s=mesh["native_surface"];n=len(x);nt=len(t)
     name="CaseCryer_TPI_P3_nu030_peak_r1_GPU_out"
-    initial=ordered(T.parent/name/name/"data",0,["FSNormal","FSType","Posd"])
+    initial=ordered(T/"outputs"/name/name/"data",0,["FSNormal","FSType","Posd"])
     np.testing.assert_array_equal(x,initial["Posd"])
     np.testing.assert_array_equal(s,np.flatnonzero(np.isin(initial["FSType"],(2,3))))
     normal=initial["FSNormal"].astype(float)[s];length=np.linalg.norm(normal,axis=1)

@@ -10,7 +10,7 @@ import sys
 import xml.etree.ElementTree as ET
 import zipfile
 
-from pack_cryer_tpi_p3_r1 import BIN, CASE, DT, MANIFEST, PROFILES, SEED, SOLVER, ZIP_NAME, physics_signature, stem
+from pack_cryer_tpi_p3_r1 import BIN, CASE, DT, MANIFEST, PACKAGE, PROFILES, SEED, SOLVER, physics_signature, stem
 from cryer_p3_sidecar_review_r1 import inspect
 
 TAG = 'CaseCryer_TPI_P3_nu030_peak_r1'
@@ -162,7 +162,7 @@ def qualify(folder,package,review):
 if __name__=='__main__':
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('output',type=Path);ap.add_argument('destination',type=Path)
-    ap.add_argument('--package',type=Path,default=CASE/ZIP_NAME)
+    ap.add_argument('--package',type=Path,default=PACKAGE)
     args=ap.parse_args()
     sys.exit(0 if qualify(args.output.resolve(),args.package.resolve(),args.destination.resolve()) else 1)
 

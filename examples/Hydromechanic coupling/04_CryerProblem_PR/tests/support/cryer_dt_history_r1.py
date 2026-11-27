@@ -11,7 +11,7 @@ from cryer_start_r1 import CASE, TESTS, REPO, READER, bound, write_json
 def main():
     target = TESTS/'logs/cryer_dt_history_r1.check.json'
     assert not target.exists(), 'Do not overwrite historical evidence'
-    folder = CASE/'CaseCryerProblem_PR_out'
+    folder = CASE/'olddata/CaseCryerProblem_PR_out'
     old = json.loads((TESTS/'logs/cryer_load_audit_r1.json').read_text())
     expected = {e['path']: e['sha256'] for e in old['sources']}
     evidence = [bound(__file__), bound(TESTS/'support/cryer_start_r1.py'), bound(READER)]

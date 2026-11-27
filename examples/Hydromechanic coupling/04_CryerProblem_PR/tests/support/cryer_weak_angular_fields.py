@@ -49,7 +49,7 @@ def work(stage):
         pairs.append(np.unique(np.sort(ab,axis=1),axis=0))
     local=T/"outputs/cryer_p3_gpu_drain4097_r1"
     server_tag="CaseCryer_TPI_P3_nu030_peak_r1_GPU_out"
-    server=T.parent/server_tag/server_tag
+    server=T/"outputs"/server_tag/server_tag
     oldhist=pd.read_csv(T/"figures/cryer_p3_server_peak_actual_r1/physical/native_and_theory.csv",float_precision="round_trip")
     oldlocal=pd.read_csv(T/"figures/cryer_p3_gpu_drain4097_r1.csv",float_precision="round_trip")
     hdir=T/"outputs"/("cryer_weak_open_r1" if stage=="opening" else "cryer_weak_peak_r1")
@@ -133,7 +133,7 @@ def peak_shells():
     need(len(selected)==20 and selected["count"].sum()==37173,"All sampled peak shells")
     server_tag="CaseCryer_TPI_P3_nu030_peak_r1_GPU_out"
     part=step//64
-    raw,fs=native(T.parent/server_tag/server_tag/"data"/f"Part_{part:04d}.bi4",part,step)
+    raw,fs=native(T/"outputs"/server_tag/server_tag/"data"/f"Part_{part:04d}.bi4",part,step)
     ranges=[]
     high=reference_fields(ref,(step-4096)*DT,np.arange(1,21)*.0025)[0]
     for k,(_,r) in enumerate(selected.iterrows()):

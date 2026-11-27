@@ -298,14 +298,15 @@ def main():
         analysis_checks_passed=False)
     try:
         result['selftest'] = selftest()
-        folder = CASE/'CaseCryerProblem_PR_out'
+        legacy = CASE/'olddata'
+        folder = legacy/'CaseCryerProblem_PR_out'
         files = sorted((folder/'data').glob('Part_*.bi4'))
         desired = [0, 1, 10, 50, 100, 200, 500, 1000]
         selected = [min(desired_part, len(files)-1) for desired_part in desired]
         assert len(set(selected)) == len(selected), 'Requested native frames not all available; choose explicit new audit instead'
         inputs = [Path(__file__), TESTS/'notes'/(TAG+'.md'), READER, LIAN/'lian_release_r1.py',
             LIAN/'read_hydro_native.cpp', folder/'Run.out', folder/'CaseCryerProblem_PR.xml',
-            CASE/'CaseCryerProblem_PR_Def.xml', TESTS/'logs/cryer_load_audit_r1.json']
+            legacy/'CaseCryerProblem_PR_Def.xml', TESTS/'logs/cryer_load_audit_r1.json']
         inputs += [REPO/'src/source'/name for name in ['JSphCpu.cpp', 'JSphGpu_ker.cu',
             'JSph.cpp', 'JSphCpuSingle.cpp', 'FunSphKernel.h', 'DualSphDef.h']]
         inputs += [REPO/'src/papers/PDF'/name for name in [

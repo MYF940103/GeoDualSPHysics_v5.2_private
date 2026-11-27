@@ -11,7 +11,7 @@ import run_cryer_refinement as rr
 
 ROOT = Path(__file__).resolve().parent.parent
 CASE = "CaseCryerProblem_PR"
-WORKROOT = ROOT / "refinement" / "ud2"
+WORKROOT = ROOT / "olddata" / "refinement" / "ud2"
 
 
 def set_value(root, xpath, value):

@@ -56,7 +56,7 @@ def main():
     outputs=[figures/(tag+s) for s in ("_regions.csv","_shells.csv",".png")]
     need(not any(p.exists() for p in [*outputs,receipt]),"Use fresh audit paths")
     name="CaseCryer_TPI_P3_nu030_peak_r1_GPU_out"
-    native=TESTS.parent/name/name/"data"
+    native=TESTS/"outputs"/name/name/"data"
     cache=np.load(TESTS/"outputs/cryer_tet_reference_r1.npz")
     shell=cache["material_shell"];t=cache["tets"];faces=cache["faces"]
     x0=cache["x0"];v0=cache["native_volume_m3"];n=len(shell)

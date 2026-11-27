@@ -16,9 +16,9 @@ import matplotlib.pyplot as plt
 ROOT = Path(__file__).resolve().parent.parent
 REPO = ROOT.parents[2]
 BIN = REPO / "bin" / "windows"
-BASE_XML = ROOT / "CaseCryerProblem_PR_Def.xml"
+BASE_XML = ROOT / "olddata" / "CaseCryerProblem_PR_Def.xml"
 CASE = "CaseCryerProblem_PR"
-RUNROOT = ROOT / "refinement"
+RUNROOT = ROOT / "olddata" / "refinement"
 FIGDIR = ROOT / "figures"
 
 GENCASE = BIN / "GenCase_win64.exe"

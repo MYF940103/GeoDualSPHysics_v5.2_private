@@ -3,7 +3,7 @@ import argparse
 from pathlib import Path
 import zipfile
 
-from cryer_p3_peak_qualify_r1 import CASE, DT, REVIEW, ZIP_NAME, bind, need, read, review_run, sha, write
+from cryer_p3_peak_qualify_r1 import DT, PACKAGE, REVIEW, bind, need, read, review_run, sha, write
 
 
 def check_peak(receipt, peak_output, manifest):
@@ -43,7 +43,7 @@ def main():
     ap.add_argument('destination',type=Path)
     ap.add_argument('--peak-review',type=Path,required=True)
     ap.add_argument('--peak-output',type=Path,required=True)
-    ap.add_argument('--package',type=Path,default=CASE/ZIP_NAME)
+    ap.add_argument('--package',type=Path,default=PACKAGE)
     args=ap.parse_args()
     folder=args.output.resolve()
     dest=args.destination.resolve()

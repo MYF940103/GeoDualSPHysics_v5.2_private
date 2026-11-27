@@ -48,7 +48,7 @@ def variant(tag, nu, interval, end, steps):
 
 def run():
     manifest_path = CASE/'support/cryer_nu_server_manifest_r1.json'
-    package = CASE/'Cryer_release_nu010_020_045_r1_Windows_RTXA6000.zip'
+    package = CASE/'support/server_packages/Cryer_release_nu010_020_045_r1_Windows_RTXA6000.zip'
     checksum = package.with_suffix('.zip.sha256')
     check_path = CASE/'tests/logs/cryer_nu_package_r1.check.json'
     assert not any(p.exists() for p in [manifest_path, package, checksum, check_path]), 'Never overwrite retained files'
@@ -101,6 +101,7 @@ def run():
         limits='Three nu extensions of the unchanged verified baseline. Their startup/peak/full accuracy is not inherited from nu=.3. No new rho, mass, operator, shifting or full-double correction.')
     save(manifest_path, manifest)
     all_entries = entries+['support/cryer_nu_server_manifest_r1.json']
+    package.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(package, 'x', compression=zipfile.ZIP_DEFLATED, compresslevel=6) as archive:
         for entry in all_entries: archive.write(CASE/entry, entry)
     with zipfile.ZipFile(package) as archive:

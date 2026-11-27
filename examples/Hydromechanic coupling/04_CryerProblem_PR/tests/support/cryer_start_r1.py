@@ -105,7 +105,8 @@ def main():
     active=subprocess.check_output(['powershell.exe','-NoProfile','-Command',command],text=True,
         timeout=20,creationflags=subprocess.CREATE_NO_WINDOW).strip()
     assert not active, 'An existing Cryer solver is active: '+active
-    root_xml=CASE/'CaseCryerProblem_PR_Def.xml';config=TESTS/'configs'/(TAG+'_Def.xml');bat=TESTS/'configs'/('x'+TAG+'_win64_CPU.bat')
+    root_xml=CASE/'olddata/CaseCryerProblem_PR_Def.xml'
+    config=TESTS/'configs'/(TAG+'_Def.xml');bat=TESTS/'configs'/('x'+TAG+'_win64_CPU.bat')
     expected=root_xml.read_text(encoding='utf8')
     for key,value in [('SavePosDouble','1'),('TimeMax','0.001'),('TimeOut','0.00025')]:
         expected,count=re.subn(r'(<parameter key="'+key+r'" value=")[^"]*(")',lambda m:m[1]+value+m[2],expected);assert count==1,key

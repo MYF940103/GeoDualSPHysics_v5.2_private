@@ -17,7 +17,7 @@ BIN=CASE.parents[2]/"bin/windows"
 NAME="CaseCryer_TPI_nu030_1Tv"
 BAT="x"+NAME+"_win64_GPU.bat"
 PROGRAM="DualSPHysics5.2_GEO_win64.exe"
-ZIP=CASE/"Cryer_public_SPH_TPI_nu030_1Tv_Windows_RTXA6000.zip"
+ZIP=CASE/"support/server_packages/Cryer_public_SPH_TPI_nu030_1Tv_Windows_RTXA6000.zip"
 SEED=CASE/"tests/outputs/cryer_tpi_1tv_gencase"
 REVIEW=CASE/"tests/logs/cryer_public_1tv_seed.json"
 sys.path.insert(0,str(CASE.parent/"validation"))
@@ -53,7 +53,7 @@ def seed_review():
         base=modern.find(path)
         if key=="hydromechanics":base.find("HydroMechModel").set("value","2")
         need(structure(base)==structure(new.find(path))==structure(generated.find(path)),"Generated selector/material/BC differs at "+key)
-    native=CASE/"CaseCryer_TPI_P3_nu030_peak_r1_GPU_out"/"CaseCryer_TPI_P3_nu030_peak_r1_GPU_out"/"CaseCryer_TPI_P3_nu030_peak_r1.bi4"
+    native=CASE/"tests/outputs/CaseCryer_TPI_P3_nu030_peak_r1_GPU_out"/"CaseCryer_TPI_P3_nu030_peak_r1_GPU_out"/"CaseCryer_TPI_P3_nu030_peak_r1.bi4"
     test=SEED/(NAME+".bi4")
     with tempfile.TemporaryDirectory() as directory:
         # The seed payload is a native PART_0000. The generic reader derives that
@@ -115,6 +115,7 @@ def pack(release_sha):
     need(b"PorePress" in vtk and b"37173" in vtk,"Fluid VTK lacks particle count or pressure")
     need(not ZIP.exists() and not ZIP.with_suffix(".zip.sha256").exists(),"Preserve existing package")
     names=[*manifest["files"],"manifest.json"]
+    ZIP.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=ZIP.parent) as directory:
         candidate=Path(directory)/ZIP.name
         with zipfile.ZipFile(candidate,"x",zipfile.ZIP_DEFLATED) as z:

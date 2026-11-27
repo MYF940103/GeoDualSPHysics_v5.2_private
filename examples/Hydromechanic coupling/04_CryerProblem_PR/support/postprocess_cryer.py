@@ -23,7 +23,7 @@ def env_float(name, default):
     return float(value) if value is not None else default
 
 
-PARTICLES = env_path("CRYER_PARTICLES", ROOT / "CaseCryerProblem_PR_out" / "particles")
+PARTICLES = env_path("CRYER_PARTICLES", ROOT / "olddata" / "CaseCryerProblem_PR_out" / "particles")
 FIGDIR = env_path("CRYER_FIGDIR", ROOT / "figures")
 OUTTAG = os.environ.get("CRYER_OUTTAG", "cryer_center_pressure")
 SUMMARY_JSON = os.environ.get("CRYER_SUMMARY_JSON")

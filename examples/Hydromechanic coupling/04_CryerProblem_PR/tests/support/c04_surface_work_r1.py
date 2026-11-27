@@ -12,7 +12,7 @@ from cryer_p3_verify_r1 import SOIL, snapshot
 
 TESTS = Path(__file__).resolve().parents[1]
 NAME = "CaseCryer_TPI_P3_nu030_peak_r1_GPU_out"
-DATA = TESTS.parent/NAME/NAME/"data"
+DATA = TESTS/"outputs"/NAME/NAME/"data"
 TAG = "c04_surface_work_r1"
 Q = 10000.
 R = .05

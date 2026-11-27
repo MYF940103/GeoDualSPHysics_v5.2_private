@@ -64,7 +64,7 @@ def frozen(a):
 
 def main():
     receipt=TESTS/'logs'/(TAG+'.json');assert not receipt.exists()
-    folder=CASE/'CaseCryerProblem_PR_out'
+    folder=CASE/'olddata/CaseCryerProblem_PR_out'
     parts=sorted((folder/'data').glob('Part_*.bi4'));assert len(parts)>50
     initial=native(folder,0)
     radius=np.linalg.norm(initial[['x','y','z']],axis=1)

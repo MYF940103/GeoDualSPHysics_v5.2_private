@@ -14,6 +14,14 @@ RUNTIME = "hydro_frozen_runtime_r2.ps1"
 ARCHIVES = "hydro_frozen_plan_r2.json"
 
 
+def package_path(case, archive):
+    path = case / archive
+    if path.is_file() or Path(archive).name != archive:
+        return path
+    moved = case / "support/server_packages" / archive
+    return moved if moved.is_file() else path
+
+
 def replace_one(text, old, new):
     if text.count(old) != 1:
         raise ValueError(f"Original BAT changed at anchor {old!r}")
@@ -154,14 +162,17 @@ def assemble(source_suite, destination, archive_metadata=None):
                 raise ValueError("Source without root launchers: " + stem)
         else:
             package, mode = find_archive(name)
+            archive_entry = package
             if archive_metadata is None:
-                with zipfile.ZipFile(case / package) as file:
+                archive_file = package_path(case, package)
+                archive_entry = archive_file.relative_to(case).as_posix()
+                with zipfile.ZipFile(archive_file) as file:
                     if file.read(name) != archive:
                         raise ValueError("Original ZIP definition differs from the registered source: "+name)
                 if package not in hashes:
-                    with (case / package).open("rb") as stream:
+                    with archive_file.open("rb") as stream:
                         hashes[package] = hashlib.file_digest(stream, "sha256").hexdigest()
-                    sha = case / (package + ".sha256")
+                    sha = archive_file.with_suffix(".zip.sha256")
                     if sha.exists() and sha.read_text().split()[0].lower() != hashes[package]:
                         raise ValueError("Published package digest mismatch: " + package)
             else:
@@ -171,7 +182,7 @@ def assemble(source_suite, destination, archive_metadata=None):
                 hashes[package] = record["sha256"]
             workspace = {"p3":"cryer_P3_run", "seed":"cryer_upl_run",
                          "gen":"cryer_nu_run" if "_release_nu" in name else "cryer_r2_run" if "_release_r2" in name else "cryer_symc_run"}[mode]
-            data.update(archive=package, mode=mode, archive_sha256=hashes[package], workspace=workspace)
+            data.update(archive=archive_entry, mode=mode, archive_sha256=hashes[package], workspace=workspace)
             save(target / original.name, cryer_wrapper(name))
             related = [original.name]
         manifest.append(dict(case=cid, definition=name, launchers=related))

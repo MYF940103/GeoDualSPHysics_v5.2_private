@@ -14,6 +14,7 @@ import numpy as np
 
 
 ROOT = Path(__file__).resolve().parent.parent
+LEGACY_RUNS = ROOT / "olddata"
 FIGDIR = ROOT / "figures" / "formal_validation"
 RHO_W = 1000.0
 G_REF = 9.81
@@ -50,7 +51,7 @@ def read_line(data, offset):
 
 
 def parse_xml(case_name):
-    root = ET.parse(ROOT / f"{case_name}_Def.xml").getroot()
+    root = ET.parse(LEGACY_RUNS / f"{case_name}_Def.xml").getroot()
 
     load = root.find("./execution/special/externalload")
 
@@ -220,7 +221,7 @@ def process_group(group, force=False):
         rows = read_csv(out_csv)
         return meta, rows
 
-    particles = ROOT / f"{group['case']}_out" / "particles"
+    particles = LEGACY_RUNS / f"{group['case']}_out" / "particles"
     files = sorted(particles.glob("PartFluid_*.vtk"))
     if not files:
         raise RuntimeError(f"No PartFluid files found in {particles}")

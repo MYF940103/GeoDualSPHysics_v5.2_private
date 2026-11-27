@@ -1,5 +1,26 @@
 # CryerProblem_PR
 
+## 配置与结果速查
+
+**`figures/formal_validation` 里的四泊松比全程图来自 u-pw，四组都开启了 symC**（`HydroMechModel=0`、`PoreDarcySymmetricCorr=1`）。显式 u-pl 是单独的 ν=0.30 峰窗数据。
+
+| 方法和范围 | 点击运行的 BAT | 对应 Def.xml | 已有结果 |
+| --- | --- | --- | --- |
+| u-pw + symC，ν=0.10，约 1 Tv | [GPU BAT](xCaseCryerProblem_PR_release_nu010_r1_win64_GPU.bat) | [XML](CaseCryerProblem_PR_release_nu010_r1_Def.xml) | [原生结果](CaseCryerProblem_PR_release_nu010_r1_out/) |
+| u-pw + symC，ν=0.20，约 1 Tv | [GPU BAT](xCaseCryerProblem_PR_release_nu020_r1_win64_GPU.bat) | [XML](CaseCryerProblem_PR_release_nu020_r1_Def.xml) | [原生结果](CaseCryerProblem_PR_release_nu020_r1_out/) |
+| u-pw + symC，ν=0.30，约 1 Tv | [GPU BAT](xCaseCryerProblem_PR_symc_nu030_win64_GPU.bat) | [XML](CaseCryerProblem_PR_symc_nu030_Def.xml) | [原生结果](CaseCryerProblem_PR_symc_nu030_out/) |
+| u-pw + symC，ν=0.45，约 1 Tv | [GPU BAT](xCaseCryerProblem_PR_release_nu045_r1_win64_GPU.bat) | [XML](CaseCryerProblem_PR_release_nu045_r1_Def.xml) | [原生结果](CaseCryerProblem_PR_release_nu045_r1_out/) |
+| u-pw + symC，ν=0.30，r2 独立复现配置 | [GPU BAT](xCaseCryerProblem_PR_release_r2_win64_GPU.bat) | [XML](CaseCryerProblem_PR_release_r2_Def.xml) | 四组总图取上面的 `symc_nu030_out` |
+| 显式 u-pl，ν=0.30，选定冻结程序 | [r1 GPU BAT](xCaseCryerProblem_u_pl_nu030_r1_win64_GPU.bat) | [r1 XML](CaseCryerProblem_u_pl_nu030_r1_Def.xml) | [577 帧峰窗](tests/outputs/upl_cryer_freebody_peak_GPU_r1/)，配套 BAT 可计算至 1 Tv |
+| 显式 u-pl，ν=0.30，当前公共程序 | [GPU BAT](xCaseCryerProblem_u_pl_nu030_win64_GPU.bat) | [XML](CaseCryerProblem_u_pl_nu030_Def.xml) | 六步回归，实测 1 Tv 数据待补 |
+| TPI，ν=0.30，当前公共程序 | [GPU BAT](xCaseCryer_TPI_nu030_1Tv_win64_GPU.bat) | [XML](CaseCryer_TPI_nu030_1Tv_Def.xml) | 启动短测，实测 1 Tv 数据待补 |
+| TPI/P3，ν=0.30，冻结试验 | [峰窗 GPU BAT](xCaseCryer_TPI_P3_nu030_peak_r1_win64_GPU.bat) | [峰窗 XML](CaseCryer_TPI_P3_nu030_peak_r1_Def.xml) | [服务器峰窗归档](tests/outputs/CaseCryer_TPI_P3_nu030_peak_r1_GPU_out/)，峰窗超出原误差限，全程未运行 |
+
+- [四组 u-pw 全程孔压图](figures/formal_validation/cryer_formal_four_nu_r2_log.png)与[数值汇总](figures/formal_validation/cryer_formal_four_nu_r1_metrics.csv)。
+- [显式 u-pl 峰窗孔压图](tests/figures/upl_cryer_freebody_peak_review_r1_pressure.png)与[时序数据](tests/figures/upl_cryer_freebody_peak_review_r1_history.csv)。
+- [服务器 ZIP 和校验单](support/server_packages/)集中存放，根目录 BAT 会从该目录读取其绑定的包。
+- [加入 symC 前的 BAT、XML、原生结果和视频](olddata/)按原文件名配对。迁移映射及旧工具说明见[整理记录](tests/notes/cryer_case_organization_20261128.md)。
+
 ## 公共程序与复现入口
 
 当前 CPU/GPU 公共程序支持在 Cryer 围压球体上组合三轮 TPI 和随体积变化的渗透系数。已有正式输入与归档服务器包沿用各自的常渗透率配置。变渗透率的压力方程与启动验证见[测试记录](../02_TerzaghiConsolidation_q0_PR/tests/notes/tpi_variable_k.md)。
@@ -89,7 +110,7 @@ read-only action, not part of any formal solver BAT.
 
 The additional actual-state and shell-quadrature audits found no accepted low-cost
 correction. Keep the nu=.30 r2 release below unchanged. The separate
-[nu=.10/.20/.45 Windows/RTX A6000 ZIP](Cryer_release_nu010_020_045_r1_Windows_RTXA6000.zip)
+[nu=.10/.20/.45 Windows/RTX A6000 ZIP](support/server_packages/Cryer_release_nu010_020_045_r1_Windows_RTXA6000.zip)
 contains the three new formal root XML/BAT pairs, common verified executables,
 runtime dependencies and execution receipts. See
 [server instructions](support/README_cryer_nu_release_r1.md).
@@ -117,11 +138,11 @@ version; do not silently replace these inputs or the accepted nu=.30 baseline.
 
 The bounded audit is complete. The selected scheme retains G1 plus Darcy symC,
 with the recorded approximately1% peak-amplitude limitation, not a new numerical fix.
-Use [the Windows/RTX A6000 package](Cryer_release_r2_Windows_RTXA6000.zip),
+Use [the Windows/RTX A6000 package](support/server_packages/Cryer_release_r2_Windows_RTXA6000.zip),
 [server instructions](support/README_cryer_release_r2.md), and the independent root entry
 `xCaseCryerProblem_PR_release_r2_win64_GPU.bat` /
 `CaseCryerProblem_PR_release_r2_Def.xml`.
-The external ZIP checksum is `Cryer_release_r2_Windows_RTXA6000.zip.sha256`.
+The external ZIP checksum is in [the server package folder](support/server_packages/).
 
 The15 ZIP entries were checked byte-for-byte. A fresh extracted local RTX3050
 smoke actually ran128 steps and saved2 native frames; original safety passed,
@@ -160,11 +181,10 @@ with the retained baseline and explicit limitations, as described above.
 Existing r1 inputs/package/output are retained historical evidence, not silently
 upgraded or a reason to rerun completed results.
 
-The old Poisson plotting scripts still depend on the June XML and output paths.
-Nine June launch BATs, the old support-script ZIP and a checksum for an absent
-public TPI ZIP have been moved out of the case root. The surviving release entries
-still use their original server ZIPs. See the
-[archive and restoration record](tests/notes/cryer_root_retirement_20261128.md).
+The old Poisson plotting scripts read the June XML and output pairs from
+`olddata/`. The corresponding launch BATs are stored alongside them. The old
+support-script ZIP and public TPI checksum have separate archives. See the
+[archive and restoration record](tests/notes/cryer_case_organization_20261128.md).
 
 - Three loose June short-test logs are archived byte-for-byte under
   `tests/logs/legacy_afterfix_short_root_r1/`; their paths, hashes and restoration
@@ -290,7 +310,7 @@ The active verification path uses `HydroMechInitMode=0` (`None`), `externalload 
 
 The formal release case is now a one-stage drained calculation. The older undrained-then-drained restart path was abandoned for the release configuration. The case applies `FlexibleConfinement` from `t=0`, keeps the exterior free surface drained from `t=0`, and compares the center pore-pressure history directly against Cryer's analytical sequence.
 
-The retained validation record for the selected release settings is `refinement/notes/k1e5_dp0025_full_20260622.md`. The formal XML uses:
+The retained historical validation record is `olddata/refinement/notes/k1e5_dp0025_full_20260622.md`. Its XML uses:
 
 - `dp=0.0025`
 - `k=1e-5 m/s`
@@ -343,13 +363,12 @@ xCaseCryerProblem_PR_dp002_rampclosed_nu045_win64_GPU.bat
 
 The eight completed June root runs retain their BI4 histories and six representative Fluid VTK files per group. Recover the full legacy particle series from BI4 before rerunning the old plotting scripts. See the [June VTK cleanup and restoration record](tests/notes/cryer_june_vtk_cleanup_20261127.md).
 
-The default CPU/GPU entry points both target `CaseCryerProblem_PR_out`.
-The Poisson-ratio and closed-ramp entry points use their own case-named
-`*_out` directories. The default output layout is:
+The legacy default, Poisson-ratio and closed-ramp output directories are under
+`olddata/`. The legacy default output layout is:
 
-- `CaseCryerProblem_PR_out/data`
-- `CaseCryerProblem_PR_out/particles`
-- `CaseCryerProblem_PR_out/figures` (existing per-run analysis, not generated by the current BAT)
+- `olddata/CaseCryerProblem_PR_out/data`
+- `olddata/CaseCryerProblem_PR_out/particles`
+- `olddata/CaseCryerProblem_PR_out/figures` (existing per-run analysis)
 
 Retained formal comparison plots and their compact numerical tables are under
 `figures/formal_validation/`. Parameter comparisons and load diagnostics are
@@ -361,7 +380,7 @@ The PartVTK commands in the default CPU/GPU batch files request:
 +idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic,+fstype,+fsnormal,+porepress,+porepress0,+excessporepress,+hydromechloadace
 ```
 
-Open `CaseCryerProblem_PR_out/particles/PartFluid_*.vtk` in ParaView and inspect `FSType`, `FSNormal`, `PorePress`, and `HydroMechLoadAce`.
+The default legacy `PartFluid_*.vtk` files are in `olddata/CaseCryerProblem_PR_out/particles/`.
 
 The Python postprocessor writes PNG/CSV and, when configured, JSON summaries
 to the selected `CRYER_FIGDIR`; these are a separate step from PartVTK.
@@ -405,4 +424,4 @@ CPU Debug与GPU Release的短测耗时不能作为公平性能对比。实际初
 
 在预先声明的Mandel窗legacy Tv>=.005内，固定18材料点采样峰为12253.447 Pa，有限Kw同半径参考峰12439.176 Pa：幅值误差-1.4931%、峰时误差+2.4708%。旧u-pw对应为-1.0343%、+3.9789%；新幅值略差、时刻更近，不是全面改善或1%物理通过。开启瞬态及全部实际时刻保留在 `tests/figures/upl_cryer_freebody_peak_review_r1_*` 的两张PNG和四份CSV；旧正式四组结果保持原样。
 
-服务器候选包为 `Cryer_upl_nu030_Windows_RTXA6000_r1.zip`，说明见 [运行说明](support/README_cryer_upl_nu030_r1.md)。解压后双击 `xCaseCryerProblem_u_pl_nu030_r1_win64_GPU.bat`，运行至排水后Tv约1；本地没有追加该完整计算。包固定使用本轮已运行的程序和原生几何，保留当前误差与范围说明，供完整衰减验收，不包含尚未验证的后续Cubic改动。迁移时可核对ZIP附带的一次性SHA256，不反复扫描旧程序或原始输出。
+服务器候选包为 [显式 u-pl ν=0.30 ZIP](support/server_packages/Cryer_upl_nu030_Windows_RTXA6000_r1.zip)，说明见[运行说明](support/README_cryer_upl_nu030_r1.md)。解压后双击 `xCaseCryerProblem_u_pl_nu030_r1_win64_GPU.bat`，运行至排水后约 1 Tv。本地已有峰窗，完整衰减待实算。包固定使用该峰窗实际运行的程序和原生几何，迁移时可核对附带的 SHA256。

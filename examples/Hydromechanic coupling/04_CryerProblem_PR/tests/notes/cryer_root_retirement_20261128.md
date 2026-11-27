@@ -1,5 +1,7 @@
 # Cryer 根目录归档和显式 u-pl 基准 · 2026-11-28
 
+后续用户指定加入 symC 前的 BAT、XML 和输出统一放入 `olddata/`，下表记录的是第一次移动的位置。现行位置见[配置、结果与服务器包整理](cryer_case_organization_20261128.md)。
+
 当前收尾基准是 `upl_cryer_freebody_peak_GPU_r1` 的 ν=0.30 显式 u-pl 峰窗。根目录保留配套的 `CaseCryerProblem_u_pl_nu030_r1_Def.xml`、GPU BAT 和冻结 ZIP，以及公共显式 u-pl 入口。原生数据、时序表、图和分析见[峰窗审查](upl_cryer_freebody_peak_root_r1.md)。本轮只整理文件，未启动求解或更改计算参数。
 
 ## 对称扩散的证据
