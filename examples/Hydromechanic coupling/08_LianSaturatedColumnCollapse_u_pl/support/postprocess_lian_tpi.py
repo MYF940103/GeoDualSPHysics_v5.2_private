@@ -426,9 +426,10 @@ def publish_all():
     """Use only previously published and bound formal histories."""
     from compare_lian_release import GROUPS as PRESENTATION
     groups = tuple(GROUPS)
-    histories, matches, summaries = {},{},[]
+    histories, matches, summaries, step_sizes = {},{},[],{}
+    smaller_step = FIGURES/"psim5_dt25"
     for group in groups:
-        dest = FIGURES/group
+        dest = smaller_step if group=="psim5" and (smaller_step/"postprocess.json").is_file() else FIGURES/group
         audit = json.loads((dest/"postprocess.json").read_text(encoding="utf8"))
         require(audit["group"]==group and audit["window"]=="full" and audit["passed"] and
                 identities([Path(item[0]) for item in audit["inputs"]])==audit["inputs"],
@@ -439,10 +440,14 @@ def publish_all():
         with (dest/"paper_front.csv").open(encoding="utf8",newline="") as f:
             matches[group] = [{**r, **{k:float(r[k]) for k in
                 ("requested_tau_s","published_extent_m","paper_digitization_scale_m")}} for r in csv.DictReader(f)]
-        summaries.append(summarize(group,histories[group]))
+        step_sizes[group] = float(audit.get("dt_s",DT))
+        require(step_sizes[group]==(DT/2 if dest==smaller_step else DT),
+                f"Unexpected fixed step for {group}")
+        summaries.append(dict(**summarize(group,histories[group]),dt_s=step_sizes[group]))
     fig, axes = plt.subplots(1,3,figsize=(13.2,4),sharex=True,layout="constrained")
     for ax,g in zip(axes,groups,strict=True):
         front_panel(ax,g,histories[g],matches[g])
+        ax.set_title(f"{ax.get_title()} ({step_sizes[g]*1e6:g} ?s)")
     fig.savefig(FIGURES/"paper_fronts.png",dpi=180)
     plt.close(fig)
     panels = {"top_settlement_mm":"Top material settlement (mm)",
@@ -453,7 +458,7 @@ def publish_all():
     for ax, (key,label) in zip(axes.flat,panels.items(),strict=True):
         for g,h in histories.items():
             angle,color = PRESENTATION[g]
-            ax.plot(h["tau_s"],h[key],color=color,lw=1.4,label=angle)
+            ax.plot(h["tau_s"],h[key],color=color,lw=1.4,label=f"{angle}, {step_sizes[g]*1e6:g} ?s")
         ax.set_ylabel(label)
         ax.grid(alpha=.2)
     axes[0,0].legend(frameon=False)
