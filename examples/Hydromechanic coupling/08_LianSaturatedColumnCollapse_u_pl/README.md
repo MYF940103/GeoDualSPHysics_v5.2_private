@@ -8,6 +8,10 @@
 
 运行依赖 `support/runtime_tpi_r1` 内的 C08 专用 GPU 程序、DLL、配置及 manifest。该构建以原 C08 TPI 程序为基础，只扩展三组材料与 3 s 入参。移植时可用 `C08_TPI_BIN` 指定该运行目录，并带上三组预载输出和仓库后处理脚本。首次运行前须有本组预载的完整结果与完成收据。入口执行 GenCase、独立撤墙短窗、正式计算及后处理。正式原生结果写入 `CaseLianCollapse_<group>_TPI_GPU_out`，图表写入 `figures/validation_tpi`。可用 `--postprocess-only` 审查已正常完成的求解，已有输出由各自收据识别。
 
+正式 TPI 的粒子后处理从每个已保存的原生 PART 分别导出 Fluid 和 Bound，包含闭墙阶段和撤墙后的保存帧。`PartFluid_*.vtk`、`PartBound_*.vtk` 及各自的 `.vtk.series` 同层放在本组输出的 `particles` 下，时间序列使用相对于实际撤墙时刻的原生时钟。论文对照图保留各图需要的时刻。已完成求解可在本目录用 `xCaseLianCollapse_TPI_win64_GPU.bat --group psi0 --particles-only` 补齐粒子，其他组按实际标签选择。补齐入口复用原生审查收据，保留已有且一致的 VTK 和图表。
+
+−5° 的原 5 µs 运行因孔压扩散步长保护停止。[首轮审查](tests/notes/c08_tpi_formal_terminal_review_r1.md)记录了最后完整帧与真实首因。独立的 2.5 µs 补算沿用该组 5 µs 同材料预载，维持 1 ms 闭墙与 0.01 s 输出间隔。新输出使用 `CaseLianCollapse_psim5_TPI_dt25_GPU_out`，待全时程原生审查后发布。
+
 ## 显式 u-pl 验证
 
 在 Windows x64、NVIDIA GPU 上双击 [三组完整流程](xCaseLianCollapse_all_win64_GPU.bat)。也可以在下表选择单组。每组用 GenCase 生成粒子，闭墙重力预载到 10 s，从本组末帧继承材料历史，撤掉右墙后再计算 3 s。最后导出粒子、绘图并生成匹配的 CSV。时间单位均为物理秒。

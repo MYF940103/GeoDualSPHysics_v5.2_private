@@ -186,6 +186,21 @@ def postprocess(group, folder, window):
     subprocess.run(args,cwd=CASE,check=True)
 
 
+def backfill_particles(groups):
+    errors = []
+    for group in groups:
+        folder = result(group)
+        try:
+            sealed = load(folder/"solver.call.json")
+            require(sealed["returncode"]==0, f"A completed solve is required for {group}")
+            subprocess.run([sys.executable,"-B","-X","utf8",CASE/"support/postprocess_lian_tpi.py",
+                            group,folder,"--particles-only"],cwd=CASE,check=True)
+        except (OSError, ValueError, subprocess.CalledProcessError) as exc:
+            errors.append(group)
+            print(f"{group} particle backfill rejected: {exc}",file=sys.stderr,flush=True)
+    return int(bool(errors))
+
+
 def short_passed(group):
     folder = short_dir(group)
     receipt = load(folder/"postprocess_tpi.native.json")
@@ -267,6 +282,8 @@ if __name__=="__main__":
     modes.add_argument("--prepare-only",action="store_true")
     modes.add_argument("--short-only",action="store_true")
     modes.add_argument("--postprocess-only",action="store_true")
+    modes.add_argument("--particles-only",action="store_true",
+                       help="Fill missing Fluid and Bound VTK for every native frame of a completed solve")
     modes.add_argument("--own",action="store_true")
     parser.add_argument("--cli",type=Path)
     parser.add_argument("--thread")
@@ -274,6 +291,8 @@ if __name__=="__main__":
     which=ORDER if args.group=="all" else (args.group,)
     if args.install:
         install()
+    elif args.particles_only:
+        sys.exit(backfill_particles(which))
     elif args.own:
         if not args.cli:
             parser.error("--own requires --cli and --thread")

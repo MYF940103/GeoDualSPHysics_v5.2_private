@@ -13,8 +13,8 @@ import numpy as np
 from compare_lian_release import compare, front_panel, summarize
 from plot_lian_release_fields import PANELS, plot_group
 from postprocess_lian_release import (
-    DP, FIELD_NAMES, GROUPS, PRE_IDS, SOIL_IDS, field_plot, history_plot,
-    measures, native, require, stat_id, verify_source_material, write_json, write_particles,
+    DP, FIELD_NAMES, GROUPS, PRE_IDS, RELEASE_IDS, SOIL_IDS, field_plot, history_plot,
+    measures, native, require, stat_id, verify_source_material, vtk_particles, write_json,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -67,15 +67,15 @@ def read_original_pre(group):
     return refpath, initial_path, m, a, top, bottom
 
 
-def verify_frame(m, hist, group, step, part, clock, reference):
-    active = step>OPEN
+def verify_frame(m, hist, group, step, part, clock, reference, *, dt=DT, open_step=OPEN):
+    active = step>open_step
     require(m["Cpart"]==part and m["Step"]+1==step and m["TimeStep"]==clock[step-SOURCE] and
             m["HydroMechModel"]==2 and m.get("HydroMechTpiR",1.0)==1.0 and m["MaterialLawVersion"]==2 and
             m["DilationDecay"]==np.float32(GROUPS[group][2]) and m["HydroMechFreeSeepage"] and
             m["HydroMechConductivityModel"]==1 and m["HydroMechConductivityCk"]==2 and
-            m["SymplecticDtPre"]==m["dtmin"]==m["dtmax"]==DT and
+            m["SymplecticDtPre"]==m["dtmin"]==m["dtmax"]==dt and
             -np.finfo(float).max<m["dterror"]<=1e-14, f"Material, case or signed timing at PART {part}")
-    require(m["GravityPreloadPhase"]==active and m["GravityPreloadEventCompletedStep"]==OPEN and
+    require(m["GravityPreloadPhase"]==active and m["GravityPreloadEventCompletedStep"]==open_step and
             m["GravityPreloadReleaseMkBound"]==2 and m["GravityPreloadTargetIdBegin"]==1805 and
             m["GravityPreloadTargetIdCount"]==255 and not m.get("GravityPreloadKeepBedOverlap",False) and
             (ROOT/Path(m["GravityPreloadStateFile"])).resolve()==reference and
@@ -88,9 +88,9 @@ def verify_frame(m, hist, group, step, part, clock, reference):
             m["DynamicNoPenetrationActive"]==active and not m["DynamicNoPenetrationReactionClosed"],
             f"Free surface policy, released MK or PRE/SOIL binding at PART {part}")
     if active:
-        require(m["GravityPreloadActualTime"]==clock[OPEN-SOURCE] and
-                m["GravityPreloadActualCompletedStep"]==OPEN, "Unexpected actual wall release")
-    require(hist["CompletedUpdates"]==step and hist["Dt"]==DT and hist["Valid"] and hist["Schema"]==1 and
+        require(m["GravityPreloadActualTime"]==clock[open_step-SOURCE] and
+                m["GravityPreloadActualCompletedStep"]==open_step, "Unexpected actual wall release")
+    require(hist["CompletedUpdates"]==step and hist["Dt"]==dt and hist["Valid"] and hist["Schema"]==1 and
             hist["Scheme"]==HISTORY_SCHEME and hist["PreviousTime"]==clock[step-SOURCE-1] and
             hist["SavedTime"]==m["TimeStep"], "Native TPI pressure history scheme or clock differs")
 
@@ -174,6 +174,137 @@ def write_csv(path, rows):
     temp.replace(path)
 
 
+def verify_particle_vtk(path, positions, fields):
+    """Compare the existing binary VTK to native geometry, cells and every field."""
+    with path.open("rb") as stream:
+        def line(expected):
+            require(stream.readline().rstrip(b"\r\n")==expected.encode("ascii"),
+                    f"VTK header differs: {path}: {expected}")
+
+        def payload(values, dtype):
+            expected = np.asarray(values, dtype=dtype, order="C").tobytes()
+            require(stream.read(len(expected))==expected and stream.read(1)==b"\n",
+                    f"VTK payload differs: {path}")
+
+        n = len(positions)
+        for text in ("# vtk DataFile Version 3.0", "C08 saved material particles; SI units",
+                     "BINARY", "DATASET POLYDATA", f"POINTS {n} double"):
+            line(text)
+        payload(positions, ">f8")
+        line(f"VERTICES {n} {2*n}")
+        payload(np.column_stack((np.ones(n, dtype="i4"), np.arange(n, dtype="i4"))), ">i4")
+        line(f"POINT_DATA {n}")
+        line(f"FIELD FieldData {len(fields)}")
+        for name, values in fields.items():
+            comps = 1 if values.ndim==1 else values.shape[1]
+            typ = {"u4":"unsigned_int", "f4":"float", "f8":"double"}[values.dtype.str[1:]]
+            line(f"{name} {comps} {n} {typ}")
+            payload(values, values.dtype.newbyteorder(">"))
+        require(not stream.read(1), f"Unexpected trailing VTK data: {path}")
+
+
+def export_particles(group, output, receipt, check_only=False, *, dt=DT, open_step=OPEN, planned_steps=None):
+    """Resume flat Fluid/Bound VTKs; verify and migrate retained nested files without overwriting."""
+    output = Path(output).resolve()
+    require(receipt["passed"] and receipt["group"]==group and receipt["window"]=="full",
+            "Particle export needs this group's completed native review")
+    bound = [Path(item[0]) for item in receipt["inputs"]]
+    require(identities(bound)==receipt["inputs"], "Native output changed since review")
+    refpath, _, prem, ref, _, _ = read_original_pre(group)
+    cap = receipt["cap"]
+    require((dt==DT and open_step==OPEN and cap==CAPS["full"]) or planned_steps is not None,
+            "A different full-run clock needs its explicit saved-step sequence")
+    steps = expected_steps(cap) if planned_steps is None else planned_steps
+    require(dt>0 and SOURCE<open_step<cap and len(steps)>0 and steps[-1]==cap and
+            all(SOURCE<=a<b for a,b in zip([SOURCE,*steps[:-1]],steps,strict=True)),
+            "Invalid full-run saved-step sequence")
+    clock = np.cumsum(np.r_[prem["TimeStep"], np.full(cap-SOURCE, dt)])
+    release_time = float(clock[open_step-SOURCE])
+    files, _ = inspect_output(output, steps, cap, float(clock[-1]))
+    require(receipt["frames"]==len(files) and receipt["preload"]==str(refpath) and
+            receipt["release_time_s"]==release_time and receipt["end_s"]==float(clock[-1]),
+            "Particle export clock or source differs from reviewed run")
+    dest = output/"particles"
+    manifests = {"PartFluid":[], "PartBound":[]}
+    names = ("Idp", "Vel", "PorePress", "PorePress0", "ExcessPorePress", "Kplastic",
+             "SigmaState_kk", "SigmaState_ij", "PoroVolumeRatio", "PoroPorosity",
+             "PoroHydraulicConductivity", "PoroMixtureDensity", "FSType")
+    if not check_only:
+        dest.mkdir(parents=True, exist_ok=True)
+    for label in manifests:
+        expected = {f"{label}_{part:04d}.vtk" for part in range(1,len(files)+1)}
+        require({p.name for p in dest.glob(f"{label}_*.vtk")}<=expected,
+                f"Unexpected particle frames in {dest}")
+    created = moved = duplicates = 0
+    for part, (file, step) in enumerate(zip(files, steps, strict=True), 1):
+        m, a, hist, _ = read_frame(file)
+        verify_frame(m,hist,group,step,part,clock,refpath,dt=dt,open_step=open_step)
+        require(np.array_equal(a["Idp"], RELEASE_IDS if step>open_step else PRE_IDS),
+                f"Particle registry differs: {file}")
+        soil, fixed = slice(-len(SOIL_IDS),None), slice(None,-len(SOIL_IDS))
+        fluid = {name:a[name][soil] for name in names}
+        fluid["Displacement"] = a["Posd"][soil]-ref["Posd"][SOIL_IDS]
+        ids = a["Idp"][fixed]
+        boundary = {"Idp":ids, "MkBound":np.searchsorted([255,1805],ids,side="right").astype("u4")}
+        for label, subset, fields in (("PartFluid",soil,fluid), ("PartBound",fixed,boundary)):
+            path = dest/f"{label}_{part:04d}.vtk"
+            legacy = dest/label/path.name
+            if path.exists():
+                verify_particle_vtk(path,a["Posd"][subset],fields)
+            if legacy.exists():
+                verify_particle_vtk(legacy,a["Posd"][subset],fields)
+                require(not check_only, f"Verified nested VTK still needs migration: {legacy}")
+                if path.exists():
+                    legacy.unlink()  # Both files were compared to the same native payload above.
+                    duplicates += 1
+                else:
+                    legacy.rename(path)
+                    moved += 1
+            if not path.exists():
+                require(not check_only, f"Missing particle VTK: {path}")
+                vtk_particles(path,a["Posd"][subset],fields)
+                verify_particle_vtk(path,a["Posd"][subset],fields)
+                created += 1
+            manifests[label].append({"name":path.name,"time":float(m["TimeStep"])-release_time})
+        if part%50==0 or part==len(files):
+            print(f"  Particle VTK verified {part}/{len(files)} frames",flush=True)
+    require(identities(bound)==receipt["inputs"], "Native input changed during particle export")
+    for label, items in manifests.items():
+        series = dest/f"{label}.vtk.series"
+        legacy = dest/label/series.name
+        expected = {"file-series-version":"1.0", "files":items}
+        lookup = {item["name"]:item for item in items}
+        current = None
+        for path in (series,legacy):
+            if path.exists():
+                saved = json.loads(path.read_text(encoding="utf8"))
+                require(saved.get("file-series-version")=="1.0" and
+                        all(lookup.get(item["name"])==item for item in saved["files"]),
+                        f"Existing series has incompatible times or names: {path}")
+                if path==series:
+                    current = saved
+        if check_only:
+            require(current==expected and not legacy.exists(), f"Incomplete flat particle series: {series}")
+        else:
+            if current!=expected:
+                write_json(series,expected)
+            if legacy.exists():
+                legacy.unlink()  # A matching flat collection now covers every retained frame.
+            folder = dest/label
+            if folder.is_dir() and not any(folder.iterdir()):
+                folder.rmdir()
+    result = dict(group=group,layout="flat",frames_per_series=len(files),first_part=1,last_part=len(files),
+                  dt_s=dt,release_completed_step=open_step,completed_step=cap,
+                  time_origin_s=release_time,first_tau_s=manifests["PartFluid"][0]["time"],
+                  last_tau_s=manifests["PartFluid"][-1]["time"],
+                  verification="All coordinates, vertex cells and point fields match native values byte for byte.")
+    if not check_only:
+        marker = dest/"postprocess_tpi.vtk.json"
+        if not marker.exists() or json.loads(marker.read_text(encoding="utf8"))!=result:
+            write_json(marker,result)
+    print(json.dumps(dict(**result,new_vtk_files=created,moved_vtk_files=moved,
+                          removed_verified_duplicates=duplicates),indent=2))
+
 def material_snapshots(group, output, rows, figdir):
     _, _, _, ref, top, bottom = read_original_pre(group)
     requested = set((*PANELS[group][2], .01, .30, .50, .60, .88, 1.20))
@@ -184,9 +315,6 @@ def material_snapshots(group, output, rows, figdir):
     require(all(abs(row["tau_s"]-time)<1e-8 for time,row in zip(requested,chosen,strict=True)),
             "Missing published or diagnostic save time")
     snapshots, fields = [], []
-    manifest = {"PartFluid":[], "PartBound":[]}
-    for label in manifest:
-        (output/"particles"/label).mkdir(parents=True, exist_ok=True)
     for row in chosen:
         part, time, tau = (row[k] for k in ("part","time_s","tau_s"))
         _, a, _, _ = read_frame(output/"data"/f"Part_{part:04d}.bi4")
@@ -200,11 +328,6 @@ def material_snapshots(group, output, rows, figdir):
                       [int(values[0]),*map(float,values[1:-1]),int(values[-1])],strict=True))) for values in payload)
         if any(abs(tau-v)<1e-8 for v in {*PANELS[group][2],3.0}):
             snapshots.append((tau,payload))
-        write_particles(output/"particles",part,a,disp)
-        for label, items in manifest.items():
-            items.append({"name":f"{label}_{part:04d}.vtk","time":tau})
-    for label, items in manifest.items():
-        write_json(output/"particles"/label/f"{label}.vtk.series",{"file-series-version":"1.0","files":items})
     write_csv(figdir/"fields.csv", fields)
     return snapshots
 
@@ -295,6 +418,7 @@ def publish(output, rows, receipt):
     field_plot(figdir,snapshots,group,False)
     plots(group,rows,figdir)
     require(identities(bound)==receipt["inputs"], "Native input changed during publication")
+    export_particles(group,output,receipt)
     write_json(marker,receipt)
 
 
@@ -349,13 +473,24 @@ def main():
     parser.add_argument("output",type=Path,nargs="?")
     parser.add_argument("--window",choices=CAPS,default="full")
     parser.add_argument("--short",type=Path)
+    particles = parser.add_mutually_exclusive_group()
+    particles.add_argument("--particles-only",action="store_true",
+                           help="Resume all VTK frames from an existing native receipt; do not rewrite figures")
+    particles.add_argument("--check-particles",action="store_true",
+                           help="Read-only byte verification of all VTK frames and their actual-time series")
     args = parser.parse_args()
     if args.group=="all":
-        require(args.output is None and args.short is None and args.window=="full", "all combines existing groups")
+        require(args.output is None and args.short is None and args.window=="full" and
+                not (args.particles_only or args.check_particles), "all combines existing groups")
         publish_all()
         return
     require(args.output is not None,"Select a bound output directory")
     output = args.output.resolve()
+    if args.particles_only or args.check_particles:
+        require(args.window=="full" and args.short is None, "Particle-only modes use a completed full native receipt")
+        receipt = json.loads((output/RECEIPT).read_text(encoding="utf8"))
+        export_particles(args.group,output,receipt,check_only=args.check_particles)
+        return
     if args.window=="fixture":
         require(args.group=="psi2p5","The retained paper-window fixture is for +2.5 degrees")
     rows, receipt = review(args.group,output,args.window,args.short)
