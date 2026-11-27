@@ -10,6 +10,16 @@
 
 带 `release`、`symc`、`u_pl_nu030_r1`、`TPI_P3` 的冻结入口仍与其原程序及原 XML 配套。复现已发布的 r1 显式计算时，使用读取 `support/upl_seed_nu030_r1` 的原 BAT。
 
+## ν=0.30 固定参考弱式 1 Tv
+
+[弱式 XML](CaseCryerWeakFull_nu030_1Tv_Def.xml) 与 [GPU BAT](xCaseCryerWeakFull_nu030_1Tv_win64_GPU.bat) 使用封存的弱式程序、参考四面体算子、原粒子惯性质量和三轮孔压修正。输入是泊松比 0.30、粒距 2.5 mm、常渗透系数 1×10⁻⁵ m/s 和 10 kPa 围压。固定步长为 2⁻¹⁹ s，3.90625 ms 完成加载，第 4,096 步保存闭态，此后排水。保存计划以排水后 0.005 Tv 为间隔，并包含启动与峰窗锚点，共 269 个原生状态，实际终点为 481,685 步。
+
+弱式 XML 由配套 Python 入口读取。Windows 运行需 Python 3.11、NumPy、SciPy、Pandas 和 Matplotlib，可通过 `CRYER_PYTHON` 指定解释器。已有封存 ZIP 位于 `tests/outputs/cryer_weak_full_server_r1.zip`，完整解到 `support/weak_full_r1` 即可复用。根 BAT 的 `--check-only` 检查配置与封存输入的绑定。
+
+运行输出为 `CaseCryerWeakFull_nu030_1Tv_GPU_out`，其中 `actual_clock.csv` 记录实际保存步和时刻，`state_*.bin` 保存孔压、历史孔压、位移、速度、应力和 J。材料 ID 及参考坐标在 `support/weak_full_r1/inputs/reference_mesh.npz`。原生保存包含 37,173 个土体材料点，排水球面点属于同一批材料。粒子可视化用 `particles/PartFluid.vtk.series`。正式图表写入 `figures/formal_validation/weak_full_nu030`，分别列出弱式 M0 解析参考和旧结果的有限水体积模量参考。
+
+2026-11-27 本机计算由 [直接运行入口](tests/support/cryer_weak_full_local_r1.py) 使用封存程序启动，并在完成后生成与发行入口相容的原生收据。根 BAT 的 `--postprocess` 可接入已完成结果。[既有峰窗结论](tests/notes/cryer_weak_3d_peak_r1.md) · [全程审查计划](../validation/cryer_weak_full_after_c08.md)
+
 ## Returned four-ratio formal comparison (2026-11-02)
 
 The returned nu=.10/.20/.45 `release_nu*_r1_out` datasets are compared with the

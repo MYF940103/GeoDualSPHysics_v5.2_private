@@ -2,6 +2,8 @@
 
 2026-11-27 登记。先完成 C08 正式三组，再启动 Cryer。C08 使用当前运行所有者，等真实的 +2.5°、0°、−5° 全部保存至各自撤墙后 3 s，逐组完成原生审查、Fluid/Bound 粒子导出、与 Lian 的图表对比和本地/远端 Git 记录。若 C08 中途失败，保留已完成和部分输出，先完成 C08 的诊断与交付。C04 的研究程序和已认可的旧结果在等待期间保持原样。[C08 正式记录](../08_LianSaturatedColumnCollapse_u_pl/tests/notes/c08_tpi_formal_three.md)
 
+2026-11-27 更新：用户调整顺序，C08 −5° 的墙拟合故障留待后续排查，先执行 C04 的 ν=0.30 weak-full。C04 本机长算已用封存程序直接启动，根入口与图表脚本同时准备。
+
 ## C04 发行入口
 
 - 在 C04 根目录新增 `CaseCryerWeakFull_nu030_1Tv_Def.xml`、`xCaseCryerWeakFull_nu030_1Tv_win64_GPU.bat`，在根 README 写清计算、数据格式和恢复方式。输出使用独立的 `CaseCryerWeakFull_nu030_1Tv_GPU_out`。正式对比放 `figures/formal_validation`。

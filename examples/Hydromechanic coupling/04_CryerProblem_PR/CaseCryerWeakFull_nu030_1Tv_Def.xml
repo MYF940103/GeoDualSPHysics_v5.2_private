@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<case app="Cryer weak-full r1" date="27-11-2026">
+    <!-- Fixed-reference research solver. This input is read by run_cryer_weak_full.py, not GenCase. -->
+    <!-- The frozen mesh/operators implement this profile; changing a fixed value requires a new matching package. -->
+    <casedef>
+        <constantsdef>
+            <gravity x="0" y="0" z="0" comment="No body gravity; external confinement only" units_comment="m/s^2" />
+            <rhop0 value="2100" comment="Original saturated mixture density and native nodal masses" units_comment="kg/m^3" />
+            <hdp value="1.8" comment="Original h/dp for three-dimensional artificial viscosity" />
+        </constantsdef>
+        <geometry>
+            <predefinition>
+                <newvarcte radius="0.05" _rem="Reference sphere radius" />
+                <newvarcte Dp="0.0025" _rem="Reference material spacing" />
+            </predefinition>
+            <definition dp="#Dp" units_comment="metres (m)" />
+        </geometry>
+    </casedef>
+    <execution>
+        <special>
+            <!-- Original 265-state schedule plus four checkpoints; actual first-attained times are retained. -->
+            <timeout>
+                <tout time="0" timeout="0.0001220703125" />
+                <tout time="0.0078125" timeout="0.004554642857142857142857142858" />
+            </timeout>
+            <soils>
+                <ModulusE value="2000000" comment="Elastic Young's modulus" units_comment="Pa" />
+                <PRvs value="0.3" comment="Original float-material Poisson ratio" />
+            </soils>
+            <hydromechanics>
+                <HydroMechModel value="2" comment="Private fixed-reference weak M0 pressure correction; not the public SPH TPI executable" />
+                <PoreWaterRho value="1000" units_comment="kg/m^3" />
+                <Porosity value="0.3" comment="Initial porosity; the saved J also determines the diagnostic current porosity" />
+                <HydraulicConductivity value="1e-5" comment="Constant scalar conductivity" units_comment="m/s" />
+            </hydromechanics>
+            <drainage mode="drained" start="0.0078125" clock="fixedStep" />
+            <externalload mode="2" q0="10000" ramptime="0.00390625" />
+            <weakfull package="support/weak_full_r1" formulation="FixedReferenceP1NativeMass" pressure_rounds="3"
+                      material_count="37173" scheduled_states="265" checkpoint_states="4"
+                      comment="Original pressure iterates retain float rounding; binary64 state files preserve their values" />
+        </special>
+        <parameters>
+            <parameter key="StepAlgorithm" value="2" comment="Original symplectic predictor/corrector with three pressure rounds" />
+            <parameter key="Kernel" value="2" comment="Original Wendland artificial-viscosity support" />
+            <parameter key="Visco" value="0.1" comment="Original three-dimensional artificial viscosity" />
+            <parameter key="SoilDamping" value="1" />
+            <parameter key="SoilDampingCoef" value="0.00004" comment="Converted to the original frozen material damping rate" />
+            <parameter key="DtIni" value="0.0000019073486328125" units_comment="seconds" />
+            <parameter key="DtFixed" value="0.0000019073486328125" comment="Original 2^-19 second benchmark step" units_comment="seconds" />
+            <parameter key="TimeMax" value="0.9187412261962890625" comment="Step 481685, first attaining drainage-relative Tv=1" units_comment="seconds" />
+            <parameter key="TimeOut" value="0.004554642857142857142857142858" comment="Drainage-relative Delta Tv=0.005; actual saved clocks are in inputs/reference.csv" units_comment="seconds" />
+        </parameters>
+    </execution>
+</case>
