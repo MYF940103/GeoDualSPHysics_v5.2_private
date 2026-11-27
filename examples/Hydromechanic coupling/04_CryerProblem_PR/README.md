@@ -20,6 +20,20 @@
 
 2026-11-27 本机计算由 [直接运行入口](tests/support/cryer_weak_full_local_r1.py) 使用封存程序启动，并在完成后生成与发行入口相容的原生收据。根 BAT 的 `--postprocess` 可接入已完成结果。[既有峰窗结论](tests/notes/cryer_weak_3d_peak_r1.md) · [本机全程实算与限制](tests/notes/cryer_weak_full_local_r1.md) · [正式图表](figures/formal_validation/weak_full_nu030/)
 
+## 四组泊松比弱式验证
+
+原 ν=0.30 已完成的弱式轨迹直接用于对照。[三组 GPU 入口](xCaseCryerWeakFull_nuSweep_1Tv_win64_GPU.bat) 依次执行 ν=0.45、0.10、0.20，可用 `--group 045`、`--group 010` 或 `--group 020` 选单组。每组读取根目录对应的 `CaseCryerWeakFull_nu*_1Tv_Def.xml`，新输出使用对应的 `CaseCryerWeakFull_nu*_1Tv_GPU_out`。根入口支持 `--check-only` 核对封存包和参数，`--postprocess` 接入已完成的原生输出。
+
+同一封存 CUDA DLL、参考球体网格、材料质量、载荷和三轮压力修正用于所有组。主机入口按有效 float32 泊松比换算 Lamé 参数，人工黏性按骨架纵波速度比例缩放，α 仍为 0.1。闭态沿用原四次检查与五项阈值。固定步长为 (2^{-19}) s，按各自 (C_v) 首次达到相应 (T_v) 的整步保存。每组共有 269 个完整状态，含启动与理论峰附近的附加状态。排水启动后以 32 步的标量采样间隔覆盖至 (T_v=0.12)，不足整间隔的结束步也实际保存。
+
+| 泊松比 | 1 Tv 实算目标步 | 总物理时间 / s |
+| ---: | ---: | ---: |
+| 0.10 | 632718 | 1.206813812256 |
+| 0.20 | 582714 | 1.111438751221 |
+| 0.45 | 173590 | 0.331096649170 |
+
+原弱式算子与 DLL 保持在 `support/weak_full_r1`。另用 [MSVC 构建入口](tests/support/build_cryer_weak_nu_full.ps1) 将新主机与封存 DLL 的 import library 配对，构建目录为 `support/weak_nu_sweep_r1`。逐组复核以相应 M0 参考为准，比较旧 u-pw 各自有限 Kw 参考下的峰幅、相位、共同尾段时刻及开启瞬态。公共模型的开关与默认值待四组实算评估后决定。
+
 ## Returned four-ratio formal comparison (2026-11-02)
 
 The returned nu=.10/.20/.45 `release_nu*_r1_out` datasets are compared with the
