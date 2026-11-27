@@ -175,8 +175,9 @@ def figures(dest, data, surface, profiles, xmax):
         ax.plot(tv, finite.pressure(tau) / Q, ":", color="0.45", lw=1.2, label="Finite-Kw analytical")
         for key in ("u_pw", "dynamic", "p3", "weak_full"):
             frame = data[(data.series == key) & (data.Tv > 0)]
-            ax.plot(frame.Tv, frame.pressure_Pa / Q, color=COLORS[key], lw=1.4,
-                    marker="." if key == "weak_full" else None, ms=3, label=LABELS[key])
+            marker = {"weak_full": "o", "u_pw": "x", "dynamic": "^", "p3": "s"}[key]
+            ax.plot(frame.Tv, frame.pressure_Pa / Q, color=COLORS[key], linestyle="None",
+                    marker=marker, ms=2.5, mew=.65, label=LABELS[key])
         ax.set(xscale="log", xlabel="Actual Tv after drainage", ylabel="Centre pressure / q0")
         ax.grid(alpha=.22, which="both")
         ax.legend(fontsize=7)

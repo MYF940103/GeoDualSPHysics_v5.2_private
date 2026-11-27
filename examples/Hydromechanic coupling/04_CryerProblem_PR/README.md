@@ -18,7 +18,7 @@
 
 运行输出为 `CaseCryerWeakFull_nu030_1Tv_GPU_out`，其中 `actual_clock.csv` 记录实际保存步和时刻，`state_*.bin` 保存孔压、历史孔压、位移、速度、应力和 J。材料 ID 及参考坐标在 `support/weak_full_r1/inputs/reference_mesh.npz`。原生保存包含 37,173 个土体材料点，排水球面点属于同一批材料。粒子可视化用 `particles/PartFluid.vtk.series`。正式图表写入 `figures/formal_validation/weak_full_nu030`，分别列出弱式 M0 解析参考和旧结果的有限水体积模量参考。
 
-2026-11-27 本机计算由 [直接运行入口](tests/support/cryer_weak_full_local_r1.py) 使用封存程序启动，并在完成后生成与发行入口相容的原生收据。根 BAT 的 `--postprocess` 可接入已完成结果。[既有峰窗结论](tests/notes/cryer_weak_3d_peak_r1.md) · [全程审查计划](../validation/cryer_weak_full_after_c08.md)
+2026-11-27 本机计算由 [直接运行入口](tests/support/cryer_weak_full_local_r1.py) 使用封存程序启动，并在完成后生成与发行入口相容的原生收据。根 BAT 的 `--postprocess` 可接入已完成结果。[既有峰窗结论](tests/notes/cryer_weak_3d_peak_r1.md) · [本机全程实算与限制](tests/notes/cryer_weak_full_local_r1.md) · [正式图表](figures/formal_validation/weak_full_nu030/)
 
 ## Returned four-ratio formal comparison (2026-11-02)
 
