@@ -4,7 +4,7 @@
 
 当前 CPU/GPU 公共程序支持在 Cryer 围压球体上组合三轮 TPI 和随体积变化的渗透系数。已有正式输入与归档服务器包沿用各自的常渗透率配置。变渗透率的压力方程与启动验证见[测试记录](../02_TerzaghiConsolidation_q0_PR/tests/notes/tpi_variable_k.md)。
 
-公共 TPI（`HydroMechModel=2`）的 ν=0.30 全程使用 [标准 Def.xml](CaseCryer_TPI_nu030_1Tv_Def.xml)。[GPU BAT](xCaseCryer_TPI_nu030_1Tv_win64_GPU.bat) 从 XML 生成初态、计算至 1 Tv 并导出 Fluid VTK，加 `--smoke` 可独立检查两步。标准服务器包可直接[下载 ZIP](Cryer_public_SPH_TPI_nu030_1Tv_Windows_RTXA6000.zip)，回传原生结果和本机画图方法见[服务器使用说明](README_Cryer_TPI_nu030_1Tv.md)。非初始 PART 的 `TpiPressureHistory` 保存上一整步用于外推的源孔压。首次开启排水时，受控表面点已施加规定零压，上一闭态 PART 的孔压仍可为非零。
+公共 TPI（`HydroMechModel=2`）的 ν=0.30 全程使用 [标准 Def.xml](CaseCryer_TPI_nu030_1Tv_Def.xml)。[GPU BAT](xCaseCryer_TPI_nu030_1Tv_win64_GPU.bat) 从 XML 生成初态、计算至 1 Tv 并导出 Fluid VTK，加 `--smoke` 可独立检查两步。当前根目录没有公共 TPI ZIP。服务器打包入口见[打包脚本](tests/support/pack_public_cryer_tpi.py)，回传和绘图见[服务器使用说明](README_Cryer_TPI_nu030_1Tv.md)。非初始 PART 的 `TpiPressureHistory` 保存上一整步用于外推的源孔压。首次开启排水时，受控表面点已施加规定零压，上一闭态 PART 的孔压仍可为非零。
 
 当前公共版显式 u-pl 的 ν=0.30 配置为 `CaseCryerProblem_u_pl_nu030_Def.xml`（`HydroMechModel=1`）。运行 `xCaseCryerProblem_u_pl_nu030_win64_GPU.bat` 会从该 XML 调用 GenCase，使用仓库 GPU Release 按原时间步与输出计划计算，写入独立的 `CaseCryerProblem_u_pl_nu030_GPU_out`。加 `--smoke` 可按相同输入做六步检查。全程结束后导出 Fluid VTK，原生 BI4 保留完整状态。
 
@@ -12,14 +12,14 @@
 
 ## 显式 u-pl 收尾基准
 
-选用已审查的 ν=0.30 显式 u-pl GPU 峰窗，原生记录为 `tests/outputs/upl_cryer_freebody_peak_GPU_r1`。粒距 2.5 mm，固定步长 2⁻²⁰ s，(K_w=200) MPa。73728 步、577 帧均已读回审查，覆盖排水后 0.0625 s（(T_vapprox0.06861)）。四组旧 u-pw 全周期结果继续作为独立参考。
+选用已审查的 ν=0.30 显式 u-pl GPU 峰窗，原生记录为 `tests/outputs/upl_cryer_freebody_peak_GPU_r1`。粒距 2.5 mm，固定步长 2⁻²⁰ s，水体积模量 200 MPa。73,728 步、577 帧均已读回审查，覆盖排水后 0.0625 s（约 0.06861 Tv）。四组旧 u-pw 全周期结果继续作为独立参考。
 
 | 已审查的 u-pl 峰窗 | 峰幅误差 | 峰时误差 | 共同时刻孔压 RMS |
 | --- | ---: | ---: | ---: |
 | 显式 u-pl | −1.4931% | +2.4708% | 186.71 Pa |
 | 三轮 TPI/P3 | −1.5177% | +2.4955% | 190.12 Pa |
 
-两组按各自的储存假设和同一固定 18 材料点口径计分。选定的显式 u-pl 峰值为 12,253.45 Pa，有限 (K_w) 解析参考为 12,439.18 Pa。现有结果适用于该峰窗，原峰幅 1% 和峰时 2% 门槛仍未达到。项目 u-pl 的实际 1 Tv 数据尚缺。[原始审查与适用范围](tests/notes/upl_cryer_freebody_peak_root_r1.md) · [孔压图](tests/figures/upl_cryer_freebody_peak_review_r1_pressure.png) · [位移与状态图](tests/figures/upl_cryer_freebody_peak_review_r1_state.png) · [时序 CSV](tests/figures/upl_cryer_freebody_peak_review_r1_history.csv) · [同钟对比](tests/notes/cryer_peak_iteration_and_support_r1.md)
+两组按各自的储存假设和同一固定 18 材料点口径计分。选定的显式 u-pl 峰值为 12,253.45 Pa，有限水体积模量解析参考为 12,439.18 Pa。现有结果适用于该峰窗，原峰幅 1% 和峰时 2% 门槛仍未达到。项目 u-pl 的实际 1 Tv 数据尚缺。[原始审查与适用范围](tests/notes/upl_cryer_freebody_peak_root_r1.md) · [孔压图](tests/figures/upl_cryer_freebody_peak_review_r1_pressure.png) · [位移与状态图](tests/figures/upl_cryer_freebody_peak_review_r1_state.png) · [时序 CSV](tests/figures/upl_cryer_freebody_peak_review_r1_history.csv) · [同钟对比](tests/notes/cryer_peak_iteration_and_support_r1.md)
 
 固定参考弱式试验已停止。根目录入口、数据和专用图表已从正式区撤下，归入本地 `tests/outputs/retired_weakfull_20261128`。该试验的结果不计入项目 u-pl 精度。[终止及归档记录](tests/notes/cryer_weak_full_retired_20261128.md)
 
@@ -160,19 +160,15 @@ with the retained baseline and explicit limitations, as described above.
 Existing r1 inputs/package/output are retained historical evidence, not silently
 upgraded or a reason to rerun completed results.
 
-Root organization is deliberately conservative:
+The old Poisson plotting scripts still depend on the June XML and output paths.
+Nine June launch BATs, the old support-script ZIP and a checksum for an absent
+public TPI ZIP have been moved out of the case root. The surviving release entries
+still use their original server ZIPs. See the
+[archive and restoration record](tests/notes/cryer_root_retirement_20261128.md).
 
-- All original nine XMLs and ten BATs remain, plus the r2 pair and three new nu pairs
-  (now thirteen XMLs and fourteen BATs); old Poisson plotting scripts still depend on
-  root XML/output paths. Legacy BATs contain existing-output deletion menus:
-  do not invoke them for retained results.
-- All ten root output folders, formal figures/CSVs, refinement, videos and
-  both historical ZIPs remain. `support.zip` contains two script versions that
-  differ from current loose copies; it is not a disposable duplicate.
 - Three loose June short-test logs are archived byte-for-byte under
   `tests/logs/legacy_afterfix_short_root_r1/`; their paths, hashes and restoration
   instructions are in [the cleanup record](tests/notes/cryer_root_cleanup_r1.json).
-  This removes root clutter, not large data or disk usage.
 
 The dated sections below describe their original stages. They are not the
 current run's dt/step-count or a full physical-acceptance statement.
@@ -312,7 +308,7 @@ comparisons should exclude the saved `t=0` state explicitly, using
 `support/postprocess_cryer.py`, set its `CRYER_*` inputs to match the selected
 run: its legacy defaults (`dp=0.01`, `k=1e-3`) do not match the formal XML.
 
-Run on Windows GPU release:
+The historical Windows GPU launch name was:
 
 ```bat
 xCaseCryerProblem_PR_win64_GPU.bat
@@ -333,7 +329,8 @@ as the retained validation runs, but use:
 The solver `TimeMax` in each XML/batch is `0.0025 s + T_v=1` for that
 Poisson ratio. `TimeOut` remains `Delta T_v=0.001`.
 
-Run the four GPU batches:
+The archived GPU launch names are listed below. To reproduce a June run, follow
+the [restoration instructions](tests/notes/cryer_root_retirement_20261128.md).
 
 ```bat
 xCaseCryerProblem_PR_dp002_rampclosed_nu010_win64_GPU.bat
