@@ -2,19 +2,31 @@
 
 ## 配置与结果速查
 
-**`figures/formal_validation` 里的四泊松比全程图来自 u-pw，四组都开启了 symC**（`HydroMechModel=0`、`PoreDarcySymmetricCorr=1`）。显式 u-pl 是单独的 ν=0.30 峰窗数据。
+根目录有 **10 个 XML 和 4 个正式 `_out`**。其中 4 个 XML 对应已有全程结果，其余 6 个用于复现、短测或待计算的全程。`nu010`、`nu020`、`nu030`、`nu045` 表示泊松比 0.10、0.20、0.30、0.45，`r1`、`r2` 是版本。模型看 XML 的 `HydroMechModel`，`0` 为 u-pw，`1` 为显式 u-pl，`2` 为 TPI u-pl。
 
-| 方法和范围 | 点击运行的 BAT | 对应 Def.xml | 已有结果 |
+### 四组已有正式输出
+
+四组均为 **u-pw + symC**（`HydroMechModel=0`、`PoreDarcySymmetricCorr=1`），每组约 1 Tv。`figures/formal_validation` 的四泊松比总图使用这四个目录。
+
+| 泊松比 | 配置文件 | GPU BAT | 原生结果目录 |
 | --- | --- | --- | --- |
-| u-pw + symC，ν=0.10，约 1 Tv | [GPU BAT](xCaseCryerProblem_PR_release_nu010_r1_win64_GPU.bat) | [XML](CaseCryerProblem_PR_release_nu010_r1_Def.xml) | [原生结果](CaseCryerProblem_PR_release_nu010_r1_out/) |
-| u-pw + symC，ν=0.20，约 1 Tv | [GPU BAT](xCaseCryerProblem_PR_release_nu020_r1_win64_GPU.bat) | [XML](CaseCryerProblem_PR_release_nu020_r1_Def.xml) | [原生结果](CaseCryerProblem_PR_release_nu020_r1_out/) |
-| u-pw + symC，ν=0.30，约 1 Tv | [GPU BAT](xCaseCryerProblem_PR_symc_nu030_win64_GPU.bat) | [XML](CaseCryerProblem_PR_symc_nu030_Def.xml) | [原生结果](CaseCryerProblem_PR_symc_nu030_out/) |
-| u-pw + symC，ν=0.45，约 1 Tv | [GPU BAT](xCaseCryerProblem_PR_release_nu045_r1_win64_GPU.bat) | [XML](CaseCryerProblem_PR_release_nu045_r1_Def.xml) | [原生结果](CaseCryerProblem_PR_release_nu045_r1_out/) |
-| u-pw + symC，ν=0.30，r2 独立复现配置 | [GPU BAT](xCaseCryerProblem_PR_release_r2_win64_GPU.bat) | [XML](CaseCryerProblem_PR_release_r2_Def.xml) | 四组总图取上面的 `symc_nu030_out` |
-| 显式 u-pl，ν=0.30，选定冻结程序 | [r1 GPU BAT](xCaseCryerProblem_u_pl_nu030_r1_win64_GPU.bat) | [r1 XML](CaseCryerProblem_u_pl_nu030_r1_Def.xml) | [577 帧峰窗](tests/outputs/upl_cryer_freebody_peak_GPU_r1/)，配套 BAT 可计算至 1 Tv |
-| 显式 u-pl，ν=0.30，当前公共程序 | [GPU BAT](xCaseCryerProblem_u_pl_nu030_win64_GPU.bat) | [XML](CaseCryerProblem_u_pl_nu030_Def.xml) | 六步回归，实测 1 Tv 数据待补 |
-| TPI，ν=0.30，当前公共程序 | [GPU BAT](xCaseCryer_TPI_nu030_1Tv_win64_GPU.bat) | [XML](CaseCryer_TPI_nu030_1Tv_Def.xml) | 启动短测，实测 1 Tv 数据待补 |
-| TPI/P3，ν=0.30，冻结试验 | [峰窗 GPU BAT](xCaseCryer_TPI_P3_nu030_peak_r1_win64_GPU.bat) | [峰窗 XML](CaseCryer_TPI_P3_nu030_peak_r1_Def.xml) | [服务器峰窗归档](tests/outputs/CaseCryer_TPI_P3_nu030_peak_r1_GPU_out/)，峰窗超出原误差限，全程未运行 |
+| 0.10 | [CaseCryerProblem_PR_release_nu010_r1_Def.xml](CaseCryerProblem_PR_release_nu010_r1_Def.xml) | [运行入口](xCaseCryerProblem_PR_release_nu010_r1_win64_GPU.bat) | [CaseCryerProblem_PR_release_nu010_r1_out](CaseCryerProblem_PR_release_nu010_r1_out/) |
+| 0.20 | [CaseCryerProblem_PR_release_nu020_r1_Def.xml](CaseCryerProblem_PR_release_nu020_r1_Def.xml) | [运行入口](xCaseCryerProblem_PR_release_nu020_r1_win64_GPU.bat) | [CaseCryerProblem_PR_release_nu020_r1_out](CaseCryerProblem_PR_release_nu020_r1_out/) |
+| 0.30 | [CaseCryerProblem_PR_symc_nu030_Def.xml](CaseCryerProblem_PR_symc_nu030_Def.xml) | [运行入口](xCaseCryerProblem_PR_symc_nu030_win64_GPU.bat) | [CaseCryerProblem_PR_symc_nu030_out](CaseCryerProblem_PR_symc_nu030_out/) |
+| 0.45 | [CaseCryerProblem_PR_release_nu045_r1_Def.xml](CaseCryerProblem_PR_release_nu045_r1_Def.xml) | [运行入口](xCaseCryerProblem_PR_release_nu045_r1_win64_GPU.bat) | [CaseCryerProblem_PR_release_nu045_r1_out](CaseCryerProblem_PR_release_nu045_r1_out/) |
+
+### 其余六个配置
+
+以下都用 ν=0.30。
+
+| 配置文件 | GPU BAT | 用途和已有证据 |
+| --- | --- | --- |
+| [CaseCryerProblem_PR_release_r2_Def.xml](CaseCryerProblem_PR_release_r2_Def.xml) | [运行入口](xCaseCryerProblem_PR_release_r2_win64_GPU.bat) | u-pw + symC 的独立复现入口。四组总图用的是 `symc_nu030_out`。 |
+| [CaseCryerProblem_u_pl_nu030_r1_Def.xml](CaseCryerProblem_u_pl_nu030_r1_Def.xml) | [运行入口](xCaseCryerProblem_u_pl_nu030_r1_win64_GPU.bat) | 显式 u-pl，使用选定的冻结程序。已有[独立算出的 577 帧峰窗](tests/outputs/upl_cryer_freebody_peak_GPU_r1/)。这里的 XML 是 1 Tv 配置，全程待实算。 |
+| [CaseCryerProblem_u_pl_nu030_Def.xml](CaseCryerProblem_u_pl_nu030_Def.xml) | [运行入口](xCaseCryerProblem_u_pl_nu030_win64_GPU.bat) | 显式 u-pl，使用当前公共程序。已有六步回归，1 Tv 待实算。 |
+| [CaseCryer_TPI_nu030_1Tv_Def.xml](CaseCryer_TPI_nu030_1Tv_Def.xml) | [运行入口](xCaseCryer_TPI_nu030_1Tv_win64_GPU.bat) | 公共 TPI u-pl 的 1 Tv 配置。已有启动短测，1 Tv 待实算。 |
+| [CaseCryer_TPI_P3_nu030_peak_r1_Def.xml](CaseCryer_TPI_P3_nu030_peak_r1_Def.xml) | [运行入口](xCaseCryer_TPI_P3_nu030_peak_r1_win64_GPU.bat) | 冻结 TPI/P3 的[服务器峰窗](tests/outputs/CaseCryer_TPI_P3_nu030_peak_r1_GPU_out/)，超出原峰值与峰时误差限。 |
+| [CaseCryer_TPI_P3_nu030_full_r1_Def.xml](CaseCryer_TPI_P3_nu030_full_r1_Def.xml) | [运行入口](xCaseCryer_TPI_P3_nu030_full_r1_win64_GPU.bat) | 同一冻结 TPI/P3 的全程配置。峰窗未过准入，全程未运行。 |
 
 - [四组 u-pw 全程孔压图](figures/formal_validation/cryer_formal_four_nu_r2_log.png)与[数值汇总](figures/formal_validation/cryer_formal_four_nu_r1_metrics.csv)。
 - [显式 u-pl 峰窗孔压图](tests/figures/upl_cryer_freebody_peak_review_r1_pressure.png)与[时序数据](tests/figures/upl_cryer_freebody_peak_review_r1_history.csv)。
